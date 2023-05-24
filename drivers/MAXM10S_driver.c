@@ -6,179 +6,181 @@
     Description: Driver file for the GNSS module MAX-M10S-00B (https://www.mouser.co.uk/ProductDetail/u-blox/MAX-M10S-00B?qs=A6eO%252BMLsxmT0PfQYPb7LLQ%3D%3D)
 */
 
-#include <stdint.h>
-
+#include <stdarg.h>
 #include "MAXM10S_driver.h"
+#include <termios.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
-union u_Short uShort;
-union i_Short iShort;
-union u_Long uLong;
-union i_Long iLong;
-
-void MAXM10S_driver::init(GNSS_StateHandle *GNSS, GNSS_Context *ctx, GNSS_Config *config)
+DevUBLOXGNSS::DevUBLOXGNSS(void)
 {
-	// check version
+  // Constructor
+  if (debugPin >= 0)
+  {
+    pinMode((uint8_t)debugPin, OUTPUT);
+    digitalWrite((uint8_t)debugPin, HIGH);
+  }
 
-	// put in sleep mode
-
-	// set frequency
-
-	// initialize transmission parameters
-	GNSS_Init(GNSS_StateHandle *GNSS, UART_HandleTypeDef *huart);
+  _logNMEA.all = 0;                             // Default to passing no NMEA messages to the file buffer
+  _processNMEA.all = SFE_UBLOX_FILTER_NMEA_ALL; // Default to passing all NMEA messages to processNMEA
+  _logRTCM.all = 0;                             // Default to passing no RTCM messages to the file buffer
 }
 
-
-void MAXM10S_driver::config_setup(GNSS_Config *config)
+DevUBLOXGNSS::~DevUBLOXGNSS(void)
 {
+  // Destructor
 
+  end(); // Delete all allocated memory - excluding payloadCfg, payloadAuto and spiBuffer
+
+  if (payloadCfg != nullptr)
+  {
+    delete[] payloadCfg; // Created with new[]
+    payloadCfg = nullptr;
+  }
+
+  if (payloadAuto != nullptr)
+  {
+    delete[] payloadAuto; // Created with new[]
+    payloadAuto = nullptr;
+  }
+
+  if (spiBuffer != nullptr)
+  {
+    delete[] spiBuffer; // Created with new[]
+    spiBuffer = nullptr;
+  }
 }
 
-
-void MAXM10S_driver::reset(GNSS_Context *ctx)
+bool DevUBLOXGNSS::init(uint16_t maxWait, bool assumeSuccess)
 {
+  _signsOfLife = false; // Clear the _signsOfLife flag. It will be set true if valid traffic is seen.
 
+  // Call isConnected up to three times - tests on the NEO-M8U show the CFG RATE poll occasionally being ignored
+  bool connected = isConnected(maxWait);
+
+  if (!connected)
+  {
+    connected = isConnected(maxWait);
+  }
+
+  if (!connected)
+  {
+    connected = isConnected(maxWait);
+  }
+
+  if ((!connected) && assumeSuccess && _signsOfLife)
+  {
+    return (true);
+  }
+
+  return (connected);
 }
 
 
-void MAXM10S_driver::write(GNSS_Context *ctx, char *data_buf, uint16_t len)
+// Returns true if I2C device ack's
+bool DevUBLOXGNSS::isConnected(uint16_t maxWait)
 {
-
+  // Query port configuration to see whether we get a meaningful response
+  uint8_t en;
+  if ((_commType == COMM_TYPE_SERIAL) && (!_UART2))
+    return getVal8(UBLOX_CFG_UART1INPROT_UBX, &en, VAL_LAYER_RAM, maxWait);
+  else if ((_commType == COMM_TYPE_SERIAL) && (_UART2))
+    return getVal8(UBLOX_CFG_UART2INPROT_UBX, &en, VAL_LAYER_RAM, maxWait);
+  else
+    return false;
 }
 
 
-void MAXM10S_driver::read(GNSS_Context *ctx, char *data_buf, uint16_t max_len)
+void DevUBLOXGNSS::setCommunicationBus(GNSSDeviceBus &theBus)
 {
+  _sfeBus = &theBus;
+}
 
+uint16_t DevUBLOXGNSS::available()
+{
+  return _sfeBus->available();
+}
+
+bool DevUBLOXGNSS::setUART2Output(uint8_t comSettings, uint8_t layer, uint16_t maxWait)
+{
+  bool result = newCfgValset(layer);
+  result &= addCfgValset8(UBLOX_CFG_UART2OUTPROT_UBX, (comSettings & COM_TYPE_UBX) == 0 ? 0 : 1);
+  result &= addCfgValset8(UBLOX_CFG_UART2OUTPROT_NMEA, (comSettings & COM_TYPE_NMEA) == 0 ? 0 : 1);
+  result &= sendCfgValset(maxWait);
+  result |= setVal8(UBLOX_CFG_UART2OUTPROT_RTCM3X, (comSettings & COM_TYPE_RTCM3) == 0 ? 0 : 1, layer, maxWait); // This will be NACK'd if the module does not support RTCM3
+  return result;
 }
 
 
-/*!
- * Structure initialization for the Global navigation satellite system.
- * @param GNSS Pointer to main GNSS structure.
- * @param huart Pointer to uart handle.
- */
-void GNSS_Init(GNSS_StateHandle *GNSS, UART_HandleTypeDef *huart) {
-	GNSS->huart = huart;
-	GNSS->year = 0;
-	GNSS->month = 0;
-	GNSS->day = 0;
-	GNSS->hour = 0;
-	GNSS->min = 0;
-	GNSS->sec = 0;
-	GNSS->fixType = 0;
-	GNSS->lon = 0;
-	GNSS->lat = 0;
-	GNSS->height = 0;
-	GNSS->hMSL = 0;
-	GNSS->hAcc = 0;
-	GNSS->vAcc = 0;
-	GNSS->gSpeed = 0;
-	GNSS->headMot = 0;
+// Start defining a new (empty) UBX-CFG-VALSET ubxPacket
+// Configuration of modern u-blox modules is now done via getVal/setVal/delVal, ie protocol v27 and above found on ZED-F9P
+bool DevUBLOXGNSS::newCfgValset(uint8_t layer)
+{
+  packetCfg.cls = UBX_CLASS_CFG;
+  packetCfg.id = UBX_CFG_VALSET;
+  packetCfg.len = 4; // 4 byte header
+  packetCfg.startingSpot = 0;
+
+  _numCfgKeys = 0;
+
+  // Clear all of packet payload
+  memset(payloadCfg, 0, packetCfgPayloadSize);
+
+  payloadCfg[0] = 0;     // Message Version - set to 0
+  payloadCfg[1] = layer; // By default we ask for the BBR layer
+
+  // All done
+  return (true);
 }
 
 
-/*!
- * Searching for a header in data buffer and matching class and message ID to buffer data.
- * @param GNSS Pointer to main GNSS structure.
- */
-void GNSS_ParseBuffer(GNSS_StateHandle *GNSS) {
 
-	for (int var = 0; var <= 100; ++var) {
-		if (GNSS->uartWorkingBuffer[var] == 0xB5
-				&& GNSS->uartWorkingBuffer[var + 1] == 0x62) {
-			if (GNSS->uartWorkingBuffer[var + 2] == 0x27
-					&& GNSS->uartWorkingBuffer[var + 3] == 0x03) { // Look at: 32.19.1.1 u-blox 8 Receiver description
-				GNSS_ParseUniqID(GNSS);
-			} else if (GNSS->uartWorkingBuffer[var + 2] == 0x01
-					&& GNSS->uartWorkingBuffer[var + 3] == 0x21) { // Look at: 32.17.14.1 u-blox 8 Receiver description
-				GNSS_ParseNavigatorData(GNSS);
-			} else if (GNSS->uartWorkingBuffer[var + 2] == 0x01
-					&& GNSS->uartWorkingBuffer[var + 3] == 0x07) { // Look at: 32.17.30.1 u-blox 8 Receiver description
-				GNSS_ParsePVTData(GNSS);
-			} else if (GNSS->uartWorkingBuffer[var + 2] == 0x01
-					&& GNSS->uartWorkingBuffer[var + 3] == 0x02) { // Look at: 32.17.15.1 u-blox 8 Receiver description
-				GNSS_ParsePOSLLHData(GNSS);
-			}
-		}
+// SFE
+SfeSerial::SfeSerial(void) : _serialPort{nullptr} {}
+
+bool SfeSerial::init(Stream &serialPort)
+{
+	// if we don't have a port already
+	if (!_serialPort)
+	{
+		_serialPort = &serialPort;
 	}
+
+	// Get rid of any stale serial data already in the processor's RX buffer
+	while (_serialPort->available())
+		_serialPort->read();
+
+	return true;
 }
 
+uint16_t SfeSerial::available()
+{
+	if (!_serialPort)
+		return 0;
 
-/*!
- * Make request for unique chip ID data.
- * @param GNSS Pointer to main GNSS structure.
- */
-void GNSS_GetUniqID(GNSS_StateHandle *GNSS) {
-	HAL_UART_Transmit_DMA(GNSS->huart, getDeviceID,
-			sizeof(getDeviceID) / sizeof(uint8_t));
-	HAL_UART_Receive_IT(GNSS->huart, GNSS_Handle.uartWorkingBuffer, 17);
+	return (_serialPort->available());
 }
 
+uint8_t SfeSerial::writeBytes(uint8_t *dataToWrite, uint8_t length)
+{
+	if (!_serialPort)
+		return 0;
 
-/*!
- * Make request for UTC time solution data.
- * @param GNSS Pointer to main GNSS structure.
- */
-void GNSS_GetNavigatorData(GNSS_StateHandle *GNSS) {
-	HAL_UART_Transmit_DMA(GNSS->huart, getNavigatorData,
-			sizeof(getNavigatorData) / sizeof(uint8_t));
-	HAL_UART_Receive_IT(GNSS->huart, GNSS_Handle.uartWorkingBuffer, 28);
+	if (length == 0)
+		return 0;
+
+	return _serialPort->write(dataToWrite, length);
 }
 
+uint8_t SfeSerial::readBytes(uint8_t *data, uint8_t length)
+{
+	if (!_serialPort)
+		return 0;
 
-/*!
- * Parse data to unique chip ID standard.
- * Look at: 32.19.1.1 u-blox 8 Receiver description
- * @param GNSS Pointer to main GNSS structure.
- */
-void GNSS_ParseUniqID(GNSS_StateHandle *GNSS) {
-	for (int var = 0; var < 5; ++var) {
-		GNSS->uniqueID[var] = GNSS_Handle.uartWorkingBuffer[10 + var];
-	}
-}
+	if (length == 0)
+		return 0;
 
-
-/*!
- * Changing the GNSS mode.
- * Look at: 32.10.19 u-blox 8 Receiver description
- */
-void GNSS_SetMode(GNSS_StateHandle *GNSS, short gnssMode) {
-	if (gnssMode == 0) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setPortableMode,sizeof(setPortableMode) / sizeof(uint8_t));
-	} else if (gnssMode == 1) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setStationaryMode,sizeof(setStationaryMode) / sizeof(uint8_t));
-	} else if (gnssMode == 2) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setPedestrianMode,sizeof(setPedestrianMode) / sizeof(uint8_t));
-	} else if (gnssMode == 3) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setAutomotiveMode,sizeof(setAutomotiveMode) / sizeof(uint8_t));
-	} else if (gnssMode == 4) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setAutomotiveMode,sizeof(setAutomotiveMode) / sizeof(uint8_t));
-	} else if (gnssMode == 5) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setAirbone1GMode,sizeof(setAirbone1GMode) / sizeof(uint8_t));
-	} else if (gnssMode == 6) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setAirbone2GMode,sizeof(setAirbone2GMode) / sizeof(uint8_t));
-	} else if (gnssMode == 7) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setAirbone4GMode,sizeof(setAirbone4GMode) / sizeof(uint8_t));
-	} else if (gnssMode == 8) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setWirstMode,sizeof(setWirstMode) / sizeof(uint8_t));
-	} else if (gnssMode == 9) {
-		HAL_UART_Transmit_DMA(GNSS->huart, setBikeMode,sizeof(setBikeMode) / sizeof(uint8_t));
-	}
-}
-
-
-/*!
- * Parse data to UTC time solution standard.
- * Look at: 32.17.30.1 u-blox 8 Receiver description.
- * @param GNSS Pointer to main GNSS structure.
- */
-void GNSS_ParseNavigatorData(GNSS_StateHandle *GNSS) {
-	uShort.bytes[0] = GNSS_Handle.uartWorkingBuffer[18];
-	uShort.bytes[1] = GNSS_Handle.uartWorkingBuffer[19];
-	GNSS->year = uShort.uShort;
-	GNSS->month = GNSS_Handle.uartWorkingBuffer[20];
-	GNSS->day = GNSS_Handle.uartWorkingBuffer[21];
-	GNSS->hour = GNSS_Handle.uartWorkingBuffer[22];
-	GNSS->min = GNSS_Handle.uartWorkingBuffer[23];
-	GNSS->sec = GNSS_Handle.uartWorkingBuffer[24];
+	return _serialPort->readBytes(data, length);
 }

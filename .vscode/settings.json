@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "nand_flash_driver.h": "c",
+        "mcu.h": "c"
+    }
+}

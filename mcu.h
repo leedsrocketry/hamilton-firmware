@@ -2,7 +2,7 @@
 	Leeds University Rocketry Organisation - LURA
     Author Name: Alexandra Posta
     Created on: 27 Feb 2023
-	  Last modified on: 27 Feb 2023
+	  Last modified on: 24 May 2023
     Description: Main header file for the HFC firmware; suitable for STM32L4R5
 */
 
@@ -23,9 +23,26 @@
 #define PINNO(pin) (pin & 255)
 #define PINBANK(pin) (pin >> 8)
 
+#define LOW 0
+#define HIGH 1
+
 static inline void spin(volatile uint32_t count) {
   while (count--) asm("nop");
 }
+
+static inline void delayNanoseconds(uint32_t time) {
+  spin(time);
+}
+
+static inline void delayMicroseconds(uint32_t time) {
+  delayNanoseconds(time*1000);
+}
+
+static inline void delay(uint32_t time) {
+  delayMicroseconds(time*1000);
+}
+
+
 
 static inline void systick_init(uint32_t ticks) {
   if ((ticks - 1) > 0xffffff) return;         // Systick timer is 24 bit
@@ -57,6 +74,14 @@ static inline void gpio_write(uint16_t pin, bool val) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
   gpio->BSRR |= (1U << PINNO(pin)) << (val ? 0 : 16);
 }
+
+static inline bool gpio_read(uint16_t pin) {
+  GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
+  bool value;
+  value = gpio->IDR & (1U << PINNO(pin));
+  return value;
+}
+
 
 #define UART1 USART1
 #define UART2 USART2

@@ -1,273 +1,230 @@
-#ifndef MAXM10S_DRIVER_H
+/*
+	Leeds University Rocketry Organisation - LURA
+    Author Name: Alexandra Posta
+    Created on: 21 Mar 2023
+	  Last modified on: 21 Mar 2023
+    Description: header file for the GNSS module MAX-M10S-00B
+*/
+
 #define MAXM10S_DRIVER_H
 
 #include <stdint.h>
 
-union u_Short
-{
-	uint8_t bytes[2];
-	unsigned short uShort;
-};
+// A default of 250ms for maxWait seems fine for I2C but is not enough for SerialUSB.
+// If you know you are only going to be using I2C / Qwiic communication, you can
+// safely reduce kUBLOXGNSSDefaultMaxWait to 250.
+#define kUBLOXGNSSDefaultMaxWait 1100 // Let's allow the user to define their own value if they want to
 
-union i_Short
-{
-	uint8_t bytes[2];
-	signed short iShort;
-};
+// These are the Bitfield layers definitions for the UBX-CFG-VALSET message (not to be confused with Bitfield deviceMask in UBX-CFG-CFG)
+#ifndef UBX-CFG-VALSET messages  
+const uint8_t VAL_LAYER_DEFAULT = 0x7; // ONLY valid with getVal()
+const uint8_t VAL_LAYER_RAM = (1 << 0);
+const uint8_t VAL_LAYER_BBR = (1 << 1);
+const uint8_t VAL_LAYER_FLASH = (1 << 2);
+const uint8_t VAL_LAYER_RAM_BBR = VAL_LAYER_RAM | VAL_LAYER_BBR;               // Not valid with getVal()
+const uint8_t VAL_LAYER_ALL = VAL_LAYER_RAM | VAL_LAYER_BBR | VAL_LAYER_FLASH; // Not valid with getVal()
+#endif
 
-union u_Long
-{
-	uint8_t bytes[4];
-	unsigned long uLong;
-};
+// Configuration ports
+#ifndef CFG-PORTS 
+// The following consts are used to configure the various ports and streams for those ports. See -CFG-PRT.
+const uint8_t COM_PORT_UART1 = 1;
+const uint8_t COM_PORT_UART2 = 2;
 
-union i_Long
-{
-	uint8_t bytes[4];
-	signed long iLong;
-};
+const uint32_t UBX_CFG_L = 0x01001000;                                // bool
+const uint32_t UBLOX_CFG_UART1INPROT_UBX = UBX_CFG_L | 0x10730001;    // Flag to indicate if UBX should be an input protocol on UART1
+const uint32_t UBLOX_CFG_UART2INPROT_UBX = UBX_CFG_L | 0x10750001;    // Flag to indicate if UBX should be an input protocol on UART2
 
+#endif
 
-/**
- * @brief GNSS MAX driver buffer size.
- * @details Specified size of driver ring buffer.
- */
-#define DRV_BUFFER_SIZE_TX      100
-#define DRV_BUFFER_SIZE_RX      700
-
-
-
-/**
- * @brief GNSS MAX10S stats object.
- * @details Statistics object definition of GNSS MAX10S driver.
- */
-typedef struct
-{
-	UART_HandleTypeDef *huart;
-
-	uint8_t uniqueID[4];
-	uint8_t uartWorkingBuffer[101];
-
-	unsigned short year;
-	uint8_t yearBytes[2];
-	uint8_t month;
-	uint8_t day;
-	uint8_t hour;
-	uint8_t min;
-	uint8_t sec;
-	uint8_t fixType;
-
-	signed long lon;
-	uint8_t lonBytes[4];
-	signed long lat;
-	uint8_t latBytes[4];
-	float fLon;
-	float fLat;
-
-	signed long height;
-	signed long hMSL;
-	uint8_t hMSLBytes[4];
-	unsigned long hAcc;
-	unsigned long vAcc;
-
-	signed long gSpeed;
-	uint8_t gSpeedBytes[4];
-	signed long headMot;
-
-}GNSS_StateHandle;
-GNSS_StateHandle GNSS_Handle;
-
-
-
-/**
- * @brief GNSS MAX context object.
- * @details Context object definition of GNSS MAX driver.
- */
-typedef struct
-{
-    // Output pins
-    digital_out_t rst;                          /**< Reset. */
-    digital_out_t ext;                          /**< External interrupt. */
-
-    // Input pins
-    digital_in_t pps;                           /**< Timestamp. */
-
-    // Modules
-    uart_t uart;                                /**< UART driver object. */
-
-    // Buffers
-    char uart_rx_buffer[ DRV_BUFFER_SIZE_RX ];  /**< Buffer size. */
-    char uart_tx_buffer[ DRV_BUFFER_SIZE_TX ];  /**< Buffer size. */
-
-} GNSS_Context;
-
-
-
-/**
- * @brief GNSS MAX10S configuration object.
- * @details Configuration object definition of GNSS MAX10S driver.
- */
-typedef struct
-{
-    // Communication gpio pins
-    pin_name_t rx_pin;                  /**< RX pin. */
-    pin_name_t tx_pin;                  /**< TX pin. */
-
-    // Additional gpio pins
-    pin_name_t rst;                     /**< Reset pin. */
-    pin_name_t ext;                     /**< External interrupt. */
-    pin_name_t pps;                     /**< Timestamp. */
-
-    // Static variable
-    uint32_t          baud_rate;        /**< Clock speed. */
-    bool              uart_blocking;    /**< Wait for interrupt or not. */
-    uart_data_bits_t  data_bit;         /**< Data bits. */
-    uart_parity_t     parity_bit;       /**< Parity bit. */
-    uart_stop_bits_t  stop_bit;         /**< Stop bits. */
-
-} GNSS_Config;
-
-
-
-/**
- * @brief GNSS MAX10S return value data.
- * @details Predefined enum values for driver return values.
- */
+// UBX binary specific variables
+#ifndef ubxPacket 
+// Global Status Returns
 typedef enum
 {
-   GNSSMAX_OK = 0,
-   GNSSMAX_ERROR = -1,
-   GNSSMAX_ERROR_NO_DATA = -2,
-   GNSSMAX_ERROR_OVERFLOW = -3
+  SFE_UBLOX_STATUS_SUCCESS,
+  SFE_UBLOX_STATUS_FAIL,
+  SFE_UBLOX_STATUS_CRC_FAIL,
+  SFE_UBLOX_STATUS_TIMEOUT,
+  SFE_UBLOX_STATUS_COMMAND_NACK, // Indicates that the command was unrecognised, invalid or that the module is too busy to respond
+  SFE_UBLOX_STATUS_OUT_OF_RANGE,
+  SFE_UBLOX_STATUS_INVALID_ARG,
+  SFE_UBLOX_STATUS_INVALID_OPERATION,
+  SFE_UBLOX_STATUS_MEM_ERR,
+  SFE_UBLOX_STATUS_HW_ERR,
+  SFE_UBLOX_STATUS_DATA_SENT,     // This indicates that a 'set' was successful
+  SFE_UBLOX_STATUS_DATA_RECEIVED, // This indicates that a 'get' (poll) was successful
+  SFE_UBLOX_STATUS_I2C_COMM_FAILURE,
+  SFE_UBLOX_STATUS_SPI_COMM_FAILURE,
+  SFE_UBLOX_STATUS_DATA_OVERWRITTEN // This is an error - the data was valid but has been or _is being_ overwritten by another packet
+} sfe_ublox_status_e;
 
-} GNSS_ReturnValue;
-
-
-
-/**
- * @brief GNSS MAX10S Class.
- * @details Class that holds all of the interaction points with the GNSS Driver.
- */
-class MAXM10S_driver 
+// ubxPacket validity
+typedef enum
 {
-	public:
-		/**
-		 * @brief GNSS MAX configuration object setup function.
-		 * @details This function initializes GNSS to initial values.
-		 * @param[out] config : Configuration structure.
-		 * @return Nothing.
-		 */
-		void config_setup(GNSS_Config *config);
+  SFE_UBLOX_PACKET_VALIDITY_NOT_VALID,
+  SFE_UBLOX_PACKET_VALIDITY_VALID,
+  SFE_UBLOX_PACKET_VALIDITY_NOT_DEFINED,
+  SFE_UBLOX_PACKET_NOTACKNOWLEDGED // This indicates that we received a NACK
+} sfe_ublox_packet_validity_e;
+
+struct ubxPacket
+{
+  uint8_t cls;
+  uint8_t id;
+  uint16_t len;          // Length of the payload. Does not include cls, id, or checksum bytes
+  uint16_t counter;      // Keeps track of number of overall bytes received. Some responses are larger than 255 bytes.
+  uint16_t startingSpot; // The counter value needed to go past before we begin recording into payload array
+  uint8_t *payload;      // We will allocate RAM for the payload if/when needed.
+  uint8_t checksumA;     // Given to us from module. Checked against the rolling calculated A/B checksums.
+  uint8_t checksumB;
+  sfe_ublox_packet_validity_e valid;           // Goes from NOT_DEFINED to VALID or NOT_VALID when checksum is checked
+  sfe_ublox_packet_validity_e classAndIDmatch; // Goes from NOT_DEFINED to VALID or NOT_VALID when the Class and ID match the requestedClass and requestedID
+};
+#endif
 
 
-		/**
-		 * @brief GNSS MAX initialization function.
-		 * @details This function initializes all necessary pins and peripherals.
-		 * @param[out] ctx : Context object.
-		 * @param[in] config : Configuration structure.
-		 * @return @li @c  0 - Success,
-		 *         @li @c -1 - Error.
-		 */
-		void init(GNSS_Context *ctx, GNSS_Config *config);
+class GNSSDeviceBus
+{
+  public:
+    // For Serial, return Serial.available()
+    virtual uint16_t available() = 0;
 
-		
-		/**
-		 * @brief GNSS MAX reset function.
-		 * @details This function toggles reset pin to reset module.
-		 * @param[in] ctx : Context object.
-		 */
-		void reset(GNSS_Context *ctx);
+    // For Serial, do Serial.write
+    virtual uint8_t writeBytes(uint8_t *data, uint8_t length) = 0;
 
+    // For SPI, writing bytes will also read bytes simultaneously. Read data is returned in readData
+    virtual uint8_t writeReadBytes(const uint8_t *data, uint8_t *readData, uint8_t length) = 0;
+    virtual void startWriteReadByte() = 0;                                  // beginTransaction
+    virtual void writeReadByte(const uint8_t *data, uint8_t *readData) = 0; // transfer
+    virtual void writeReadByte(const uint8_t data, uint8_t *readData) = 0;  // transfer
+    virtual void endWriteReadByte() = 0;                                    // endTransaction
 
-		/**
-		 * @brief GNSS MAX sets state of external interrupt.
-		 * @details This function sets logic state of @b ext_int pin.
-		 * @param[in] ctx : Context object.
-		 * @param[in] state : State of pin to set.
-		 */
-		void set_external_interrupt(GNSS_Context *ctx, uint8_t state);
-			
-
-		/**
-		 * @brief GNSS MAX data writing function.
-		 * @details This function writes a desired number of data bytes by using UART serial interface.
-		 * @param[in] ctx : Context object.
-		 * @param[in] data_buf : Data buffer for sending.
-		 * @param[in] len : Number of bytes for sending.
-		 * @return @li @c  >=0 - Success,
-		 *         @li @c   <0 - Error.
-		 */
-		void write(GNSS_Context *ctx, char *data_buf, uint16_t len);
-
-		/**
-		 * @brief GNSS MAX data reading function.
-		 * @details This function reads a desired number of data bytes by using UART serial interface.
-		 * @param[in] ctx : Context object.
-		 * @param[out] data_buf : Output read data.
-		 * @param[in] max_len : Number of bytes to be read.
-		 * @return @li @c  >0 - Number of data bytes read,
-		 *         @li @c <=0 - Error/Empty Ring buffer.
-		 */
-		void read(GNSS_Context *ctx, char *data_buf, uint16_t max_len);
+    // For Serial, attempt Serial.read
+    virtual uint8_t readBytes(uint8_t *data, uint8_t length) = 0;
 };
 
-#endif /* MAXM10S_DRIVER_H */
+
+// The sfeSerial device defines behavior for Serial (UART) implementation based around the Stream class.
+// This is Arduino specific.
+class SfeSerial : public GNSSDeviceBus
+{
+public:
+  SfeSerial(void);
+
+  //TODO Include Stream!!
+  bool init(Stream &serialPort);
+
+  bool ping() { return false; }
+
+  uint16_t available();
+
+  uint8_t writeBytes(uint8_t *data, uint8_t length);
+
+  uint8_t writeReadBytes(const uint8_t *data, uint8_t *readData, uint8_t length)
+  { (void)data; (void)readData; (void)length; return 0; }
+
+  void startWriteReadByte(){};
+  void writeReadByte(const uint8_t *data, uint8_t *readData){ (void)data; (void)readData; }
+  void writeReadByte(const uint8_t data, uint8_t *readData){ (void)data; (void)readData; }
+  void endWriteReadByte(){};
+
+  uint8_t readBytes(uint8_t *data, uint8_t length);
+
+private:
+  //TODO Include Stream!!
+  Stream *_serialPort;
+};
 
 
 
-/*
-enum GNSSMode{Portable=0, Stationary=1, Pedestrian=2, Automotiv=3, Sea=4, Airbone1G=5, Airbone2G=6, Airbone4G=7, Wirst=8};
+class DevUBLOXGNSS
+{
+public:
+  DevUBLOXGNSS(void);
+  ~DevUBLOXGNSS(void);
 
-static const uint8_t configUBX[]={0xB5,0x62,0x06,0x00,0x14,0x00,0x01,0x00,0x00,0x00,0xD0,0x08,0x00,0x00,0x80,0x25,0x00,0x00,0x01,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x9A,0x79};
+  bool isConnected(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
 
-static const uint8_t setNMEA410[]={0xB5,0x62,0x06,0x17,0x14,0x00,0x00,0x41,0x00,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x75,0x57};
+protected:
+  enum commTypes
+  {
+    COMM_TYPE_I2C = 0,
+    COMM_TYPE_SERIAL,
+    COMM_TYPE_SPI
+  } _commType = COMM_TYPE_SERIAL; // Controls which port we look to for incoming bytes
 
-// Activation of navigation system: Galileo, Glonass, GPS, SBAS, IMES
-static const uint8_t setGNSS[]={0xB5,0x62,0x06,0x3E,0x24,0x00,0x00,0x00,0x20,0x04,0x00,0x08,0x10,0x00,0x01,0x00,0x01,0x01,0x01,0x01,0x03,0x00,0x01,0x00,0x01,0x01,0x02,0x04,0x08,0x00,0x01,0x00,0x01,0x01,0x06,0x08,0x0E,0x00,0x01,0x00,0x01,0x01,0xDF,0xFB};
+  bool init(uint16_t maxWait, bool assumeSuccess);
 
-static const uint8_t getDeviceID[]={0xB5,0x62,0x27,0x03,0x00,0x00,0x2A,0xA5};
+  void setCommunicationBus(GNSSDeviceBus &theBus);
 
-static const uint8_t getNavigatorData[]={0xB5,0x62,0x01,0x21,0x00,0x00,0x22,0x67};
+  bool _UART2 = false; // Default to UART1
 
-static const uint8_t getPOSLLHData[]={0xB5,0x62,0x01,0x02,0x00,0x00,0x03,0x0A};
+  // Variables
+  GNSSDeviceBus *_sfeBus;
 
-static const uint8_t getPVTData[]={0xB5,0x62,0x01,0x07,0x00,0x00,0x08,0x19};
+public:
+  // Port
+  bool setUART2Output(uint8_t comSettings, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait); // Configure UART2 port to output UBX
+  void connectedToUART2(bool connected = true) { _UART2 = connected; }
+  bool newCfgValset(uint8_t layer = VAL_LAYER_RAM_BBR);                                                         // Create a new, empty UBX-CFG-VALSET. Add entries with addCfgValset8/16/32/64
+  bool addCfgValsetN(uint32_t key, uint8_t *value, uint8_t N);                                                  // Add a new key and N-byte value to an existing UBX-CFG-VALSET ubxPacket
+  bool sendCfgValset(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait); 
 
-//  Navigation configuration
-static const uint8_t setPortableMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x00,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7E,0x3C};
-
-static const uint8_t setStationaryMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x02,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x80,0x80};
-
-static const uint8_t setPedestrianMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x03,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x81,0xA2};
-
-static const uint8_t setAutomotiveMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x04,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x82,0xC4};
-
-static const uint8_t setSeaMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x05,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x83,0xE6};
-
-static const uint8_t setAirbone1GMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x06,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x84,0x08};
-
-static const uint8_t setAirbone2GMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x07,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x85,0x2A};
-
-static const uint8_t setAirbone4GMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x08,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x86,0x4C};
-
-static const uint8_t setWirstMode[]={0xB5,0x62,0x06,0x24,0x24,0x00,0xFF,0xFF,0x09,0x03,0x00,0x00,0x00,0x00,0x10,0x27,0x00,0x00,0x05,0x00,0xFA,0x00,0xFA,0x00,0x64,0x00,0x5E,0x01,0x00,0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x87,0x6E};
+  // VALSET
+  bool setValN(uint32_t key, uint8_t *value, uint8_t N, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait); // Sets the N-byte value at a given group/id/size location
+  bool setVal8(uint32_t key, uint8_t value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);             // Sets the 8-bit value at a given group/id/size location
+  bool setVal16(uint32_t key, uint16_t value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);           // Sets the 16-bit value at a given group/id/size location
+  bool setVal32(uint32_t key, uint32_t value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);           // Sets the 32-bit value at a given group/id/size location
+  bool setVal64(uint32_t key, uint64_t value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);           // Sets the 64-bit value at a given group/id/size location
+  bool setValSigned8(uint32_t key, int8_t value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);        // Sets the 8-bit value at a given group/id/size location
+  bool setValSigned16(uint32_t key, int16_t value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);      // Sets the 16-bit value at a given group/id/size location
+  bool setValSigned32(uint32_t key, int32_t value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);      // Sets the 32-bit value at a given group/id/size location
+  bool setValSigned64(uint32_t key, int64_t value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);      // Sets the 64-bit value at a given group/id/size location
+  bool setValFloat(uint32_t key, float value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);           // Sets the 32-bit value at a given group/id/size location
+  bool setValDouble(uint32_t key, double value, uint8_t layer = VAL_LAYER_RAM_BBR, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);         // Sets the 64-bit value at a given group/id/size location
 
 
-static const uint8_t setPortableType[]={};
-void GNSS_Init(GNSS_StateHandle *GNSS, UART_HandleTypeDef *huart);
-void GNSS_LoadConfig(GNSS_StateHandle *GNSS);
-void GNSS_ParseBuffer(GNSS_StateHandle *GNSS);
+  // Save configuration to BBR / Flash
+  bool saveConfiguration(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);  // Save current configuration to flash and BBR (battery backed RAM)
 
-void GNSS_GetUniqID(GNSS_StateHandle *GNSS);
-void GNSS_ParseUniqID(GNSS_StateHandle *GNSS);
+  // Helper functions for PVT
+  uint32_t getTimeOfWeek(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
+  uint16_t getYear(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
+  uint8_t getMonth(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
+  uint8_t getDay(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
+  uint8_t getHour(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
+  uint8_t getMinute(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
+  uint8_t getSecond(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
+  uint16_t getMillisecond(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
+  int32_t getNanosecond(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);
 
-void GNSS_GetNavigatorData(GNSS_StateHandle *GNSS);
-void GNSS_ParseNavigatorData(GNSS_StateHandle *GNSS);
+  uint8_t getSIV(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);         // Returns number of sats used in fix
+  int32_t getLongitude(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);   // Returns the current longitude in degrees * 10-7. Auto selects between HighPrecision and Regular depending on ability of module.
+  int32_t getLatitude(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);    // Returns the current latitude in degrees * 10^-7. Auto selects between HighPrecision and Regular depending on ability of module.
+  int32_t getAltitude(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait);    // Returns the current altitude in mm above ellipsoid
+  int32_t getAltitudeMSL(uint16_t maxWait = kUBLOXGNSSDefaultMaxWait); // Returns the current altitude in mm above mean sea level
+};
 
-void GNSS_GetPOSLLHData(GNSS_StateHandle *GNSS);
-void GNSS_ParsePOSLLHData(GNSS_StateHandle *GNSS);
 
-void GNSS_GetPVTData(GNSS_StateHandle *GNSS);
-void GNSS_ParsePVTData(GNSS_StateHandle *GNSS);
+class SFE_UBLOX_GNSS_SERIAL : public DevUBLOXGNSS
+{
+public:
+  SFE_UBLOX_GNSS_SERIAL() { _commType = COMM_TYPE_SERIAL; }
 
-void GNSS_SetMode(GNSS_StateHandle *GNSS, short gnssMode); */
+  bool begin(Stream &serialPort, uint16_t maxWait = kUBLOXGNSSDefaultMaxWait, bool assumeSuccess = false)
+  {
+    // Setup Serial object and pass into the superclass
+    setCommunicationBus(_serialBus);
+
+    // Initialize the Serial bus class
+    _serialBus.init(serialPort);
+
+    // Initialize the system - return results
+    return this->DevUBLOXGNSS::init(maxWait, assumeSuccess);
+  }
+
+private:
+  // Serial bus class
+  SfeSerial _serialBus;
+};
