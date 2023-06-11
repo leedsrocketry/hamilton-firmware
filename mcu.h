@@ -26,22 +26,25 @@
 #define LOW 0
 #define HIGH 1
 
+
 static inline void spin(volatile uint32_t count) {
   while (count--) asm("nop");
 }
+
 
 static inline void delayNanoseconds(uint32_t time) {
   spin(time);
 }
 
+
 static inline void delayMicroseconds(uint32_t time) {
   delayNanoseconds(time*1000);
 }
 
+
 static inline void delay(uint32_t time) {
   delayMicroseconds(time*1000);
 }
-
 
 
 static inline void systick_init(uint32_t ticks) {
@@ -52,8 +55,10 @@ static inline void systick_init(uint32_t ticks) {
   RCC->APB2ENR |= BIT(0);                     // Enable SYSCFG
 }
 
+
 #define GPIO(bank) ((GPIO_TypeDef *) (0x48000000 + 0x400 * (bank)))
 enum { GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG };
+
 
 static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));  // GPIO bank
@@ -63,6 +68,7 @@ static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
   gpio->MODER |= (mode & 3U) << (n * 2);    // Set new mode
 }
 
+
 static inline void gpio_set_af(uint16_t pin, uint8_t af_num) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));  // GPIO bank
   int n = PINNO(pin);                       // Pin number
@@ -70,10 +76,12 @@ static inline void gpio_set_af(uint16_t pin, uint8_t af_num) {
   gpio->AFR[n >> 3] |= ((uint32_t) af_num) << ((n & 7) * 4);
 }
 
+
 static inline void gpio_write(uint16_t pin, bool val) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
   gpio->BSRR |= (1U << PINNO(pin)) << (val ? 0 : 16);
 }
+
 
 static inline bool gpio_read(uint16_t pin) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
@@ -87,6 +95,7 @@ static inline bool gpio_read(uint16_t pin) {
 #define UART2 USART2
 #define UART3 USART3
 #define LUART1 LPUART1
+
 
 static inline void uart_init(USART_TypeDef *uart, unsigned long baud) {
   uint8_t af = 8;           // Alternate function
@@ -119,17 +128,21 @@ static inline void uart_write_byte(USART_TypeDef *uart, uint8_t byte) {
   while ((uart->ISR & BIT(7)) == 0) spin(1);    // Ref manual STM32L4 50.8.10 USART status register (USART_ISR) 
 }
 
+
 static inline void uart_write_buf(USART_TypeDef *uart, char *buf, size_t len) {
   while (len-- > 0) uart_write_byte(uart, *(uint8_t *) buf++);
 }
+
 
 static inline int uart_read_ready(USART_TypeDef *uart) {
   return uart->ISR & BIT(5);  // If RXNE bit is set, data is ready Ref manual 50.8.10
 }
 
+
 static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
   return (uint8_t) (uart->RDR & 255);
 }
+
 
 // t: expiration time, prd: period, now: current time. Return true if expired
 static inline bool timer_expired(uint32_t *t, uint32_t prd, uint32_t now) {
@@ -139,6 +152,7 @@ static inline bool timer_expired(uint32_t *t, uint32_t prd, uint32_t now) {
   *t = (now - *t) > prd ? now + prd : *t + prd;  // Next expiration time
   return true;                                   // Expired, return true
 }
+
 
 // The power control register
 static inline void pwr_vdd2_init() {

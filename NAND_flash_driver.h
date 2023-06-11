@@ -1,9 +1,9 @@
 /*
 	Leeds University Rocketry Organisation - LURA
-    Author Name: Thomas Groom and Alexnadra Posta
-    Created on: 09 March 2023
-	  Last modified on: 24 May 2023
-    Description: NAND Flash driver
+  Author Name: Thomas Groom and Alexnadra Posta
+  Created on: 09 March 2023
+	Last modified on: 24 May 2023
+  Description: NAND Flash driver
 */
 
 #include "mcu.h"
