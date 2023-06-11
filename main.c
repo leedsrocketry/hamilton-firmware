@@ -2,38 +2,109 @@
 	Leeds University Rocketry Organisation - LURA
     Author Name: Alexandra Posta
     Created on: 27 Feb 2023
-	  Last modified on: 24 May 2023
+	  Last modified on: 11 June 2023
     Description: entry point for the HFC firmware; suitable for STM32L4R5
 */
 
 #include "mcu.h"
 #include "NAND_flash_driver.h"
+#include "HAMILTON.h"
 
-static volatile uint32_t s_ticks;
-void SysTick_Handler(void) {
-  s_ticks++;
+
+// Flags
+FlightStages flightStage = LAUNCHPAD;
+
+
+/**
+  @brief TODO
+*/
+void updateSensors() {
+
+};
+
+
+/**
+  @brief TODO
+*/
+void sendData() {
+
+};
+
+
+/**
+  @brief TODO
+*/
+void toggle_timeout_flag()
+{
+
 }
 
+
+/**
+  @brief TODO
+*/
 int main(void) {
-  uint16_t led = PIN('B', 7);                         // Blue LED
-  systick_init(FREQ / 1000);                          // Tick every 1 ms
-  gpio_set_mode(led, GPIO_MODE_OUTPUT);               // Set blue LED to output mode
+  // Initialise the board
+  initHamilton();
+  printf("==================== PROGRAM START ==================\r\n");
   
-  pwr_vdd2_init();
-  uart_init(LUART1, 115200);                          // Initialise UART; 
-
-  static bool on = 1; 
-  gpio_write(led, on); 
-
-  printf("--- PROGRAM START ---\r\n");
-
+  
+  // Initialise the drivers
+  printf("================ INITIALISE FC DRIVERS ===============\r\n");
   initialiseFlash();
   //eraseALL();
   frameAddressPointer = 0;
+  // GNSS
+  // Temperature + Humidity
+  // Barometer
+  // Accelerometer
+  // Gyroscope
+  // Temperature
+  // Pad Radio
 
+
+  printf("================ ENTER MAIN PROCEDURE ================\r\n");
   for (;;) {
-    //setControlPins(WRITE_PROTECT);  // Write Protection
-    //setControlPins(WRITE_PROTECT_OFF);  // Write Protection Off
+
+    // Complete based on flight stage
+    switch (flightStage) {
+    case LAUNCHPAD:
+        // TODO
+        // check for altitude
+        // check for acceleration
+        // if above threshold, change flightStage to ASCEND
+        break;
+
+    case ASCEND:
+        // TODO
+        // update all sensor readings at high rate
+        // save sensor readings to FDR/over telemetry link
+        break;
+
+    case APOGEE:
+        // TODO
+        // update all sensor readings at high rate
+        // save sensor readings to FDR/over telemetry link
+        // trigger recovery system
+        break;
+
+    case DESCENT: 
+        // TODO
+        // update all sensor readings at lower rate
+        // save sensor readings to FDR/over telemetry link
+        // if no acceleration/costant altitude, change flightStage to LANDING
+        break;
+
+    case LANDING: 
+        // TODO
+        // stop recording
+        // change buzzer sequence
+        // change LED sequence
+        break;
+    }
+
+    //setControlPins(WRITE_PROTECT);                  // Write Protection
+    //setControlPins(WRITE_PROTECT_OFF);              // Write Protection Off
     
     uint8_t dataArray[128];
     _memset(dataArray, 0x0, 128);
@@ -48,7 +119,6 @@ int main(void) {
     
     frameArray _input = unzip(dataArray);
     // frameArray _output;
-
     //int data_intact = 0;
     //int data_fixed = 0;
     //int data_error = 0;
@@ -66,14 +136,15 @@ int main(void) {
       _input = unzip(dataArray);
 
       logFrame(_input);
-
-      printf("-------DONE--------");
+      printf("======================== DONE ========================");
     }  
     
-    printf("DONE WRITING\r\n");
+    printf("==================== DONE WRITING ====================\r\n");
     readALL();
     printCapacityInfo();
-    printf("--- PROGRAM END ---"); 
+    
+    // Exit program
+    printf("===================== PROGRAM END ===================="); 
   }
   return 0;
 }
