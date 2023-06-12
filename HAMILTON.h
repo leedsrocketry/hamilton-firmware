@@ -13,7 +13,9 @@
 #define SEA_LEVEL_PRESSURE_AT_SITE 1013.25 // change on the day
 #define MSL_ALT_TIMER_THRESHOLD_MS 60000 // 1 minute
 
+// Required structures
 typedef enum FlightStages {LAUNCHPAD, ASCEND, APOGEE, DESCENT, LANDING} FlightStages;
+
 
 typedef struct Date 
 {
@@ -22,12 +24,14 @@ typedef struct Date
     unsigned int day;
 } Date;
 
+
 typedef struct Time
 {
     unsigned int hour;
     unsigned int minute;
     unsigned int second;
 } Time;
+
 
 // Pins
 const uint16_t _vBatt   = PIN('A', 0);  

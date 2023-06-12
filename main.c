@@ -41,7 +41,7 @@ void toggle_timeout_flag()
 
 
 /**
-  @brief TODO
+  @brief Main entry point for the HFC firmware
 */
 int main(void) {
   // Initialise the board
@@ -70,8 +70,9 @@ int main(void) {
     switch (flightStage) {
     case LAUNCHPAD:
         // TODO
-        // check for altitude
-        // check for acceleration
+        // save a circular buffer of sensor readings (when launch is detected)
+        // check for altitude off GPS and -> Barometer
+        // check for acceleration (mostly)
         // if above threshold, change flightStage to ASCEND
         break;
 
@@ -79,6 +80,7 @@ int main(void) {
         // TODO
         // update all sensor readings at high rate
         // save sensor readings to FDR/over telemetry link
+        // detect apogee based on gradient of altitude 
         break;
 
     case APOGEE:

@@ -9,6 +9,9 @@
 #include "HAMILTON.h"
 #include "mcu.h"
 
+/**
+  @brief TODO
+*/
 int initHamilton()
 {
     systick_init(FREQ / 1000);     // Tick every 1 ms
@@ -18,6 +21,9 @@ int initHamilton()
 }
 
 
+/**
+  @brief TODO
+*/
 void initInternals()
 {
     // UART
@@ -36,6 +42,9 @@ void initInternals()
 }
 
 
+/**
+  @brief TODO
+*/
 void initPeripherals()
 {
     // Define inputs and outputs
@@ -48,18 +57,27 @@ void initPeripherals()
 }
 
 
+/**
+  @brief Led on
+*/
 void ledOn()
 {
     gpio_write(_blueLED, HIGH);
 }
 
 
+/**
+  @brief Led off
+*/
 void ledOff()
 {
     gpio_write(_blueLED, LOW);
 }
 
 
+/**
+  @brief Buzzer sound
+*/
 void beepBuzzer(int onDurationMs, int offDurationMs, int noOfBeeps)
 {
     for (int i = 0; i < noOfBeeps; i++) {
@@ -71,6 +89,10 @@ void beepBuzzer(int onDurationMs, int offDurationMs, int noOfBeeps)
 }
 
 
+
+/**
+  @brief Buzzer sound to indicate power on
+*/
 void indicateOnBuzzer()
 {
     gpio_write(_buzzer, HIGH);
@@ -83,6 +105,9 @@ void indicateOnBuzzer()
 }
 
 
+/**
+  @brief Led light to indicate power on
+*/
 void indicateOnLed()
 {
     ledOn();
@@ -95,6 +120,10 @@ void indicateOnLed()
 }
 
 
+/**
+  @brief Check battery charge
+  @note Do not run if below TODO
+*/
 float getBatteryCapacity(uint8_t batteryNo)
 {
     switch (batteryNo)

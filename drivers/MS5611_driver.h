@@ -10,11 +10,11 @@
 #define MS5611_DRIVER_H
 #include <stdint.h>
 
-#define MS5611_RESET			      0x1e
+#define MS5611_RESET			    0x1e
 #define MS5611_READ_ADC			    0x00
 #define MS5611_READ_PROM_WORD		0xA0
 #define MS5611_PROM_WORDS_NB		8
-#define	SPI_MODE_0		(0|0)		/* (original MicroWire) */
+#define	SPI_MODE_0					(0|0)		/* (original MicroWire) */
 
 
 /**

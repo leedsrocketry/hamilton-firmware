@@ -27,26 +27,43 @@
 #define HIGH 1
 
 
+// Delays
 static inline void spin(volatile uint32_t count) {
   while (count--) asm("nop");
 }
 
 
+/**
+  @brief Delay in nanoseconds
+  @param time Time in nanoseconds
+*/
 static inline void delayNanoseconds(uint32_t time) {
   spin(time);
 }
 
 
+/**
+  @brief Delay in microseconds
+  @param time Time in microseconds
+*/
 static inline void delayMicroseconds(uint32_t time) {
   delayNanoseconds(time*1000);
 }
 
 
+/**
+  @brief Delay in miliseconds
+  @param time Time in miliseconds
+*/
 static inline void delay(uint32_t time) {
   delayMicroseconds(time*1000);
 }
 
 
+/**
+  @brief Enable system clocks by setting frequency
+  @param ticks Required frequency
+*/
 static inline void systick_init(uint32_t ticks) {
   if ((ticks - 1) > 0xffffff) return;         // Systick timer is 24 bit
   SysTick->LOAD = ticks - 1;
@@ -56,10 +73,16 @@ static inline void systick_init(uint32_t ticks) {
 }
 
 
+// GPIO
 #define GPIO(bank) ((GPIO_TypeDef *) (0x48000000 + 0x400 * (bank)))
 enum { GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG };
 
 
+/**
+  @brief 
+  @param pin
+  @param mode
+*/
 static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));  // GPIO bank
   int n = PINNO(pin);                       // Pin number
@@ -69,6 +92,11 @@ static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
 }
 
 
+/**
+  @brief 
+  @param pin
+  @param af_num
+*/
 static inline void gpio_set_af(uint16_t pin, uint8_t af_num) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));  // GPIO bank
   int n = PINNO(pin);                       // Pin number

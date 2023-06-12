@@ -43,6 +43,7 @@ void init() {
     return 1;
 };
 
+
 /**
     @brief Get the temperature without using the heater. The measurement takes about 10ms
     @param precision Precision for the conversion
