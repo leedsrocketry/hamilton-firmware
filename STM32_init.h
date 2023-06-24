@@ -32,20 +32,11 @@ typedef struct Time
 } Time;
 
 
-// Pins
-const uint16_t _vBatt   = PIN('A', 0);  
-const uint16_t _vBatt1  = PIN('A', 0); 
-const uint16_t _vBatt2  = PIN('A', 0); 
-const uint16_t _vBatt3  = PIN('A', 0); 
-const uint16_t _buzzer  = PIN('A', 0); 
-const uint16_t _blueLED = PIN('B', 7);
-
-
 // Functions
 /**
   @brief TODO
 */
-int init_STM32(void);
+void init_STM32(void);
 
 
 /**
@@ -66,7 +57,7 @@ void init_peripherals(void);
   @param offDurationMs
   @param noOfBeeps
 */
-void beep_buzzer(int onDurationMs, int offDurationMs, int noOfBeeps);
+void beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps);
 
 
 /**
@@ -96,7 +87,7 @@ void leds_off();
 /**
   @brief TODO
 */
-float get_battery_capacity(uint8_t batteryNo);
+double get_battery_capacity(uint8_t batteryNo);
 
 
 #endif /* STM32_DRIVER_H */

@@ -215,7 +215,98 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
 
 
 #pragma region SPI
+/**
+  @brief TODO
+  @param spi
+*/
+static inline void spi_init(SPI_TypeDef *spi) {
+  // STM32L4R5 Reference manual SPI Documentation (from page ):
+  //  - RM0351, pg 78-82: Memory map and peripheral register boundary
+  //  - DS10198, pg 68: Pinout
+  //  - RM0351, pg 1459: Configuration of SPI
+  //  - RM0351, pg 1484: SPI register map
+  //  - RM0351, pg 1476: SPI registers
+  //  - NUCLEO Pinout: https://os.mbed.com/platforms/ST-Nucleo-L476RG/#nucleo-pinout)
 
+  uint8_t af;
+  uint16_t ss, sclk, miso, mosi;
+
+  if (spi == SPI1) RCC->APB2ENR  |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('A', 5),  miso = PIN('A', 6),  mosi = PIN('A', 7);
+  if (spi == SPI2) RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
+  if (spi == SPI3) RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
+
+  gpio_set_mode(ss, GPIO_MODE_AF);
+  gpio_set_mode(sclk, GPIO_MODE_AF);
+  gpio_set_mode(miso, GPIO_MODE_AF);
+  gpio_set_mode(mosi, GPIO_MODE_AF);
+
+  gpio_set_af(ss, af);
+  gpio_set_af(sclk, af);
+  gpio_set_af(miso, af);
+  gpio_set_af(mosi, af);
+
+  // MCU clock speed (FREQ) is 4 MHz and max MCU SPI speed is FREQ / 2.
+  spi->CR1 &= ~(7U << 3);
+
+  // CPOL (clk polarity) and CPHA (clk phase) defaults  to produce the desired clock/data relationship
+  // CPOL (clock polarity) bit controls the idle state value of the clock when no data is being transferred. 
+  spi->CR1 &= ~BIT(0);
+  spi->CR1 &= ~BIT(1);
+
+  // MCU datasheet "Select simplex or half-duplex mode by configuring
+  // RXONLY or BIDIMODE and BIDIOE (RXONLY and BIDIMODE cannot be set
+  // at the same time)"
+  spi->CR1 &= ~BIT(10);
+  spi->CR1 &= ~BIT(15);
+
+  // Datasheet: "The MSB of a byte is transmitted first" 
+  spi->CR1 &= ~BIT(7);
+
+  // CRC not needed so ignoring CRCL and CRCEN
+
+  // Software slave management seems required
+  spi->CR1 |= BIT(9);
+
+  // Configuring the mcu as SPI master
+  spi->CR1 |= BIT(2);
+
+  // Frame size is 8 bits
+  spi->CR2 |= (7U << 8);
+
+  // Activating SS output enable
+  spi->CR2 |= BIT(2);
+
+  // Not using TI protocol so not bothered by FRF bit
+  // Not using NSSP protocol so not bothered by NSS bit
+  // Not bothered by FRXTH bit. We're not reading anything on the mcu end
+  // Not bothered about configuring the CRC polynomial
+  // Not bothered about any DMA stuff
+
+  // Enable the SPI!
+  spi->CR1 |= BIT(6);
+}
+
+
+/**
+  @brief TODO
+  @param spi
+  @param byte
+*/
+static inline void spi_write_byte(SPI_TypeDef *spi, uint8_t byte) {
+  spi->DR = byte;
+  while ((spi->SR & BIT(7)) != 0) spin(1);
+}
+
+
+/**
+  @brief TODO
+  @param spi
+  @param buf
+  @param len
+*/
+static inline void spi_write_buf(SPI_TypeDef *spi, char *buf, size_t len) {
+  while (len-- > 0) spi_write_byte(spi, *(uint8_t *) buf++);
+}
 #pragma endregion SPI
 
 
@@ -228,7 +319,7 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
 */
 static inline bool timer_expired(uint32_t *t, uint32_t prd, uint32_t now) {
   if (now + prd < *t) *t = 0;                    // Time wrapped? Reset timer
-  if (*t == 0) *t = now + prd;                   // Firt poll? Set expiration
+  if (*t == 0) *t = now + prd;                   // First poll? Set expiration
   if (*t > now) return false;                    // Not expired yet, return
   *t = (now - *t) > prd ? now + prd : *t + prd;  // Next expiration time
   return true;                                   // Expired, return true

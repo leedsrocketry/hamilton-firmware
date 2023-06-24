@@ -15,6 +15,15 @@ FlightStages flightStage = LAUNCHPAD;
 
 
 /**
+  @brief Required for compilation
+*/
+static volatile uint32_t s_ticks;
+void SysTick_Handler(void) {
+  s_ticks++;
+}
+
+
+/**
   @brief TODO
 */
 void update_sensors() {
@@ -58,16 +67,13 @@ void send_data() {
     dataArray[1] = 0;
     _input = unzip(dataArray);
 
-    logFrame(_input);
+    log_frame(_input);
     printf("======================== DONE ========================");
   }  
   
   printf("==================== DONE WRITING ====================\r\n");
-  readALL();
-  printCapacityInfo();
-  
-  // Exit program
-  printf("===================== PROGRAM END ===================="); 
+  read_all();
+  print_capacity_info();
 };
 
 
@@ -81,18 +87,16 @@ void toggle_timeout_flag()
 
 
 /**
-  @brief Main entry point for the HFC firmware
+  @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
 int main(void) {
-  // Initialise the board
-  initHamilton();
+  init_STM32(); // Initialise the board
   printf("==================== PROGRAM START ==================\r\n");
-  
   
   // Initialise the drivers
   printf("================ INITIALISE FC DRIVERS ===============\r\n");
-  initialiseFlash();
-  //eraseALL();
+  init_flash();
+  //erase_all();
   frameAddressPointer = 0;
   // init_MAXM10S(); GNSS
   // init_SHT40I(); Temperature + Humidity
@@ -102,10 +106,8 @@ int main(void) {
   // init_init_MAX31855(); Temperature
   // init_SI4463(); Pad Radio
 
-
   printf("================ ENTER MAIN PROCEDURE ================\r\n");
   for (;;) {
-
     // Complete based on flight stage
     switch (flightStage) {
     case LAUNCHPAD:
@@ -145,7 +147,10 @@ int main(void) {
         break;
     }
 
-    send_data();
+    //send_data();
+
+    // Exit program
+    printf("===================== PROGRAM END ===================="); 
   }
   return 0;
 }

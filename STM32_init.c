@@ -8,19 +8,29 @@
 #include "STM32_init.h"
 #include "mcu.h"
 
+
+// Pins
+const uint16_t _vBatt   = PIN('A', 0);  
+const uint16_t _vBatt1  = PIN('A', 0); 
+const uint16_t _vBatt2  = PIN('A', 0); 
+const uint16_t _vBatt3  = PIN('A', 0); 
+const uint16_t _buzzer  = PIN('A', 0); 
+const uint16_t _blueLED = PIN('B', 7);
+
+
 /**
-  @brief TODO
+  @brief Initialisation of the STM32L5 board
 */
 void init_STM32()
 {
   systick_init(FREQ / 1000);     // Tick every 1 ms
-  initPeripherals();
-  initInternals();
+  init_peripherals();
+  init_internals();
 }
 
 
 /**
-  @brief TODO
+  @brief Initialisation of the STM32L4R5 board internals (UART, SPI, Power, etc.)
 */
 void init_internals()
 {
@@ -39,7 +49,7 @@ void init_internals()
 
 
 /**
-  @brief TODO
+  @brief Initialisation of the STM32L5 board externals (GPIO, ADC, etc.)
 */
 void init_peripherals()
 {
@@ -74,7 +84,7 @@ void led_off()
 /**
   @brief Buzzer sound
 */
-void beep_buzzer(int onDurationMs, int offDurationMs, int noOfBeeps)
+void beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps)
 {
   for (int i = 0; i < noOfBeeps; i++) {
       gpio_write(_buzzer, HIGH);
@@ -105,13 +115,13 @@ void indicate_on_buzzer()
 */
 void indicate_on_led()
 {
-  ledOn();
+  led_on();
   delay(500);
-  ledOff();
+  led_off();
   delay(500);
-  ledOn();
+  led_on();
   delay(500);
-  ledOff();
+  led_off();
 }
 
 
@@ -119,7 +129,7 @@ void indicate_on_led()
   @brief Check battery charge
   @note Do not run if below TODO
 */
-float get_battery_capacity(uint8_t batteryNo)
+double get_battery_capacity(uint8_t batteryNo)
 {
   switch (batteryNo)
   {

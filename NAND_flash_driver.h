@@ -492,7 +492,7 @@ uint8_t receive_byte_from_flash() {
 
   if (globalPinMode != GPIO_MODE_INPUT) {
     globalPinMode = GPIO_MODE_INPUT;
-    setPinModes();
+    set_pin_modes();
   }
 
   uint8_t data = (gpio_read(data7) << 7)
@@ -514,9 +514,9 @@ uint8_t receive_byte_from_flash() {
   @param byteAddr 
 */
 void send_addr_to_flash(uint32_t frameAddr, uint8_t byteAddr) {
-  Address addr = {(frameAddr >> 11) & 0b0000111111111111,                             // block
-                        (frameAddr >> 5) & 0b00111111,                                // page
-                        ((frameAddr & 0b00011111) << 7) | (byteAddr & 0b01111111)};   // column 
+  Address addr = {(frameAddr >> 11) & 0b0000111111111111,                      // block
+                  (frameAddr >> 5) & 0b00111111,                                // page
+                  ((frameAddr & 0b00011111) << 7) | (byteAddr & 0b01111111)}; // column 
 
   send_byte_to_flash((uint8_t)(addr.column & 0b0000000011111111), ADDRESS_INPUT);
   send_byte_to_flash((uint8_t)((addr.column & 0b0001111100000000) >> 8), ADDRESS_INPUT);
@@ -770,7 +770,7 @@ void test_routine() {
 /**
   @brief TODO
 */
-void initialise_flash() {
+void init_flash() {
   gpio_set_mode(data0, GPIO_MODE_OUTPUT);
   gpio_set_mode(data1, GPIO_MODE_OUTPUT);
   gpio_set_mode(data2, GPIO_MODE_OUTPUT);
@@ -824,7 +824,7 @@ void hash(uint8_t *_input, uint8_t *_output) {
 
   for (int i = 0; i < 8*120; i++) {
     int j = ((i%120)*8) + (i/120);
-    _output[i/8] |= getBitArr(_input, j) << (7-(i%8));
+    _output[i/8] |= get_bit_arr(_input, j) << (7-(i%8));
   }
 }
 
@@ -870,7 +870,7 @@ void calculate_parity_bits(uint8_t *_input, uint8_t *_output) {
       uint8_t parity = 0;
       int k = 0;
       for (int j = 0; j < 128; j++) { // j from 0 - 128
-        if (j + 1 != 1 && isPowerOfTwo(j + 1) == 0) {
+        if (j + 1 != 1 && is_power_of_two(j + 1) == 0) {
           if (bit_pos & (j + 1)) {
             parity ^= (_word[k / 8] >> (k % 8)) & 1;
           }
@@ -896,7 +896,7 @@ void encode_parity(FrameArray dataFrame, uint8_t *bytes) {
   for (int i = 0; i < 8; i++) {
     bytes[118+i] = parities[i];
   }
-  uint16_t CRC_Check = calculateCRC(bytes, 126);
+  uint16_t CRC_Check = calculate_CRC(bytes, 126);
   bytes[126] = (uint8_t)((CRC_Check >> 8) & 0xFF);
   bytes[127] = (uint8_t)(CRC_Check & 0xFF);
 }
@@ -990,7 +990,7 @@ void read_all (){
   FrameArray _output;
   _output.successFlag = NONE;
 
-  uint32_t lastFrameToRead = getNextAvailableFrameAddr();
+  uint32_t lastFrameToRead = get_next_available_frame_addr();
   
   int data_intact = 0;
   int data_fixed = 0;
@@ -1011,11 +1011,11 @@ void read_all (){
     } else {
       data_error += 1;
     }*/
-    printFrameArray(_output);
+    print_frame_array(_output);
   }
   
   printf("----------------------------------------------\r\n");
-  printCapacityInfo();
+  print_capacity_info();
   printf("data_empty: ");
   printf(data_empty + "\r\n");
   printf("data_intact: ");
