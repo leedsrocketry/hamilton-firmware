@@ -1,14 +1,13 @@
 /*
 	Leeds University Rocketry Organisation - LURA
-    Author Name: Alexandra Posta
-    Created on: 27 Feb 2023
-	  Last modified on: 11 June 2023
-    Description: entry point for the HFC firmware; suitable for STM32L4R5
+  Author Name: Alexandra Posta
+  Created on: 27 Feb 2023
+  Description: Entry point for the HFC firmware; suitable for STM32L4R5
 */
 
 #include "mcu.h"
 #include "NAND_flash_driver.h"
-#include "HAMILTON.h"
+#include "STM32_init.h"
 
 
 // Flags

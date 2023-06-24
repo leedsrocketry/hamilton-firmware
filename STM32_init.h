@@ -2,12 +2,13 @@
 	Leeds University Rocketry Organisation - LURA
   Author Name: Alexandra Posta
   Created on: 10 June 2023
-	Last modified on: 10 June 2023
-  Description: Main header file for the STM32L4R5 firmware
+  Description: Header file for the STM32L4R5 firmware
 */
 
-#define HAMILTON_H
+#define STM32_INIT_H
 #include "mcu.h"
+
+// TODO include header guards
 
 // System parameters
 #define SEA_LEVEL_PRESSURE_AT_SITE 1013.25 // change on the day

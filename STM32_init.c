@@ -1,12 +1,11 @@
 /*
 	Leeds University Rocketry Organisation - LURA
-    Author Name: Alexandra Posta
-    Created on: 11 June 2023
-	Last modified on: 11 June 2023
-    Description: Main file for the STM32L4R5 firmware
+  Author Name: Alexandra Posta
+  Created on: 11 June 2023
+  Description: STM32L4R5 class
 */
 
-#include "HAMILTON.h"
+#include "STM32_init.h"
 #include "mcu.h"
 
 /**

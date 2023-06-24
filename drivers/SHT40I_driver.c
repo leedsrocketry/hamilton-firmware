@@ -2,7 +2,6 @@
 	Leeds University Rocketry Organisation - LURA
     Author Name: Alexandra Posta
     Created on: 10 June 2023
-	Last modified on: 10 June 2023
     Description: Driver file for the Temp/humidity module SHT40I-AD1B-R2 (https://uk.farnell.com/sensirion/sht40-ad1b-r2/humidity-temperature-sensor-i2c/dp/3586476?gclid=CjwKCAjw4ZWkBhA4EiwAVJXwqQtCjSk4-cUQJt99RfvJhjQVMMUUEyUq-ltkNxoET4AltHRyoIrJfRoCohAQAvD_BwE&mckv=s_dc|pcrid|602911506946|kword|sht40%20ad1b%20r2|match|p|plid||slid||product||pgrid|140308037249|ptaid|kwd-1030226716710|&CMP=KNC-GUK-GEN-SKU-MDC-SEMIS)
 */
 

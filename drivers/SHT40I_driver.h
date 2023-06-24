@@ -2,10 +2,9 @@
 	Leeds University Rocketry Organisation - LURA
   Author Name: Alexandra Posta
   Created on: 10 June 2023
-	Last modified on: 10 June 2023
   Description: header file for the Temp/Humidity module SHT40I-AD1B-R2
 */
-
+#ifndef SHT40I_DRIVER_H
 #define SHT40I_DRIVER_H
 #include "stdint.h"
 
@@ -66,3 +65,5 @@ float getHumidity(Precision precision);
   @param level Power and duration command
  */
 void enableHeater(Header level);
+
+#endif /* SHT40I_DRIVER_H */
