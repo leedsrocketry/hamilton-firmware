@@ -7,4 +7,13 @@
 #ifndef L3GD20HTR_DRIVER_H
 #define L3GD20HTR_DRIVER_H
 
+
+/**
+  @brief Initialization of the L3GD20HTR Gyroscope module
+  @note 
+  @return Success
+*/
+void init_L3GD20HTR(void);
+
+
 #endif /* L3GD20HTR_DRIVER_H */

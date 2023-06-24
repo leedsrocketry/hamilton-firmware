@@ -6,3 +6,8 @@
 */
 
 #include "ADXL375_driver.h"
+
+
+void init_ADXL375() {
+
+};

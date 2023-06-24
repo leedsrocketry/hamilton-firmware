@@ -17,66 +17,47 @@
     @warning Do not use heater for extended periods of time. The heater is designed for a maximal duty cycle of less than 5% when it is periodically heated
 */
 typedef enum Header {
-    _200mWFor1s	  = 0x39,		// 200mW @ 3.3V for 1s
-    _200mWFor0p1s = 0x32,		// 200mW @ 3.3V for 0.1s
-    _110mWFor1s   = 0x2F,		// 110mW @ 3.3V for 1s
-    _110mWFor0p1s = 0x24,		// 110mW @ 3.3V for 0.1s
-    _20mWFor1s	  = 0x1E,		// 20mW  @ 3.3V for 1s
-    _20mWFor0p1s  = 0x15,		// 20mW  @ 3.3V for 0.1s
+    200mWFor1s	  = 0x39,		// 200mW @ 3.3V for 1s
+    200mWFor0p1s = 0x32,		// 200mW @ 3.3V for 0.1s
+    110mWFor1s   = 0x2F,		// 110mW @ 3.3V for 1s
+    110mWFor0p1s = 0x24,		// 110mW @ 3.3V for 0.1s
+    20mWFor1s	  = 0x1E,		// 20mW  @ 3.3V for 1s
+    20mWFor0p1s  = 0x15,		// 20mW  @ 3.3V for 0.1s
 } Header;
 
 typedef enum Precision {
-    High 	 	= 0xFD,		///< measure T & RH with High precision (High repeatability)
-    Medium  	= 0xF6,		///< measure T & RH with medium precision (medium repeatability)
-    Low 		= 0xE0,		///< measure T & RH with lowest precision (low repeatability)
+    high 	 	= 0xFD,		///< measure T & RH with High precision (High repeatability)
+    medium  	= 0xF6,		///< measure T & RH with medium precision (medium repeatability)
+    low 		= 0xE0,		///< measure T & RH with lowest precision (low repeatability)
 } Precision;
 
 
-/**
-    @brief Humidity sensor SHT40-AD1B-R2 initialization
-*/
-void init() {
+void init_SHT40I() {
     Command reset = SoftReset;
     gpio_write(PIN, reset);
-    delayMicroseconds(2);
-    return 1;
+    delay_microseconds(2);
 };
 
 
-/**
-    @brief Get the temperature without using the heater. The measurement takes about 10ms
-    @param precision Precision for the conversion
-    @return Temperature sensor temperature
-*/
-static float getTemperature(Precision precision) {
+static float get_temperature(Precision precision) {
     if (precision != NULL) {
-        return getSensorData(precision).temperature;
+        return get_sensor_data(precision).temperature;
     } else {
         return 0;
     }
 }
 
 
-/**
-    @brief Get the temperature without using the heater. The measurement takes about 10ms
-    @param precision Precision for the conversion
-    @return Temperature sensor humidity
-*/
-static float getHumidity(Precision precision){
+static float get_humidity(Precision precision){
     if (precision != NULL) {
-        return getSensorData(precision).humidity;
+        return get_sensor_data(precision).humidity;
     } else {
         return 0;
     }
 }
 
 
-/**
-    @brief Enable the heater module on the sensor
-    @warning The heater is designed for a maximal duty cycle of less than 5% when it is periodically heated
-    @param level Power and duration command
-*/
-static void enableHeater(Header level) {
+static void enable_heater(Header level) {
     gpio_write(PIN, enumValue(level));
 }
 
@@ -95,10 +76,10 @@ typedef struct SensorData {
     @param precision Precision for the conversion
     @return SensorData struct containing the humidity value in % and the sensor temperature
  */
-static SensorData getSensorData(Precision precision) {
+static SensorData get_sensor_data(Precision precision) {
     // Get sensor data
     gpio_write(PIN, enumValue(precision));
-    delayMicroseconds(10);	// Delay until the measurement is done, there is no other option
+    delay_microseconds(10);	// Delay until the measurement is done, there is no other option
     bool _rawData = gpio_read(PIN);
 
     // TODO Check data readout from _rawData to rawData
@@ -132,9 +113,9 @@ typedef struct SensorDataRaw {
  * @brief Commands for the SHT40-AD1B-R2 sensor
  */
 typedef enum Command {
-    ReadSerial = 0x89,		// Every single sensor has a unique serial number
-    SoftReset  = 0x94,		// Soft reset
+    readSerial = 0x89,		// Every single sensor has a unique serial number
+    softReset  = 0x94,		// Soft reset
 } Command;
 
 
-static inline uint8_t DeviceAddress = 0x88;		///< I2C device address
+static inline uint8_t deviceAddress = 0x88;		///< I2C device address

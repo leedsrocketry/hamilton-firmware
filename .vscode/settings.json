@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "nand_flash_driver.h": "c",
-        "mcu.h": "c"
+        "mcu.h": "c",
+        "sht40i_driver.h": "c",
+        "adxl375_driver.h": "c",
+        "maxm10s_driver.h": "c"
     }
 }

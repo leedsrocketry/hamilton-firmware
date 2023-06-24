@@ -17,7 +17,7 @@ FlightStages flightStage = LAUNCHPAD;
 /**
   @brief TODO
 */
-void updateSensors() {
+void update_sensors() {
 
 };
 
@@ -25,8 +25,49 @@ void updateSensors() {
 /**
   @brief TODO
 */
-void sendData() {
+void send_data() {
+  //setControlPins(WRITE_PROTECT);                  // Write Protection
+  //setControlPins(WRITE_PROTECT_OFF);              // Write Protection Off
+  
+  uint8_t dataArray[128];
+  _memset(dataArray, 0x0, 128);
 
+  for (uint8_t i = 0; i < 128; i ++) {
+    dataArray[i] = i;
+  }
+  //eraseBlock(0);
+  //eraseALL();
+  //writeFrame(0, dataArray);
+  //readFrame(10000, dataArray);
+  
+  FrameArray _input = unzip(dataArray);
+  // frameArray _output;
+  //int data_intact = 0;
+  //int data_fixed = 0;
+  //int data_error = 0;
+
+  //int startAddr = frameAddressPointer;
+  int numOfFramesToTest = 100;
+  
+  for (int i = 0; i < numOfFramesToTest; i++) {
+    for (uint8_t j = 0; j < 128; j ++) {
+      dataArray[j] = j;
+    } 
+
+    dataArray[0] = 0;
+    dataArray[1] = 0;
+    _input = unzip(dataArray);
+
+    logFrame(_input);
+    printf("======================== DONE ========================");
+  }  
+  
+  printf("==================== DONE WRITING ====================\r\n");
+  readALL();
+  printCapacityInfo();
+  
+  // Exit program
+  printf("===================== PROGRAM END ===================="); 
 };
 
 
@@ -53,13 +94,13 @@ int main(void) {
   initialiseFlash();
   //eraseALL();
   frameAddressPointer = 0;
-  // GNSS
-  // Temperature + Humidity
-  // Barometer
-  // Accelerometer
-  // Gyroscope
-  // Temperature
-  // Pad Radio
+  // init_MAXM10S(); GNSS
+  // init_SHT40I(); Temperature + Humidity
+  // init_MS5611(); Barometer
+  // init_ADXL375(); Accelerometer
+  // init_L3GD20HTR(); Gyroscope
+  // init_init_MAX31855(); Temperature
+  // init_SI4463(); Pad Radio
 
 
   printf("================ ENTER MAIN PROCEDURE ================\r\n");
@@ -104,48 +145,7 @@ int main(void) {
         break;
     }
 
-    //setControlPins(WRITE_PROTECT);                  // Write Protection
-    //setControlPins(WRITE_PROTECT_OFF);              // Write Protection Off
-    
-    uint8_t dataArray[128];
-    _memset(dataArray, 0x0, 128);
-
-    for(uint8_t i = 0; i < 128; i ++){
-      dataArray[i] = i;
-    }
-    //eraseBlock(0);
-    //eraseALL();
-    //writeFrame(0, dataArray);
-    //readFrame(10000, dataArray);
-    
-    frameArray _input = unzip(dataArray);
-    // frameArray _output;
-    //int data_intact = 0;
-    //int data_fixed = 0;
-    //int data_error = 0;
-  
-    //int startAddr = frameAddressPointer;
-    int numOfFramesToTest = 100;
-    
-    for(int i = 0; i < numOfFramesToTest; i++){
-      for(uint8_t j = 0; j < 128; j ++){
-        dataArray[j] = j;
-      } 
-
-      dataArray[0] = 0;
-      dataArray[1] = 0;
-      _input = unzip(dataArray);
-
-      logFrame(_input);
-      printf("======================== DONE ========================");
-    }  
-    
-    printf("==================== DONE WRITING ====================\r\n");
-    readALL();
-    printCapacityInfo();
-    
-    // Exit program
-    printf("===================== PROGRAM END ===================="); 
+    send_data();
   }
   return 0;
 }

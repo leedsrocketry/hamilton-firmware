@@ -7,4 +7,13 @@
 #ifndef ADXL375_DRIVER_H
 #define ADXL375_DRIVER_H
 
+
+/**
+  @brief Initialization of the ADXL375 Accelerometer module
+  @note 
+  @return Success
+*/
+void init_ADXL375(void)
+
+
 #endif /* ADXL375_DRIVER_H */

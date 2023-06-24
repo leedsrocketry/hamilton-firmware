@@ -136,9 +136,10 @@ bool DevUBLOXGNSS::newCfgValset(uint8_t layer)
 
 
 // SFE
-SfeSerial::SfeSerial(void) : _serialPort{nullptr} {}
+#pragma region SFE
+SfeSerial(void) : _serialPort{nullptr} {}
 
-bool SfeSerial::init(Stream &serialPort)
+bool sfe_init(Stream &serialPort)
 {
 	// if we don't have a port already
 	if (!_serialPort)
@@ -153,7 +154,7 @@ bool SfeSerial::init(Stream &serialPort)
 	return true;
 }
 
-uint16_t SfeSerial::available()
+uint16_t sfe_available()
 {
 	if (!_serialPort)
 		return 0;
@@ -161,7 +162,7 @@ uint16_t SfeSerial::available()
 	return (_serialPort->available());
 }
 
-uint8_t SfeSerial::writeBytes(uint8_t *dataToWrite, uint8_t length)
+uint8_t sfe_write_bytes(uint8_t *dataToWrite, uint8_t length)
 {
 	if (!_serialPort)
 		return 0;
@@ -172,7 +173,7 @@ uint8_t SfeSerial::writeBytes(uint8_t *dataToWrite, uint8_t length)
 	return _serialPort->write(dataToWrite, length);
 }
 
-uint8_t SfeSerial::readBytes(uint8_t *data, uint8_t length)
+uint8_t sfe_read_bytes(uint8_t *data, uint8_t length)
 {
 	if (!_serialPort)
 		return 0;
@@ -182,3 +183,4 @@ uint8_t SfeSerial::readBytes(uint8_t *data, uint8_t length)
 
 	return _serialPort->readBytes(data, length);
 }
+#pragma endregion SFE

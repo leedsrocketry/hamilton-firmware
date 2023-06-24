@@ -7,4 +7,13 @@
 #ifndef MAX31855_DRIVER_H
 #define MAX31855_DRIVER_H
 
+
+/**
+  @brief Initialization of the MAX31855 Temperature sensor 
+  @note 
+  @return Success
+*/
+void init_MAX31855(void);
+
+
 #endif /* MAX31855_DRIVER_H */

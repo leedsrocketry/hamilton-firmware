@@ -6,3 +6,8 @@
 */
 
 #include "MAX31855_driver.h"
+
+
+void init_MAX31855() {
+
+};

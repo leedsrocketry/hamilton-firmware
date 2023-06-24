@@ -14,12 +14,12 @@
   @warning Do not use header for extended periods of time. The heater is designed for a maximal duty cycle of less than 5% when it is periodically heated
 */
 typedef enum Header {
-	SensorHeader_200mWFor1s	 	= 0x39,		// 200mW @ 3.3V for 1s
-	SensorHeader_200mWFor0p1s = 0x32,		// 200mW @ 3.3V for 0.1s
-	SensorHeader_110mWFor1s	 	= 0x2F,		// 110mW @ 3.3V for 1s
-	SensorHeader_110mWFor0p1s	= 0x24,		// 110mW @ 3.3V for 0.1s
-	SensorHeader_20mWFor1s	 	= 0x1E,		// 20mW  @ 3.3V for 1s
-	SensorHeader_20mWFor0p1s	= 0x15,		// 20mW  @ 3.3V for 0.1s
+  sensorHeader_200mWFor1s	 	= 0x39,		// 200mW @ 3.3V for 1s
+  sensorHeader_200mWFor0p1s = 0x32,		// 200mW @ 3.3V for 0.1s
+  sensorHeader_110mWFor1s	 	= 0x2F,		// 110mW @ 3.3V for 1s
+  sensorHeader_110mWFor0p1s	= 0x24,		// 110mW @ 3.3V for 0.1s
+  sensorHeader_20mWFor1s	 	= 0x1E,		// 20mW  @ 3.3V for 1s
+  sensorHeader_20mWFor0p1s	= 0x15,		// 20mW  @ 3.3V for 0.1s
 } Header;
 
 
@@ -27,9 +27,9 @@ typedef enum Header {
   @brief Measurement precision settings for the SHT40-AD1B-R2 sensor
 */
 typedef enum Precision {
-	SensorPrecision_High   = 0xFD,		// measure T & RH with High precision (High repeatability)
-	SensorPrecision_Medium = 0xF6,		// measure T & RH with medium precision (medium repeatability)
-	SensorPrecision_Low    = 0xE0,		// measure T & RH with lowest precision (low repeatability)
+	sensorPrecision_High   = 0xFD,		// measure T & RH with High precision (High repeatability)
+	sensorPrecision_Medium = 0xF6,		// measure T & RH with medium precision (medium repeatability)
+	sensorPrecision_Low    = 0xE0,		// measure T & RH with lowest precision (low repeatability)
 } Precision;
 
 
@@ -38,7 +38,7 @@ typedef enum Precision {
   @note The sensor does not need a special initialization, this function just does a soft reset
   @return Success
 */
-void init(void);
+void init_SHT40I(void);
 
 
 /**
@@ -47,7 +47,7 @@ void init(void);
   @param precision Precision for the conversion
   @return Temperature sensor temperature
 */
-float getTemperature(Precision precision);
+float get_temperature(Precision precision);
 
 
 /**
@@ -56,7 +56,7 @@ float getTemperature(Precision precision);
   @param precision Precision for the conversion
   @return Temperature sensor temperature
 */
-float getHumidity(Precision precision);
+float get_humidity(Precision precision);
 
 
 /**
@@ -64,6 +64,6 @@ float getHumidity(Precision precision);
   @warning The heater is designed for a maximal duty cycle of less than 5% when it is periodically heated
   @param level Power and duration command
  */
-void enableHeater(Header level);
+void enable_heater(Header level);
 
 #endif /* SHT40I_DRIVER_H */

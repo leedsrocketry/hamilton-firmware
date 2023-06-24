@@ -26,7 +26,10 @@
 #define HIGH 1
 
 
-// Delays
+#pragma region System Clk
+/**
+  @brief The low level delay
+*/
 static inline void spin(volatile uint32_t count) {
   while (count--) asm("nop");
 }
@@ -36,7 +39,7 @@ static inline void spin(volatile uint32_t count) {
   @brief Delay in nanoseconds
   @param time Time in nanoseconds
 */
-static inline void delayNanoseconds(uint32_t time) {
+static inline void delay_nanoseconds(uint32_t time) {
   spin(time);
 }
 
@@ -45,8 +48,8 @@ static inline void delayNanoseconds(uint32_t time) {
   @brief Delay in microseconds
   @param time Time in microseconds
 */
-static inline void delayMicroseconds(uint32_t time) {
-  delayNanoseconds(time*1000);
+static inline void delay_microseconds(uint32_t time) {
+  delay_nanoseconds(time*1000);
 }
 
 
@@ -55,7 +58,7 @@ static inline void delayMicroseconds(uint32_t time) {
   @param time Time in miliseconds
 */
 static inline void delay(uint32_t time) {
-  delayMicroseconds(time*1000);
+  delay_microseconds(time*1000);
 }
 
 
@@ -70,17 +73,18 @@ static inline void systick_init(uint32_t ticks) {
   SysTick->CTRL = BIT(0) | BIT(1) | BIT(2);   // Enable systick
   RCC->APB2ENR |= BIT(0);                     // Enable SYSCFG
 }
+#pragma endregion System Clk
 
 
-// GPIO
+#pragma region GPIO
 #define GPIO(bank) ((GPIO_TypeDef *) (0x48000000 + 0x400 * (bank)))
 enum { GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG };
 
 
 /**
-  @brief 
-  @param pin
-  @param mode
+  @brief Set the GPIO mode to input, output, alternate function or analog
+  @param pin Selected pin
+  @param mode Selected mode: GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG
 */
 static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));  // GPIO bank
@@ -92,9 +96,9 @@ static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
 
 
 /**
-  @brief 
-  @param pin
-  @param af_num
+  @brief Set the GPIO to an alternate function
+  @param pin Selected pin
+  @param af_num Selected alternative mode
 */
 static inline void gpio_set_af(uint16_t pin, uint8_t af_num) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));  // GPIO bank
@@ -104,26 +108,43 @@ static inline void gpio_set_af(uint16_t pin, uint8_t af_num) {
 }
 
 
+/**
+  @brief Write to the GPIO
+  @param pin Selected pin
+  @param val Value to be written: True/False
+*/
 static inline void gpio_write(uint16_t pin, bool val) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
   gpio->BSRR |= (1U << PINNO(pin)) << (val ? 0 : 16);
 }
 
 
+/**
+  @brief Read from the GPIO
+  @param pin Selected pin
+  @return Value of the GPIO
+*/
 static inline bool gpio_read(uint16_t pin) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
   bool value;
   value = gpio->IDR & (1U << PINNO(pin));
   return value;
 }
+#pragma endregion GPIO
 
 
+#pragma region UART
 #define UART1 USART1
 #define UART2 USART2
 #define UART3 USART3
 #define LUART1 LPUART1
 
 
+/**
+  @brief Initialise the UART
+  @param uart Selected UART (1, 2, 3 or low power)
+  @param baud Baud rate
+*/
 static inline void uart_init(USART_TypeDef *uart, unsigned long baud) {
   uint8_t af = 8;           // Alternate function
   uint16_t rx = 0, tx = 0;  // pins
@@ -150,28 +171,61 @@ static inline void uart_init(USART_TypeDef *uart, unsigned long baud) {
 }
 
 
+/**
+  @brief Write via UART
+  @param uart Selected UART (1, 2, 3 or low power)
+  @param byte Byte to be written
+*/
 static inline void uart_write_byte(USART_TypeDef *uart, uint8_t byte) {
   uart->TDR = byte;
   while ((uart->ISR & BIT(7)) == 0) spin(1);    // Ref manual STM32L4 50.8.10 USART status register (USART_ISR) 
 }
 
 
+/**
+  @brief Write to UART buffer
+  @param uart Selected UART (1, 2, 3 or low power)
+  @param buf Buffer 
+  @param len Length of the buffer
+*/
 static inline void uart_write_buf(USART_TypeDef *uart, char *buf, size_t len) {
   while (len-- > 0) uart_write_byte(uart, *(uint8_t *) buf++);
 }
 
 
+/**
+  @brief Set UART to read
+  @param uart Selected UART (1, 2, 3 or low power)
+  @return Reference to the UART
+*/
 static inline int uart_read_ready(USART_TypeDef *uart) {
   return uart->ISR & BIT(5);  // If RXNE bit is set, data is ready Ref manual 50.8.10
 }
 
 
+/**
+  @brief Read UART
+  @param uart Selected UART (1, 2, 3 or low power)
+  @return Byte from UART
+*/
 static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
   return (uint8_t) (uart->RDR & 255);
 }
+#pragma endregion UART
 
 
-// t: expiration time, prd: period, now: current time. Return true if expired
+#pragma region SPI
+
+#pragma endregion SPI
+
+
+/**
+  @brief Set timer
+  @param t Expiration time
+  @param prd Period
+  @param now Current time
+  @return True when timer is done
+*/
 static inline bool timer_expired(uint32_t *t, uint32_t prd, uint32_t now) {
   if (now + prd < *t) *t = 0;                    // Time wrapped? Reset timer
   if (*t == 0) *t = now + prd;                   // Firt poll? Set expiration
@@ -181,7 +235,9 @@ static inline bool timer_expired(uint32_t *t, uint32_t prd, uint32_t now) {
 }
 
 
-// The power control register
+/**
+  @brief Initialise the secondary power control register (Vdd2) which is needed for the GPIO G
+*/
 static inline void pwr_vdd2_init() {
   RCC->APB1ENR1 |= BIT(28);         // page 291
   PWR->CR2 |= BIT(9);               // set the IOSV bit in the PWR_CR2 page 186, 219

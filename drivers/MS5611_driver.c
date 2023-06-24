@@ -8,11 +8,12 @@
 #include "MS5611_driver.h"
 
 
-/**
-  @brief TODO
-  @param State
-  @return
-*/
+static int init_MS5611()
+{
+	return 0;
+}
+
+
 static int reset(State *st)
 {
 	uint8_t cmd = MS5611_RESET;
@@ -20,13 +21,6 @@ static int reset(State *st)
 }
 
 
-/**
-  @brief TODO
-  @param State
-  @param index
-  @param word
-  @return
-*/
 static int read_prom_word(State *st, int index, uint16_t *word)
 {
 	int ret;
@@ -41,12 +35,6 @@ static int read_prom_word(State *st, int index, uint16_t *word)
 }
 
 
-/**
-  @brief TODO
-  @param State
-  @param val
-  @return
-*/
 static int ms5611_spi_read_adc(State *st, int32_t *val)
 {
 	int ret;
@@ -62,17 +50,10 @@ static int ms5611_spi_read_adc(State *st, int32_t *val)
 }
 
 
-/**
-  @brief TODO
-  @param State
-  @param temp
-  @param pressure
-  @return
-*/
 static int read_adc_temp_and_pressure(State *st, int32_t *temp, int32_t *pressure)
 {
 	int ret;
-	OversampleRate *osr = &(st->temp_osr);
+	OversampleRate *osr = &(st->tempOsr);
 
 	/*
 	 * Warning: &osr->cmd MUST be aligned on a word boundary since used as
@@ -82,27 +63,22 @@ static int read_adc_temp_and_pressure(State *st, int32_t *temp, int32_t *pressur
 	if (ret < 0)
 		return ret;
 
-	usleep_range(osr->conv_usec, osr->conv_usec + (osr->conv_usec / 10UL));
+	usleep_range(osr->conv_usec, osr->convUsec + (osr->convUsec / 10UL));
 	ret = ms5611_spi_read_adc(st, temp);
 	if (ret < 0)
 		return ret;
 
-	osr = &(st->pressure_osr);
+	osr = &(st->pressureOsr);
 	ret = spi_write_then_read(st->client, &osr->cmd, 1, NULL, 0);
 	if (ret < 0)
 		return ret;
 
-	usleep_range(osr->conv_usec, osr->conv_usec + (osr->conv_usec / 10UL));
+	usleep_range(osr->convUsec, osr->convUsec + (osr->convUsec / 10UL));
 	return ms5611_spi_read_adc(st, pressure);
 }
 
 
-/**
-  @brief TODO
-  @param spi
-  @return
-*/
-static int probe(struct spi_device *spi)
+static int probe(struct spiDevice *spi)
 {
 	int ret;
 	State *st;

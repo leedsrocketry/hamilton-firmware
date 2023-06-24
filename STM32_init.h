@@ -4,11 +4,9 @@
   Created on: 10 June 2023
   Description: Header file for the STM32L4R5 firmware
 */
-
+#ifndef STM32_DRIVER_H
 #define STM32_INIT_H
 #include "mcu.h"
-
-// TODO include header guards
 
 // System parameters
 #define SEA_LEVEL_PRESSURE_AT_SITE 1013.25 // change on the day
@@ -20,17 +18,17 @@ typedef enum FlightStages {LAUNCHPAD, ASCEND, APOGEE, DESCENT, LANDING} FlightSt
 
 typedef struct Date 
 {
-    unsigned int year;
-    unsigned int month;
-    unsigned int day;
+  unsigned int year;
+  unsigned int month;
+  unsigned int day;
 } Date;
 
 
 typedef struct Time
 {
-    unsigned int hour;
-    unsigned int minute;
-    unsigned int second;
+  unsigned int hour;
+  unsigned int minute;
+  unsigned int second;
 } Time;
 
 
@@ -47,19 +45,19 @@ const uint16_t _blueLED = PIN('B', 7);
 /**
   @brief TODO
 */
-int initHamilton(void);
+int init_STM32(void);
 
 
 /**
   @brief TODO
 */
-void initInternals(void);
+void init_internals(void);
 
 
 /**
   @brief TODO
 */
-void initPeripherals(void);
+void init_peripherals(void);
 
 
 /**
@@ -68,34 +66,37 @@ void initPeripherals(void);
   @param offDurationMs
   @param noOfBeeps
 */
-void beepBuzzer(int onDurationMs, int offDurationMs, int noOfBeeps);
+void beep_buzzer(int onDurationMs, int offDurationMs, int noOfBeeps);
 
 
 /**
   @brief TODO
 */
-void indicateOnBuzzer();
+void indicate_on_buzzer();
 
 
 /**
   @brief TODO
 */
-void indicateOnRedLed();
+void indicate_on_red_led();
 
 
 /**
   @brief TODO
 */
-void ledsOn();
+void leds_on();
 
 
 /**
   @brief TODO
 */
-void ledsOff();
+void leds_off();
 
 
 /**
   @brief TODO
 */
-float getBatteryCapacity(uint8_t batteryNo);
+float get_battery_capacity(uint8_t batteryNo);
+
+
+#endif /* STM32_DRIVER_H */

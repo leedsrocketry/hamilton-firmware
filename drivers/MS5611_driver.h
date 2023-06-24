@@ -21,7 +21,7 @@
   @warning: cmd MUST be kept aligned on a word boundary (see m5611_spi_read_adc_temp_and_pressure in ms5611_spi.c).
 */
 typedef struct OversampleRate {
-	unsigned long conv_usec;
+	unsigned long convUsec;
 	uint8_t cmd;
 	unsigned short rate;
 } OversampleRate;
@@ -31,22 +31,28 @@ typedef struct OversampleRate {
   @brief TODO
 */
 typedef struct State {
-  void *client;
+  	void *client;
 	struct mutex lock;
 
-	const struct OversampleRate pressure_osr;
-	const struct OversampleRate temp_osr;
+	const struct OversampleRate pressureOsr;
+	const struct OversampleRate tempOsr;
 
 	uint16_t prom[MS5611_PROM_WORDS_NB];
 
 	int (*reset)(State *st);
-	int (*read_prom_word)(State *st, int index, u16 *word);
+	int (*read_prom_word)(State *st, int index, uint16_t *word);
 	int (*read_adc_temp_and_pressure)(State *st,
-					  s32 *temp, s32 * pressure);
+					  int32_t *temp, int32_t * pressure);
 
-	int (*compensate_temp_and_pressure)(State *st, s32 *temp,
-					  s32 *pressure);
+	int (*compensate_temp_and_pressure)(State *st, int32_t *temp,
+					  int32_t *pressure);
 } State;
+
+
+/**
+  @brief TODO
+*/
+int init_MS5611();
 
 
 /**

@@ -6,3 +6,8 @@
 */
 
 #include "SI4463_driver.h"
+
+
+void init_SI4463() {
+
+};

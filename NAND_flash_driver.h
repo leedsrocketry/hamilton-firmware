@@ -8,7 +8,6 @@
 #include "mcu.h"
 
 #define NONE 0
-
 #define SUCCESS 1
 #define STORAGE_FULL_WARNING 2
 #define STORAGE_FULL_ERROR 3
@@ -21,59 +20,6 @@
 #define DELAY 1
 #define DELAY_PINMODE 50
 
-
-typedef struct dateTime {
-  uint8_t Year;          // 0 - 128
-  uint8_t Month;         // 1 - 12
-  uint8_t Day;           // 1 - 32
-  uint8_t Hour;          // 0 - 23
-  uint8_t Minute;        // 0 - 59
-  uint8_t Second;        // 0 - 59
-  uint16_t Millisecond;  // 0 - 999
-  uint16_t Microsecond;  // 0 - 999
-} dateTime;
-
-
-typedef struct vector3 {
-  uint16_t x;
-  uint16_t y;
-  uint16_t z;
-} vector3;
-
-typedef struct GNSS_Data{
-  uint16_t Latitude;
-  uint16_t Longitude;
-  uint32_t Heading1;
-  uint32_t Velocity;
-} GNSS_Data;
-
-typedef struct frameArray {
-  dateTime Date;
-  uint16_t ChangeFlag;  //IS THIS NEEDED? CAN THIS BE DONE BETTER?
-  vector3 AccelHighG;
-  vector3 AccelLowG;
-  vector3 Gyroscope;
-  uint32_t Barometer;
-  uint16_t Thermocouple[4];
-  uint16_t Humidity;
-  uint32_t Temp;
-  uint16_t MagneticFieldStrength;
-  GNSS_Data GNSS;
-  uint16_t ADC[2];
-
-  uint8_t HammingCode[8];
-  uint16_t CRC_Check;
-
-  int successFlag; // Not used in zip
-} frameArray;
-
-
-typedef struct address {
-    uint16_t block;  // 12 bits
-    uint8_t page;    // 6 bits
-    uint16_t column; // 13 bits (12 used)
-} address;
-
 #define STANDBY 0b10001100 // CE# CLE ALE WE# RE# WP# X X
 #define COMMAND_INPUT  0b01001100 // CE# CLE ALE WE# RE# WP# X X
 #define ADDRESS_INPUT  0b00101100 // CE# CLE ALE WE# RE# WP# X X
@@ -84,6 +30,60 @@ typedef struct address {
 
 #define WE_HIGH        0b00010000  // CE# CLE ALE WE# RE# WP# X X
 #define RE_HIGH       0b00001000
+
+
+typedef struct DateTime {
+  uint8_t year;          // 0 - 128
+  uint8_t month;         // 1 - 12
+  uint8_t day;           // 1 - 32
+  uint8_t hour;          // 0 - 23
+  uint8_t minute;        // 0 - 59
+  uint8_t second;        // 0 - 59
+  uint16_t millisecond;  // 0 - 999
+  uint16_t microsecond;  // 0 - 999
+} DateTime;
+
+
+typedef struct Vector3 {
+  uint16_t x;
+  uint16_t y;
+  uint16_t z;
+} Vector3;
+
+
+typedef struct GNSS_Data{
+  uint16_t latitude;
+  uint16_t longitude;
+  uint32_t heading1;
+  uint32_t velocity;
+} GNSS_Data;
+
+
+typedef struct FrameArray {
+  DateTime date;
+  uint16_t changeFlag;  //IS THIS NEEDED? CAN THIS BE DONE BETTER?
+  Vector3 accelHighG;
+  Vector3 accelLowG;
+  Vector3 gyroscope;
+  uint32_t barometer;
+  uint16_t thermocouple[4];
+  uint16_t humidity;
+  uint32_t temp;
+  uint16_t magneticFieldStrength;
+  GNSS_Data GNSS;
+  uint16_t ADC[2];
+  uint8_t hammingCode[8];
+  uint16_t CRC_Check;
+  int successFlag; // Not used in zip
+} FrameArray;
+
+
+typedef struct Address {
+    uint16_t block;  // 12 bits
+    uint8_t page;    // 6 bits
+    uint16_t column; // 13 bits (12 used)
+} Address;
+
 
 uint16_t data0 = PIN('D', 0); //2;
 uint16_t data1 = PIN('D', 1); //3;
@@ -102,204 +102,226 @@ uint16_t CE  = PIN('E', 9); // 17;
 uint16_t RE  = PIN('E', 11); // 18;
 uint16_t RB  = PIN('E', 13); // 19;
 
+
 uint32_t frameAddressPointer = 0;
+
 
 uint8_t globalPinMode = GPIO_MODE_OUTPUT;
 
-bool getBitArr(uint8_t *arr, int pos) {
+
+/**
+  @brief TODO
+  @param arr
+  @param pos
+  @return
+*/
+bool get_bit_arr(uint8_t *arr, int pos) {
   return (bool)(arr[pos/8] & (1 << (7-(pos%8))));
 }
 
-bool getBit(uint8_t byte, int pos) {
+
+/**
+  @brief TODO
+  @param byte
+  @param pos
+  @return
+*/
+bool get_bit(uint8_t byte, int pos) {
   return (bool)(byte & (1 << (7-(pos%8))));
 }
 
-void zip(frameArray unzippedData, uint8_t *zippedData) {
+
+/**
+  @brief TODO
+  @param unzippedData
+  @param zippedData
+  @return
+*/
+void zip(FrameArray unzippedData, uint8_t *zippedData) {
   int i = -1;
 
-  zippedData[i++] = unzippedData.Date.Year;
-  zippedData[i++] = unzippedData.Date.Month;
-  zippedData[i++] = unzippedData.Date.Day;
-  zippedData[i++] = unzippedData.Date.Minute;
-  zippedData[i++] = unzippedData.Date.Second;
-  zippedData[i++] = (uint8_t)((unzippedData.Date.Millisecond >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Date.Millisecond & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Date.Microsecond >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Date.Microsecond & 0xFF);
+  zippedData[i++] = unzippedData.date.year;
+  zippedData[i++] = unzippedData.date.month;
+  zippedData[i++] = unzippedData.date.day;
+  zippedData[i++] = unzippedData.date.minute;
+  zippedData[i++] = unzippedData.date.second;
+  zippedData[i++] = (uint8_t)((unzippedData.date.millisecond >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.date.millisecond & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.date.microsecond >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.date.microsecond & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.changeFlag >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.changeFlag & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.ChangeFlag >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.ChangeFlag & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.accelHighG.x  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.accelHighG.x & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.accelHighG.y  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.accelHighG.y & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.accelHighG.z  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.accelHighG.z & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.AccelHighG.x  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.AccelHighG.x & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.AccelHighG.y  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.AccelHighG.y & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.AccelHighG.z  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.AccelHighG.z & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.accelLowG.x  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.accelLowG.x & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.accelLowG.y  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.accelLowG.y & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.accelLowG.z  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.accelLowG.z & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.AccelLowG.x  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.AccelLowG.x & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.AccelLowG.y  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.AccelLowG.y & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.AccelLowG.z  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.AccelLowG.z & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.gyroscope.x  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.gyroscope.x & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.gyroscope.y  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.gyroscope.y & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.gyroscope.z  >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.gyroscope.z & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.Gyroscope.x  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Gyroscope.x & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Gyroscope.y  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Gyroscope.y & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Gyroscope.z  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Gyroscope.z & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.barometer >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.barometer >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.barometer >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.barometer & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.Barometer >> 24) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Barometer >> 16) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Barometer >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Barometer & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.thermocouple[0] >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.thermocouple[0] & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.thermocouple[1] >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.thermocouple[1] & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.thermocouple[2] >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.thermocouple[2] & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.thermocouple[3] >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.thermocouple[3] & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.Thermocouple[0] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Thermocouple[0] & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Thermocouple[1] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Thermocouple[1] & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Thermocouple[2] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Thermocouple[2] & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Thermocouple[3] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Thermocouple[3] & 0xFF);
-
-  zippedData[i++] = (uint8_t)((unzippedData.Humidity >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Humidity & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.humidity >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.humidity & 0xFF);
   
-  zippedData[i++] = (uint8_t)((unzippedData.Temp >> 24) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Temp >> 16) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.Temp >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.Temp & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.temp >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.temp >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.temp >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.temp & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.MagneticFieldStrength >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.MagneticFieldStrength & 0xFF); 
+  zippedData[i++] = (uint8_t)((unzippedData.magneticFieldStrength >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.magneticFieldStrength & 0xFF); 
 
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.Latitude >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.Latitude & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.Longitude >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.Longitude & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.latitude >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.latitude & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.longitude >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.longitude & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.Heading1 >> 24) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.Heading1 >> 16) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.Heading1 >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.Heading1 & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.heading1 >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.heading1 >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.heading1 >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.heading1 & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.Velocity >> 24) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.Velocity >> 16) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.Velocity >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.Velocity & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.velocity >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.velocity >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.velocity >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.velocity & 0xFF);
 
   zippedData[i++] = (uint8_t)((unzippedData.ADC[0] >> 8) & 0xFF);
   zippedData[i++] = (uint8_t)(unzippedData.ADC[0] & 0xFF);
   zippedData[i++] = (uint8_t)((unzippedData.ADC[1] >> 8) & 0xFF);
   zippedData[i++] = (uint8_t)(unzippedData.ADC[1] & 0xFF);
 
-  zippedData[118] = unzippedData.HammingCode[0];
-  zippedData[119] = unzippedData.HammingCode[1];
-  zippedData[120] = unzippedData.HammingCode[2];
-  zippedData[121] = unzippedData.HammingCode[3];
-  zippedData[122] = unzippedData.HammingCode[4];
-  zippedData[123] = unzippedData.HammingCode[5];
-  zippedData[124] = unzippedData.HammingCode[6];
-  zippedData[125] = unzippedData.HammingCode[7];
+  zippedData[118] = unzippedData.hammingCode[0];
+  zippedData[119] = unzippedData.hammingCode[1];
+  zippedData[120] = unzippedData.hammingCode[2];
+  zippedData[121] = unzippedData.hammingCode[3];
+  zippedData[122] = unzippedData.hammingCode[4];
+  zippedData[123] = unzippedData.hammingCode[5];
+  zippedData[124] = unzippedData.hammingCode[6];
+  zippedData[125] = unzippedData.hammingCode[7];
 
   zippedData[126] = (uint8_t)((unzippedData.CRC_Check >> 8) & 0xFF);
   zippedData[127] = (uint8_t)(unzippedData.CRC_Check & 0xFF);
 }
 
-frameArray unzip(uint8_t *zippedData) {
-  frameArray unzippedData;
+FrameArray unzip(uint8_t *zippedData) {
+  FrameArray unzippedData;
   int i = -1;
 
-  unzippedData.Date.Year = zippedData[i++];
-  unzippedData.Date.Month = zippedData[i++];
-  unzippedData.Date.Day = zippedData[i++];
-  unzippedData.Date.Minute = zippedData[i++];
-  unzippedData.Date.Second = zippedData[i++];
-  unzippedData.Date.Millisecond = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Date.Millisecond |= zippedData[i++];
-  unzippedData.Date.Microsecond = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Date.Microsecond |= zippedData[i++];
+  unzippedData.date.year = zippedData[i++];
+  unzippedData.date.month = zippedData[i++];
+  unzippedData.date.day = zippedData[i++];
+  unzippedData.date.minute = zippedData[i++];
+  unzippedData.date.second = zippedData[i++];
+  unzippedData.date.millisecond = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.date.millisecond |= zippedData[i++];
+  unzippedData.date.microsecond = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.date.microsecond |= zippedData[i++];
 
-  unzippedData.ChangeFlag = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.ChangeFlag |= zippedData[i++];
+  unzippedData.changeFlag = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.changeFlag |= zippedData[i++];
 
-  unzippedData.AccelHighG.x = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.AccelHighG.x |= zippedData[i++];
-  unzippedData.AccelHighG.y = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.AccelHighG.y |= zippedData[i++];
-  unzippedData.AccelHighG.z = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.AccelHighG.z |= zippedData[i++];
+  unzippedData.accelHighG.x = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accelHighG.x |= zippedData[i++];
+  unzippedData.accelHighG.y = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accelHighG.y |= zippedData[i++];
+  unzippedData.accelHighG.z = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accelHighG.z |= zippedData[i++];
 
-  unzippedData.AccelLowG.x = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.AccelLowG.x |= zippedData[i++];
-  unzippedData.AccelLowG.y = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.AccelLowG.y |= zippedData[i++];
-  unzippedData.AccelLowG.z = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.AccelLowG.z |= zippedData[i++];
+  unzippedData.accelLowG.x = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accelLowG.x |= zippedData[i++];
+  unzippedData.accelLowG.y = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accelLowG.y |= zippedData[i++];
+  unzippedData.accelLowG.z = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accelLowG.z |= zippedData[i++];
 
-  unzippedData.Gyroscope.x = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Gyroscope.x |= zippedData[i++];
-  unzippedData.Gyroscope.y = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Gyroscope.y |= zippedData[i++];
-  unzippedData.Gyroscope.z = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Gyroscope.z |= zippedData[i++];
+  unzippedData.gyroscope.x = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.gyroscope.x |= zippedData[i++];
+  unzippedData.gyroscope.y = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.gyroscope.y |= zippedData[i++];
+  unzippedData.gyroscope.z = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.gyroscope.z |= zippedData[i++];
 
-  unzippedData.Barometer = (zippedData[i++] << 24) & (0xFF << 24);
-  unzippedData.Barometer |= (zippedData[i++] << 16) & (0xFF << 16);
-  unzippedData.Barometer |= (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Barometer |= zippedData[i++];
+  unzippedData.barometer = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.barometer |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.barometer |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.barometer |= zippedData[i++];
 
-  unzippedData.Thermocouple[0] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Thermocouple[0] |= zippedData[i++];
-  unzippedData.Thermocouple[1] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Thermocouple[1] |= zippedData[i++];
-  unzippedData.Thermocouple[2] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Thermocouple[2] |= zippedData[i++];
-  unzippedData.Thermocouple[3] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Thermocouple[3] |= zippedData[i++];
+  unzippedData.thermocouple[0] = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.thermocouple[0] |= zippedData[i++];
+  unzippedData.thermocouple[1] = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.thermocouple[1] |= zippedData[i++];
+  unzippedData.thermocouple[2] = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.thermocouple[2] |= zippedData[i++];
+  unzippedData.thermocouple[3] = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.thermocouple[3] |= zippedData[i++];
 
-  unzippedData.Humidity = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Humidity |= zippedData[i++];
+  unzippedData.humidity = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.humidity |= zippedData[i++];
   
-  unzippedData.Temp = (zippedData[i++] << 24) & (0xFF << 24);
-  unzippedData.Temp |= (zippedData[i++] << 16) & (0xFF << 16);
-  unzippedData.Temp |= (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.Temp |= zippedData[i++];
+  unzippedData.temp = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.temp |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.temp |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.temp |= zippedData[i++];
 
-  unzippedData.MagneticFieldStrength = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.MagneticFieldStrength |= zippedData[i++];
+  unzippedData.magneticFieldStrength = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.magneticFieldStrength |= zippedData[i++];
 
-  unzippedData.GNSS.Latitude = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.GNSS.Latitude |= zippedData[i++];
-  unzippedData.GNSS.Longitude = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.GNSS.Longitude |= zippedData[i++];
+  unzippedData.GNSS.latitude = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.GNSS.latitude |= zippedData[i++];
+  unzippedData.GNSS.longitude = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.GNSS.longitude |= zippedData[i++];
 
-  unzippedData.GNSS.Heading1 = (zippedData[i++] << 24) & (0xFF << 24);
-  unzippedData.GNSS.Heading1 |= (zippedData[i++] << 16) & (0xFF << 16);
-  unzippedData.GNSS.Heading1 |= (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.GNSS.Heading1 |= zippedData[i++];
+  unzippedData.GNSS.heading1 = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.GNSS.heading1 |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.GNSS.heading1 |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.GNSS.heading1 |= zippedData[i++];
 
-  unzippedData.GNSS.Velocity = (zippedData[i++] << 24) & (0xFF << 24);
-  unzippedData.GNSS.Velocity |= (zippedData[i++] << 16) & (0xFF << 16);
-  unzippedData.GNSS.Velocity |= (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.GNSS.Velocity |= zippedData[i++];
+  unzippedData.GNSS.velocity = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.GNSS.velocity |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.GNSS.velocity |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.GNSS.velocity |= zippedData[i++];
 
   unzippedData.ADC[0] = (zippedData[i++] << 8) & (0xFF << 8);
   unzippedData.ADC[0] |= zippedData[i++];
   unzippedData.ADC[1] = (zippedData[i++] << 8) & (0xFF << 8);
   unzippedData.ADC[1] |= zippedData[i++];
 
-  unzippedData.HammingCode[0] = zippedData[118];
-  unzippedData.HammingCode[1] = zippedData[119];
-  unzippedData.HammingCode[2] = zippedData[120];
-  unzippedData.HammingCode[3] = zippedData[121];
-  unzippedData.HammingCode[4] = zippedData[122];
-  unzippedData.HammingCode[5] = zippedData[123];
-  unzippedData.HammingCode[6] = zippedData[124];
-  unzippedData.HammingCode[7] = zippedData[125];
+  unzippedData.hammingCode[0] = zippedData[118];
+  unzippedData.hammingCode[1] = zippedData[119];
+  unzippedData.hammingCode[2] = zippedData[120];
+  unzippedData.hammingCode[3] = zippedData[121];
+  unzippedData.hammingCode[4] = zippedData[122];
+  unzippedData.hammingCode[5] = zippedData[123];
+  unzippedData.hammingCode[6] = zippedData[124];
+  unzippedData.hammingCode[7] = zippedData[125];
 
   unzippedData.CRC_Check = (zippedData[126] << 8) & (0xFF << 8);
   unzippedData.CRC_Check |= zippedData[127]; 
@@ -307,7 +329,12 @@ frameArray unzip(uint8_t *zippedData) {
   return unzippedData;
 }
 
-void printByte(uint8_t myByte) {
+
+/**
+  @brief Prints a byte in binary format
+  @param myByte: byte to be printed
+*/
+void print_byte(uint8_t myByte) {
   printf("0b");
   for (int i = 7; i >= 0; i--) {
     printf("%i", (myByte >> i) & 0b1);
@@ -316,7 +343,11 @@ void printByte(uint8_t myByte) {
 }
 
 
-void printFrame(uint8_t dataArray[]) {
+/**
+  @brief Prints a byte in hex format
+  @param dataArray: frame to be printed
+*/
+void print_frame(uint8_t dataArray[]) {
   printf("u");
   for (int i = 0; i < 128; i++) {
     /*if(dataArray[i] < 16) {
@@ -328,9 +359,13 @@ void printFrame(uint8_t dataArray[]) {
 }
 
 
-void printFrameHex(uint8_t dataArray[]) {
+/**
+  @brief Prints a byte in hex format
+  @param dataArray: frame to be printed
+*/	
+void print_frameHex(uint8_t dataArray[]) {
   for (int i = 0; i < 128; i++) {
-    if(dataArray[i] < 16) {
+    if (dataArray[i] < 16) {
       printf("0");
     }
     printf("%i", dataArray[i]);
@@ -339,34 +374,51 @@ void printFrameHex(uint8_t dataArray[]) {
   printf("\r\n");
 }
 
+
+/**
+  @brief TODO
+  @param arr: array to be filled
+  @param val: value to fill array with
+  @param num: number of elements to fill
+*/
 void _memset(uint8_t *arr, uint8_t val, int num){
-  for(int i = 0; i < num; i++){
+  for (int i = 0; i < num; i++) {
     arr[i] = val;
   }
 }
 
 
-void printFrameArray(frameArray frameFormat) {
+/**
+  @brief TODO
+  @param frameFormat
+*/
+void print_frame_array(FrameArray frameFormat) {
   uint8_t dataArray[128];
   _memset(dataArray, 0, 128);
   zip(frameFormat, dataArray);
-  printFrame(dataArray);
+  print_frame(dataArray);
 }
 
 
-void waitForReadyFlag() {
+/**
+  @brief TODO 
+*/
+void wait_for_ready_flag() {
   int count = 1000*100; // Try for 1 second before giving error
-  while(gpio_read(RB) == LOW && count > 0){
-    delayNanoseconds(10);
+  while (gpio_read(RB) == LOW && count > 0) {
+    delay_nanoseconds(10);
     count--;
   }
-  if(count < 1){
+  if (count < 1) {
     printf("waitForReadyFlag: TIMEOUT\r\n");
   } 
 }
 
 
-void setPinModes() {
+/**
+  @brief TODO 
+*/
+void set_pin_modes() {
   gpio_set_mode(data0, globalPinMode);
   gpio_set_mode(data1, globalPinMode);
   gpio_set_mode(data2, globalPinMode);
@@ -375,57 +427,74 @@ void setPinModes() {
   gpio_set_mode(data5, globalPinMode);
   gpio_set_mode(data6, globalPinMode);
   gpio_set_mode(data7, globalPinMode);
-  delayMicroseconds(DELAY_PINMODE);
+  delay_microseconds(DELAY_PINMODE);
 }
 
 
-void setControlPins(uint8_t controlRegister) {  // CE# CLE ALE WE# RE# WP#
-  gpio_write(CE, getBit(controlRegister, 0));
-  gpio_write(CLE, getBit(controlRegister, 1));
-  gpio_write(ALE, getBit(controlRegister, 2));
-  gpio_write(WE, getBit(controlRegister, 3));
-  gpio_write(RE, getBit(controlRegister, 4));
-  gpio_write(WP, getBit(controlRegister, 5));
+/**
+  @brief TODO 
+*/
+void set_control_pins(uint8_t controlRegister) {  // CE# CLE ALE WE# RE# WP#
+  gpio_write(CE, get_bit(controlRegister, 0));
+  gpio_write(CLE, get_bit(controlRegister, 1));
+  gpio_write(ALE, get_bit(controlRegister, 2));
+  gpio_write(WE, get_bit(controlRegister, 3));
+  gpio_write(RE, get_bit(controlRegister, 4));
+  gpio_write(WP, get_bit(controlRegister, 5));
 }
 
 
-void setDataPins(uint8_t Byte) {
+/**
+  @brief TODO 
+*/
+void set_data_pins(uint8_t Byte) {
   if (globalPinMode == GPIO_MODE_INPUT) {
     globalPinMode = GPIO_MODE_OUTPUT;
-    setPinModes();
+    set_pin_modes();
   }
 
-  gpio_write(data0, getBit(Byte, 7));
-  gpio_write(data1, getBit(Byte, 6));
-  gpio_write(data2, getBit(Byte, 5));
-  gpio_write(data3, getBit(Byte, 4));
-  gpio_write(data4, getBit(Byte, 3));
-  gpio_write(data5, getBit(Byte, 2));
-  gpio_write(data6, getBit(Byte, 1));
-  gpio_write(data7, getBit(Byte, 0));
+  gpio_write(data0, get_bit(Byte, 7));
+  gpio_write(data1, get_bit(Byte, 6));
+  gpio_write(data2, get_bit(Byte, 5));
+  gpio_write(data3, get_bit(Byte, 4));
+  gpio_write(data4, get_bit(Byte, 3));
+  gpio_write(data5, get_bit(Byte, 2));
+  gpio_write(data6, get_bit(Byte, 1));
+  gpio_write(data7, get_bit(Byte, 0));
 }
 
 
-void sendByteToFlash(uint8_t cmd, uint8_t mode) {
+/**
+  @brief TODO
+  @param cmd
+  @param mode 
+*/
+void send_byte_to_flash(uint8_t cmd, uint8_t mode) {
   //delayNanoseconds(DELAY);
-  setControlPins(mode);
-  setDataPins(cmd);
+  set_control_pins(mode);
+  set_data_pins(cmd);
   //delayNanoseconds(DELAY);
-  setControlPins(mode | WE_HIGH);
+  set_control_pins(mode | WE_HIGH);
   //delayNanoseconds(DELAY);
 }
 
 
-uint8_t receiveByteFromFlash() {
-  delayNanoseconds(DELAY);
-  setControlPins(DATA_OUTPUT);
-  delayNanoseconds(DELAY);
-  setControlPins(DATA_OUTPUT & (~RE_HIGH));  // setting RE LOW
-  delayNanoseconds(DELAY);
-  if(globalPinMode != GPIO_MODE_INPUT){
+/**
+  @brief TODO
+  @return 
+*/
+uint8_t receive_byte_from_flash() {
+  delay_nanoseconds(DELAY);
+  set_control_pins(DATA_OUTPUT);
+  delay_nanoseconds(DELAY);
+  set_control_pins(DATA_OUTPUT & (~RE_HIGH));  // setting RE LOW
+  delay_nanoseconds(DELAY);
+
+  if (globalPinMode != GPIO_MODE_INPUT) {
     globalPinMode = GPIO_MODE_INPUT;
     setPinModes();
   }
+
   uint8_t data = (gpio_read(data7) << 7)
                | (gpio_read(data6) << 6)
                | (gpio_read(data5) << 5)
@@ -437,105 +506,143 @@ uint8_t receiveByteFromFlash() {
   return data;
 }
 
-// sends the 5-byte-address to the nand using the frame and byte address as input
-// 8,388,608 frames each with 128 bytes. frameAddr has 23 valid bits. byteAddr has 7 valid bits
-void sendAddrToFlash(uint32_t frameAddr, uint8_t byteAddr) {
-    address addr = {(frameAddr >> 11) & 0b0000111111111111,                      // block
-                          (frameAddr >> 5) & 0b00111111,                               // page
-                          ((frameAddr & 0b00011111) << 7) | (byteAddr & 0b01111111)};  // column 
 
-    sendByteToFlash((uint8_t)(addr.column & 0b0000000011111111), ADDRESS_INPUT);
-    sendByteToFlash((uint8_t)((addr.column & 0b0001111100000000) >> 8), ADDRESS_INPUT);
-    sendByteToFlash((uint8_t)(((addr.block & 0b0000000000000011) << 6)) | (addr.page & 0b00111111), ADDRESS_INPUT);
-    sendByteToFlash((uint8_t)((addr.block & 0b0000001111111100) >> 2), ADDRESS_INPUT);
-    sendByteToFlash((uint8_t)((addr.block & 0b0000110000000000) >> 10), ADDRESS_INPUT);
+/**
+  @brief sends the 5-byte-address to the nand using the frame and byte address as input
+  @note 8,388,608 frames each with 128 bytes. frameAddr has 23 valid bits. byteAddr has 7 valid bits
+  @param frameAddr
+  @param byteAddr 
+*/
+void send_addr_to_flash(uint32_t frameAddr, uint8_t byteAddr) {
+  Address addr = {(frameAddr >> 11) & 0b0000111111111111,                             // block
+                        (frameAddr >> 5) & 0b00111111,                                // page
+                        ((frameAddr & 0b00011111) << 7) | (byteAddr & 0b01111111)};   // column 
+
+  send_byte_to_flash((uint8_t)(addr.column & 0b0000000011111111), ADDRESS_INPUT);
+  send_byte_to_flash((uint8_t)((addr.column & 0b0001111100000000) >> 8), ADDRESS_INPUT);
+  send_byte_to_flash((uint8_t)(((addr.block & 0b0000000000000011) << 6)) | (addr.page & 0b00111111), ADDRESS_INPUT);
+  send_byte_to_flash((uint8_t)((addr.block & 0b0000001111111100) >> 2), ADDRESS_INPUT);
+  send_byte_to_flash((uint8_t)((addr.block & 0b0000110000000000) >> 10), ADDRESS_INPUT);
 }
 
 
-void sendBlockAddrToFlash(uint32_t blockAddr) {
-    sendByteToFlash((uint8_t)(((blockAddr & 0b0000000000000011) << 6) | (0b00000000 & 0b00111111)), ADDRESS_INPUT);
-    sendByteToFlash((uint8_t)((blockAddr & 0b0000001111111100) >> 2), ADDRESS_INPUT);
-    sendByteToFlash((uint8_t)((blockAddr & 0b0000110000000000) >> 10), ADDRESS_INPUT);
+/**
+  @brief TODO
+  @param blockAddr 
+*/
+void send_block_addr_to_flash(uint32_t blockAddr) {
+  send_byte_to_flash((uint8_t)(((blockAddr & 0b0000000000000011) << 6) | (0b00000000 & 0b00111111)), ADDRESS_INPUT);
+  send_byte_to_flash((uint8_t)((blockAddr & 0b0000001111111100) >> 2), ADDRESS_INPUT);
+  send_byte_to_flash((uint8_t)((blockAddr & 0b0000110000000000) >> 10), ADDRESS_INPUT);
 }
 
-// Read the status register from the nand flash
-uint8_t readFlashStatus() {
-  waitForReadyFlag();
-  sendByteToFlash(0x70, COMMAND_INPUT);
-  return receiveByteFromFlash();
+
+/**
+  @brief Read the status register from the nand flash
+  @return 
+*/
+uint8_t read_flash_status() {
+  wait_for_ready_flag();
+  send_byte_to_flash(0x70, COMMAND_INPUT);
+  return receive_byte_from_flash();
 }
 
-// Read the ID register from the nand flash
-uint64_t readFlashID() {
+
+/**
+  @brief Read the ID register from the nand flash
+  @return 
+*/
+uint64_t read_flash_ID() {
   uint64_t id = 0;
-  waitForReadyFlag();
-  sendByteToFlash(0x90, COMMAND_INPUT);
-  sendByteToFlash(0x00, ADDRESS_INPUT);
-  for(int i = 0; i < 5; i++){
+
+  wait_for_ready_flag();
+  send_byte_to_flash(0x90, COMMAND_INPUT);
+  send_byte_to_flash(0x00, ADDRESS_INPUT);
+
+  for (int i = 0; i < 5; i++) {
     printf("ID ");
     printf("%i", i);
     printf(": ");
-    uint8_t byte = receiveByteFromFlash();
+    uint8_t byte = receive_byte_from_flash();
     id |= byte << (4-i);
-    printByte(byte);
+    print_byte(byte);
   }
+
   return id;
 }
 
 
-void writeProtection() {
-  waitForReadyFlag();
-  setControlPins(WRITE_PROTECT);  // Write Protection
+/**
+  @brief TODO
+*/
+void write_protection() {
+  wait_for_ready_flag();
+  set_control_pins(WRITE_PROTECT);  // Write Protection
 }
 
-// Code to read 1 frame from flash
-void readFrame(uint32_t frameAddr, uint8_t *readFrameBytes, uint8_t _length) {
-  waitForReadyFlag();
-  sendByteToFlash(0x00, COMMAND_INPUT);
-  sendAddrToFlash(frameAddr, 0);
-  sendByteToFlash(0x30, COMMAND_INPUT);
-  waitForReadyFlag();
 
-  for(int byteAddr = 0; byteAddr < _length; byteAddr++){
-    readFrameBytes[byteAddr] = receiveByteFromFlash();  // read data byte
+/**
+  @brief Code to read 1 frame from flash
+*/
+void read_frame(uint32_t frameAddr, uint8_t *readFrameBytes, uint8_t _length) {
+  wait_for_ready_flag();
+  send_byte_to_flash(0x00, COMMAND_INPUT);
+  send_addr_to_flash(frameAddr, 0);
+  send_byte_to_flash(0x30, COMMAND_INPUT);
+  wait_for_ready_flag();
+
+  for (int byteAddr = 0; byteAddr < _length; byteAddr++) {
+    readFrameBytes[byteAddr] = receive_byte_from_flash();  // read data byte
   }
 }
 
-// Code to write 1 frame to the flash
-void writeFrame(uint32_t frameAddr, uint8_t *bytes) {
-  waitForReadyFlag();
-  sendByteToFlash(0x80, COMMAND_INPUT);
-  sendAddrToFlash(frameAddr, 0);  // Address Input
+
+/**
+  @brief Code to write 1 frame to the flash
+*/
+void write_frame(uint32_t frameAddr, uint8_t *bytes) {
+  wait_for_ready_flag();
+  send_byte_to_flash(0x80, COMMAND_INPUT);
+  send_addr_to_flash(frameAddr, 0);  // Address Input
   delay(1);
-  for(int byteAddr = 0; byteAddr < 128; byteAddr++){
-    sendByteToFlash(bytes[byteAddr], DATA_INPUT);
+  for (int byteAddr = 0; byteAddr < 128; byteAddr++) {
+    send_byte_to_flash(bytes[byteAddr], DATA_INPUT);
   }
   
-  sendByteToFlash(0x10, COMMAND_INPUT);
+  send_byte_to_flash(0x10, COMMAND_INPUT);
 }
 
-// A blocking function which will erase a block on the flash
-void eraseBlock(uint32_t blockAddr) {
-  waitForReadyFlag();
-  sendByteToFlash(0x60, COMMAND_INPUT);
-  sendBlockAddrToFlash(blockAddr);
-  sendByteToFlash(0xD0, COMMAND_INPUT);
-  waitForReadyFlag();  // Blocking Function
+
+/**
+  @brief A blocking function which will erase a block on the flash
+*/
+void erase_block(uint32_t blockAddr) {
+  wait_for_ready_flag();
+  send_byte_to_flash(0x60, COMMAND_INPUT);
+  send_block_addr_to_flash(blockAddr);
+  send_byte_to_flash(0xD0, COMMAND_INPUT);
+  wait_for_ready_flag();  // Blocking Function
 }
 
-void eraseALL(){
+
+/**
+  @brief A blocking function which will erase a block on the flash
+*/
+void erase_all(){
   printf("WARNING: ERASING ALL DATA (UNPLUG NAND FLASH TO ABORT)\r\n");
-  for(int countDown = 10; countDown > 0; countDown--){
+
+  for (int countDown = 10; countDown > 0; countDown--) {
     printf("ERASING DATA IN: ");
     printf("%i", countDown);
     printf(" Seconds\r\n");
     delay(1);
   }
-  for(uint32_t block = 0; block < 64*4096; block++){
-    eraseBlock(block);
-    if(block%5000 == 0){
+
+  for (uint32_t block = 0; block < 64*4096; block++) {
+    erase_block(block);
+    if (block%5000 == 0) {
       printf("ERASING [");
-      for(int i = 0; i < 50; i++){
+      for (int i = 0; i < 50; i++) {
         if(i < block/(64*4096*0.01*2)){
           printf("#");
         } else {
@@ -551,30 +658,44 @@ void eraseALL(){
   printf("ERASING COMPLETE \r\n");
 }
 
+
+/**
+  @brief TODO
+*/
 uint16_t max(uint16_t x1, uint16_t x2){
   return (x1 > x2) ? x1 : x2;
 }
 
+
+/**
+  @brief TODO
+*/
 uint16_t min(uint16_t x1, uint16_t x2){
   return (x1 < x2) ? x1 : x2;
 }
 
+
+/**
+  @brief TODO
+*/
 uint16_t diff(uint16_t x1, uint16_t x2) {
   return (uint16_t)abs((int)((int)x1 - (int)x2));
 }
 
-
-// Function which searches for next available block and returns the first frame address of that block
-uint32_t getNextAvailableFrameAddr() {
+/**
+  @brief Function which searches for next available block and returns the first frame address of that block
+  @return
+*/
+uint32_t get_next_available_frame_addr() {
   uint16_t prevPointer = 4096;
   uint16_t pointer = prevPointer / 2;
   uint8_t _check = 0;
   
-  for(int i = 0; i < 11; i++) {
-    
-    readFrame(max(pointer - 1, 0) * 64 * 32, &_check, 1);  // Dosn't need to be the whole frame -------
+  for (int i = 0; i < 11; i++) {
+    read_frame(max(pointer - 1, 0) * 64 * 32, &_check, 1);  // Dosn't need to be the whole frame -------
     uint16_t difference = diff(pointer, prevPointer);
     prevPointer = pointer;
+
     if (_check == 0xFF) {
       pointer -= difference / 2;
     } else {
@@ -582,7 +703,7 @@ uint32_t getNextAvailableFrameAddr() {
     }
   }
   
-  readFrame(max(pointer - 1, 0) * 64 * 32, &_check, 1);
+  read_frame(max(pointer - 1, 0) * 64 * 32, &_check, 1);
   if (_check != 0xFF) {
     pointer += 1;
   }
@@ -591,11 +712,11 @@ uint32_t getNextAvailableFrameAddr() {
 }
 
 /*
-void testRoutine() {
+void test_routine() {
   uint8_t bytes[128];
   _memset(bytes, 0xFF, 128);
 
-  for(uint8_t i = 0; i < 128; i ++){
+  for (uint8_t i = 0; i < 128; i ++) {
     bytes[i] = i;
   }
 
@@ -606,18 +727,19 @@ void testRoutine() {
   
   //unsigned long timeBegin = micros();
 
-  for(int i = 0; i < numOfFramesToCheck; i++){
-    writeFrame(i, bytes);  // Write frame 0
+  for (int i = 0; i < numOfFramesToCheck; i++) {
+    write_frame(i, bytes);  // Write frame 0
     total += 128;
-    
   }
+
   unsigned long timeEnd = micros();
 
-  for(int i = 0; i < numOfFramesToCheck; i++){
+  for (int i = 0; i < numOfFramesToCheck; i++) {
     uint8_t bytesRead[128];
-    readFrame(i, bytesRead, 128);
-    for(int j = 0; j < 128; j++){
-      if(bytesRead[j] != j){
+    read_frame(i, bytesRead, 128);
+
+    for (int j = 0; j < 128; j++) {
+      if (bytes_read[j] != j) {
         wrong++;
       }
     }
@@ -645,7 +767,10 @@ void testRoutine() {
 */
 
 
-void initialiseFlash() {
+/**
+  @brief TODO
+*/
+void initialise_flash() {
   gpio_set_mode(data0, GPIO_MODE_OUTPUT);
   gpio_set_mode(data1, GPIO_MODE_OUTPUT);
   gpio_set_mode(data2, GPIO_MODE_OUTPUT);
@@ -664,18 +789,20 @@ void initialiseFlash() {
 
   gpio_set_mode(RB,  GPIO_MODE_INPUT);
   
-  frameAddressPointer = getNextAvailableFrameAddr();
+  frameAddressPointer = get_next_available_frame_addr();
 
-  if (readFlashID() != 0){
+  if (read_flash_ID() != 0){
     printf("Flash Working Correctly\r\n");
   }
-  
 }
 
 // --------------------------------
 
-// Calculates CRC16-CCITT Checksum
-uint16_t calculateCRC(uint8_t* data, uint8_t length) {
+/**
+  @brief Calculates CRC16-CCITT Checksum
+  @return CRC16-CCITT Checksum
+*/
+uint16_t calculate_CRC(uint8_t* data, uint8_t length) {
   const uint16_t CRC_POLY = 0x1021;
   uint16_t crc = 0xFFFF;
 
@@ -688,9 +815,13 @@ uint16_t calculateCRC(uint8_t* data, uint8_t length) {
   return crc;
 }
 
-// HAMMING CODE HASHING
+
+/**
+  @brief Hamming code hashing
+*/
 void hash(uint8_t *_input, uint8_t *_output) {
   _memset(_output, 0, 120);
+
   for (int i = 0; i < 8*120; i++) {
     int j = ((i%120)*8) + (i/120);
     _output[i/8] |= getBitArr(_input, j) << (7-(i%8));
@@ -698,18 +829,25 @@ void hash(uint8_t *_input, uint8_t *_output) {
 }
 
 
-bool isPowerOfTwo(int x) {
+/**
+  @brief TODO
+  @return
+*/
+bool is_power_of_two(int x) {
     return (x != 0) && ((x & (x - 1)) == 0);
 }
 
-// Calculate parity bits for a given encoded data frame
-void calculateParityBits(uint8_t *_input, uint8_t *_output) {
+
+/**
+  @brief Calculate parity bits for a given encoded data frame
+*/
+void calculate_parity_bits(uint8_t *_input, uint8_t *_output) {
   uint8_t hashedData[120];
   _memset(hashedData, 0, 120);
 
   uint8_t condition[120];
   _memset(condition, 0, 120);
-  for (int i = 0; i < 118; i++){
+  for (int i = 0; i < 118; i++) {
     condition[i] = _input[i];
   }
   
@@ -746,13 +884,16 @@ void calculateParityBits(uint8_t *_input, uint8_t *_output) {
 }
 
 
-
-void encodeParity(frameArray dataFrame, uint8_t *bytes) {
+/**
+  @brief TODO
+  @return
+*/
+void encode_parity(FrameArray dataFrame, uint8_t *bytes) {
   zip(dataFrame, bytes);
 
   uint8_t parities[8];
-  calculateParityBits(bytes, parities);
-  for (int i = 0; i < 8; i++){
+  calculate_parity_bits(bytes, parities);
+  for (int i = 0; i < 8; i++) {
     bytes[118+i] = parities[i];
   }
   uint16_t CRC_Check = calculateCRC(bytes, 126);
@@ -761,8 +902,11 @@ void encodeParity(frameArray dataFrame, uint8_t *bytes) {
 }
 
 
-void printCapacityInfo() {
-  uint32_t lastFrameUsed = getNextAvailableFrameAddr();
+/**
+  @brief TODO
+*/
+void print_capacity_info() {
+  uint32_t lastFrameUsed = get_next_available_frame_addr();
   printf("Used: ");
   uint32_t usedInMB = (lastFrameUsed*128)/1000000;
   printf("%i", (int)usedInMB);
@@ -785,8 +929,10 @@ void printCapacityInfo() {
 }
 
 
-
-int logFrame(frameArray _input) {
+/**
+  @brief TODO
+*/
+int log_frame(FrameArray _input) {
   //printf("LOGFRAME addr ");
   //printfln(frameAddressPointer);
 
@@ -794,9 +940,9 @@ int logFrame(frameArray _input) {
   if (frameAddressPointer <= 8388607) {
     uint8_t encoded[128];
     _memset(encoded, 0, 128);
-    encodeParity(_input, encoded);
+    encode_parity(_input, encoded);
     //printFrame(encoded);
-    writeFrame(frameAddressPointer, encoded);
+    write_frame(frameAddressPointer, encoded);
     frameAddressPointer++;
   } else {
     printf("Overflow Error\r\n");  // ERROR
@@ -811,17 +957,20 @@ int logFrame(frameArray _input) {
 }
 
 
-frameArray recallFrame(uint32_t frameAddr) {
+/**
+  @brief TODO
+*/
+FrameArray recall_frame(uint32_t frameAddr) {
   uint8_t encoded[128];
   _memset(encoded, 0, 128);
-  frameArray _output;
+  FrameArray _output;
   
   // Attempts re-reading the data from the flash 10 times before it gives up
   //_output.successFlag = DATA_CORRUPTED;
   //int timeout = 10;  
   //while(_output.successFlag == DATA_CORRUPTED && timeout > 0){
   //  timeout--;
-  readFrame(frameAddr, encoded, 128);
+  read_frame(frameAddr, encoded, 128);
   //  if ((encoded[0] & encoded[1]) != 0xFF) {
   //    _output = decodeParity(encoded);  // CHANGE TO ALLOW FOR INT RETURN OF STATUS
   //  } else {
@@ -833,8 +982,12 @@ frameArray recallFrame(uint32_t frameAddr) {
   return _output;
 }
 
-void readALL(){
-  frameArray _output;
+
+/**
+  @brief TODO
+*/
+void read_all (){
+  FrameArray _output;
   _output.successFlag = NONE;
 
   uint32_t lastFrameToRead = getNextAvailableFrameAddr();
@@ -844,8 +997,8 @@ void readALL(){
   int data_error = 0;
   int data_empty = 0;
 
-  for(uint32_t i = 0; i < lastFrameToRead; i++){
-    _output = recallFrame(i);
+  for(uint32_t i = 0; i < lastFrameToRead; i++) {
+    _output = recall_frame(i);
     /*int flag = _output.successFlag;
     if(flag == DATA_INTACT){
       data_intact += 1;
@@ -860,6 +1013,7 @@ void readALL(){
     }*/
     printFrameArray(_output);
   }
+  
   printf("----------------------------------------------\r\n");
   printCapacityInfo();
   printf("data_empty: ");

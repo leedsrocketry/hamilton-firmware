@@ -6,3 +6,8 @@
 */
 
 #include "L3GD20HTR_driver.h"
+
+
+void init_L3GD20HTR() {
+
+};
