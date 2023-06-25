@@ -196,7 +196,7 @@ static inline void uart_write_buf(USART_TypeDef *uart, char *buf, size_t len) {
 /**
   @brief Set UART to read
   @param uart Selected UART (1, 2, 3 or low power)
-  @return Reference to the UART
+  @return True when ready
 */
 static inline int uart_read_ready(USART_TypeDef *uart) {
   return uart->ISR & BIT(5);  // If RXNE bit is set, data is ready Ref manual 50.8.10
@@ -216,7 +216,7 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
 
 #pragma region SPI
 /**
-  @brief TODO
+  @brief Initialisation of the SPI
   @param spi
 */
 static inline void spi_init(SPI_TypeDef *spi) {
@@ -288,9 +288,9 @@ static inline void spi_init(SPI_TypeDef *spi) {
 
 
 /**
-  @brief TODO
-  @param spi
-  @param byte
+  @brief Write via SPI
+  @param spi `SPI1`, `SPI2` or `SPI3`
+  @param byte Byte to write
 */
 static inline void spi_write_byte(SPI_TypeDef *spi, uint8_t byte) {
   spi->DR = byte;
@@ -299,14 +299,35 @@ static inline void spi_write_byte(SPI_TypeDef *spi, uint8_t byte) {
 
 
 /**
-  @brief TODO
-  @param spi
-  @param buf
-  @param len
+  @brief Write to SPI buffer
+  @param spi Selected SPI (1, 2 or 3)
+  @param buf Buffer to write to
+  @param len Length of the message
 */
 static inline void spi_write_buf(SPI_TypeDef *spi, char *buf, size_t len) {
   while (len-- > 0) spi_write_byte(spi, *(uint8_t *) buf++);
 }
+
+
+/**
+  @brief Get the SPI ready for reading
+  @param spi Selected SPI (1, 2 or 3)
+  @return True when ready
+*/
+static inline void spi_ready_read(SPI_TypeDef *spi) {
+  return spi->SR & BIT(0);  // If RxNE bit is set, data is ready Ref manual 52.4.9
+}
+
+
+/**
+  @brief Read from the selected SPI
+  @param spi Selected SPI (1, 2 or 3)
+  @return Byte from SPI
+*/
+static inline uint8_t spi_read_byte(SPI_TypeDef *spi) {
+  return (uint16_t) (spi->DR & 255);
+}
+
 #pragma endregion SPI
 
 
