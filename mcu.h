@@ -331,6 +331,40 @@ static inline uint16_t spi_read_byte(SPI_TypeDef *spi) {
   return (uint16_t) (spi->DR & 255);
 }
 
+
+/**
+  @brief Test that the SPI works appropriately; use Putty to check the LUART output
+  @param spi Selected SPI (1, 2 or 3)
+*/
+static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) {
+  valueToSend++;
+
+  // Convert the integer to a byte array
+  uint8_t byteBuffer[sizeof(valueToSend)];
+  for (size_t i = 0; i < sizeof(valueToSend); ++i) {
+    byteBuffer[i] = (uint8_t)(valueToSend >> (i * 8)) & 0xFF;
+  }
+
+  // Calculate the length of the byte array
+  size_t bufferLength = sizeof(byteBuffer);
+  
+  spi_write_buf(SPI1, (char *)byteBuffer, bufferLength);
+
+  // Wait for transfer to complete (until receive buffer is not empty)
+  spi_ready_read(SPI1); 
+
+  // Read received data from SPI
+  uint16_t receivedValue = spi_read_byte(SPI1);
+
+  // Convert the received byte array back to an integer
+  for (size_t i = 0; i < sizeof(receivedValue); ++i) {
+    receivedValue |= ((uint16_t)byteBuffer[i] << (i * 8));
+  }
+
+  // Print the received integer
+  printf("Received Value: %hu\r\n", receivedValue);
+}
+
 #pragma endregion SPI
 
 
