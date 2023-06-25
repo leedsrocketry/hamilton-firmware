@@ -42,6 +42,7 @@ void init_internals()
   uart_init(UART3,  115200);  // Initialise UART3;
 
   // SPI TODO
+  spi_init(SPI1);
 
   // Additional
   pwr_vdd2_init();            // Initialise VDD2 for GPIO G

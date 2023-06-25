@@ -314,8 +314,11 @@ static inline void spi_write_buf(SPI_TypeDef *spi, char *buf, size_t len) {
   @param spi Selected SPI (1, 2 or 3)
   @return True when ready
 */
-static inline void spi_ready_read(SPI_TypeDef *spi) {
-  return spi->SR & BIT(0);  // If RxNE bit is set, data is ready Ref manual 52.4.9
+static inline int spi_ready_read(SPI_TypeDef *spi) {
+  while (!(spi->SR & BIT(1)));    // Wait until transmit buffer is empty
+  while (!(spi->SR & BIT(0)));    // Wait until receive buffer is not empty (RxNE, 52.4.9)
+
+  return 1;                       // data is ready
 }
 
 
@@ -324,7 +327,7 @@ static inline void spi_ready_read(SPI_TypeDef *spi) {
   @param spi Selected SPI (1, 2 or 3)
   @return Byte from SPI
 */
-static inline uint8_t spi_read_byte(SPI_TypeDef *spi) {
+static inline uint16_t spi_read_byte(SPI_TypeDef *spi) {
   return (uint16_t) (spi->DR & 255);
 }
 

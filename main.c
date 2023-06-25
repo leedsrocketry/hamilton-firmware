@@ -5,6 +5,7 @@
   Description: Entry point for the HFC firmware; suitable for STM32L4R5
 */
 
+#include <stdio.h>
 #include "mcu.h"
 #include "NAND_flash_driver.h"
 #include "STM32_init.h"
@@ -107,8 +108,11 @@ int main(void) {
   // init_SI4463(); Pad Radio
 
   printf("================ ENTER MAIN PROCEDURE ================\r\n");
+  uint16_t valueToSend = 1;
+
   for (;;) {
     // Complete based on flight stage
+    #pragma region Flight Stages
     switch (flightStage) {
     case LAUNCHPAD:
         // TODO
@@ -146,11 +150,41 @@ int main(void) {
         // change LED sequence
         break;
     }
+    #pragma endregion Flight Stages
 
     //send_data();
 
+    // test spi
+    // Write data to SPI
+    valueToSend++;
+
+    // Convert the integer to a byte array
+    uint8_t byteBuffer[sizeof(valueToSend)];
+    for (size_t i = 0; i < sizeof(valueToSend); ++i) {
+      byteBuffer[i] = (uint8_t)(valueToSend >> (i * 8)) & 0xFF;
+    }
+
+    // Calculate the length of the byte array
+    size_t bufferLength = sizeof(byteBuffer);
+    
+    spi_write_buf(SPI1, (char *)byteBuffer, bufferLength);
+
+    // Wait for transfer to complete (until receive buffer is not empty)
+    spi_ready_read(SPI1); 
+
+    // Read received data from SPI
+    uint16_t receivedValue = spi_read_byte(SPI1);
+
+    // Convert the received byte array back to an integer
+    for (size_t i = 0; i < sizeof(receivedValue); ++i) {
+      receivedValue |= ((uint16_t)byteBuffer[i] << (i * 8));
+    }
+
+    // Print the received integer
+    printf("Received Value: %hu\r\n", receivedValue);
+
     // Exit program
-    printf("===================== PROGRAM END ===================="); 
+    //printf("===================== PROGRAM END ===================="); 
   }
   return 0;
 }
