@@ -100,12 +100,12 @@ int main(void) {
   //erase_all();
   frameAddressPointer = 0;
   // init_MAXM10S(); GNSS
-  // init_SHT40I(); Temperature + Humidity
+  // init_BME280(); Temperature + Humidity
   // init_MS5611(); Barometer
   // init_ADXL375(); Accelerometer
-  // init_L3GD20HTR(); Gyroscope
-  // init_init_MAX31855(); Temperature
-  // init_SI4463(); Pad Radio
+  // init_LSM6DS3(); Gyroscope
+  // init_MAX31855(); Temperature
+  // init_SI446(); Pad Radio
 
   printf("================ ENTER MAIN PROCEDURE ================\r\n");
   uint16_t valueToSend = 1;

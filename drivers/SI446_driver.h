@@ -2,10 +2,10 @@
 	Leeds University Rocketry Organisation - LURA
   Author Name: Alexandra Posta
   Created on: 10 June 2023
-  Description: header file for the Pad Radio module SI4463
+  Description: header file for the Pad Radio module SI446
 */
-#ifndef SI4463_DRIVER_H
-#define SI4463_DRIVER_H
+#ifndef SI446_DRIVER_H
+#define SI446_DRIVER_H
 
 
 /**
@@ -13,7 +13,7 @@
   @note 
   @return Success
 */
-void init_SI4463(void);
+void init_SI446(void);
 
 
-#endif /* SI4463_DRIVER_H */
+#endif /* SI446_DRIVER_H */
