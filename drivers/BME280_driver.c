@@ -9,67 +9,342 @@
 #include "stdint.h"s
 #include "mcu.h"
 
-// TODO: get pin number
-#define pin 0x44  // ADDRESS
 
+int8_t BME280_init(BME280_dev *dev) {
+    int8_t retVal;
+    uint8_t chipId = 0;
 
-void init_BME280() {
-    // soft reset
-    Command reset = SoftReset;
-    gpio_write(PIN, reset);
-    delay_microseconds(2);
+    // Read the chip-id of bme280 sensor
+    retVal = BME280_get_regs(BME280_REG_CHIP_ID, &chipId, 1, dev);
 
-    // check the serial connection to the sensor
-    uint32_t serial;
-    int16_t ret;
-    uint16_t serial_words[SENSIRION_NUM_WORDS(*serial)];
+    // Check for chip id validity
+    if (retVal == BME280_OK)
+    {
+        if (chipId == BME280_CHIP_ID)
+        {
+            dev->chipId = chipId;
+            retVal = BME280_soft_reset(dev);      // Reset the sensor
+
+            if (retVal == BME280_OK)
+            {
+                retVal = get_calib_data(dev);     // Get calibration data
+            }
+        } else {
+            retVal = BME280_E_DEV_NOT_FOUND;
+        }
+    }
+
+    return retVal;
 };
 
 
-static float get_temperature(Precision precision) {
-    if (precision != NULL) {
-        return get_sensor_data(precision).temperature;
-    } else {
-        return 0;
+int8_t BME280_soft_reset(BME280_dev *dev)
+{
+    int8_t retVal;
+    uint8_t regAddr = BME280_REG_RESET;
+    uint8_t statusReg = 0;
+    uint8_t tryRun = 5;
+    uint8_t softRstCmd = BME280_SOFT_RESET_COMMAND; // 0xB6
+
+    // Write the soft reset command in the sensor
+    retVal = BME280_set_regs(&regAddr, &softRstCmd, 1, dev);
+
+    if (retVal == BME280_OK)
+    {
+        do
+        {
+            // As per data sheet - Table 1, startup time is 2 ms
+            delay_microseconds(BME280_STARTUP_DELAY);
+            retVal = BME280_get_regs(BME280_REG_STATUS, &statusReg, 1, dev);
+
+        } while ((retVal == BME280_OK) && (tryRun--) && (statusReg & BME280_STATUS_IM_UPDATE));
+
+        if (statusReg & BME280_STATUS_IM_UPDATE)
+        {
+            retVal = BME280_E_NVM_COPY_FAILED;
+        }
     }
+
+    return retVal;
 }
 
 
-static float get_humidity(Precision precision){
-    if (precision != NULL) {
-        return get_sensor_data(precision).humidity;
+int8_t BME280_get_regs(uint8_t regAddr, uint8_t *regData, uint32_t len, BME280_dev *dev)
+{
+    int8_t retVal;
+    retVal = null_ptr_check(dev); // Check for null pointer in the device structure
+
+    if ((retVal == BME280_OK) && (regData != NULL))
+    {        
+        regAddr = regAddr | 0x80;                           // SPI 
+        dev->intfRslt = dev->read(regAddr, regData, len);   // Read the data
+
+        // Check for communication error
+        if (dev->intfRslt != BME280_INTF_RET_SUCCESS)
+        {
+            retVal = BME280_E_COMM_FAIL;
+        }
     } else {
-        return 0;
+        retVal = BME280_E_NULL_PTR;
     }
+
+    return retVal;
 }
 
 
-static void enable_heater(Heater level) {
-    gpio_write(PIN, enumValue(level));
+int8_t BME280_set_regs(uint8_t *regAddr, const uint8_t *regData, uint32_t len, BME280_dev *dev)
+{
+    int8_t retVal;
+    uint8_t tempBuff[20]; // Typically not to write more than 10 registers
+    uint32_t tempLen;
+    uint32_t regAddrCnt;
+
+    if (len > 10) // max allowed length is 10
+    {
+        len = 10;
+    }
+
+    // Check for null pointer in the device structure 
+    retVal = null_ptr_check(dev);
+
+    // Check for arguments validity 
+    if ((retVal == BME280_OK) && (regAddr != NULL) && (regData != NULL))
+    {
+        if (len != 0)
+        {
+            tempBuff[0] = regData[0];
+
+            // SPI
+            for (regAddrCnt = 0; regAddrCnt < len; regAddrCnt++)
+            {
+                regAddr[regAddrCnt] = regAddr[regAddrCnt] & 0x7F;
+            }
+
+            // Burst write mode
+            if (len > 1)
+            {
+                // Interleave register address w.r.t data for burst write
+                interleave_reg_addr(regAddr, tempBuff, regData, len);
+                tempLen = ((len * 2) - 1);
+            } else { 
+                tempLen = len;
+            }
+
+            dev->intfRslt = dev->write(reg_addr[0], tempBuff, tempLen, dev->intfRslt);
+
+            // Check for communication error 
+            if (dev->intfRslt != BME280_INTF_RET_SUCCESS)
+            {
+                retVal = BME280_E_COMM_FAIL;
+            }
+        } else {
+            retVal = BME280_E_INVALID_LEN;
+        }
+    } else {
+        retVal = BME280_E_NULL_PTR;
+    }
+
+    return retVal;
+}
+
+
+// TODO
+int8_t BME280_get_sensor_data(uint8_t sensor_comp, struct bme280_data *comp_data, struct bme280_dev *dev)
+{
+    int8_t rslt;
+
+    /* Array to store the pressure, temperature and humidity data read from
+     * the sensor
+     */
+    uint8_t reg_data[BME280_LEN_P_T_H_DATA] = { 0 };
+    struct bme280_uncomp_data uncomp_data = { 0 };
+
+    if (comp_data != NULL)
+    {
+        /* Read the pressure and temperature data from the sensor */
+        rslt = bme280_get_regs(BME280_REG_DATA, reg_data, BME280_LEN_P_T_H_DATA, dev);
+
+        if (rslt == BME280_OK)
+        {
+            /* Parse the read data from the sensor */
+            parse_sensor_data(reg_data, &uncomp_data);
+
+            /* Compensate the pressure and/or temperature and/or
+             * humidity data from the sensor
+             */
+            rslt = bme280_compensate_data(sensor_comp, &uncomp_data, comp_data, &dev->calib_data);
+        }
+    }
+    else
+    {
+        rslt = BME280_E_NULL_PTR;
+    }
+
+    return rslt;
+}
+
+
+// TODO
+int8_t BME280_compensate_data(uint8_t sensor_comp,
+                              const struct bme280_uncomp_data *uncomp_data,
+                              struct bme280_data *comp_data,
+                              struct bme280_calib_data *calib_data)
+{
+    int8_t rslt = BME280_OK;
+
+    if ((uncomp_data != NULL) && (comp_data != NULL) && (calib_data != NULL))
+    {
+        /* Initialize to zero */
+        comp_data->temperature = 0;
+        comp_data->pressure = 0;
+        comp_data->humidity = 0;
+
+        /* If pressure or temperature component is selected */
+        if (sensor_comp & (BME280_PRESS | BME280_TEMP | BME280_HUM))
+        {
+            /* Compensate the temperature data */
+            comp_data->temperature = compensate_temperature(uncomp_data, calib_data);
+        }
+
+        if (sensor_comp & BME280_PRESS)
+        {
+            /* Compensate the pressure data */
+            comp_data->pressure = compensate_pressure(uncomp_data, calib_data);
+        }
+
+        if (sensor_comp & BME280_HUM)
+        {
+            /* Compensate the humidity data */
+            comp_data->humidity = compensate_humidity(uncomp_data, calib_data);
+        }
+    }
+    else
+    {
+        rslt = BME280_E_NULL_PTR;
+    }
+
+    return rslt;
+}
+
+
+/* ---------------------------------- Private Functions ---------------------------------- */
+/**
+ @brief This private function is used to validate the device structure pointer for
+ null conditions.
+*/
+static int8_t null_ptr_check(BME280_dev *dev)
+{
+    int8_t retVal;
+
+    if ((dev == NULL) || (dev->read == NULL) || (dev->write == NULL))
+    {
+        // Device structure pointer is not valid 
+        retVal = BME280_E_NULL_PTR;
+    }
+    else
+    {
+        // Device structure is fine 
+        retVal = BME280_OK;
+    }
+
+    return retVal;
 }
 
 
 /**
-    @brief Get a measurement without using the heater. The measurement takes about 10ms
-    @param precision Precision for the conversion
-    @return SensorData struct containing the humidity value in % and the sensor temperature
- */
-static SensorData get_sensor_data(Precision precision) {
-    // Get sensor data
-    gpio_write(PIN, enumValue(precision));
-    delay_microseconds(10);	// Delay until the measurement is done, there is no other option
-    bool _rawData = gpio_read(PIN);
+ @brief This private function reads the calibration data from the sensor, parse
+ it and store in the device structure.
+*/
+static int8_t get_calib_data(BME280_dev *dev)
+{
+    int8_t retVal;
+    uint8_t regAddr = BME280_REG_TEMP_PRESS_CALIB_DATA;
 
-    // TODO Check data readout from _rawData to rawData
-    SensorDataRaw rawData;
+    /* Array to store calibration data */
+    uint8_t calibData[BME280_LEN_TEMP_PRESS_CALIB_DATA] = { 0 };
 
-    // Filter data
-    SensorData data;
-    data.temperature = -45 + 175 * ((float)((uint16_t)(rawData.th) << 8 | rawData.tl)) / 0xFFFF;
-    data.humidity = -6 + 125 * ((float)((uint16_t)(rawData.rhh) << 8 | rawData.rhl)) / 0xFFFF;
-    if (data.humidity > 100) data.humidity = 100;
-    else if(data.humidity < 0) data.humidity = 0;
+    /* Read the calibration data from the sensor */
+    retVal = BME280_get_regs(regAddr, calibData, BME280_LEN_TEMP_PRESS_CALIB_DATA, dev);
 
-    // Return sensor readings
-    return data;
+    if (retVal == BME280_OK)
+    {
+        // Parse temperature and pressure calibration data and store it in device structure
+        parse_temp_press_calib_data(calibData, dev);
+        regAddr = BME280_REG_HUMIDITY_CALIB_DATA;
+
+        // Read the humidity calibration data from the sensor
+        retVal = BME280_get_regs(regAddr, calibData, BME280_LEN_HUMIDITY_CALIB_DATA, dev);
+
+        if (retVal == BME280_OK)
+        {
+            // Parse humidity calibration data and store in device structure
+            parse_humidity_calib_data(calibData, dev);
+        }
+    }
+
+    return retVal;
+}
+
+
+/**
+ @brief This private function is used to parse the temperature and
+ pressure calibration data and store it in device structure.
+*/
+static void parse_temp_press_calib_data(const uint8_t *regData, BME280_dev *dev)
+{
+    BME280_CalibData *calibData = &dev->calibData;
+
+    calibData->dig_t1 = BME280_CONCAT_BYTES(regData[1], regData[0]);
+    calibData->dig_t2 = (int16_t)BME280_CONCAT_BYTES(regData[3], regData[2]);
+    calibData->dig_t3 = (int16_t)BME280_CONCAT_BYTES(regData[5], regData[4]);
+    calibData->dig_p1 = BME280_CONCAT_BYTES(regData[7], regData[6]);
+    calibData->dig_p2 = (int16_t)BME280_CONCAT_BYTES(regData[9], regData[8]);
+    calibData->dig_p3 = (int16_t)BME280_CONCAT_BYTES(regData[11],regData[10]);
+    calibData->dig_p4 = (int16_t)BME280_CONCAT_BYTES(regData[13],regData[12]);
+    calibData->dig_p5 = (int16_t)BME280_CONCAT_BYTES(regData[15],regData[14]);
+    calibData->dig_p6 = (int16_t)BME280_CONCAT_BYTES(regData[17],regData[16]);
+    calibData->dig_p7 = (int16_t)BME280_CONCAT_BYTES(regData[19],regData[18]);
+    calibData->dig_p8 = (int16_t)BME280_CONCAT_BYTES(regData[21],regData[20]);
+    calibData->dig_p9 = (int16_t)BME280_CONCAT_BYTES(regData[23],regData[22]);
+    calibData->dig_h1 = regData[25];
+}
+
+
+/**
+ @brief This private function is used to parse the humidity calibration data
+ and store it in device structure.
+*/
+static void parse_humidity_calib_data(const uint8_t *regData, BME280_dev *dev)
+{
+    struct bme280_calib_data *calibData = &dev->calibData;
+    int16_t dig_h4_lsb;
+    int16_t dig_h4_msb;
+    int16_t dig_h5_lsb;
+    int16_t dig_h5_msb;
+
+    calibData->dig_h2 = (int16_t)BME280_CONCAT_BYTES(regData[1], regData[0]);
+    calibData->dig_h3 = regData[2];
+    dig_h4_msb = (int16_t)(int8_t)regData[3] * 16;
+    dig_h4_lsb = (int16_t)(regData[4] & 0x0F);
+    calibData->dig_h4 = dig_h4_msb | dig_h4_lsb;
+    dig_h5_msb = (int16_t)(int8_t)regData[5] * 16;
+    dig_h5_lsb = (int16_t)(regData[4] >> 4);
+    calibData->dig_h5 = dig_h5_msb | dig_h5_lsb;
+    calibData->dig_h6 = (int8_t)regData[6];
+}
+
+
+/**
+ @brief This private function interleaves the register address between the
+ register data buffer for burst write operation.
+*/
+static void interleave_reg_addr(const uint8_t *regAddr, uint8_t *tempBuff, const uint8_t *regData, uint32_t len)
+{
+    uint32_t index;
+
+    for (index = 1; index < len; index++)
+    {
+        tempBuff[(index * 2) - 1] = regAddr[index];
+        tempBuff[index * 2] = regData[index];
+    }
 }
