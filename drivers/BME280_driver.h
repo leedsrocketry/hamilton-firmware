@@ -51,6 +51,12 @@
 #define BME280_LEN_HUMIDITY_CALIB_DATA            UINT8_C(7)
 #define BME280_LEN_P_T_H_DATA                     UINT8_C(8)
 
+/** @name Sensor component selection macros. Internal for API implementation. */
+#define BME280_PRESS                              UINT8_C(1)
+#define BME280_TEMP                               UINT8_C(1 << 1)
+#define BME280_HUM                                UINT8_C(1 << 2)
+#define BME280_ALL                                UINT8_C(0x07)
+
 /** @name Macro to combine two 8 bit data's to form a 16 bit data */
 #define BME280_CONCAT_BYTES(msb, lsb)             (((uint16_t)msb << 8) | (uint16_t)lsb)
 
@@ -100,14 +106,36 @@ typedef struct BME280_dev
     BME280_write_fptr_t write;
 
     // Trim data 
-    BME280_CalibData calib;
+    BME280_calibData calib;
 } BME280_dev;
 
 
-/*!
- * @brief Calibration data
- */
-typedef struct BME280_CalibData
+/**
+  @brief Sensor structure that holds compensated temp, pres and humidity data
+*/
+typedef struct BME280_data
+{
+  uint32_t pressure;    // Compensated pressure
+  int32_t temperature;  // Compensated temperature
+  uint32_t humidity;    // Compensated humidity
+}; BME280_data;
+
+
+/**
+  @brief Sensor structure that holds uncompensated temp, pres and humidity data
+*/
+typedef struct BME280_uncompData
+{
+  uint32_t pressure;    // Un-compensated pressure
+  uint32_t temperature; // Un-compensated temperature
+  uint32_t humidity;    // Un-compensated humidity
+} BME280_uncompData;
+
+
+/**
+  @brief Calibration data
+*/
+typedef struct BME280_calibData
 {
   // Calibration coefficient for the temperature sensor 
   uint16_t dig_t1;  
@@ -135,7 +163,7 @@ typedef struct BME280_CalibData
 
   // Variable to store the intermediate temperature coefficient 
   int32_t t_fine;
-} BME280_CalibData;
+} BME280_calibData;
 #pragma endregion Structs
 
 
@@ -161,7 +189,7 @@ int8_t BME280_soft_reset(BME280_dev *dev);
 
 
 /**
-  @details Reads the data from the given register address of sensor
+  @brief Reads the data from the given register address of sensor
   @param regAddr Register address from where the data to be read
   @param regData Pointer to data buffer to store the read data
   @param len Number of bytes of data to be read
@@ -172,68 +200,46 @@ int8_t BME280_get_regs(uint8_t regAddr, uint8_t *regData, uint32_t len, BME280_d
 
 
 /**
-  @details Writes the given data to the register address of the sensor
+  @brief Writes the given data to the register address of the sensor
   @param regAddr Register addresses to where the data is to be written
   @param regData Pointer to data buffer which is to be written in the regAddr of sensor.
   @param len Number of bytes of data to write
   @param dev Structure instance of BME280_dev
   @return Result of execution status (same return as BME280_init)
  */
-int8_t bme280_set_regs(uint8_t *regAddr, const uint8_t *regData, uint32_t len, BME280_dev *dev);
-
-
-// TODO
-/**
- * @details This API reads the pressure, temperature and humidity data from the
- * sensor, compensates the data and store it in the bme280_data structure
- * instance passed by the user.
- *
- * @param[in] sensor_comp : Variable which selects which data to be read from
- * the sensor.
- *
- *@verbatim
- * sensor_comp |   Macros
- * ------------|-------------------
- *     1       | BME280_PRESS
- *     2       | BME280_TEMP
- *     4       | BME280_HUM
- *     7       | BME280_ALL
- *@endverbatim
- *
- * @param comp_data : Structure instance of bme280_data.
- * @param dev        : Structure instance of bme280_dev.
- *
- * @return Result of API execution status
- */
-int8_t bme280_get_sensor_data(uint8_t sensor_comp, struct bme280_data *comp_data, struct bme280_dev *dev);
+int8_t BME280_set_regs(uint8_t *regAddr, const uint8_t *regData, uint32_t len, BME280_dev *dev);
 
 
 /**
- * @details This API is used to compensate the pressure and/or
- * temperature and/or humidity data according to the component selected by the
- * user.
- *
- * @param[in] sensor_comp : Used to select pressure and/or temperature and/or
- *                          humidity.
- * @param[in] uncomp_data : Contains the uncompensated pressure, temperature and
- *                          humidity data.
- * @param[out] comp_data  : Contains the compensated pressure and/or temperature
- *                          and/or humidity data.
- * @param[in] calib_data  : Pointer to bme280_calib_data
- *
- * @return Result of API execution status.
- *
- * @retval   0 -> Success.
- * @retval > 0 -> Warning.
- * @retval < 0 -> Fail.
- *
- */
-int8_t bme280_compensate_data(uint8_t sensor_comp,
-                              const struct bme280_uncomp_data *uncomp_data,
-                              struct bme280_data *comp_data,
-                              struct bme280_calib_data *calib_data);
+  @brief Reads the pres, temp and humidity data from the sensor, compensates the data and store 
+  it in the BME280_data structure instance passed by the user.
+  @param sensorComp : Variable which selects which data to be read
+  @verbatim
+  sensorComp |   Macros
+  -----------|-----------------
+    1        |  BME280_PRESS
+    2        |  BME280_TEMP
+    4        |  BME280_HUM
+    7        |  BME280_ALL
+  @endverbatim
+  @param compData : Structure instance of BME280_data.
+  @param dev      : Structure instance of BME280_dev.
+
+  @return Result of execution status
+*/
+int8_t BME280_get_sensor_data(uint8_t sensorComp, BME280_data *compData, BME280_dev *dev);
 
 
+/**
+  @brief Compensate the pres and/or temp and/or humidity data according to the selected component
+  @param sensorComp : Used to select pressure and/or temp and/or humidity
+  @param uncompData : Contains the uncompensated pres, temp and humidity data
+  @param compData   : Contains the compensated pres and/or temp and/or humidity data
+  @param calibData  : Pointer to BME280_calibData
+  @return Result of execution status.
+*/
+int8_t BME280_compensate_data(uint8_t sensorComp, const BME280_uncompData *uncompData,
+                              BME280_data *compData, BME280_calibData *calibData);
 #pragma endregion Functions
 
 #endif /* BME280_DRIVER_H */

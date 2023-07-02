@@ -148,82 +148,74 @@ int8_t BME280_set_regs(uint8_t *regAddr, const uint8_t *regData, uint32_t len, B
 }
 
 
-// TODO
-int8_t BME280_get_sensor_data(uint8_t sensor_comp, struct bme280_data *comp_data, struct bme280_dev *dev)
+int8_t BME280_get_sensor_data(uint8_t sensorComp, BME280_data *compData, BME280_dev *dev)
 {
-    int8_t rslt;
+    int8_t retVal;
 
-    /* Array to store the pressure, temperature and humidity data read from
-     * the sensor
-     */
-    uint8_t reg_data[BME280_LEN_P_T_H_DATA] = { 0 };
-    struct bme280_uncomp_data uncomp_data = { 0 };
+    // Array to store the pressure, temperature and humidity data 
+    uint8_t regData[BME280_LEN_P_T_H_DATA] = { 0 };
+    BME280_uncompData uncompData = { 0 };
 
-    if (comp_data != NULL)
+    if (compData != NULL)
     {
         /* Read the pressure and temperature data from the sensor */
-        rslt = bme280_get_regs(BME280_REG_DATA, reg_data, BME280_LEN_P_T_H_DATA, dev);
+        retVal = BME280_get_regs(BME280_REG_DATA, regData, BME280_LEN_P_T_H_DATA, dev);
 
-        if (rslt == BME280_OK)
+        if (retVal == BME280_OK)
         {
-            /* Parse the read data from the sensor */
-            parse_sensor_data(reg_data, &uncomp_data);
+            // Parse the read data from the sensor 
+            parse_sensor_data(regData, &uncompData);
 
-            /* Compensate the pressure and/or temperature and/or
-             * humidity data from the sensor
-             */
-            rslt = bme280_compensate_data(sensor_comp, &uncomp_data, comp_data, &dev->calib_data);
+            // Compensate the pressure and/or temperature and/or humidity data from the sensor
+            retVal = BME280_compensate_data(sensorComp, &uncompData, compData, &dev->calibData);
         }
     }
     else
     {
-        rslt = BME280_E_NULL_PTR;
+        retVal = BME280_E_NULL_PTR;
     }
 
-    return rslt;
+    return retVal;
 }
 
 
-// TODO
-int8_t BME280_compensate_data(uint8_t sensor_comp,
-                              const struct bme280_uncomp_data *uncomp_data,
-                              struct bme280_data *comp_data,
-                              struct bme280_calib_data *calib_data)
+int8_t BME280_compensate_data(uint8_t sensorComp, const BME280_uncompData *uncompData,
+                              BME280_data *compData, BME280_calibData *calibData)
 {
-    int8_t rslt = BME280_OK;
+    int8_t retVal = BME280_OK;
 
-    if ((uncomp_data != NULL) && (comp_data != NULL) && (calib_data != NULL))
+    if ((uncompData != NULL) && (compData != NULL) && (compData != NULL))
     {
-        /* Initialize to zero */
-        comp_data->temperature = 0;
-        comp_data->pressure = 0;
-        comp_data->humidity = 0;
+        // Initialize to zero
+        compData->temperature = 0;
+        compData->pressure = 0;
+        compData->humidity = 0;
 
-        /* If pressure or temperature component is selected */
-        if (sensor_comp & (BME280_PRESS | BME280_TEMP | BME280_HUM))
+        // If pressure or temperature component is selected 
+        if (sensorComp & (BME280_PRESS | BME280_TEMP | BME280_HUM))
         {
-            /* Compensate the temperature data */
-            comp_data->temperature = compensate_temperature(uncomp_data, calib_data);
+            // Compensate the temperature data 
+            compData->temperature = compensate_temperature(uncompData, calibData);
         }
 
-        if (sensor_comp & BME280_PRESS)
+        if (sensorComp & BME280_PRESS)
         {
-            /* Compensate the pressure data */
-            comp_data->pressure = compensate_pressure(uncomp_data, calib_data);
+            // Compensate the pressure data
+            compData->pressure = compensate_pressure(uncompData, calibData);
         }
 
         if (sensor_comp & BME280_HUM)
         {
-            /* Compensate the humidity data */
-            comp_data->humidity = compensate_humidity(uncomp_data, calib_data);
+            // Compensate the humidity data
+            compData->humidity = compensate_humidity(uncompData, calibData);
         }
     }
     else
     {
-        rslt = BME280_E_NULL_PTR;
+        retVal = BME280_E_NULL_PTR;
     }
 
-    return rslt;
+    return retVal;
 }
 
 
@@ -292,7 +284,7 @@ static int8_t get_calib_data(BME280_dev *dev)
 */
 static void parse_temp_press_calib_data(const uint8_t *regData, BME280_dev *dev)
 {
-    BME280_CalibData *calibData = &dev->calibData;
+    BME280_calibData *calibData = &dev->calibData;
 
     calibData->dig_t1 = BME280_CONCAT_BYTES(regData[1], regData[0]);
     calibData->dig_t2 = (int16_t)BME280_CONCAT_BYTES(regData[3], regData[2]);
@@ -335,8 +327,8 @@ static void parse_humidity_calib_data(const uint8_t *regData, BME280_dev *dev)
 
 
 /**
- @brief This private function interleaves the register address between the
- register data buffer for burst write operation.
+    @brief This private function interleaves the register address between the
+    register data buffer for burst write operation.
 */
 static void interleave_reg_addr(const uint8_t *regAddr, uint8_t *tempBuff, const uint8_t *regData, uint32_t len)
 {
@@ -347,4 +339,124 @@ static void interleave_reg_addr(const uint8_t *regAddr, uint8_t *tempBuff, const
         tempBuff[(index * 2) - 1] = regAddr[index];
         tempBuff[index * 2] = regData[index];
     }
+}
+
+
+/**
+    @brief This private function is used to compensate the raw temperature data and
+    return the compensated temperature data in integer data type.
+*/
+static int32_t compensate_temperature(const BME280_uncompData *uncompData, BME280_calibData *calibData)
+{
+    int32_t var1;
+    int32_t var2;
+    int32_t temperature;
+    int32_t temperatureMin = -4000;
+    int32_t temperatureMax = 8500;
+
+    var1 = (int32_t)((uncompData->temperature / 8) - ((int32_t)calibData->dig_t1 * 2));
+    var1 = (var1 * ((int32_t)calibData->dig_t2)) / 2048;
+    var2 = (int32_t)((uncompData->temperature / 16) - ((int32_t)calibData->dig_t1));
+    var2 = (((var2 * var2) / 4096) * ((int32_t)calibData->dig_t3)) / 16384;
+    calibData->t_fine = var1 + var2;
+    temperature = (calibData->t_fine * 5 + 128) / 256;
+
+    if (temperature < temperatureMin)
+    {
+        temperature = temperatureMin;
+    } 
+    else if (temperature > temperatureMax)
+    {
+        temperature = temperatureMax;
+    }
+
+    return temperature;
+}
+
+
+/**
+    @brief This private function is used to compensate the raw pressure data and
+    return the compensated pressure data in integer data type with high accuracy.
+*/
+static uint32_t compensate_pressure(const BME280_uncompData *uncompData, const BME280_calibData *calibData)
+{
+    int64_t var1;
+    int64_t var2;
+    int64_t var3;
+    int64_t var4;
+    uint32_t pressure;
+    uint32_t pressureMin = 3000000;
+    uint32_t pressureMax = 11000000;
+
+    var1 = ((int64_t)calibData->t_fine) - 128000;
+    var2 = var1 * var1 * (int64_t)calibData->dig_p6;
+    var2 = var2 + ((var1 * (int64_t)calibData->dig_p5) * 131072);
+    var2 = var2 + (((int64_t)calibData->dig_p4) * 34359738368);
+    var1 = ((var1 * var1 * (int64_t)calibData->dig_p3) / 256) + ((var1 * ((int64_t)calibData->dig_p2) * 4096));
+    var3 = ((int64_t)1) * 140737488355328;
+    var1 = (var3 + var1) * ((int64_t)calibData->dig_p1) / 8589934592;
+
+    /* To avoid divide by zero exception */
+    if (var1 != 0)
+    {
+        var4 = 1048576 - uncompData->pressure;
+        var4 = (((var4 * INT64_C(2147483648)) - var2) * 3125) / var1;
+        var1 = (((int64_t)calibData->dig_p9) * (var4 / 8192) * (var4 / 8192)) / 33554432;
+        var2 = (((int64_t)calibData->dig_p8) * var4) / 524288;
+        var4 = ((var4 + var1 + var2) / 256) + (((int64_t)calibData->dig_p7) * 16);
+        pressure = (uint32_t)(((var4 / 2) * 100) / 128);
+
+        if (pressure < pressureMin)
+        {
+            pressure = pressureMin;
+        }
+        else if (pressure > pressureMax)
+        {
+            pressure = pressureMax;
+        }
+    } else {
+        pressure = pressureMin;
+    }
+
+    return pressure;
+}
+
+
+/**
+    @brief This internal API is used to compensate the raw humidity data and
+    return the compensated humidity data in integer data type.
+*/
+static uint32_t compensate_humidity(const BME280_uncompData *uncompData,
+                                    const BME280_calibData *calibData)
+{
+    int32_t var1;
+    int32_t var2;
+    int32_t var3;
+    int32_t var4;
+    int32_t var5;
+    uint32_t humidity;
+    uint32_t humidityMax = 102400;
+
+    var1 = calibData->t_fine - ((int32_t)76800);
+    var2 = (int32_t)(uncompData->humidity * 16384);
+    var3 = (int32_t)(((int32_t)calibData->dig_h4) * 1048576);
+    var4 = ((int32_t)calibData->dig_h5) * var1;
+    var5 = (((var2 - var3) - var4) + (int32_t)16384) / 32768;
+    var2 = (var1 * ((int32_t)calibData->dig_h6)) / 1024;
+    var3 = (var1 * ((int32_t)calibData->dig_h3)) / 2048;
+    var4 = ((var2 * (var3 + (int32_t)32768)) / 1024) + (int32_t)2097152;
+    var2 = ((var4 * ((int32_t)calibData->dig_h2)) + 8192) / 16384;
+    var3 = var5 * var2;
+    var4 = ((var3 / 32768) * (var3 / 32768)) / 128;
+    var5 = var3 - ((var4 * ((int32_t)calibData->dig_h1)) / 16);
+    var5 = (var5 < 0 ? 0 : var5);
+    var5 = (var5 > 419430400 ? 419430400 : var5);
+    humidity = (uint32_t)(var5 / 4096);
+
+    if (humidity > humidityMax)
+    {
+        humidity = humidityMax;
+    }
+
+    return humidity;
 }
