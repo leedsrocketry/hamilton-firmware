@@ -10,59 +10,54 @@
 
 #pragma region Macros
 /** @name BME280 chip status */
-#define BME280_OK                                 INT8_C(0)
-#define BME280_E_NULL_PTR                         INT8_C(-1)
-#define BME280_E_COMM_FAIL                        INT8_C(-2)
-#define BME280_E_INVALID_LEN                      INT8_C(-3)
-#define BME280_E_DEV_NOT_FOUND                    INT8_C(-4)
-#define BME280_E_SLEEP_MODE_FAIL                  INT8_C(-5)
-#define BME280_E_NVM_COPY_FAILED                  INT8_C(-6)
-#define BME280_W_INVALID_OSR_MACRO                INT8_C(1)
+#define BME280_OK                                 0
+#define BME280_E_NULL_PTR                         -1
+#define BME280_E_COMM_FAIL                        -2
+#define BME280_E_INVALID_LEN                      -3
+#define BME280_E_DEV_NOT_FOUND                    -4
+#define BME280_E_SLEEP_MODE_FAIL                  -5
+#define BME280_E_NVM_COPY_FAILED                  -6
+#define BME280_W_INVALID_OSR_MACRO                1
 
 /** @name BME280 chip identifier */
-#define BME280_CHIP_ID                            UINT8_C(0x60)
+#define BME280_CHIP_ID                            0x60
 
 /** @name Register Address */
-#define BME280_REG_CHIP_ID                        UINT8_C(0xD0)
-#define BME280_REG_RESET                          UINT8_C(0xE0)
-#define BME280_REG_TEMP_PRESS_CALIB_DATA          UINT8_C(0x88)
-#define BME280_REG_HUMIDITY_CALIB_DATA            UINT8_C(0xE1)
-#define BME280_REG_CTRL_HUM                       UINT8_C(0xF2)
-#define BME280_REG_STATUS                         UINT8_C(0xF3)
-#define BME280_REG_PWR_CTRL                       UINT8_C(0xF4)
-#define BME280_REG_CTRL_MEAS                      UINT8_C(0xF4)
-#define BME280_REG_CONFIG                         UINT8_C(0xF5)
-#define BME280_REG_DATA                           UINT8_C(0xF7)
+#define BME280_REG_CHIP_ID                        0xD0
+#define BME280_REG_RESET                          0xE0
+#define BME280_REG_TEMP_PRESS_CALIB_DATA          0x88
+#define BME280_REG_HUMIDITY_CALIB_DATA            0xE1
+#define BME280_REG_CTRL_HUM                       0xF2
+#define BME280_REG_STATUS                         0xF3
+#define BME280_REG_PWR_CTRL                       0xF4
+#define BME280_REG_CTRL_MEAS                      0xF4
+#define BME280_REG_CONFIG                         0xF5
+#define BME280_REG_DATA                           0xF7
 
 /** @name Commands */
-#define BME280_SOFT_RESET_COMMAND                 UINT8_C(0xB6)
-#define BME280_STATUS_IM_UPDATE                   UINT8_C(0x01)
-#define BME280_STATUS_MEAS_DONE                   UINT8_C(0x08)
+#define BME280_CMD_SOFT_RESET                     0xB6
+#define BME280_CMD_STATUS_IM_UPDATE               0x01
 
 /** @name Measurement delay calculation macros  */
-#define BME280_MEAS_OFFSET                        UINT16_C(1250)
-#define BME280_MEAS_DUR                           UINT16_C(2300)
-#define BME280_PRES_HUM_MEAS_OFFSET               UINT16_C(575)
-#define BME280_MEAS_SCALING_FACTOR                UINT16_C(1000)
-#define BME280_STARTUP_DELAY                      UINT16_C(2000)
+#define BME280_STARTUP_DELAY                      2000
 
 /** @name Macros related to size */
-#define BME280_LEN_TEMP_PRESS_CALIB_DATA          UINT8_C(26)
-#define BME280_LEN_HUMIDITY_CALIB_DATA            UINT8_C(7)
-#define BME280_LEN_P_T_H_DATA                     UINT8_C(8)
+#define BME280_LEN_TEMP_PRESS_CALIB_DATA          26
+#define BME280_LEN_HUMIDITY_CALIB_DATA            7
+#define BME280_LEN_P_T_H_DATA                     8
 
 /** @name Sensor component selection macros. Internal for API implementation. */
-#define BME280_PRESS                              UINT8_C(1)
-#define BME280_TEMP                               UINT8_C(1 << 1)
-#define BME280_HUM                                UINT8_C(1 << 2)
-#define BME280_ALL                                UINT8_C(0x07)
+#define BME280_PRESS                              1
+#define BME280_TEMP                               (1 << 1)
+#define BME280_HUM                                (1 << 2)
+#define BME280_ALL                                (0x07)
 
 /** @name Macro to combine two 8 bit data's to form a 16 bit data */
 #define BME280_CONCAT_BYTES(msb, lsb)             (((uint16_t)msb << 8) | (uint16_t)lsb)
 
-/*!
- * BME280_INTF_RET_TYPE is the read/write interface return type which can be overwritten by the build system.
- */
+/**
+  BME280_INTF_RET_TYPE is the read/write interface return type which can be overwritten by the build system.
+*/
 #ifndef BME280_INTF_RET_TYPE
 #define BME280_INTF_RET_TYPE                      int8_t
 #endif
@@ -87,7 +82,7 @@ typedef BME280_INTF_RET_TYPE (*BME280_read_fptr_t)(uint8_t regAddr, uint8_t *reg
 typedef BME280_INTF_RET_TYPE (*BME280_write_fptr_t)(uint8_t regAddr, const uint8_t *regData, uint32_t len);
 
 
-#pragma region Structs
+#pragma region Structs/Emun
 /**
  * @brief BME280 device structure
  */
@@ -164,7 +159,7 @@ typedef struct BME280_calibData
   // Variable to store the intermediate temperature coefficient 
   int32_t t_fine;
 } BME280_calibData;
-#pragma endregion Structs
+#pragma endregion Structs/Emun
 
 
 #pragma region Functions

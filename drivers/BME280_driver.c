@@ -6,7 +6,7 @@
 */
 
 #include "BME280_driver.h"
-#include "stdint.h"s
+#include "stdint.h"
 #include "mcu.h"
 
 
@@ -44,7 +44,7 @@ int8_t BME280_soft_reset(BME280_dev *dev)
     uint8_t regAddr = BME280_REG_RESET;
     uint8_t statusReg = 0;
     uint8_t tryRun = 5;
-    uint8_t softRstCmd = BME280_SOFT_RESET_COMMAND; // 0xB6
+    uint8_t softRstCmd = BME280_CMD_SOFT_RESET; // 0xB6
 
     // Write the soft reset command in the sensor
     retVal = BME280_set_regs(&regAddr, &softRstCmd, 1, dev);
@@ -57,9 +57,9 @@ int8_t BME280_soft_reset(BME280_dev *dev)
             delay_microseconds(BME280_STARTUP_DELAY);
             retVal = BME280_get_regs(BME280_REG_STATUS, &statusReg, 1, dev);
 
-        } while ((retVal == BME280_OK) && (tryRun--) && (statusReg & BME280_STATUS_IM_UPDATE));
+        } while ((retVal == BME280_OK) && (tryRun--) && (statusReg & BME280_CMD_STATUS_IM_UPDATE));
 
-        if (statusReg & BME280_STATUS_IM_UPDATE)
+        if (statusReg & BME280_CMD_STATUS_IM_UPDATE)
         {
             retVal = BME280_E_NVM_COPY_FAILED;
         }
@@ -426,8 +426,7 @@ static uint32_t compensate_pressure(const BME280_uncompData *uncompData, const B
     @brief This internal API is used to compensate the raw humidity data and
     return the compensated humidity data in integer data type.
 */
-static uint32_t compensate_humidity(const BME280_uncompData *uncompData,
-                                    const BME280_calibData *calibData)
+static uint32_t compensate_humidity(const BME280_uncompData *uncompData, const BME280_calibData *calibData)
 {
     int32_t var1;
     int32_t var2;

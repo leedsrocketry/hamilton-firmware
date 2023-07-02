@@ -9,56 +9,48 @@
 #define MS5611_DRIVER_H
 #include <stdint.h>
 
-#define MS5611_RESET			    0x1e
-#define MS5611_READ_ADC			    0x00
-#define MS5611_READ_PROM_WORD		0xA0
-#define MS5611_PROM_WORDS_NB		8
-#define	SPI_MODE_0					(0|0)		/* (original MicroWire) */
+#pragma region Macros
 
+/** @name Commands */
+#define MS5611_CMD_READ_ADC       				0x00
+#define MS5611_CMD_READ_PROM      				0xA0
+#define MS5611_CMD_RESET          				0x1E
+#define MS5611_CMD_CONVERT_D1     				0x40
+#define MS5611_CMD_CONVERT_D2     				0x50	
 
+/** @name Oversampling rates */
+#define MS5611_PRESSURE_OSR_256  				0x40
+#define MS5611_PRESSURE_OSR_512  				0x42
+#define MS5611_PRESSURE_OSR_1024 				0x44
+#define MS5611_PRESSURE_OSR_2048 				0x46
+#define MS5611_PRESSURE_OSR_4096 				0x48
+
+#define MS5611_TEMP_OSR_256      				0x50
+#define MS5611_TEMP_OSR_512  	 				0x52
+#define MS5611_TEMP_OSR_1024 	 				0x54
+#define MS5611_TEMP_OSR_2048     				0x56
+#define MS5611_TEMP_OSR_4096     				0x58
+
+#pragma endregion Macros
+
+#pragma region Structs/Emun
 /**
-  @brief OverSampling Rate descriptor.
-  @warning: cmd MUST be kept aligned on a word boundary (see m5611_spi_read_adc_temp_and_pressure in ms5611_spi.c).
+	@brief The oversampling rate
+	@note A higher value means a longer conversion
 */
-typedef struct OversampleRate {
-	unsigned long convUsec;
-	uint8_t cmd;
-	unsigned short rate;
-} OversampleRate;
-
-
-/**
-  @brief TODO
-*/
-typedef struct State {
-  	void *client;
-	struct mutex lock;
-
-	const struct OversampleRate pressureOsr;
-	const struct OversampleRate tempOsr;
-
-	uint16_t prom[MS5611_PROM_WORDS_NB];
-
-	int (*reset)(State *st);
-	int (*read_prom_word)(State *st, int index, uint16_t *word);
-	int (*read_adc_temp_and_pressure)(State *st,
-					  int32_t *temp, int32_t * pressure);
-
-	int (*compensate_temp_and_pressure)(State *st, int32_t *temp,
-					  int32_t *pressure);
-} State;
-
+typedef enum MS5611_OSR {
+	MS5611_OSR_256,
+	MS5611_OSR_512,
+	MS5611_OSR_1024,
+	MS5611_OSR_2048,
+	MS5611_OSR_4096
+}MS5611_OSR;
+#pragma endregion Structs/Emun
 
 /**
   @brief TODO
 */
-int init_MS5611();
-
-
-/**
-  @brief TODO
-*/
-int probe();
+int_8 init_MS5611();
 
 
 #endif /* MS5611_DRIVER_H */
