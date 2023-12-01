@@ -336,7 +336,9 @@ static inline uint16_t spi_read_byte(SPI_TypeDef *spi) {
   @brief Test that the SPI works appropriately; use Putty to check the LUART output
   @param spi Selected SPI (1, 2 or 3)
 */
+/*
 static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) {
+  spi = SPI1;
   valueToSend++;
 
   // Convert the integer to a byte array
@@ -363,7 +365,9 @@ static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) 
 
   // Print the received integer
   printf("Received Value: %hu\r\n", receivedValue);
-}
+
+  return 0;
+}*/
 
 #pragma endregion SPI
 

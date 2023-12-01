@@ -91,6 +91,27 @@ void toggle_timeout_flag()
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
 int main(void) {
+  //uint16_t led_R = PIN('B', 9);
+  //uint16_t led_G = PIN('B', 8);
+  uint16_t led_B = PIN('H', 3);
+
+  //gpio_set_mode(led_R, GPIO_MODE_OUTPUT);
+  //gpio_set_mode(led_G, GPIO_MODE_OUTPUT);
+  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
+
+  systick_init(FREQ / 1000);
+  uint32_t timer = 0, period = 1000;
+
+  for (;;) {
+    if (timer_expired(&timer, period, s_ticks)) {
+      static bool on = true;                                 // This block is executed
+      gpio_write(led_B, on);                            // Every `period` milliseconds
+      on = !on;                                       // Toggle LED state
+      printf("==================== PROGRAM START ==================\r\n");
+    }
+  }
+
+  /*
   init_STM32(); // Initialise the board
   printf("==================== PROGRAM START ==================\r\n");
   
@@ -156,6 +177,6 @@ int main(void) {
 
   // Exit program
   printf("===================== PROGRAM END ====================");
-
+  */
   return 0;
 }
