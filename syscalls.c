@@ -79,6 +79,10 @@ int mkdir(const char *path, mode_t mode) {
 
 int _write(int fd, char *data, int len) {
   (void) fd, (void) data, (void) len;
-  if (fd == 1) uart_write_buf(LUART1, data, (size_t) len);
+  if (fd == 1){
+    uart_write_buf(LUART1, data, (size_t) len); // PAD RADIO
+    //uart_write_buf(UART1, data, (size_t) len);  // EXTERN USART
+    // uart_write_buf(UART3, data, (size_t) len); // GNNS RX/TX
+  }
   return -1; 
 }

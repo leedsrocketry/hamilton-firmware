@@ -98,9 +98,11 @@ int main(void) {
   //gpio_set_mode(led_R, GPIO_MODE_OUTPUT);
   //gpio_set_mode(led_G, GPIO_MODE_OUTPUT);
   gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
-    pwr_vdd2_init();
+  pwr_vdd2_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
+  //uart_init(UART1, 9600);
+  //uart_init(UART3, 9600); 
 
   uint32_t timer = 0, period = 500;
 
