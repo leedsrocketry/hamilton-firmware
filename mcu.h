@@ -156,10 +156,19 @@ static inline void uart_init(USART_TypeDef *uart, unsigned long baud) {
     RCC->APB1ENR2 |= BIT(0); 
   }
 
+  /*/ Nucleo pins
   if (uart == UART1) af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
   if (uart == UART2) af = 7, tx = PIN('A', 2), rx = PIN('A', 3);
   if (uart == UART3) af = 7, tx = PIN('D', 8), rx = PIN('D', 9); 
-  if (uart == LUART1) af = 8, tx = PIN('G', 7), rx = PIN('G', 8);   
+  if (uart == LUART1) af = 8, tx = PIN('G', 7), rx = PIN('G', 8); 
+  */
+
+  // Flight Computer pins
+  if (uart == UART1) af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
+  if (uart == UART2) af = 7, tx = PIN('A', 2), rx = PIN('A', 3);
+  if (uart == UART3) af = 7, tx = PIN('D', 8), rx = PIN('D', 9); 
+  if (uart == LUART1) af = 8, tx = PIN('B', 11), rx = PIN('B', 10);
+
 
   gpio_set_mode(tx, GPIO_MODE_AF);
   gpio_set_af(tx, af);

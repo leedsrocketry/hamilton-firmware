@@ -98,18 +98,36 @@ int main(void) {
   //gpio_set_mode(led_R, GPIO_MODE_OUTPUT);
   //gpio_set_mode(led_G, GPIO_MODE_OUTPUT);
   gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
-
+    pwr_vdd2_init();
   systick_init(FREQ / 1000);
-  uint32_t timer = 0, period = 1000;
+  uart_init(LUART1, 9600);
+
+  uint32_t timer = 0, period = 500;
 
   for (;;) {
     if (timer_expired(&timer, period, s_ticks)) {
       static bool on = true;                                 // This block is executed
       gpio_write(led_B, on);                            // Every `period` milliseconds
       on = !on;                                       // Toggle LED state
-      printf("==================== PROGRAM START ==================\r\n");
+      printf("LED: %d, tick: %lu\r\n", on, s_ticks);  // Write message
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   /*
   init_STM32(); // Initialise the board
