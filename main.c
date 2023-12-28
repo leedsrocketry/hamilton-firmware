@@ -11,6 +11,9 @@
 #include "STM32_init.h"
 #include "stm32l4r5xx.h"
 
+#include "drivers/ADXL375_driver.h"
+#include "drivers/LSM6DS3_driver.h"
+
 // Flags
 FlightStages flightStage = LAUNCHPAD;
 
@@ -29,6 +32,48 @@ void SysTick_Handler(void)
 void update_sensors(){
 
 };
+
+// void send_data() {
+//   //setControlPins(WRITE_PROTECT);                  // Write Protection
+//   //setControlPins(WRITE_PROTECT_OFF);              // Write Protection Off
+
+//   uint8_t dataArray[128];
+//   _memset(dataArray, 0x0, 128);
+
+//   for (uint8_t i = 0; i < 128; i ++) {
+//     dataArray[i] = i;
+//   }
+//   //eraseBlock(0);
+//   //eraseALL();
+//   //writeFrame(0, dataArray);
+//   //readFrame(10000, dataArray);
+
+//   FrameArray _input = unzip(dataArray);
+//   // frameArray _output;
+//   //int data_intact = 0;
+//   //int data_fixed = 0;
+//   //int data_error = 0;
+
+//   //int startAddr = frameAddressPointer;
+//   int numOfFramesToTest = 100;
+
+//   for (int i = 0; i < numOfFramesToTest; i++) {
+//     for (uint8_t j = 0; j < 128; j ++) {
+//       dataArray[j] = j;
+//     }
+
+//     dataArray[0] = 0;
+//     dataArray[1] = 0;
+//     _input = unzip(dataArray);
+
+//     log_frame(_input);
+//     printf("======================== DONE ========================");
+//   }
+
+//   printf("==================== DONE WRITING ====================\r\n");
+//   read_all();
+//   print_capacity_info();
+// };
 
 /**
   @brief TODO
