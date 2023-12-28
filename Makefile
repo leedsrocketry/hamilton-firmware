@@ -5,6 +5,13 @@ CFLAGS  ?=  -W -Wall -Wextra -Werror -Wundef -Wshadow -Wdouble-promotion \
 LDFLAGS ?= -Tlink.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=$@.map
 SOURCES = main.c startup.c syscalls.c STM32_init.c
 
+# Ensure make clean is cross platform
+ifeq ($(OS), Windows_NT)
+	RM = del
+else
+	RM = rm
+endif
+
 build: firmware.bin
 
 firmware.elf: $(SOURCES)
@@ -17,7 +24,16 @@ flash: firmware.bin
 	st-flash --reset write $< 0x8000000
 
 clean:
-	del -rf firmware.*
+	$(RM) -rf firmware.*
 
 debug:
 	openocd -f "C:/Program Files/OpenOCD/openocd/scripts/board/st_nucleo_l4.cfg
+
+# Different targets for HFC/Nucleo
+nucleo: build
+nucleo-flash: nucleo flash
+
+hfc: CFLAGS += -DFLIGHT_COMPUTER
+hfc: build
+
+hfc-flash: hfc flash
