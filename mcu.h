@@ -295,13 +295,14 @@ static inline void spi_init(SPI_TypeDef *spi)
   // CRC not needed so ignoring CRCL and CRCEN
 
   // Software slave management seems required
-  spi->CR1 |= BIT(9);
+  // spi->CR1 |= BIT(9);
 
   // Configuring the mcu as SPI master
   spi->CR1 |= BIT(2);
 
   // Frame size is 8 bits
-  spi->CR2 |= (7U << 8);
+  // spi->CR2 |= (7U << 8);
+  spi->CR2 |= (15u << 8);
 
   // Activating SS output enable
   spi->CR2 |= BIT(2);
@@ -353,7 +354,38 @@ static inline int spi_ready_read(SPI_TypeDef *spi)
   while (!(spi->SR & BIT(0)))
     ; // Wait until receive buffer is not empty (RxNE, 52.4.9)
 
+  while ((spi->SR & BIT(7)))
+    ; // Wait until receive buffer is not empty (RxNE, 52.4.9)
+
   return 1; // data is ready
+}
+
+// temp - evan
+static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
+{
+
+  uint8_t recieve_byte = 0;
+  spi->DR = (uint16_t)send_byte << 8;
+  spi_ready_read(spi);
+  recieve_byte = (uint16_t)SPI1->DR;
+  return recieve_byte;
+
+  // while (size > 0U)
+  // {
+  //   uint8_t recieve_byte = 0;
+
+  //   spi->DR = (uint8_t)send_byte;
+
+  //   while (((SPI1->SR) & (1u << 7)) || (!((SPI1->SR) & (1u << 0))))
+  //     ;
+
+  //   while (size > 0)
+  //   {
+  //     recieve_byte = (uint16_t)SPI1->DR;
+  //   }
+
+  //   return recieve_byte;
+  // }
 }
 
 /**

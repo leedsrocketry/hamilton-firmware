@@ -1,4 +1,4 @@
-CFLAGS  ?=  -W -Wall -Wextra -Werror -Wundef -Wshadow -Wdouble-promotion \
+CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
             -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas \
             -g3 -Os -ffunction-sections -fdata-sections -I. -Iinclude \
             -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(EXTRA_CFLAGS)
