@@ -66,6 +66,7 @@ static inline void delay(uint32_t time)
   @brief Enable system clocks by setting frequency
   @param ticks Required frequency
 */
+
 static inline void systick_init(uint32_t ticks)
 {
   if ((ticks - 1) > 0xffffff)
@@ -75,6 +76,15 @@ static inline void systick_init(uint32_t ticks)
   SysTick->CTRL = BIT(0) | BIT(1) | BIT(2); // Enable systick
   RCC->APB2ENR |= BIT(0);                   // Enable SYSCFG
 }
+
+static inline void delay_ms(int ms)
+{
+  int start = SysTick->VAL;
+  int end = SysTick->VAL + ms;
+  // printf("%hu\n", start);
+  // printf("%hu\n", end);
+}
+
 #pragma endregion System Clk
 
 #pragma region GPIO
@@ -295,18 +305,20 @@ static inline void spi_init(SPI_TypeDef *spi)
   // CRC not needed so ignoring CRCL and CRCEN
 
   // Software slave management seems required
-  // spi->CR1 |= BIT(9);
+  spi->CR1 |= BIT(9);
 
   // Configuring the mcu as SPI master
   spi->CR1 |= BIT(2);
 
   // Frame size is 8 bits
-  // spi->CR2 |= (7U << 8);
-  spi->CR2 |= (15u << 8);
+  spi->CR2 |= (7U << 8);
+  // spi->CR2 |= (15u << 8);
 
   // Activating SS output enable
   spi->CR2 |= BIT(2);
-  spi->CR2 |= BIT(3);
+  // spi->CR2 |= BIT(3);
+
+  spi->CR2 |= BIT(12);
 
   // Not using TI protocol so not bothered by FRF bit
   // Not using NSSP protocol so not bothered by NSS bit
@@ -325,7 +337,10 @@ static inline void spi_init(SPI_TypeDef *spi)
 */
 static inline void spi_write_byte(SPI_TypeDef *spi, uint8_t byte)
 {
-  spi->DR = byte;
+  // spi->DR = byte;
+  //*((volatile uint8_t *)&(spi->DR)) = byte;
+  // spi->DR = (uint16_t)byte << 8;
+  *(volatile uint8_t *)&spi->DR = byte;
   while ((spi->SR & BIT(7)) != 0)
     spin(1);
 }
@@ -354,8 +369,17 @@ static inline int spi_ready_read(SPI_TypeDef *spi)
   while (!(spi->SR & BIT(0)))
     ; // Wait until receive buffer is not empty (RxNE, 52.4.9)
 
+  // while ((spi->SR & BIT(7)))
+  //; // Wait until receive buffer is not empty (RxNE, 52.4.9)
+
+  return 1; // data is ready
+}
+
+static inline int spi_ready_write(SPI_TypeDef *spi)
+{
+
   while ((spi->SR & BIT(7)))
-    ; // Wait until receive buffer is not empty (RxNE, 52.4.9)
+    ;
 
   return 1; // data is ready
 }
@@ -363,29 +387,35 @@ static inline int spi_ready_read(SPI_TypeDef *spi)
 // temp - evan
 static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 {
-
   uint8_t recieve_byte = 0;
-  spi->DR = (uint16_t)send_byte << 8;
-  spi_ready_read(spi);
-  recieve_byte = (uint16_t)SPI1->DR;
+  spi_ready_write(SPI1);
+  //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
+  *(volatile uint8_t *)&spi->DR = send_byte;
+  spi_ready_read(SPI1);
+  recieve_byte = *((volatile uint8_t *)&(spi->DR));
   return recieve_byte;
+}
 
-  // while (size > 0U)
-  // {
-  //   uint8_t recieve_byte = 0;
+static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t byte, uint8_t transmit_size, uint8_t receive_size)
+{
+  gpio_write(PIN('A', 4), LOW);
+  spi_ready_write(spi);
 
-  //   spi->DR = (uint8_t)send_byte;
+  while (transmit_size > 0)
+  {
+    spi_transmit(spi, byte);
+    transmit_size--;
+  }
 
-  //   while (((SPI1->SR) & (1u << 7)) || (!((SPI1->SR) & (1u << 0))))
-  //     ;
-
-  //   while (size > 0)
-  //   {
-  //     recieve_byte = (uint16_t)SPI1->DR;
-  //   }
-
-  //   return recieve_byte;
-  // }
+  uint32_t result = 0;
+  while (receive_size > 0)
+  {
+    uint8_t received = spi_transmit(spi, 0x00);
+    result = (result << 8) | received;
+    receive_size--;
+  }
+  gpio_write(PIN('A', 4), HIGH);
+  return result;
 }
 
 /**
@@ -395,7 +425,8 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 */
 static inline uint16_t spi_read_byte(SPI_TypeDef *spi)
 {
-  return (uint16_t)(spi->DR & 255);
+  return *((volatile uint8_t *)&(spi->DR));
+  // return (uint16_t)(spi->DR & 255);
 }
 
 /**

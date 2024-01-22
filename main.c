@@ -94,89 +94,52 @@ int main(void)
 {
 
   init_STM32();
-  // printf("\n");
 
-  // spi_transmit(SPI1, 0x1E);
+  uint8_t init = spi_transmit(SPI1, 0x1E);
+  //   delay(1);
 
-  printf("hello world!\n");
+  printf("hello world!!\n");
+  // printf("init: %hu\n", init);
 
   uint16_t b;
-  uint16_t b1;
-  uint16_t b2;
+  uint8_t b0;
+  uint8_t b1;
+  uint8_t b2;
 
+  gpio_set_mode(PIN('A', 4), GPIO_MODE_OUTPUT);
   for (int i = 0; i < 8; i++)
   {
-    b1 = spi_transmit(SPI1, PROM_READ(i));
-    b2 = spi_transmit(SPI1, 0x00);
+    // gpio_write(PIN('A', 4), LOW);
+    // b0 = spi_transmit(SPI1, PROM_READ(i));
+    // b1 = spi_transmit(SPI1, 0x00);
+    // b2 = spi_transmit(SPI1, 0x00);
 
-    // Byte swap on the received value 'b'
-    uint8_t *toSwap = (uint8_t *)&b1;
-    uint8_t secondByte = toSwap[0];
-    toSwap[0] = toSwap[1];
-    toSwap[1] = secondByte;
-
-    // toSwap = (uint8_t *)&b2;
-    // secondByte = toSwap[0];
-    // toSwap[0] = toSwap[1];
-    // toSwap[1] = secondByte;
-
-    // b = (b1 << 8) | b2;
-
-    printf("Received Value %d (after byte-swap): %hu\r\n", i, b1);
+    // b = (uint16_t)((b1 << 8) | b2);
+    // printf("b: %hu\n", b);
+    // gpio_write(PIN('A', 4), HIGH);
+    // uint32_t r = spi_transmit_receive(SPI1, PROM_READ(i), 1, 2);
+    spi_write_byte(SPI1, PROM_READ(i));
+    printf("r: %hu\n", r);
   }
 
-  // b = spi_transmit(SPI1, CONVERT_D1_COMMAND);
-  // b = spi_transmit(SPI1, READ_ADC_COMMAND);
-  // printf("Received Value D1 (pre byte-swap): %hu\r\n", b);
+  spi_transmit_receive(SPI1, CONVERT_D2_COMMAND, 1, 1);
+  delay(1);
+  uint32_t p = spi_transmit_receive(SPI1, READ_ADC_COMMAND, 1, 3);
+  printf("p: %hu\n", p);
 
-  // uint8_t e = spi_transmit(SPI1, PROM_READ(1));
-
-  // printf("Received Value: %hu\r\n", e);
-
-  // printf("%d\n", d);
-  // printf("A %hu\r\n", SPI1->SR & BIT(7));
-  // spi_write_byte(SPI1, 0x1E);
-  // printf("B %hu\r\n", SPI1->SR & BIT(7));
-  // spi_ready_read(SPI1);
-  // printf("C %hu\r\n", SPI1->SR & BIT(7));
-  // spi_read_byte(SPI1);
-
-  // Assuming spi_write_byte and spi_ready_read functions take correct parameters
-  // gpio_set_mode(PIN('A', 4), GPIO_MODE_OUTPUT);
   // gpio_write(PIN('A', 4), LOW);
-  // spi_write_byte(SPI1, RESET);
-  // delay(3);
+  // spi_transmit(SPI1, CONVERT_D2_COMMAND);
+  // delay(1);
   // gpio_write(PIN('A', 4), HIGH);
-  // // spi_ready_read(SPI1);
-  // // spi_read_byte(SPI1);
 
-  // // while (1)
-  // // {
-  // printf("\n");
-  // uint8_t address;
-  // for (address = 0; address < 32; address++)
-  // {
-  //   // Assuming spi_ready_read returns a non-zero value when ready
-
-  //   gpio_write(PIN('A', 4), LOW);
-  //   spi_write_byte(SPI1, PROM_READ(address));
-  //   // spi_ready_read(SPI1);
-  //   uint16_t testByte1 = spi_read_byte(SPI1);
-  //   gpio_write(PIN('A', 4), HIGH);
-
-  //   printf("Received Values %i: %hu \r\n", address, testByte1);
-  // }
+  // gpio_write(PIN('A', 4), LOW);
+  // spi_transmit(SPI1, READ_ADC_COMMAND);
+  // uint8_t p0 = spi_transmit(SPI1, 0x00);
+  // uint8_t p1 = spi_transmit(SPI1, 0x00);
+  // uint8_t p2 = spi_transmit(SPI1, 0x00);
+  // uint32_t p = ((uint32_t)p0 << 16) | ((uint32_t)p1 << 8) | p2;
+  // printf("p: %hu\n", p);
   // gpio_write(PIN('A', 4), HIGH);
-  //  }
-  //  while (1)
-  //  {
-  //    // spi_write_byte(SPI1, 32);
-  //    spi_write_byte(SPI1, RESET);
-  //    if (spi_ready_read(SPI1))
-  //    {
-  //      printf("Received Value: %hu\r\n", spi_read_byte(SPI1));
-  //    }
-  //  }
 }
 
 /*
