@@ -7,11 +7,18 @@
 #ifndef MAX31855_DRIVER_H
 #define MAX31855_DRIVER_H
 
-//starting driver
+#include "mcu.h"
+
+SPI_TypeDef MAX31855_SPI;
+
+
 typedef struct MAX31855_data
 {
+  int16_t temp;
 
 } MAX31855_data;
+
+
 
 #pragma region Public
 /**
@@ -19,7 +26,7 @@ typedef struct MAX31855_data
   @note
   @return Success
 */
-int8_t MAX31855_init();
+int8_t MAX31855_init(SPI spi);
 
 /**
   @brief Get data from the MAX31855 Accelerometer module
@@ -27,7 +34,16 @@ int8_t MAX31855_init();
   * @param data ptr to MAX31855_data struct for returning data
   @return Success/Failure
 */
-int8_t MAX31855_get_data(MAX31855_data *data);
+int8_t MAX31855_get_data();
+
+/**
+  @brief Get data from the MAX31855 Accelerometer module
+  @note
+  * @param data ptr to MAX31855_data struct for returning data
+  @return Success/Failure
+*/
+int8_t MAX31855_get_full_data();
+
 
 #pragma endregion Public
 

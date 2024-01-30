@@ -6,6 +6,7 @@
         "adxl375_driver.h": "c",
         "maxm10s_driver.h": "c",
         "lsm6ds3_driver.h": "c",
-        "cstdint": "c"
+        "cstdint": "c",
+        "max31855_driver.h": "c"
     }
 }
