@@ -148,5 +148,4 @@ static void ADXL375_get_test_value(struct ADXL375_data *data, int samples)
 		delay(10);
 	}
 }
-
 #pragma endregion Private
