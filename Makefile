@@ -27,7 +27,7 @@ clean:
 	$(RM) -rf firmware.*
 
 debug:
-	openocd -f "C:/Program Files/OpenOCD/openocd/scripts/board/st_nucleo_l4.cfg
+	openocd -f "$(PWD)/debug/OpenOCD/openocd/scripts/board/st_nucleo_l4.cfg
 
 # Different targets for HFC/Nucleo
 nucleo: build
