@@ -7,6 +7,7 @@
 #ifndef MAX31855_DRIVER_H
 #define MAX31855_DRIVER_H
 
+//starting driver
 typedef struct MAX31855_data
 {
 
