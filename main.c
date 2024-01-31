@@ -11,8 +11,8 @@
 #include "STM32_init.h"
 #include "stm32l4r5xx.h"
 
-#include "drivers/ADXL375_driver.h"
-#include "drivers/LSM6DS3_driver.h"
+//#include "drivers/ADXL375_driver.h"
+//#include "drivers/LSM6DS3_driver.h"
 
 // Flags
 FlightStages flightStage = LAUNCHPAD;
@@ -85,19 +85,46 @@ void toggle_timeout_flag()
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
+#define RESET 0x1E
+#define PROM_READ(address) (0xA0 | ((address) << 1))
+#define CONVERT_D1_COMMAND 0x40
+#define CONVERT_D2_COMMAND 0x50
+#define READ_ADC_COMMAND 0x00
 int main(void)
 {
 
   init_STM32();
 
-  while (1)
+  uint8_t init = spi_transmit(SPI1, 0x1E);
+  //   delay(1);
+
+  printf("hello world!!\n");
+
+  uint32_t result = 0;
+
+  for (int i = 0; i < 8; i++)
   {
-    spi_write_byte(SPI1, 32);
-    if (spi_ready_read(SPI1))
-    {
-      printf("Received Value: %hu\r\n", spi_read_byte(SPI1));
-    }
+    // Method 1: single function method
+    //uint32_t r = spi_transmit_receive(SPI1, PROM_READ(i), 1, 2);
+
+    // Method 2: manual method
+    // Enable chip select, transmit command, receive data
+    spi_enable_cs(SPI1);
+    spi_transmit(SPI1, PROM_READ(i));
+    // Transmit Dummy data to receive data
+    uint8_t r0 = spi_transmit(SPI1, 0x00);
+    uint8_t r1 = spi_transmit(SPI1, 0x00);
+    // Combine byte response into one uint16
+    uint16_t result = (uint16_t)((r1 << 8) | r0);
+    printf("r: %hu\n", result);
+    spi_disable_cs(SPI1);
   }
+
+  // Read more data specific to barometer
+  spi_transmit_receive(SPI1, CONVERT_D2_COMMAND, 1, 1);
+  delay(1);
+  uint32_t p = spi_transmit_receive(SPI1, READ_ADC_COMMAND, 1, 3);
+  printf("p: %hu\n", p);
 }
 
 /*
@@ -105,7 +132,7 @@ init_STM32(); // Initialise the board
 printf("==================== PROGRAM START ==================\r\n");
 
 // Initialise the drivers
-printf("================ INITIALISE FC DRIVERS ===============\r\n");
+printf("================ INITIALISE FC DRIVERS ===============\`r\n");
 init_flash();
 //erase_all();
 frameAddressPointer = 0;
