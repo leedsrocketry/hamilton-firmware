@@ -66,6 +66,7 @@ static inline void delay(uint32_t time)
   @brief Enable system clocks by setting frequency
   @param ticks Required frequency
 */
+
 static inline void systick_init(uint32_t ticks)
 {
   if ((ticks - 1) > 0xffffff)
@@ -75,6 +76,7 @@ static inline void systick_init(uint32_t ticks)
   SysTick->CTRL = BIT(0) | BIT(1) | BIT(2); // Enable systick
   RCC->APB2ENR |= BIT(0);                   // Enable SYSCFG
 }
+
 #pragma endregion System Clk
 
 #pragma region GPIO
@@ -265,7 +267,9 @@ static inline void spi_init(SPI_TypeDef *spi)
   if (spi == SPI3)
     RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
 
-  gpio_set_mode(ss, GPIO_MODE_AF);
+  // ss was originally set to GPIO_MODE_AF, which seems correct but needs to be set to output to actually work?
+  // investigate !!!
+  gpio_set_mode(ss, GPIO_MODE_OUTPUT);
   gpio_set_mode(sclk, GPIO_MODE_AF);
   gpio_set_mode(miso, GPIO_MODE_AF);
   gpio_set_mode(mosi, GPIO_MODE_AF);
@@ -302,10 +306,13 @@ static inline void spi_init(SPI_TypeDef *spi)
 
   // Frame size is 8 bits
   spi->CR2 |= (7U << 8);
+  // spi->CR2 |= (15u << 8);
 
   // Activating SS output enable
   spi->CR2 |= BIT(2);
-  spi->CR2 |= BIT(3);
+  // spi->CR2 |= BIT(3);
+
+  spi->CR2 |= BIT(12);
 
   // Not using TI protocol so not bothered by FRF bit
   // Not using NSSP protocol so not bothered by NSS bit
@@ -315,30 +322,6 @@ static inline void spi_init(SPI_TypeDef *spi)
 
   // Enable the SPI!
   spi->CR1 |= BIT(6);
-}
-
-/**
-  @brief Write via SPI
-  @param spi `SPI1`, `SPI2` or `SPI3`
-  @param byte Byte to write
-*/
-static inline void spi_write_byte(SPI_TypeDef *spi, uint8_t byte)
-{
-  spi->DR = byte;
-  while ((spi->SR & BIT(7)) != 0)
-    spin(1);
-}
-
-/**
-  @brief Write to SPI buffer
-  @param spi Selected SPI (1, 2 or 3)
-  @param buf Buffer to write to
-  @param len Length of the message
-*/
-static inline void spi_write_buf(SPI_TypeDef *spi, char *buf, size_t len)
-{
-  while (len-- > 0)
-    spi_write_byte(spi, *(uint8_t *)buf++);
 }
 
 /**
@@ -356,14 +339,81 @@ static inline int spi_ready_read(SPI_TypeDef *spi)
   return 1; // data is ready
 }
 
+static inline int spi_ready_write(SPI_TypeDef *spi)
+{
+
+  while ((spi->SR & BIT(7)))
+    ; // Wait until SPI is not busy
+
+  return 1; // data is ready
+}
+
 /**
-  @brief Read from the selected SPI
+  @brief Enable chip select line for SPI1
   @param spi Selected SPI (1, 2 or 3)
+  @note currently ONLY works for SPI1 for testing
+*/
+static inline void spi_enable_cs(SPI_TypeDef *spi)
+{
+  gpio_write(PIN('A', 4), LOW);
+}
+
+/**
+  @brief Enable chip select line for SPI1
+  @param spi Selected SPI (1, 2 or 3)
+  @note currently ONLY works for SPI1 for testing
+*/
+static inline void spi_disable_cs(SPI_TypeDef *spi)
+{
+  gpio_write(PIN('A', 4), HIGH);
+}
+
+/**
+  @brief Transmit single byte to and from SPI peripheral
+  @param spi Selected SPI (1, 2 or 3)
+  @param send_byte Byte to be sent via SPI
   @return Byte from SPI
 */
-static inline uint16_t spi_read_byte(SPI_TypeDef *spi)
+static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 {
-  return (uint16_t)(spi->DR & 255);
+  uint8_t recieve_byte = 0;
+  spi_ready_write(SPI1);
+  //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
+  *(volatile uint8_t *)&spi->DR = send_byte;
+  spi_ready_read(SPI1);
+  recieve_byte = *((volatile uint8_t *)&(spi->DR));
+  return recieve_byte;
+}
+
+/**
+  @brief Transmit multiple bytes to and from SPI peripheral
+  @param spi Selected SPI (1, 2 or 3)
+  @param send_byte Byte to be sent via SPI
+  @param transmit_size Number of bytes to be sent (Not currently implemented)
+  @param receive_size Number of bytes to be recieved
+  @return Byte from SPI
+*/
+static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size)
+{
+  spi_enable_cs(spi);
+  spi_ready_write(spi);
+
+  // Not currently implemented
+  while (transmit_size > 0)
+  {
+    spi_transmit(spi, send_byte);
+    transmit_size--;
+  }
+
+  uint32_t result = 0;
+  while (receive_size > 0)
+  {
+    uint8_t received = spi_transmit(spi, 0x00);
+    result = (result << 8) | received;
+    receive_size--;
+  }
+  spi_disable_cs(spi);
+  return result;
 }
 
 /**
