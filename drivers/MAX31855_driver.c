@@ -5,15 +5,17 @@
     Description: Driver file for the Temperature module MAX31855KASA+T (https://www.mouser.co.uk/ProductDetail/Analog-Devices/ADXL375BCCZ?qs=S4ILP0tmc7Q%2Fd%2FHPWf9YpQ%3D%3D)
 */
 
-//Does anything need to be done for the CS pin??
-
 #include "MAX31855_driver.h"
 
 int8_t MAX31855_init(SPI_TypeDef spi){
     MAX31855_SPI = spi;
+    //need anything for CS pin?
 };
 
-int8_t MAX31855_get_data(){
+MAX31855_data MAX31855_get_data(){
+    //data structure
+    MAX31855_data data;
+
     //Device will start sending data as soon as CS is pulled low, no data needs to be sent
     //send no data, recieve first 14 bits which is th cold-junction compensated thermocouple temperature
 
@@ -22,12 +24,21 @@ int8_t MAX31855_get_data(){
 
     //now have a 16 bit response where we only want the first 14 bits
     //Remove last 2 bits
-    uint16_t bitShifted = rawData >> 2; 
+    uint16_t bitShifted = rawData >> 2;
+
     //convert to number using the values of each bit, 0.25 resolution.
+    data.temp = bitShifted;
+    data.temp = data.temp / 4;
+
+    //Fault
+    data.fault = (0b000000000001 & rawData);
+
+
+    return data;
 
 };
 
-int8_t MAX31855_get_full_data(){
+MAX31855_data MAX31855_get_full_data(){
     //Device will start sending data as soon as CS is pulled low, no data needs to be sent
     //send no data, recieve 32 bits, 
     /*
@@ -42,17 +53,61 @@ int8_t MAX31855_get_full_data(){
     D0: 1 = Open circuit
     */
 
-    struct MAX31855_data data;
+    //data structure
+    MAX31855_data data;
+
     //SPI send 0 bits, recieve 4 bytes
     uint32_t rawData = spi_transmit_receive(MAX31855_SPI, 0, 0, 4);
     
+    //----------- Get temperature reading -------------
     //get first 14 bits for the temperature reading
-    data.temp = rawData >> (18) //need to confirm this is correct
+    uint16_t rawTempBits = rawData >> 18;
+    data.temp = rawTempBits;
+    //divide by 4 for 0.25 resolution
+    data.temp = data.temp / 4;
 
-    //get internal temperature
+    //Any Fault (D16)
+    data.fault = (0b000000000001 & rawTempBits);
 
-    //get all fault info
+    //---------- Get internal temperature --------------
+    //mask the 12 bits where information is and shift to end
+    rawTempBits = ((0b00000000000000001111111111110000 & rawData) >> 4);
 
-    
+    data.internalTemp = rawTempBits;
+    //Divide by 2^4 for the resolution defined.
+    data.internalTemp = data.internalTemp / 16;
 
+    //----------- Get all fault info ------------------
+    uint8_t faultBits = 0b00000000000000000000000000000111 & rawData;
+    if (data.fault)
+    {
+        //if bit D2 is 1
+        if (faultBits>>2)
+        {
+            //there is a short to VCC
+            data.faultType = 1;
+        }
+        //if bit D1 is 1
+        else if ((faultBits & 0b00000010) >> 1)
+        {
+            //there is a short to GND
+            data.faultType = 2;
+        }
+        else if ((faultBits & 0b00000001))
+        {
+            //there is a open circuit fault
+            data.faultType = 3;
+        }
+        else
+        {
+            //Unknown fault
+            data.faultType = 4;
+        }
+    }
+    else
+    {
+        data.faultType = 0;
+    }
+
+    return data;
 };
