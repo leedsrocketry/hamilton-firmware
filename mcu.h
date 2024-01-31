@@ -77,14 +77,6 @@ static inline void systick_init(uint32_t ticks)
   RCC->APB2ENR |= BIT(0);                   // Enable SYSCFG
 }
 
-static inline void delay_ms(int ms)
-{
-  int start = SysTick->VAL;
-  int end = SysTick->VAL + ms;
-  // printf("%hu\n", start);
-  // printf("%hu\n", end);
-}
-
 #pragma endregion System Clk
 
 #pragma region GPIO

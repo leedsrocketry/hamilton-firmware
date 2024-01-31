@@ -11,8 +11,8 @@
 #include "STM32_init.h"
 #include "stm32l4r5xx.h"
 
-#include "drivers/ADXL375_driver.h"
-#include "drivers/LSM6DS3_driver.h"
+//#include "drivers/ADXL375_driver.h"
+//#include "drivers/LSM6DS3_driver.h"
 
 // Flags
 FlightStages flightStage = LAUNCHPAD;
@@ -117,8 +117,8 @@ int main(void)
     // b = (uint16_t)((b1 << 8) | b2);
     // printf("b: %hu\n", b);
     // gpio_write(PIN('A', 4), HIGH);
-    // uint32_t r = spi_transmit_receive(SPI1, PROM_READ(i), 1, 2);
-    spi_write_byte(SPI1, PROM_READ(i));
+    uint32_t r = spi_transmit_receive(SPI1, PROM_READ(i), 1, 2);
+    //spi_write_byte(SPI1, PROM_READ(i));
     printf("r: %hu\n", r);
   }
 
