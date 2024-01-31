@@ -99,47 +99,32 @@ int main(void)
   //   delay(1);
 
   printf("hello world!!\n");
-  // printf("init: %hu\n", init);
 
-  uint16_t b;
-  uint8_t b0;
-  uint8_t b1;
-  uint8_t b2;
+  uint32_t result = 0;
 
-  gpio_set_mode(PIN('A', 4), GPIO_MODE_OUTPUT);
   for (int i = 0; i < 8; i++)
   {
-    // gpio_write(PIN('A', 4), LOW);
-    // b0 = spi_transmit(SPI1, PROM_READ(i));
-    // b1 = spi_transmit(SPI1, 0x00);
-    // b2 = spi_transmit(SPI1, 0x00);
+    // Method 1: single function method
+    //uint32_t r = spi_transmit_receive(SPI1, PROM_READ(i), 1, 2);
 
-    // b = (uint16_t)((b1 << 8) | b2);
-    // printf("b: %hu\n", b);
-    // gpio_write(PIN('A', 4), HIGH);
-    uint32_t r = spi_transmit_receive(SPI1, PROM_READ(i), 1, 2);
-    //spi_write_byte(SPI1, PROM_READ(i));
-    printf("r: %hu\n", r);
+    // Method 2: manual method
+    // Enable chip select, transmit command, receive data
+    spi_enable_cs(SPI1);
+    spi_transmit(SPI1, PROM_READ(i));
+    // Transmit Dummy data to receive data
+    uint8_t r0 = spi_transmit(SPI1, 0x00);
+    uint8_t r1 = spi_transmit(SPI1, 0x00);
+    // Combine byte response into one uint16
+    uint16_t result = (uint16_t)((r1 << 8) | r0);
+    printf("r: %hu\n", result);
+    spi_disable_cs(SPI1);
   }
 
+  // Read more data specific to barometer
   spi_transmit_receive(SPI1, CONVERT_D2_COMMAND, 1, 1);
   delay(1);
   uint32_t p = spi_transmit_receive(SPI1, READ_ADC_COMMAND, 1, 3);
   printf("p: %hu\n", p);
-
-  // gpio_write(PIN('A', 4), LOW);
-  // spi_transmit(SPI1, CONVERT_D2_COMMAND);
-  // delay(1);
-  // gpio_write(PIN('A', 4), HIGH);
-
-  // gpio_write(PIN('A', 4), LOW);
-  // spi_transmit(SPI1, READ_ADC_COMMAND);
-  // uint8_t p0 = spi_transmit(SPI1, 0x00);
-  // uint8_t p1 = spi_transmit(SPI1, 0x00);
-  // uint8_t p2 = spi_transmit(SPI1, 0x00);
-  // uint32_t p = ((uint32_t)p0 << 16) | ((uint32_t)p1 << 8) | p2;
-  // printf("p: %hu\n", p);
-  // gpio_write(PIN('A', 4), HIGH);
 }
 
 /*
