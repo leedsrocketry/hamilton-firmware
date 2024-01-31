@@ -10,7 +10,7 @@
 // Public functions to be called from main flight computer
 #pragma region Public
 
-void init_ADXL375(SPI_TypeDef spi){
+void ADXL375_init(SPI_TypeDef spi){
     // Get the device into 4-wire SPI mode before proceeding
     ADXL375_SPI = spi;
     ADXL375_reg_write(ADXL375_DATA_FORMAT, ADXL375_DATA_FORMAT_SETTINGS(0));
@@ -68,12 +68,11 @@ void init_ADXL375(SPI_TypeDef spi){
     int16_t	z_change = self_test_on.z - self_test_off.z;
     self_test_value = z_change;
 
-    if (z_change < MIN_SELF_TEST)
-		AO_SENSOR_ERROR(AO_DATA_ADXL375);
+    // TODO: Check if the self test value is valid
 };
 
 
-static ADXL375_data get_data_ADXL375(){
+static ADXL375_data ADXL375_get_data(){
     struct ADXL375_data data;
     // x-axis
     spi_write_byte(ADXL375_SPI, ADXL375_X_REG_DATAX0);
@@ -118,10 +117,12 @@ static ADXL375_data get_data_ADXL375(){
 
 
 static void ADXL375_start(void) {
-	ao_spi_get_bit(ADXL375_CS_PORT,
-        ADXL375_CS_PIN,
-        ADXL375_SPI_INDEX,
-        ADXL375_SPI_SPEED);
+	/*  
+        TO DO: configure chip for: 
+            ADXL375_CS_PIN,
+            ADXL375_SPI_INDEX,
+            ADXL375_SPI_SPEED);
+    */ 
 }
 
 
@@ -147,5 +148,4 @@ static void ADXL375_get_test_value(struct ADXL375_data *data, int samples)
 		delay(10);
 	}
 }
-
 #pragma endregion Private

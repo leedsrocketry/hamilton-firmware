@@ -9,11 +9,11 @@
 
 #pragma region Public
 
-int8_t init_LSM6DS3(){
+int8_t LSM6DS3_init(){
 
 };
 
-int8_t get_data_LSM6DS3(LSM6DS3_data *data){
+int8_t LSM6DS3_get_data(LSM6DS3_data *data){
 
 };
 

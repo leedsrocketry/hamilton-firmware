@@ -7,10 +7,10 @@
 
 #include "MAX31855_driver.h"
 
-int8_t init_MAX31855(){
+int8_t MAX31855_init(){
 
 };
 
-int8_t get_data_MAX31855(MAX31855_data *data){
+int8_t MAX31855_get_data(MAX31855_data *data){
 
 };

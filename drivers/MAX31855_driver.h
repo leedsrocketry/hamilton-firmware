@@ -7,6 +7,7 @@
 #ifndef MAX31855_DRIVER_H
 #define MAX31855_DRIVER_H
 
+//starting driver
 typedef struct MAX31855_data
 {
 
@@ -18,7 +19,7 @@ typedef struct MAX31855_data
   @note
   @return Success
 */
-int8_t init_MAX31855();
+int8_t MAX31855_init();
 
 /**
   @brief Get data from the MAX31855 Accelerometer module
@@ -26,7 +27,7 @@ int8_t init_MAX31855();
   * @param data ptr to MAX31855_data struct for returning data
   @return Success/Failure
 */
-int8_t get_data_MAX31855(MAX31855_data *data);
+int8_t MAX31855_get_data(MAX31855_data *data);
 
 #pragma endregion Public
 
