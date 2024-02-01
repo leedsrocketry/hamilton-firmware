@@ -10,88 +10,83 @@
 
 // __________________________________ Public _________________
 
-int8_t init_SI446(SPI_Type_Def *spi){
-    int8_t retVal;
+int8_t SI446_init(SPI_Type_Def *spi){
+    int8_t SI446_retVal;
     SI446_SPI = spi;
+    SI446_settings.SI446_channel; //?????;
 
-    return retVal;
+    SI446_retVal = SI446_Power_up();
+    return SI446_retVal;
 };
 
-void Write_data_SI446(uint8_t *data, size_t byteCount){
+void SI446_write_data(uint8_t *data, size_t byteCount){
+    // send_CTS_HIGH
     spi_write_byte(SI446_SPI, SI446_WRITE_TX_FIFO_CMD);
     spi_write_buf(SI446_SPI, data, byteCount);
+    // send_CTS_LOW
 };
-
-void Read_data_SI446(uint8_t *data, size_t byteCount){
+void SI446_read_byte(){
+    // send_CTS_HIGH
     spi_write_byte(SI446_SPI, SI446_WRITE_RX_FIFO_CMD);
     spi_ready_read(SI446_SPI);
-    for(int i = 0; i < byteCount; i ++){
-        data[i] = spi_read_byte(SI446_SPI);
-    }
+    spi_read_byte(SI446_SPI);
+    // send_CTS_LOW
 };
 
-int8_t Transmit_SI446(){
-    int8_t retVal;
-    uint8_t command[4];
-    command[0] = SI446_START_TX_CMD;
-    command[1] = SI446_Radio_settings.SI446_channel;
-    command[2] = 00110000;   // go into ready state, send data currently in FIFO, imeadiately
-    command[3] = 0; // use the packet handler packet config.
-    spi_write_buf(SI446_SPI, command, 4);
-    retVal = check_CTS(-1)   // CTS returned once chip is in TX state - doesnt mean packet has been sent
-    return retVal;
+int8_t SI446_transmit(){
+    int8_t SI446_retVal;
+    uint8_t SI446_command[4];
+    SI446_command[0] = SI446_START_TX_CMD;
+    SI446_command[1] = SI446_settings.SI446_channel;
+    SI446_command[2] = 00110000;   // go into ready state, send data currently in FIFO, imeadiately
+    SI446_command[3] = 0; // use the packet handler packet config.
+    // send_CTS_HIGH
+    spi_write_buf(SI446_SPI, SI446_command, 4);
+    SI446_retVal = SI446_check_CTS(-1)   // CTS returned once chip is in TX state - doesnt mean packet has been sent
+    spi_write_buf(SI446_SPI, SI446_command, 4);
+    // send_CTS_low
+    return SI446_retVal;
 }
 
-int8_t Recieve_SI446(){
-    int8_t retVal;
-    uint8_t command[7];
-    command[0] = SI446_START_RX_CMD;
-    command[1] = SI446_Radio_settings.SI446_channel;
-    command[2] = 1;  // go into RX state imeadiately
-    command[3] = 0; // use the packet handler packet config.
-    command[4] = SI446_Radio_settings.SI446_RXTIME_OUT_STATE;
-    command[5] = SI446_Radio_settings.SI446_RX_VALID_STATE;
-    command[6] = SI446_Radio_settings.SI446_RX_INVALID_STATE;
-    spi_write_buf(SI446_SPI, command, 7);
-    retVal = check_CTS(-1)   // CTS returned once chip is in TX state - doesnt mean packet has been sent
-    return retVal;
+int8_t SI446_Recieve(){
+    int8_t SI446_retVal;
+    uint8_t SI446_command[7];
+    SI446_command[0] = SI446_START_RX_CMD;
+    SI446_command[1] = SI446_settings.SI446_channel;
+    SI446_command[2] = 1;  // go into RX state imeadiately
+    SI446_command[3] = 0; // use the packet handler packet config.
+    SI446_command[4] = SI446_settings.SI446_RXTIME_OUT_STATE;
+    SI446_command[5] = SI446_settings.SI446_RX_VALID_STATE;
+    SI446_command[6] = SI446_settings.SI446_RX_INVALID_STATE;
+    // send_CTS_HIGH
+    spi_write_buf(SI446_SPI, SI446_command, 7);
+    SI446_retVal = SI446_check_CTS(-1)   // CTS returned once chip is in TX state - doesnt mean packet has been sent
+    // send_CTS_low
+    return SI446_retVal;
 }
 
 
 //_________________________________ Private ____________________
 
-/**
-  @brief funtion to deal with recieving data from the sensor
-  @note waits until CTS is correct then records data
-  @param byteCount number of bytes to clock and read
-  @param data ptr to the data storage location
-  @return Success/Failure
-*/
-static int8_t get_response(int byteCount, uint8_t *data){
-    int8_t retVal;
+
+static int8_t SI446_get_response(int byteCount, uint8_t *data){
+    int8_t SI446_retVal;
     // wait till CTS is correct
-    retVal = check_CTS(0)
-    if(retVal){
+    SI446_retVal = SI446_check_CTS(0)
+    if(SI446_retVal){
         for(int i = 0; i < byteCount; i ++){
             data[i] = spi_read_byte(SI446_SPI);
         }
-        retVal = 1;
+        SI446_retVal = 1;
     } // CTS not correct
-    return retVal;
+    return SI446_retVal;
 };
 
-/**
-  @brief checks if CTS bit is set
-  @note e.g. used to check if command with no response has been correctly carried out
-  @param desired -1: no time_out, 
-                  0: default (SI446_CTS_TIME_OUT)
-                 >0: custom time (in ms) to wait for CTS response.
-  @return Success/Failure
-*/
-static int8_t check_CTS(int desired){
-    int time_out = SI446_CTS_TIME_OUT;
+
+static int8_t SI446_check_CTS(int desired){
+    int SI446_time_out = SI446_CTS_TIME_OUT;
     if(desired > 0){ // use user defined  
-    time_out = desired
+    SI446_time_out = desired
     }
     else if(desired < 0){   // no timeout needed
         spi_ready_ready(SI446_SPI); // wait till buffer not empty 
@@ -119,12 +114,9 @@ static int8_t check_CTS(int desired){
     return SI446_E_CTS_TIME_OUT;
 };
 
-/**
-  @brief COMMAND: power up the sensor with specified function
-  @return Success/Failure
-*/
-static int8_t Power_up(){
-    int8_t retVal;
+
+static int8_t SI446_power_up(){
+    int8_t SI446_retVal;
     uint8_t packet[7];
     uint32_t xo_freq = 30000000; // default
 
@@ -135,9 +127,11 @@ static int8_t Power_up(){
     packet[4] = (uint8_t)(xo_freq >> 16);
     packet[5] = (uint8_t)(xo_freq >> 8);
     packet[6] = (uint8_t)(xo_freq);
+    // send_CTS_HIGH
     spi_write_buf(SI446_SPI, packet, 7);
-    retVal = check_CTS(50); // ensure it has been processed correctly..takes longer
-    return retVal;
+    SI446_retVal = SI446_check_CTS(50); // ensure it has been processed correctly..takes longer
+    // send_CTS_LOW
+    return SI446_retVal;
 };
 
 
