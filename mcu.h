@@ -409,12 +409,18 @@ static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte,
   while (receive_size > 0)
   {
     uint8_t received = spi_transmit(spi, 0x00);
-    result = (result << 8) | received;
+    result = (result << 8);
+    result = result | received;
     receive_size--;
+    //printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
+    spi_ready_write(spi);
   }
   spi_disable_cs(spi);
   return result;
 }
+
+// 10000010 1100000 100111110
+// 11010111 1100000 
 
 /**
   @brief Test that the SPI works appropriately; use Putty to check the LUART output
