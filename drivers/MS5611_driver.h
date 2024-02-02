@@ -8,11 +8,12 @@
 #ifndef MS5611_DRIVER_H
 #define MS5611_DRIVER_H
 #include <stdint.h>
+#include <stdbool.h>
 
 #pragma region Macros
 /** @name Commands */
 #define MS5611_CMD_READ_ADC       				0x00
-#define MS5611_CMD_READ_PROM      				0xA0
+#define MS5611_CMD_READ_PROM(address)                      (0xA0 | ((address) << 1))
 #define MS5611_CMD_RESET          				0x1E
 #define MS5611_CMD_CONVERT_D1     				0x40
 #define MS5611_CMD_CONVERT_D2     				0x50	
@@ -54,7 +55,7 @@ typedef enum MS5611_OSR {
 /**
   @brief Initialise the pressure sensor with default parameters
 */
-int_8 init_MS5611();
+uint8_t MS5611_init();
 
 
 /**
@@ -95,5 +96,7 @@ int32_t MS5611_get_altitude(bool calculate);
 	@brief Calculate/update the altitude/pressure/temperature using the barometer
 */
 void MS5611_calculate();
+
+uint8_t MS5611_read_PROM();
 
 #endif /* MS5611_DRIVER_H */
