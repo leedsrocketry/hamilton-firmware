@@ -21,18 +21,18 @@ const uint16_t _blueLED = PIN('B', 7);
 /**
   @brief Initialisation of the STM32L5 board
 */
-void init_STM32()
+void STM32_init()
 {
   systick_init(FREQ / 1000);     // Tick every 1 ms
-  init_peripherals();
-  init_internals();
+  STM32_init_peripherals();
+  STM32_init_internals();
 }
 
 
 /**
   @brief Initialisation of the STM32L4R5 board internals (UART, SPI, Power, etc.)
 */
-void init_internals()
+void STM32_init_internals()
 {
   // UART
   systick_init(FREQ / 1000);  // Tick every 1 ms
@@ -52,7 +52,7 @@ void init_internals()
 /**
   @brief Initialisation of the STM32L5 board externals (GPIO, ADC, etc.)
 */
-void init_peripherals()
+void STM32_init_peripherals()
 {
   // Define inputs and outputs
   gpio_set_mode(_buzzer, GPIO_MODE_OUTPUT);
@@ -67,7 +67,7 @@ void init_peripherals()
 /**
   @brief Led on
 */
-void led_on()
+void STM32_led_on()
 {
   gpio_write(_blueLED, HIGH);
 }
@@ -76,7 +76,7 @@ void led_on()
 /**
   @brief Led off
 */
-void led_off()
+void STM32_led_off()
 {
   gpio_write(_blueLED, LOW);
 }
@@ -85,7 +85,7 @@ void led_off()
 /**
   @brief Buzzer sound
 */
-void beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps)
+void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps)
 {
   for (int i = 0; i < noOfBeeps; i++) {
       gpio_write(_buzzer, HIGH);
@@ -99,7 +99,7 @@ void beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBee
 /**
   @brief Buzzer sound to indicate power on
 */
-void indicate_on_buzzer()
+void STM32_indicate_on_buzzer()
 {
   gpio_write(_buzzer, HIGH);
   delay(300);
@@ -114,7 +114,7 @@ void indicate_on_buzzer()
 /**
   @brief Led light to indicate power on
 */
-void indicate_on_led()
+void STM32_indicate_on_led()
 {
   led_on();
   delay(500);
@@ -130,7 +130,7 @@ void indicate_on_led()
   @brief Check battery charge
   @note Do not run if below TODO
 */
-double get_battery_capacity(uint8_t batteryNo)
+double STM32_get_battery_capacity(uint8_t batteryNo)
 {
   switch (batteryNo)
   {

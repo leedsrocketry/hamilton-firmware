@@ -1,7 +1,7 @@
 /*
 	Leeds University Rocketry Organisation - LURA
-    Author Name: 
-    Created on: 
+    Author Name: Evan Madurai
+    Created on: 15 December 2023
     Description: Driver file for the Barometer module MS561101BA03 (https://www.te.com/usa-en/product-MS560702BA03-50.html)
 */
 
@@ -36,14 +36,33 @@ typedef struct M5611_data
 
 uint8_t MS5611_init()
 {
-    spi_enable_cs(SPI1);
+    set_cs(MS5611_CS);
+    //spi_enable_cs(SPI1);
     uint8_t init = spi_transmit(SPI1, MS5611_CMD_RESET);
-    spi_disable_cs(SPI1);
+    printf("MS5611 init\r\n");
+    //spi_disable_cs(SPI1);
+    unset_cs();
 
     MS5611_read_PROM(SPI1);
     M5611_data data;
     MS5611_get_data(&data);
-    //printf("%u\r\n", data.temp);
+    printf("Temp: %u\r\n", data.temp);
+	return 0;
+}
+
+int32_t MS5611_get_data_test()
+{
+    set_cs(MS5611_CS);
+    //spi_enable_cs(SPI1);
+    uint8_t init = spi_transmit(SPI1, MS5611_CMD_RESET);
+    printf("Init: %u\r\n", init); // 254 if works correctly
+    //spi_disable_cs(SPI1);
+    unset_cs();
+
+    MS5611_read_PROM(SPI1);
+    M5611_data data;
+    MS5611_get_data(&data);
+    printf("Temp: %u\r\n", data.temp);
 	return 0;
 }
 

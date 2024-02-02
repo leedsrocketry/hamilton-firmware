@@ -1,7 +1,7 @@
 /*
   Leeds University Rocketry Organisation - LURA
-  Author Name: 
-  Created on: 
+  Author Name: Evan Madurai
+  Created on: 15 December 2023
   Description: header file for the Barometer module MS561101BA03
 */
 
@@ -36,6 +36,8 @@
 #define MS5611_CONVERSION_OSR_1024 				3
 #define MS5611_CONVERSION_OSR_2048 				5
 #define MS5611_CONVERSION_OSR_4096 				10
+
+#define MS5611_CS								10
 #pragma endregion Macros
 
 #pragma region Structs/Emun
@@ -56,6 +58,12 @@ typedef enum MS5611_OSR {
   @brief Initialise the pressure sensor with default parameters
 */
 uint8_t MS5611_init();
+
+
+/**
+  @brief TEST
+*/
+int32_t MS5611_get_data_test();
 
 
 /**

@@ -36,19 +36,19 @@ typedef struct Time
 /**
   @brief TODO
 */
-void init_STM32(void);
+void STM32_init(void);
 
 
 /**
   @brief TODO
 */
-void init_internals(void);
+void STM32_init_internals(void);
 
 
 /**
   @brief TODO
 */
-void init_peripherals(void);
+void STM32_init_peripherals(void);
 
 
 /**
@@ -57,37 +57,37 @@ void init_peripherals(void);
   @param offDurationMs
   @param noOfBeeps
 */
-void beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps);
+void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps);
 
 
 /**
   @brief TODO
 */
-void indicate_on_buzzer();
+void STM32_indicate_on_buzzer();
 
 
 /**
   @brief TODO
 */
-void indicate_on_red_led();
+void STM32_indicate_on_red_led();
 
 
 /**
   @brief TODO
 */
-void leds_on();
+void STM32_leds_on();
 
 
 /**
   @brief TODO
 */
-void leds_off();
+void STM32_leds_off();
 
 
 /**
   @brief TODO
 */
-double get_battery_capacity(uint8_t batteryNo);
+double STM32_get_battery_capacity(uint8_t batteryNo);
 
 
 #endif /* STM32_DRIVER_H */

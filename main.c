@@ -10,7 +10,6 @@
 #include "STM32_init.h"
 #include "stm32l4r5xx.h"
 // #include "NAND_flash_driver.h"
-
 #include "drivers/MS5611_driver.h"
 
 // Flags
@@ -100,23 +99,37 @@ void run_test_routine() {
   }
 }
 
-
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
 int main(void)
 {
-  init_STM32();
-  
+  STM32_init();
   MS5611_init();
-  
-  run_test_routine();
+
+  uint16_t led_B = PIN('H', 3);
+  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
+  multiplexer_init();
+  pwr_vdd2_init();
+  systick_init(FREQ / 1000);
+  uart_init(LUART1, 9600);
+
+  uint32_t timer = 0, period = 100;
+  for (;;) {
+    if (timer_expired(&timer, period, s_ticks)) {
+      printf("Tick: %lu\r\n", s_ticks);                   // Write message
+      static bool on = true;                              // This block is executed
+      gpio_write(led_B, on);                              // Every `period` milliseconds
+      on = !on;                                           // Toggle LED state
+      MS5611_get_data_test();  // Write message
+    }
+  }
 }
 
 
 // TODO - Add the following to the main loop
 /*
-init_STM32(); // Initialise the board
+STM32_init(); // Initialise the board
 printf("==================== PROGRAM START ==================\r\n");
 
 // Initialise the drivers
