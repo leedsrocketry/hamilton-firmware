@@ -7,12 +7,9 @@
 
 #include <stdio.h>
 #include "mcu.h"
-// #include "NAND_flash_driver.h"
 #include "STM32_init.h"
 #include "stm32l4r5xx.h"
-
-//#include "drivers/ADXL375_driver.h"
-//#include "drivers/LSM6DS3_driver.h"
+// #include "NAND_flash_driver.h"
 
 #include "drivers/MS5611_driver.h"
 
@@ -31,70 +28,93 @@ void SysTick_Handler(void)
 /**
   @brief TODO
 */
-void update_sensors(){
+void update_sensors(){}
 
-};
+/*
+void send_data() {
+  setControlPins(WRITE_PROTECT);                  // Write Protection
+  setControlPins(WRITE_PROTECT_OFF);              // Write Protection Off
 
-// void send_data() {
-//   //setControlPins(WRITE_PROTECT);                  // Write Protection
-//   //setControlPins(WRITE_PROTECT_OFF);              // Write Protection Off
+  uint8_t dataArray[128];
+  _memset(dataArray, 0x0, 128);
 
-//   uint8_t dataArray[128];
-//   _memset(dataArray, 0x0, 128);
+  for (uint8_t i = 0; i < 128; i ++) {
+    dataArray[i] = i;
+  }
 
-//   for (uint8_t i = 0; i < 128; i ++) {
-//     dataArray[i] = i;
-//   }
-//   //eraseBlock(0);
-//   //eraseALL();
-//   //writeFrame(0, dataArray);
-//   //readFrame(10000, dataArray);
+  eraseBlock(0);
+  eraseALL();
 
-//   FrameArray _input = unzip(dataArray);
-//   // frameArray _output;
-//   //int data_intact = 0;
-//   //int data_fixed = 0;
-//   //int data_error = 0;
+  writeFrame(0, dataArray);
+  readFrame(10000, dataArray);
+  FrameArray _input = unzip(dataArray);
+  frameArray _output;
 
-//   //int startAddr = frameAddressPointer;
-//   int numOfFramesToTest = 100;
+  int data_intact = 0;
+  int data_fixed = 0;
+  int data_error = 0;
+  int startAddr = frameAddressPointer;
 
-//   for (int i = 0; i < numOfFramesToTest; i++) {
-//     for (uint8_t j = 0; j < 128; j ++) {
-//       dataArray[j] = j;
-//     }
-
-//     dataArray[0] = 0;
-//     dataArray[1] = 0;
-//     _input = unzip(dataArray);
-
-//     log_frame(_input);
-//     printf("======================== DONE ========================");
-//   }
-
-//   printf("==================== DONE WRITING ====================\r\n");
-//   read_all();
-//   print_capacity_info();
-// };
+  int numOfFramesToTest = 100;
+  for (int i = 0; i < numOfFramesToTest; i++) {
+    for (uint8_t j = 0; j < 128; j ++) {
+      dataArray[j] = j;
+    }
+    dataArray[0] = 0;
+    dataArray[1] = 0;
+    _input = unzip(dataArray);
+    log_frame(_input);
+    printf("======================== DONE ========================");
+  }
+  printf("==================== DONE WRITING ====================\r\n");
+  read_all();
+  print_capacity_info();
+}
+*/
 
 /**
   @brief TODO
 */
-void toggle_timeout_flag()
-{
+void toggle_timeout_flag() {}
+
+/**
+  @brief Initial Routine to run on hardware. Should trigger RGB blink sequence
+  and Serial printing via LUART1  
+*/
+void run_test_routine() {  
+  uint16_t led_B = PIN('H', 3);
+  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
+  pwr_vdd2_init();
+  systick_init(FREQ / 1000);
+  uart_init(LUART1, 9600);
+
+  uint32_t timer = 0, period = 500;
+
+  for (;;) {
+    if (timer_expired(&timer, period, s_ticks)) {
+      static bool on = true;                            // This block is executed
+      gpio_write(led_B, on);                            // Every `period` milliseconds
+      on = !on;                                         // Toggle LED state
+      printf("LED: %d, tick: %lu\r\n", on, s_ticks);    // Write message
+    }
+  }
 }
+
 
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
 int main(void)
 {
-
   init_STM32();
   
   MS5611_init();
+  
+  run_test_routine();
 }
 
+
+// TODO - Add the following to the main loop
 /*
 init_STM32(); // Initialise the board
 printf("==================== PROGRAM START ==================\r\n");

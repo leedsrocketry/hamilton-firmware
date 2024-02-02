@@ -157,44 +157,32 @@ static inline void uart_init(USART_TypeDef *uart, unsigned long baud)
   uint8_t af = 8;          // Alternate function
   uint16_t rx = 0, tx = 0; // pins
 
-  if (uart == UART1)
-    RCC->APB2ENR |= BIT(14);
-  if (uart == UART2)
-    RCC->APB1ENR1 |= BIT(17);
-  if (uart == UART3)
-    RCC->APB1ENR1 |= BIT(18);
-  if (uart == LUART1)
-  {
-    RCC->APB1ENR2 |= BIT(0);
-  }
+  if (uart == UART1)  RCC->APB2ENR  |= BIT(14);   
+  if (uart == UART2)  RCC->APB1ENR1 |= BIT(17);   
+  if (uart == UART3)  RCC->APB1ENR1 |= BIT(18);   
+  if (uart == LUART1) RCC->APB1ENR2 |= BIT(0);
 
-#ifdef FLIGHT_COMPUTER
+  #ifdef FLIGHT_COMPUTER
   // Flight Computer pins
-  if (uart == UART1)
-    af = 7, tx = PIN('A', 9), rx = PIN('A', 10); // EXTERN USART
-  if (uart == UART3)
-    af = 7, tx = PIN('C', 10), rx = PIN('C', 11); // GNSS RX/TX
-  if (uart == LUART1)
-    af = 8, tx = PIN('B', 11), rx = PIN('B', 10); // PAD RADIO
-#else
+    if (uart == UART1)  af = 7, tx = PIN('A', 9),  rx = PIN('A', 10); // EXTERN USART
+    if (uart == UART2)  af = 7, tx = PIN('A', 2),  rx = PIN('A', 3);
+    if (uart == UART3)  af = 7, tx = PIN('D', 8),  rx = PIN('D', 9);  // GNSS RX/TX
+    if (uart == LUART1) af = 8, tx = PIN('B', 11), rx = PIN('B', 10); // PAD RADIO
+  #else
   // Nucleo pins
-  if (uart == UART1)
-    af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
-  if (uart == UART2)
-    af = 7, tx = PIN('A', 2), rx = PIN('A', 3);
-  if (uart == UART3)
-    af = 7, tx = PIN('D', 8), rx = PIN('D', 9);
-  if (uart == LUART1)
-    af = 8, tx = PIN('G', 7), rx = PIN('G', 8);
-#endif
+    if (uart == UART1)  af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
+    if (uart == UART2)  af = 7, tx = PIN('A', 2), rx = PIN('A', 3);
+    if (uart == UART3)  af = 7, tx = PIN('D', 8), rx = PIN('D', 9);
+    if (uart == LUART1) af = 8, tx = PIN('G', 7), rx = PIN('G', 8);
+  #endif
 
   gpio_set_mode(tx, GPIO_MODE_AF);
   gpio_set_af(tx, af);
   gpio_set_mode(rx, GPIO_MODE_AF);
   gpio_set_af(rx, af);
-  uart->CR1 = 0;                         // Disable this UART
-  uart->BRR = 256 * FREQ / baud;         // FREQ is a CPU frequency
-  uart->CR1 |= BIT(0) | BIT(2) | BIT(3); // Set UE, RE, TE Datasheet 50.8.1
+  uart->CR1 = 0;                                // Disable this UART                              
+  uart->BRR = 256*FREQ / baud;                  // FREQ is a CPU frequency
+  uart->CR1 |= BIT(0) | BIT(2) | BIT(3);        // Set UE, RE, TE Datasheet 50.8.1 
 }
 
 /**
@@ -249,23 +237,36 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 */
 static inline void spi_init(SPI_TypeDef *spi)
 {
-  // STM32L4R5 Reference manual SPI Documentation (from page ):
-  //  - RM0351, pg 78-82: Memory map and peripheral register boundary
+  //  STM32L4R5 Reference manual SPI Documentation:
+  //  - RM0351,  pg 78-82: Memory map and peripheral register boundary
   //  - DS10198, pg 68: Pinout
-  //  - RM0351, pg 1459: Configuration of SPI
-  //  - RM0351, pg 1484: SPI register map
-  //  - RM0351, pg 1476: SPI registers
+  //  - RM0351,  pg 1459: Configuration of SPI
+  //  - RM0351,  pg 1484: SPI register map
+  //  - RM0351,  pg 1476: SPI registers
   //  - NUCLEO Pinout: https://os.mbed.com/platforms/ST-Nucleo-L476RG/#nucleo-pinout)
 
   uint8_t af;
   uint16_t ss, sclk, miso, mosi;
 
+  #ifdef FLIGHT_COMPUTER
+  // Flight Computer pins
   if (spi == SPI1)
     RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('A', 5), miso = PIN('A', 6), mosi = PIN('A', 7);
   if (spi == SPI2)
     RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
   if (spi == SPI3)
     RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
+
+  #else
+  // Nucleo pins
+  if (spi == SPI1)
+    RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('A', 5), miso = PIN('A', 6), mosi = PIN('A', 7);
+  if (spi == SPI2)
+    RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
+  if (spi == SPI3)
+    RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
+
+  #endif
 
   // ss was originally set to GPIO_MODE_AF, which seems correct but needs to be set to output to actually work?
   // investigate !!!
@@ -355,7 +356,9 @@ static inline int spi_ready_write(SPI_TypeDef *spi)
 */
 static inline void spi_enable_cs(SPI_TypeDef *spi)
 {
-  gpio_write(PIN('A', 4), LOW);
+  if (spi == SPI1) {
+    gpio_write(PIN('A', 4), LOW);
+  }
 }
 
 /**
@@ -365,7 +368,9 @@ static inline void spi_enable_cs(SPI_TypeDef *spi)
 */
 static inline void spi_disable_cs(SPI_TypeDef *spi)
 {
-  gpio_write(PIN('A', 4), HIGH);
+  if (spi == SPI1) {
+    gpio_write(PIN('A', 4), HIGH);
+  }
 }
 
 /**

@@ -72,48 +72,19 @@ SPI_TypeDef SI446_SPI;
 
 #pragma region Structs/Emun //_______________ STRUCTS _______________________
 
-typedef struct SI446_chip_settings
-{
-  uint32_t SI446_XO_FREQUENCY;
-  uint8_t BOOT_OPTIONS;
-  uint8_t BOOT_OPTIONS;
-} SI446_chip_settings;
-
-/**
- * @brief SI446 radio settings
+**
+ * @brief SI446 settings
  */
-typedef struct SI446_Radio_settings
+typedef struct SI446_settings
 {
+
+  // radio settings
   uint8_t SI446_channel;
-  uint8_t SI446_CURRENT_RSSI;
+  uint8_t SI446_RX_TIMEOUT_STATE; // state to go to if RX times out
+  uint8_t SI446_RX_VALID_STATE; // next state to go to if RX successful
+  uint8_t SI446_RX_INVALID_STATE; // state to go to if RX recivied is invalid
 
-  uint8_t SI446_RX_TIMEOUT_STATE;
-  uint8_t SI446_RX_VALID_STATE;
-  uint8_t SI446_RX_INVALID_STATE;
-
-} SI446_Radio_settings;
-
-/**
- * @brief SI446 radio settings
- */
-typedef struct SI446_Packet_settings
-{
-  uint8_t SI446_channel
-
-} SI446_Packet_settings;
-
-/**
- * @brief SI446 transmit data structure when rocket in flight ?
- */
-typedef struct SI446_data
-{
-  uint8_t altitude;
-  uint8_t batteryLevel;
-  uint8_t altitude_barom;
-  uint8_t gnss_x_coord;
-  uint8_t gnss_y_coord;
-  uint8_t gnss_z_coord;
-} SI446_Packet_settings;
+} SI446_settings;
 
 #pragma endregion Structs/Emun
 
@@ -123,47 +94,64 @@ typedef struct SI446_data
   @note
   @return Success/Failure
 */
-int8_t init_SI446(SPI_TypeDef spi);
+int8_t SI446_init(SPI_TypeDef spi);
 
 /**
   @brief loads the data into the FIFO ready for transmittion
   @note
   @param data ptr to the data which is to be sent
 */
-void Write_data_SI446(uint8_t *data);
+void SI446_write_data(uint8_t *data);
 
 /**
   @brief reads recieved data from the FIFO buffer
   @note
   @param data ptr to the data which is to be sent
 */
-void Read_data_SI446(uint8_t *data);
+void SI446_read_data(uint8_t *data);
 
 /**
   @brief send SI446 into recieve mode using current radio settings
   @note
 */
-int8_t Recieve_SI446();
+int8_t SI446_recieve();
 
 /**
   @brief send SI446 into transmit mode using current radio settings
   @note
 */
-int8_t Transmit_SI446();
+int8_t SI446_transmit();
 
 
 #pragma endregion Public
 
 
 #pragma region Private  //_________________ PRIVATE _________________
+
 /**
-  @brief send a command to the SI4460 sensor
-  @note doesnt deal with the response
-  @param byteCount number of bytes in the command to be sent (includes command)
-  @param data pointer to the command parameters which are to be sent
+  @brief funtion to deal with recieving data from the sensor
+  @note waits until CTS is correct then records data
+  @param byteCount number of bytes to clock and read
+  @param data ptr to the data storage location
   @return Success/Failure
 */
+static int8_t SI446_get_response(int byteCount, uint8_t *data);
 
+/**
+  @brief checks if CTS bit is set
+  @note e.g. used to check if SI446_command with no response has been correctly carried out
+  @param desired -1: no time_out, 
+                  0: default (SI446_CTS_TIME_OUT)
+                 >0: custom time (in ms) to wait for CTS response.
+  @return Success/Failure
+*/
+static int8_t SI446_check_CTS(int desired);
+
+/**
+  @brief SI446_command: power up the sensor with specified function
+  @return Success/Failure
+*/
+static int8_t SI446_power_up();
 
 #pragma endregion Private
 
