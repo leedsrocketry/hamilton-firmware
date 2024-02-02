@@ -1,8 +1,8 @@
 /*
   Leeds University Rocketry Organisation - LURA
-  Author Name: Alexandra Posta, Evan Madurai
+  Author Name: Oliver Martin
   Created on: 10 June 2023
-  Description: header file for the Temperature sensor
+  Description: header file for the Thermocoupler sensor MAX31855KASA+T (http://datasheets.maximintegrated.com/en/ds/MAX31855.pdf)
 */
 #ifndef MAX31855_DRIVER_H
 #define MAX31855_DRIVER_H
