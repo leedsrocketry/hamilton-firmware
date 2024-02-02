@@ -1,7 +1,7 @@
 /*
   Leeds University Rocketry Organisation - LURA
-  Author Name: Alexandra Posta, Evan Madurai
-  Created on: 10 June 2023
+  Author Name: Alexandra Posta
+  Created on: 01 February 2024
   Description: header file for the IMU module LSM6DS3
 */
 #ifndef LSM6DS3_DRIVER_H

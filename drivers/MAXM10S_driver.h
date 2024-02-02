@@ -1,7 +1,7 @@
 /*
 	Leeds University Rocketry Organisation - LURA
-  Author Name: Alexandra Posta
-  Created on: 21 Mar 2023
+  Author Name: 
+  Created on: 
   Description: header file for the GNSS module MAX-M10S-00B
 */
 #ifndef MAXM10S_DRIVER_H
