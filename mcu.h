@@ -243,7 +243,6 @@ static inline void spi_init(SPI_TypeDef *spi)
   //  - RM0351,  pg 1459: Configuration of SPI
   //  - RM0351,  pg 1484: SPI register map
   //  - RM0351,  pg 1476: SPI registers
-  //  - NUCLEO Pinout: https://os.mbed.com/platforms/ST-Nucleo-L476RG/#nucleo-pinout)
 
   uint8_t af;
   uint16_t ss, sclk, miso, mosi;
@@ -251,11 +250,11 @@ static inline void spi_init(SPI_TypeDef *spi)
   #ifdef FLIGHT_COMPUTER
   // Flight Computer pins
   if (spi == SPI1)
-    RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('A', 5), miso = PIN('A', 6), mosi = PIN('A', 7);
-  if (spi == SPI2)
-    RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
-  if (spi == SPI3)
-    RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
+    RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('E', 13), miso = PIN('E', 14), mosi = PIN('E', 15);
+  //if (spi == SPI2)
+  //  RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
+  //if (spi == SPI3)
+  //  RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
 
   #else
   // Nucleo pins
@@ -354,9 +353,14 @@ static inline int spi_ready_write(SPI_TypeDef *spi)
   @param spi Selected SPI (1, 2 or 3)
   @note currently ONLY works for SPI1 for testing
 */
-static inline void spi_enable_cs(SPI_TypeDef *spi)
+static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs=0)
 {
-  gpio_write(PIN('A', 4), LOW);
+  #ifdef FLIGHT_COMPUTER
+    set_cs(cs);
+  #else // Nucleo
+  if spi == SPI1
+    gpio_write(PIN('A', 4), LOW);
+  #endif
 }
 
 /**
@@ -364,9 +368,14 @@ static inline void spi_enable_cs(SPI_TypeDef *spi)
   @param spi Selected SPI (1, 2 or 3)
   @note currently ONLY works for SPI1 for testing
 */
-static inline void spi_disable_cs(SPI_TypeDef *spi)
+static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs=0)
 {
-  gpio_write(PIN('A', 4), HIGH);
+  #ifdef FLIGHT_COMPUTER
+    unset_cs(cs);
+  #else // Nucleo
+  if spi == SPI1
+    gpio_write(PIN('A', 4), HIGH);
+  #endif
 }
 
 /**
@@ -394,9 +403,9 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
   @param receive_size Number of bytes to be recieved
   @return Byte from SPI
 */
-static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size)
+static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t cs, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size)
 {
-  spi_enable_cs(spi);
+  spi_enable_cs(spi, cs);
   spi_ready_write(spi);
 
   // Not currently implemented
@@ -416,7 +425,7 @@ static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte,
     //printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
     spi_ready_write(spi);
   }
-  spi_disable_cs(spi);
+  spi_disable_cs(spi, cs);
   return result;
 }
 
