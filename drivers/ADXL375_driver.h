@@ -59,7 +59,7 @@
 #define ADXL375_POWER_CTL_WAKEUP_8			  0
 #define ADXL375_POWER_CTL_WAKEUP_4			  1
 #define ADXL375_POWER_CTL_WAKEUP_2			  2
-#define ADXL375_POWER_CTL_WAKEUP_1			  3
+#define ADXL375_DEVID_ID			            3
 
 #define ADXL375_X_REG_DATAX0              0x32
 #define ADXL375_X_REG_DATAX1              0x33
@@ -70,7 +70,7 @@
 
 #define ADXL375_MEASURE                   0x08
 
-#define MS5611_CS								          6
+#define ADXL375_CS								        6
 
 #define ADXL375_SELF_TEST_SAMPLES	        10
 #define ADXL375_SELF_TEST_SETTLE	        4

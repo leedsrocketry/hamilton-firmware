@@ -134,12 +134,8 @@ int main(void)
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
   printf("==================== PROGRAM START ==================\r\n");
-  uint32_t	devid = spi_transmit_receive(SPI1, 0, ADXL375_DEVID, 1, 1);
-
-  for (;;) {
-    delay(100);
-    printf("ADXL375 device ID: %d\n", devid);
-  }
+  uint32_t devid = spi_transmit_receive(SPI1, ADXL375_CS, ADXL375_DEVID, 1, 1);
+  printf("ADXL375 device ID: %d\n", (uint8_t)devid);
 }
 
 
