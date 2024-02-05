@@ -235,8 +235,7 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
   @brief Initialisation of the SPI
   @param spi
 */
-static inline void spi_init(SPI_TypeDef *spi)
-{
+static inline void spi_init(SPI_TypeDef *spi) {
   //  STM32L4R5 Reference manual SPI Documentation:
   //  - RM0351,  pg 78-82: Memory map and peripheral register boundary
   //  - DS10198, pg 68: Pinout
@@ -329,8 +328,7 @@ static inline void spi_init(SPI_TypeDef *spi)
   @param spi Selected SPI (1, 2 or 3)
   @return True when ready
 */
-static inline int spi_ready_read(SPI_TypeDef *spi)
-{
+static inline int spi_ready_read(SPI_TypeDef *spi) {
   while (!(spi->SR & BIT(1)))
     ; // Wait until transmit buffer is empty
   while (!(spi->SR & BIT(0)))
@@ -339,12 +337,9 @@ static inline int spi_ready_read(SPI_TypeDef *spi)
   return 1; // data is ready
 }
 
-static inline int spi_ready_write(SPI_TypeDef *spi)
-{
-
+static inline int spi_ready_write(SPI_TypeDef *spi) {
   while ((spi->SR & BIT(7)))
     ; // Wait until SPI is not busy
-
   return 1; // data is ready
 }
 
@@ -353,14 +348,14 @@ static inline int spi_ready_write(SPI_TypeDef *spi)
   @param spi Selected SPI (1, 2 or 3)
   @note currently ONLY works for SPI1 for testing
 */
-static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs=0)
-{
+static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
   #ifdef FLIGHT_COMPUTER
     set_cs(cs);
   #else // Nucleo
-  if spi == SPI1
+  if (spi == SPI1)
     gpio_write(PIN('A', 4), LOW);
   #endif
+  cs = 0;
 }
 
 /**
@@ -368,14 +363,15 @@ static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs=0)
   @param spi Selected SPI (1, 2 or 3)
   @note currently ONLY works for SPI1 for testing
 */
-static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs=0)
+static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 {
   #ifdef FLIGHT_COMPUTER
     unset_cs(cs);
   #else // Nucleo
-  if spi == SPI1
+  if (spi == SPI1)
     gpio_write(PIN('A', 4), HIGH);
   #endif
+  cs = 0;
 }
 
 /**
@@ -498,7 +494,7 @@ static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) 
 
 
 // Generate all swtch cases for the multiplexer
-static inline void set_cs(uint16_t cs)
+static void set_cs(uint16_t cs)
 {
   switch(cs) {
     case CS6:   // Accelerometer
@@ -528,7 +524,7 @@ static inline void set_cs(uint16_t cs)
   }
 }
 
-static inline unset_cs()
+static void unset_cs()
 {
   // get the 14 cs line low so that no sensors are active
   gpio_write(A0, LOW);
@@ -537,7 +533,7 @@ static inline unset_cs()
   gpio_write(A3, HIGH);
 }
 
-static inline void multiplexer_init()
+static void multiplexer_init()
 {
   gpio_set_mode(A0, GPIO_MODE_OUTPUT);
   gpio_set_mode(A1, GPIO_MODE_OUTPUT);

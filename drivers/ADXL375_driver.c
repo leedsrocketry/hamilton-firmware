@@ -11,17 +11,21 @@
 #pragma region Public
 
 void ADXL375_init(SPI_TypeDef spi){
-    // Get the device into 4-wire SPI mode before proceeding
+    // Set up SPI
     ADXL375_SPI = spi;
+
+    // Get the device into 4-wire SPI mode before proceeding
     ADXL375_reg_write(ADXL375_DATA_FORMAT, ADXL375_DATA_FORMAT_SETTINGS(0));
 
     // Power the CTL Register
-    spi_write_byte(ADXL375_SPI, ADXL375_POWER_REG); 
+    spi_transmit_receive(ADXL375_SPI, ADXL375_CS, ADXL375_POWER_REG, 1, 1); 
 
     // Check the device name
-    uint8_t	devid = spi_read_byte(ADXL375_SPI, ADXL375_DEVID);
+    uint8_t	devid = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, ADXL375_DEVID, 1, 1);
     if (devid != ADXL375_DEVID_ID)
 		exit();
+
+    printf("ADXL375 device ID: %d\n", devid);
 
     // Set the data rate
     ADXL375_reg_write(ADXL375_BW_RATE,
@@ -43,8 +47,83 @@ void ADXL375_init(SPI_TypeDef spi){
 			    (1 << ADXL375_POWER_CTL_MEASURE) |
 			    (0 << ADXL375_POWER_CTL_SLEEP) |
 			    (ADXL375_POWER_CTL_WAKEUP_8 << ADXL375_POWER_CTL_WAKEUP)); 
+};
 
-    // Perform self checks
+
+static ADXL375_data ADXL375_get_data(){
+    struct ADXL375_data data;
+
+    // x-axis
+    uint16_t commnds_x[1] = {ADXL375_X_REG_DATAX0, ADXL375_X_REG_DATAX1};
+    uint16_t x[1];
+    for (int i = 0; i < 2; i++){
+        x[i] = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_x[i], 1, 1); 
+    }
+    data.x = (x[1] << 8) | x[0];
+    printf("x: %d, ", data.x);
+
+    // y-axis
+    uint16_t commnds_y[1] = {ADXL375_Y_REG_DATAY0, ADXL375_Y_REG_DATAY1};
+    uint16_t y[1];
+    for (int i = 0; i < 2; i++){
+        y[i] = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_y[i], 1, 1); 
+    }
+    data.y = (y[1] << 8) | y[0];
+    printf("y: %d, ", data.y);
+
+    // z-axis
+    uint16_t commnds_z[1] = {ADXL375_Z_REG_DATAZ0, ADXL375_Z_REG_DATAZ1};
+    uint16_t z[1];
+    for (int i = 0; i < 2; i++){
+        z[i] = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_z[i], 1, 1); 
+    }
+    data.z = (z[1] << 8) | z[0];
+    printf("z: %d,/n", data.z);
+
+    return data
+};
+
+#pragma endregion Public
+
+// Implement private functions
+#pragma region Private
+#define ADXL375_DATA_FORMAT_SETTINGS(self_test) (			\
+		ADXL375_DATA_FORMAT_FIXED |				\
+		(self_test << ADXL375_DATA_FORMAT_SELF_TEST) |	\
+		(ADXL375_DATA_FORMAT_SPI_4_WIRE << ADXL375_DATA_FORMAT_SPI) | \
+		(0 << ADXL375_DATA_FORMAT_INT_INVERT) |		\
+		(0 << ADXL375_DATA_FORMAT_JUSTIFY))
+
+
+void ADXL375_reg_write(uint8_t addr, uint8_t value)
+{
+    spi_transmit_receive(ADXL375_SPI, ADXL375_CS, addr, 1, 1);
+    spi_transmit_receive(ADXL375_SPI, ADXL375_CS, value, 1, 1);
+}
+
+/*
+static void ADXL375_get_test_value(struct ADXL375_data *data, int samples)
+{	
+	for (int i = 0; i < samples; i++) {
+		spi_write_byte(ADXL375_SPI, ADXL375_Z_REG_DATAX0);
+        spi_write_byte(ADXL375_SPI, ADXL375_Z_REG_DATAX1);
+        spi_ready_read(ADXL375_SPI);
+
+        z_0 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
+        z_1 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
+   
+		data->x += 0;
+		data->y += 0;
+		data->z += (z_1 << 8) | z_0;
+		delay(10);
+	}
+}
+*/
+#pragma endregion Private
+
+
+/* ADD UNDER INIT
+// Perform self checks
     struct ADXL375_data	self_test_off, self_test_on;
 
     ADXL375_reg_write(ADXL375_DATA_FORMAT, ADXL375_DATA_FORMAT_SETTINGS(1)); 
@@ -69,83 +148,12 @@ void ADXL375_init(SPI_TypeDef spi){
     self_test_value = z_change;
 
     // TODO: Check if the self test value is valid
-};
 
 
-static ADXL375_data ADXL375_get_data(){
-    struct ADXL375_data data;
-    // x-axis
-    spi_write_byte(ADXL375_SPI, ADXL375_X_REG_DATAX0);
-    spi_write_byte(ADXL375_SPI, ADXL375_X_REG_DATAX1);
-    spi_ready_read(ADXL375_SPI);
-
-    x_0 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-    x_1 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-    data.x = (x_1 << 8) | x_0;
-
-    // y-axis
-    spi_write_byte(ADXL375_SPI, ADXL375_Y_REG_DATAX0);
-    spi_write_byte(ADXL375_SPI, ADXL375_y_REG_DATAX1);
-    spi_ready_read(ADXL375_SPI);
-
-    y_0 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-    y_1 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-    data.y = (y_1 << 8) | y_0;
-
-    // z-axis
-    spi_write_byte(ADXL375_SPI, ADXL375_Z_REG_DATAX0);
-    spi_write_byte(ADXL375_SPI, ADXL375_Z_REG_DATAX1);
-    spi_ready_read(ADXL375_SPI);
-
-    z_0 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-    z_1 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-    data.z = (z_1 << 8) | z_0;
-
-    return data
-};
-
-#pragma endregion Public
-
-// Implement private functions
-#pragma region Private
-#define ADXL375_DATA_FORMAT_SETTINGS(self_test) (			\
-		ADXL375_DATA_FORMAT_FIXED |				\
-		(self_test << ADXL375_DATA_FORMAT_SELF_TEST) |	\
-		(ADXL375_DATA_FORMAT_SPI_4_WIRE << ADXL375_DATA_FORMAT_SPI) | \
-		(0 << ADXL375_DATA_FORMAT_INT_INVERT) |		\
-		(0 << ADXL375_DATA_FORMAT_JUSTIFY))
-
-
-static void ADXL375_start(void) {
-	/*  
-        TO DO: configure chip for: 
-            ADXL375_CS_PIN,
-            ADXL375_SPI_INDEX,
-            ADXL375_SPI_SPEED);
-    */ 
+static void ADXL375_start(void) {	
+    TO DO: configure chip for: 
+        ADXL375_CS_PIN,
+        ADXL375_SPI_INDEX,
+        ADXL375_SPI_SPEED);
 }
-
-
-void ADXL375_reg_write(uint8_t addr, uint8_t value)
-{
-    spi_write_byte(ADXL375_SPI, addr);
-    spi_write_byte(ADXL375_SPI, value);
-}
-
-static void ADXL375_get_test_value(struct ADXL375_data *data, int samples)
-{	
-	for (int i = 0; i < samples; i++) {
-		spi_write_byte(ADXL375_SPI, ADXL375_Z_REG_DATAX0);
-        spi_write_byte(ADXL375_SPI, ADXL375_Z_REG_DATAX1);
-        spi_ready_read(ADXL375_SPI);
-
-        z_0 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-        z_1 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-   
-		data->x += 0;
-		data->y += 0;
-		data->z += (z_1 << 8) | z_0;
-		delay(10);
-	}
-}
-#pragma endregion Private
+*/

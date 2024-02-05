@@ -9,6 +9,7 @@
 
 #include "mcu.h"
 
+#pragma region Macros
 #define ADXL375_DEVID		                  0x00
 #define ADXL375_DEVID_ID			            0xe5
 
@@ -69,46 +70,54 @@
 
 #define ADXL375_MEASURE                   0x08
 
+#define MS5611_CS								          6
+
+#define ADXL375_SELF_TEST_SAMPLES	        10
+#define ADXL375_SELF_TEST_SETTLE	        4
+#define ADXL375_MIN_LSB_G	                18.4
+#define ADXL375_MAX_LSB_G	                22.6
+#define ADXL375_SELF_TEST_MIN_G	          5.0
+#define ADXL375_SELF_TEST_MAX_G	          6.8
+#define ADXL375_MIN_SELF_TEST	((int32_t) (ADXL375_MIN_LSB_G * ADXL375_SELF_TEST_MIN_G * ADXL375_SELF_TEST_SAMPLES + 0.5))
+#pragma endregion Macros
+
+#pragma region Structs/Emun
 typedef struct ADXL375_data
 {
   int16_t x;
   int16_t y;
   int16_t z;
 } ADXL375_data;
+#pragma endregion Structs/Emun
 
 SPI_TypeDef ADXL375_SPI;
 
-
-#define ADXL375_SELF_TEST_SAMPLES	       10
-#define ADXL375_SELF_TEST_SETTLE	       4
-#define MIN_LSB_G	                       18.4
-#define MAX_LSB_G	                       22.6
-#define SELF_TEST_MIN_G	                 5.0
-#define SELF_TEST_MAX_G	                 6.8
-#define MIN_SELF_TEST	((int32_t) (MIN_LSB_G * SELF_TEST_MIN_G * ADXL375_SELF_TEST_SAMPLES + 0.5))
-
 #pragma region Public
-
 /**
   @brief Initialization of the ADXL375 Accelerometer module
   @note This function should be called before attempting to read data from the accelerometer.
   @return Success/Failure
 */
-int8_t ADXL375_init(SPI Spi);
+int8_t ADXL375_init(SPI_TypeDef Spi);
 
 /**
   @brief Get data from the ADXL375 Accelerometer module
-  @note
   @param data ptr to ADXL375_data struct for returning data
   @return Success/Failure
 */
 ADXL375_data ADXL375_get_data(ADXL375_data *data);
-
 #pragma endregion Public
 
+
 #pragma region Private
+/**
+  @brief TODO
+*/
 void ADXL375_reg_write();
 
+/**
+  @brief TODO
+*/
 void ADXL375_self_test();
 #pragma endregion Private
 

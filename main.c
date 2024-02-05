@@ -11,6 +11,7 @@
 #include "stm32l4r5xx.h"
 // #include "NAND_flash_driver.h"
 #include "drivers/MS5611_driver.h"
+#include "drivers/ADXL375_driver.h"
 
 // Flags
 FlightStages flightStage = LAUNCHPAD;
@@ -99,17 +100,14 @@ void run_test_routine() {
   }
 }
 
-/**
-  @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
-*/
-int main(void)
-{
-  STM32_init();
-  MS5611_init();
 
+/**
+  @brief Routine to test the MS5611 barometer.
+*/
+void run_MS5611_routine() {  
+  MS5611_init();
   uint16_t led_B = PIN('H', 3);
   gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
-  multiplexer_init();
   pwr_vdd2_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
@@ -121,8 +119,26 @@ int main(void)
       static bool on = true;                              // This block is executed
       gpio_write(led_B, on);                              // Every `period` milliseconds
       on = !on;                                           // Toggle LED state
-      MS5611_get_data_test();  // Write message
+      MS5611_get_data_test();                             // Write message
     }
+  }
+}
+
+
+/**
+  @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
+*/
+int main(void)
+{
+  STM32_init();
+  systick_init(FREQ / 1000);
+  uart_init(LUART1, 9600);
+  printf("==================== PROGRAM START ==================\r\n");
+  uint32_t	devid = spi_transmit_receive(SPI1, 0, ADXL375_DEVID, 1, 1);
+
+  for (;;) {
+    delay(100);
+    printf("ADXL375 device ID: %d\n", devid);
   }
 }
 
