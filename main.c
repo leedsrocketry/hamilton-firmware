@@ -124,6 +124,15 @@ void run_MS5611_routine() {
   }
 }
 
+/**
+  @brief Routine to test the ADXL375 accelerometer.
+*/
+void run_ADXL375_routine() {  
+  printf("==================== PROGRAM START ==================\r\n");
+  uint32_t devid = spi_transmit_receive(SPI1, ADXL375_CS, ADXL375_DEVID, 1, 1);
+  printf("ADXL375 device ID: %d\n", (uint8_t)devid);
+}
+
 
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
@@ -133,9 +142,7 @@ int main(void)
   STM32_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
-  printf("==================== PROGRAM START ==================\r\n");
-  uint32_t devid = spi_transmit_receive(SPI1, ADXL375_CS, ADXL375_DEVID, 1, 1);
-  printf("ADXL375 device ID: %d\n", (uint8_t)devid);
+  run_MS5611_routine()
 }
 
 
