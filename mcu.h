@@ -230,6 +230,83 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 }
 #pragma endregion UART
 
+
+#pragma region Multiplexer IC201
+// Define Select pins on the multiplexer
+#define A0 PIN('E', 6)
+#define A1 PIN('C', 13)
+#define A2 PIN('C', 14)
+#define A3 PIN('C', 15)
+
+// Map cs pins to sensors
+#define CS0  0   // EEPROM 1
+#define CS1  1   // EEPROM 2
+#define CS2  2   // Thermocoupler 4
+#define CS3  3   // Thermocoupler 3
+#define CS4  4   // Thermocoupler 2
+#define CS5  5   // Thermocoupler 1
+#define CS6  6   // Accelerometer
+#define CS7  7   // IMU
+#define CS8  8   // Magnetometer
+#define CS9  9   // Pad Radio
+#define CS10 10  // Barometer
+#define CS11 11  // Humidity 
+#define CS12 12  // External DAC 1
+#define CS13 13  // External DAC 2
+#define CS14 14  // NONE
+#define CS15 15  // External ADC 1 
+
+
+// Generate all switch cases for the multiplexer
+static inline void set_cs(int16_t cs)
+{
+  switch(cs) {
+    case CS6:   // Accelerometer
+      gpio_write(A0, LOW);
+      gpio_write(A1, HIGH);
+      gpio_write(A2, HIGH);
+      gpio_write(A3, LOW);
+      break;
+    case CS7:   // IMU
+      gpio_write(A0, HIGH);
+      gpio_write(A1, HIGH);
+      gpio_write(A2, HIGH);
+      gpio_write(A3, LOW);
+      break;
+    case CS9:   // Pad Radio
+      gpio_write(A0, HIGH);
+      gpio_write(A1, LOW);
+      gpio_write(A2, LOW);
+      gpio_write(A3, HIGH);
+      break;
+    case CS10: // Barometer
+      gpio_write(A0, LOW);
+      gpio_write(A1, HIGH);
+      gpio_write(A2, LOW);
+      gpio_write(A3, HIGH);
+      break;
+  }
+}
+
+static inline void unset_cs()
+{
+  // get the 14 cs line low so that no sensors are active
+  gpio_write(A0, LOW);
+  gpio_write(A1, HIGH);
+  gpio_write(A2, HIGH);
+  gpio_write(A3, HIGH);
+}
+
+static void multiplexer_init()
+{
+  gpio_set_mode(A0, GPIO_MODE_OUTPUT);
+  gpio_set_mode(A1, GPIO_MODE_OUTPUT);
+  gpio_set_mode(A2, GPIO_MODE_OUTPUT);
+  gpio_set_mode(A3, GPIO_MODE_OUTPUT);
+}
+#pragma endregion Multiplexer IC201
+
+
 #pragma region SPI
 /**
   @brief Initialisation of the SPI
@@ -242,12 +319,13 @@ static inline void spi_init(SPI_TypeDef *spi) {
   //  - RM0351,  pg 1459: Configuration of SPI
   //  - RM0351,  pg 1484: SPI register map
   //  - RM0351,  pg 1476: SPI registers
+  //  STM32L4R5 alternative functions map: https://www.st.com/resource/en/datasheet/stm32l4r5vi.pdf
 
   uint8_t af;
   uint16_t ss, sclk, miso, mosi;
 
   #ifdef FLIGHT_COMPUTER
-  // Flight Computer pins
+  // Flight Computer pins maybe A4 or B0 or E12 or G5 or A15
   if (spi == SPI1)
     RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('E', 13), miso = PIN('E', 14), mosi = PIN('E', 15);
   //if (spi == SPI2)
@@ -350,7 +428,8 @@ static inline int spi_ready_write(SPI_TypeDef *spi) {
 */
 static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
   #ifdef FLIGHT_COMPUTER
-    set_cs(cs);
+    gpio_write(PIN('A', 4), LOW);
+    set_cs(cs); 
   #else // Nucleo
   if (spi == SPI1)
     gpio_write(PIN('A', 4), LOW);
@@ -366,6 +445,7 @@ static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
 static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 {
   #ifdef FLIGHT_COMPUTER
+    gpio_write(PIN('A', 4), HIGH);
     unset_cs(cs);
   #else // Nucleo
   if (spi == SPI1)
@@ -464,85 +544,7 @@ static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) 
 
   return 0;
 }*/
-
 #pragma endregion SPI
-
-#pragma region Multiplexer IC201
-// Define Select pins on the multiplexer
-#define A0 PIN('E', 6)
-#define A1 PIN('C', 13)
-#define A2 PIN('C', 14)
-#define A3 PIN('C', 15)
-
-// Map cs pins to sensors
-#define CS0  0   // EEPROM 1
-#define CS1  1   // EEPROM 2
-#define CS2  2   // Thermocoupler 4
-#define CS3  3   // Thermocoupler 3
-#define CS4  4   // Thermocoupler 2
-#define CS5  5   // Thermocoupler 1
-#define CS6  6   // Accelerometer
-#define CS7  7   // IMU
-#define CS8  8   // Magnetometer
-#define CS9  9   // Pad Radio
-#define CS10 10  // Barometer
-#define CS11 11  // Humidity 
-#define CS12 12  // External DAC 1
-#define CS13 13  // External DAC 2
-#define CS14 14  // NONE
-#define CS15 15  // External ADC 1 
-
-
-// Generate all swtch cases for the multiplexer
-static void set_cs(uint16_t cs)
-{
-  switch(cs) {
-    case CS6:   // Accelerometer
-      gpio_write(A0, LOW);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, HIGH);
-      gpio_write(A3, LOW);
-      break;
-    case CS7:   // IMU
-      gpio_write(A0, HIGH);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, HIGH);
-      gpio_write(A3, LOW);
-      break;
-    case CS9:   // Pad Radio
-      gpio_write(A0, HIGH);
-      gpio_write(A1, LOW);
-      gpio_write(A2, LOW);
-      gpio_write(A3, HIGH);
-      break;
-    case CS10: // Barometer
-      gpio_write(A0, LOW);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, LOW);
-      gpio_write(A3, HIGH);
-      break;
-  }
-}
-
-static void unset_cs()
-{
-  // get the 14 cs line low so that no sensors are active
-  gpio_write(A0, LOW);
-  gpio_write(A1, HIGH);
-  gpio_write(A2, HIGH);
-  gpio_write(A3, HIGH);
-}
-
-static void multiplexer_init()
-{
-  gpio_set_mode(A0, GPIO_MODE_OUTPUT);
-  gpio_set_mode(A1, GPIO_MODE_OUTPUT);
-  gpio_set_mode(A2, GPIO_MODE_OUTPUT);
-  gpio_set_mode(A3, GPIO_MODE_OUTPUT);
-  unset_cs();
-}
-
-#pragma endregion Multiplexer IC201
 
 /**
   @brief Set timer

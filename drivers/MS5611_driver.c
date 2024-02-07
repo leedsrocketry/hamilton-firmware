@@ -36,12 +36,10 @@ typedef struct M5611_data
 
 uint8_t MS5611_init()
 {
-    set_cs(MS5611_CS);
-    //spi_enable_cs(SPI1);
+    spi_enable_cs(SPI1, MS5611_CS);
     uint8_t init = spi_transmit(SPI1, MS5611_CMD_RESET);
     printf("MS5611 init\r\n");
-    //spi_disable_cs(SPI1);
-    unset_cs();
+    spi_disable_cs(SPI1, MS5611_CS);
 
     MS5611_read_PROM(SPI1);
     M5611_data data;
@@ -73,10 +71,10 @@ uint8_t MS5611_read_PROM()
 {
     for(int i = 0; i < 8; i++)
     {
-        spi_enable_cs(SPI1, MS5611_CS);
+        //spi_enable_cs(SPI1, MS5611_CS);
         uint16_t result = spi_transmit_receive(SPI1, MS5611_CS, MS5611_CMD_READ_PROM(i), 1, 2);
         PROM_values[i] = result;
-        spi_disable_cs(SPI1, MS5611_CS);
+        //spi_disable_cs(SPI1, MS5611_CS);
     }
 
     ms5611_prom_data.blank = PROM_values[0];
