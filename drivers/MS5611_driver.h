@@ -7,6 +7,7 @@
 
 #ifndef MS5611_DRIVER_H
 #define MS5611_DRIVER_H
+
 #include <stdint.h>
 #include <stdbool.h>
 

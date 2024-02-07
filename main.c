@@ -105,7 +105,7 @@ void run_test_routine() {
   @brief Routine to test the MS5611 barometer.
 */
 void run_MS5611_routine() {  
-  MS5611_init();
+  MS5611_init(SPI1);
   uint16_t led_B = PIN('H', 3);
   gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
   pwr_vdd2_init();
@@ -118,7 +118,8 @@ void run_MS5611_routine() {
       printf("Tick: %lu\r\n", s_ticks);                   // Write message
       static bool on = true;                              // This block is executed
       gpio_write(led_B, on);                              // Every `period` milliseconds
-      on = !on;                                           // Toggle LED state
+      on = !on; 
+      //delay(1);                                          // Toggle LED state
       MS5611_get_data_test();                             // Write message
     }
   }
@@ -128,7 +129,6 @@ void run_MS5611_routine() {
   @brief Routine to test the ADXL375 accelerometer.
 */
 void run_ADXL375_routine() {  
-  printf("==================== PROGRAM START ==================\r\n");
   uint32_t devid = spi_transmit_receive(SPI1, ADXL375_CS, ADXL375_DEVID, 1, 1);
   printf("ADXL375 device ID: %d\n", (uint8_t)devid);
 }
@@ -142,7 +142,8 @@ int main(void)
   STM32_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
-  run_MS5611_routine()
+  printf("==================== PROGRAM START ==================\r\n");
+  run_MS5611_routine();
 }
 
 

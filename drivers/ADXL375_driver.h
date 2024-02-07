@@ -88,9 +88,9 @@ typedef struct ADXL375_data
   int16_t y;
   int16_t z;
 } ADXL375_data;
-#pragma endregion Structs/Emun
 
-SPI_TypeDef ADXL375_SPI;
+SPI_TypeDef* ADXL375_SPI;
+#pragma endregion Structs/Emun
 
 #pragma region Public
 /**

@@ -422,13 +422,12 @@ static inline int spi_ready_write(SPI_TypeDef *spi) {
 }
 
 /**
-  @brief Enable chip select line for SPI1
+  @brief Enable chip select line for spi
   @param spi Selected SPI (1, 2 or 3)
-  @note currently ONLY works for SPI1 for testing
+  @note currently ONLY works for spi for testing
 */
 static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
   #ifdef FLIGHT_COMPUTER
-    gpio_write(PIN('A', 4), LOW);
     set_cs(cs); 
   #else // Nucleo
   if (spi == SPI1)
@@ -438,14 +437,13 @@ static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
 }
 
 /**
-  @brief Enable chip select line for SPI1
+  @brief Enable chip select line for spi
   @param spi Selected SPI (1, 2 or 3)
-  @note currently ONLY works for SPI1 for testing
+  @note currently ONLY works for spi for testing
 */
 static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 {
   #ifdef FLIGHT_COMPUTER
-    gpio_write(PIN('A', 4), HIGH);
     unset_cs(cs);
   #else // Nucleo
   if (spi == SPI1)
@@ -463,10 +461,10 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 {
   uint8_t recieve_byte = 0;
-  spi_ready_write(SPI1);
+  spi_ready_write(spi);
   //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
   *(volatile uint8_t *)&spi->DR = send_byte;
-  spi_ready_read(SPI1);
+  spi_ready_read(spi);
   recieve_byte = *((volatile uint8_t *)&(spi->DR));
   return recieve_byte;
 }
@@ -514,7 +512,6 @@ static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t cs, uint8_
 */
 /*
 static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) {
-  spi = SPI1;
   valueToSend++;
 
   // Convert the integer to a byte array
@@ -526,13 +523,13 @@ static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) 
   // Calculate the length of the byte array
   size_t bufferLength = sizeof(byteBuffer);
 
-  spi_write_buf(SPI1, (char *)byteBuffer, bufferLength);
+  spi_write_buf(spi, (char *)byteBuffer, bufferLength);
 
   // Wait for transfer to complete (until receive buffer is not empty)
-  spi_ready_read(SPI1);
+  spi_ready_read(spi);
 
   // Read received data from SPI
-  uint16_t receivedValue = spi_read_byte(SPI1);
+  uint16_t receivedValue = spi_read_byte(spi);
 
   // Convert the received byte array back to an integer
   for (size_t i = 0; i < sizeof(receivedValue); ++i) {
