@@ -10,9 +10,12 @@
 #include "mcu.h"
 
 #pragma region Public
-int8_t BME280_init(BME280_dev *dev) {
+int8_t BME280_init(BME280_dev *dev, SPI_TypeDef spi,uint8_t cs) {
     int8_t ret_val;
     uint8_t chip_ID = 0;
+
+    dev->SPI = spi;
+    dev->CS = cs;
 
     // Read the chip-id of bme280 sensor
     ret_val = BME280_get_regs(BME280_REG_CHIP_ID, &chip_ID, 1, dev);
@@ -69,8 +72,9 @@ int8_t BME280_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, BME280
 
     if ((ret_val == 1) && (reg_data != NULL))
     {        
-        reg_addr = reg_addr | 0x80;                           // SPI 
-        dev->intf_rslt = dev->read(reg_addr, reg_data, len);   // Read the data
+        reg_addr = reg_addr | 0x80;                           // SPI
+        dev->intf_rslt = spi_transmit_receive(BME280_SPI, BME280_CS, reg_addr, 1, len); //SPI READ
+        //dev->intf_rslt = dev->read(reg_addr, reg_data, len);   // Read the data ****Replace this line with spi_transmit_receive()
 
         // Check for communication error
         if (dev->intf_rslt != BME280_INTF_RET_SUCCESS)
@@ -119,8 +123,10 @@ int8_t BME280_set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint32_t len,
             } else { 
                 temp_len = len;
             }
-
-            dev->intf_rslt = dev->write(reg_addr[0], temp_buff, temp_len, dev->intf_rslt);
+            
+            //figure out what data needs to be sent
+            dev->intf_rslt = spi_transmit_receive(BME280_SPI, BME280_CS, reg_addr, temp_len, 1);
+            //dev->intf_rslt = dev->write(reg_addr[0], temp_buff, temp_len, dev->intf_rslt); //****Replace this line with spi_transmit_receive()
         }
     }
     return ret_val;

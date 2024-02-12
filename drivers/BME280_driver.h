@@ -53,6 +53,9 @@
 #ifndef BME280_INTF_RET_TYPE
 #define BME280_INTF_RET_TYPE                      int8_t
 #endif
+
+#define BME280_CS								10 //NEED TO CHECK WHAT PIN IT SHOULD BE put as
+
 #pragma endregion Macros
 
 
@@ -74,12 +77,16 @@ typedef BME280_INTF_RET_TYPE (*BME280_read_fptr_t)(uint8_t reg_addr, uint8_t *re
 typedef BME280_INTF_RET_TYPE (*BME280_write_fptr_t)(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len);
 
 
+//SPI
+SPI_TypeDef BME280_SPI;
+
+
 #pragma region Structs/Emun
 /**
  * @brief BME280 device structure
  */
 typedef struct BME280_dev
-{
+{ 
     // Chip ID 
     uint8_t chip_ID;
 
@@ -161,7 +168,7 @@ typedef struct BME280_calib_data
   @param dev Structure instance of BME280_dev
   @return Result of execution status
 */
-int8_t BME280_init(BME280_dev *dev);
+int8_t BME280_init(BME280_dev *dev, SPI_TypeDef spi, uint8_t cs);
 
 
 /**

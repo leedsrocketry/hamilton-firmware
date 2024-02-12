@@ -9,8 +9,8 @@
 
 int8_t MAX31855_init(SPI_TypeDef spi){
     MAX31855_SPI = spi;
-    //need anything for CS pin?
 };
+
 
 MAX31855_data MAX31855_get_data(){
     //data structure
@@ -20,11 +20,11 @@ MAX31855_data MAX31855_get_data(){
     //send no data, recieve first 14 bits which is th cold-junction compensated thermocouple temperature
 
     //SPI send 0 bits, recieve 2 bytes
-    uint16_t rawData = spi_transmit_receive(MAX31855_SPI, 0, 0, 2);
+    uint32_t rawData = spi_transmit_receive(MAX31855_SPI, MAX31855_CS, 0, 0, 2);
 
     //now have a 16 bit response where we only want the first 14 bits
     //Remove last 2 bits
-    uint16_t bitShifted = rawData >> 2;
+    uint16_t bitShifted = (uint16_t) rawData >> 2;
 
     //convert to number using the values of each bit, 0.25 resolution.
     data.temp = bitShifted;
@@ -61,7 +61,7 @@ MAX31855_data MAX31855_get_full_data(){
     
     //----------- Get temperature reading -------------
     //get first 14 bits for the temperature reading
-    uint16_t rawTempBits = rawData >> 18;
+    uint16_t rawTempBits = (uint16_t) rawData >> 18;
     data.temp = rawTempBits;
     //divide by 4 for 0.25 resolution
     data.temp = data.temp / 4;
