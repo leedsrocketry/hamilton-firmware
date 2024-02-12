@@ -119,7 +119,6 @@ void run_MS5611_routine() {
       static bool on = true;                              // This block is executed
       gpio_write(led_B, on);                              // Every `period` milliseconds
       on = !on; 
-      //delay(1);                                          // Toggle LED state
       MS5611_get_data_test();                             // Write message
     }
   }
@@ -129,8 +128,8 @@ void run_MS5611_routine() {
   @brief Routine to test the ADXL375 accelerometer.
 */
 void run_ADXL375_routine() {  
-  uint32_t devid = spi_transmit_receive(SPI1, ADXL375_CS, ADXL375_DEVID, 1, 1);
-  printf("ADXL375 device ID: %d\n", (uint8_t)devid);
+  //ADXL375_init(SPI1);
+  uint32_t test = spi_transmit_receive(SPI1, ADXL375_CS, 0x23, 1, 1);
 }
 
 
@@ -143,7 +142,7 @@ int main(void)
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
   printf("==================== PROGRAM START ==================\r\n");
-  run_MS5611_routine();
+  run_ADXL375_routine();
 }
 
 

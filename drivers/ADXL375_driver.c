@@ -7,10 +7,12 @@
 
 #include "ADXL375_driver.h"
 
+
 // Public functions to be called from main flight computer
 #pragma region Public
+SPI_TypeDef* ADXL375_SPI;
 
-void ADXL375_init(SPI_TypeDef spi){
+uint8_t ADXL375_init(SPI_TypeDef * spi) {
     // Set up SPI
     ADXL375_SPI = spi;
 
@@ -18,15 +20,14 @@ void ADXL375_init(SPI_TypeDef spi){
     ADXL375_reg_write(ADXL375_DATA_FORMAT, ADXL375_DATA_FORMAT_SETTINGS(0));
 
     // Power the CTL Register
-    spi_transmit_receive(ADXL375_SPI, ADXL375_CS, ADXL375_POWER_REG, 1, 1); 
+    ADXL375_reg_write(ADXL375_POWER_CTL, 0x08);
 
     // Check the device name
-    uint8_t	devid = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, ADXL375_DEVID, 1, 1);
+    uint32_t devid = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, ADXL375_DEVID, 1, 1);
     if (devid != ADXL375_DEVID_ID)
-		exit();
+        printf("ADXL375 wrong device ID: %d\r\n", (uint8_t)devid);
 
-    printf("ADXL375 device ID: %d\n", devid);
-
+    /*
     // Set the data rate
     ADXL375_reg_write(ADXL375_BW_RATE,
 			    (0 << ADXL375_BW_RATE_LOW_POWER) |
@@ -47,10 +48,12 @@ void ADXL375_init(SPI_TypeDef spi){
 			    (1 << ADXL375_POWER_CTL_MEASURE) |
 			    (0 << ADXL375_POWER_CTL_SLEEP) |
 			    (ADXL375_POWER_CTL_WAKEUP_8 << ADXL375_POWER_CTL_WAKEUP)); 
+    */
+    return 0;
 };
 
 
-static ADXL375_data ADXL375_get_data(){
+ADXL375_data ADXL375_get_data(){
     struct ADXL375_data data;
 
     // x-axis
@@ -80,25 +83,18 @@ static ADXL375_data ADXL375_get_data(){
     data.z = (z[1] << 8) | z[0];
     printf("z: %d,/n", data.z);
 
-    return data
+    return data;
 };
-
 #pragma endregion Public
 
 // Implement private functions
 #pragma region Private
-#define ADXL375_DATA_FORMAT_SETTINGS(self_test) (			\
-		ADXL375_DATA_FORMAT_FIXED |				\
-		(self_test << ADXL375_DATA_FORMAT_SELF_TEST) |	\
-		(ADXL375_DATA_FORMAT_SPI_4_WIRE << ADXL375_DATA_FORMAT_SPI) | \
-		(0 << ADXL375_DATA_FORMAT_INT_INVERT) |		\
-		(0 << ADXL375_DATA_FORMAT_JUSTIFY))
 
-
-void ADXL375_reg_write(uint8_t addr, uint8_t value)
-{
-    spi_transmit_receive(ADXL375_SPI, ADXL375_CS, addr, 1, 1);
-    spi_transmit_receive(ADXL375_SPI, ADXL375_CS, value, 1, 1);
+void ADXL375_reg_write(uint8_t addr, uint8_t value) {
+    uint8_t	d[2];
+    d[0] = addr;
+	d[1] = value;
+    uint32_t r = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, d, 2, 1);
 }
 
 /*

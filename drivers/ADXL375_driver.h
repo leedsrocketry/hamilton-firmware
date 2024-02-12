@@ -10,8 +10,8 @@
 #include "mcu.h"
 
 #pragma region Macros
-#define ADXL375_DEVID		                  0x00
-#define ADXL375_DEVID_ID			            0xe5
+#define ADXL375_DEVID			                0x00  // Device ID command
+#define ADXL375_DEVID_ID			            0xe5  // Device ID (229)
 
 #define ADXL375_INT_ENABLE		            0x2E  // Interrupt enable control
 #define ADXL375_INT_MAP		                0x2F  // Interrupt enable control
@@ -59,7 +59,6 @@
 #define ADXL375_POWER_CTL_WAKEUP_8			  0
 #define ADXL375_POWER_CTL_WAKEUP_4			  1
 #define ADXL375_POWER_CTL_WAKEUP_2			  2
-#define ADXL375_DEVID_ID			            3
 
 #define ADXL375_X_REG_DATAX0              0x32
 #define ADXL375_X_REG_DATAX1              0x33
@@ -79,6 +78,13 @@
 #define ADXL375_SELF_TEST_MIN_G	          5.0
 #define ADXL375_SELF_TEST_MAX_G	          6.8
 #define ADXL375_MIN_SELF_TEST	((int32_t) (ADXL375_MIN_LSB_G * ADXL375_SELF_TEST_MIN_G * ADXL375_SELF_TEST_SAMPLES + 0.5))
+
+#define ADXL375_DATA_FORMAT_SETTINGS(self_test) (			\
+		ADXL375_DATA_FORMAT_FIXED |				\
+		(self_test << ADXL375_DATA_FORMAT_SELF_TEST) |	\
+		(ADXL375_DATA_FORMAT_SPI_4_WIRE << ADXL375_DATA_FORMAT_SPI) | \
+		(0 << ADXL375_DATA_FORMAT_INT_INVERT) |		\
+		(0 << ADXL375_DATA_FORMAT_JUSTIFY))
 #pragma endregion Macros
 
 #pragma region Structs/Emun
@@ -89,36 +95,20 @@ typedef struct ADXL375_data
   int16_t z;
 } ADXL375_data;
 
-SPI_TypeDef* ADXL375_SPI;
 #pragma endregion Structs/Emun
 
-#pragma region Public
 /**
   @brief Initialization of the ADXL375 Accelerometer module
   @note This function should be called before attempting to read data from the accelerometer.
   @return Success/Failure
 */
-int8_t ADXL375_init(SPI_TypeDef Spi);
+uint8_t ADXL375_init(SPI_TypeDef* spi);
 
 /**
   @brief Get data from the ADXL375 Accelerometer module
   @param data ptr to ADXL375_data struct for returning data
   @return Success/Failure
 */
-ADXL375_data ADXL375_get_data(ADXL375_data *data);
-#pragma endregion Public
-
-
-#pragma region Private
-/**
-  @brief TODO
-*/
-void ADXL375_reg_write();
-
-/**
-  @brief TODO
-*/
-void ADXL375_self_test();
-#pragma endregion Private
+ADXL375_data ADXL375_get_data();
 
 #endif /* ADXL375_DRIVER_H */
