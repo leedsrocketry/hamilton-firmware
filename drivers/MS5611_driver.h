@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "mcu.h"
 
 #pragma region Macros
 /** @name Commands */
@@ -58,7 +59,7 @@ typedef enum MS5611_OSR {
 /**
   @brief Initialise the pressure sensor with default parameters
 */
-uint8_t MS5611_init();
+uint8_t MS5611_init(SPI_TypeDef* spi);
 
 
 /**

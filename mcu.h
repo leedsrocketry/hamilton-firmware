@@ -297,7 +297,7 @@ static inline void unset_cs()
   gpio_write(A3, HIGH);
 }
 
-static void multiplexer_init()
+static inline void multiplexer_init()
 {
   gpio_set_mode(A0, GPIO_MODE_OUTPUT);
   gpio_set_mode(A1, GPIO_MODE_OUTPUT);
@@ -477,16 +477,14 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
   @param receive_size Number of bytes to be recieved
   @return Byte from SPI
 */
-static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t cs, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size)
+static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t cs, uint8_t *send_bytes, uint8_t transmit_size, uint8_t receive_size)
 {
   spi_enable_cs(spi, cs);
   spi_ready_write(spi);
 
   // Not currently implemented
-  while (transmit_size > 0)
-  {
-    spi_transmit(spi, send_byte);
-    transmit_size--;
+  for(int i = 0; i<transmit_size; i++) {
+    spi_transmit(spi, ((uint8_t *)send_bytes)[i]);
   }
 
   uint32_t result = 0;
@@ -496,7 +494,7 @@ static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t cs, uint8_
     result = (result << 8);
     result = result | received;
     receive_size--;
-    //printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
+    printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
     spi_ready_write(spi);
   }
   spi_disable_cs(spi, cs);
