@@ -458,12 +458,21 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
   @param send_byte Byte to be sent via SPI
   @return Byte from SPI
 */
-static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
+static inline uint8_t spi_write_byte(SPI_TypeDef *spi, uint8_t send_byte)
 {
-  uint8_t recieve_byte = 0;
+  printf("spi_writing_byte....");
   spi_ready_write(spi);
+  printf("SPI ready to write....");
   //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
   *(volatile uint8_t *)&spi->DR = send_byte;
+  printf("byte_sent\r\n");
+  return 0; // TODO check if transmit successful? (maybe in driver)
+}
+
+static inline uint8_t spi_read_byte(SPI_TypeDef *spi)
+{
+  uint8_t recieve_byte = 123;
+  spi_write_byte(spi,0);
   spi_ready_read(spi);
   recieve_byte = *((volatile uint8_t *)&(spi->DR));
   return recieve_byte;
@@ -474,31 +483,29 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
   @param spi Selected SPI (1, 2 or 3)
   @param send_byte Byte to be sent via SPI
   @param transmit_size Number of bytes to be sent (Not currently implemented)
-  @param receive_size Number of bytes to be recieved
-  @return Byte from SPI
+  @return error checking
 */
-static inline uint32_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t cs, uint8_t *send_bytes, uint8_t transmit_size, uint8_t receive_size)
+static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8_t transmit_size)
 {
-  spi_enable_cs(spi, cs);
-  spi_ready_write(spi);
-
-  // Not currently implemented
-  for(int i = 0; i<transmit_size; i++) {
-    spi_transmit(spi, ((uint8_t *)send_bytes)[i]);
+  printf("writing buff....\r\n");
+  for(int i = 0; i < transmit_size; i++) {
+    spi_write_byte(spi, send_bytes[i]);
   }
+  printf("completed!\r\n");
+  return 0;
+}
 
-  uint32_t result = 0;
-  while (receive_size > 0)
+
+static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uint8_t receive_size){
+  uint8_t retval = 0;
+  uint8_t i = 0;
+  while (i < receive_size)
   {
-    uint8_t received = spi_transmit(spi, 0x00);
-    result = (result << 8);
-    result = result | received;
-    receive_size--;
-    printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
-    spi_ready_write(spi);
+    *(recieve_bytes + i) = spi_read_byte(spi); // dereference to get element
+    i++;
+    // printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
   }
-  spi_disable_cs(spi, cs);
-  return result;
+  return retval; // TODO error checking
 }
 
 // 10000010 1100000 100111110
