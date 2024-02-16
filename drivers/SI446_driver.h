@@ -17,12 +17,15 @@
 
 #ifndef SI446_DRIVER_H
 #define SI446_DRIVER_H
+
+
 #include "mcu.h"
 
 #pragma region Macros //_______________ MACROS _______________________
 
 /** @name Constants */
 #define SI446_CTS_TIME_OUT                                  20
+#define SI446_CS								                            9
 
 /** @name SI446 Machine States */
 #define SI446_NO_CHANGE_STATE                               0
@@ -66,13 +69,11 @@
 /** @name properties registers */
 //#define SI446_ 
 
-SPI_TypeDef SI446_SPI;
-
 #pragma endregion Macros
 
 #pragma region Structs/Emun //_______________ STRUCTS _______________________
 
-**
+/**
  * @brief SI446 settings
  */
 typedef struct SI446_settings
@@ -94,7 +95,7 @@ typedef struct SI446_settings
   @note
   @return Success/Failure
 */
-int8_t SI446_init(SPI_TypeDef spi);
+int8_t SI446_init(SPI_TypeDef *spi);
 
 /**
   @brief loads the data into the FIFO ready for transmittion

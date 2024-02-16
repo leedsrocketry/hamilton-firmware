@@ -8,16 +8,23 @@
 #include "SI446_driver.h"
 
 
+SPI_TypeDef *SI446_SPI;
+
 // __________________________________ Public _________________
 
-int8_t SI446_init(SPI_Type_Def *spi){
+int8_t SI446_init(SPI_TypeDef *spi){
+    printf("SI446_init....\r\n");
     int8_t SI446_retVal;
     SI446_SPI = spi;
-    SI446_settings.SI446_channel; //?????;
-
-    SI446_retVal = SI446_Power_up();
+    //SI446_settings.SI446_channel; //?????;
+    SI446_retVal = SI446_power_up();
+    printf("SI446 init finished with retreved val of %d\r\n", SI446_retVal);
     return SI446_retVal;
 };
+
+
+/*
+
 
 void SI446_write_data(uint8_t *data, size_t byteCount){
     // send_CTS_HIGH
@@ -65,6 +72,7 @@ int8_t SI446_Recieve(){
     return SI446_retVal;
 }
 
+*/
 
 //_________________________________ Private ____________________
 
@@ -72,7 +80,7 @@ int8_t SI446_Recieve(){
 static int8_t SI446_get_response(int byteCount, uint8_t *data){
     int8_t SI446_retVal;
     // wait till CTS is correct
-    SI446_retVal = SI446_check_CTS(0)
+    SI446_retVal = SI446_check_CTS(0);
     if(SI446_retVal){
         for(int i = 0; i < byteCount; i ++){
             data[i] = spi_read_byte(SI446_SPI);
@@ -86,17 +94,16 @@ static int8_t SI446_get_response(int byteCount, uint8_t *data){
 static int8_t SI446_check_CTS(int desired){
     int SI446_time_out = SI446_CTS_TIME_OUT;
     if(desired > 0){ // use user defined  
-    SI446_time_out = desired
+    SI446_time_out = desired;
     }
-    else if(desired < 0){   // no timeout needed
-        spi_ready_ready(SI446_SPI); // wait till buffer not empty 
+    else if(desired < 0){   // no timeout needed 
         if(spi_read_byte(SI446_SPI) == 0xFF){ 
             return 1; // CTS ready
         };
         return SI446_E_CTS_INVALID;
     }
     // check for time out
-    while(time_out > 0){
+    while(SI446_time_out > 0){
         if((SI446_SPI->SR & BIT(1)) && (SI446_SPI->SR & BIT(0))){ // there is data
             if(spi_read_byte(SI446_SPI) == 0xFF){
                 return 1;
@@ -108,12 +115,11 @@ static int8_t SI446_check_CTS(int desired){
         }
         else{
             delay(1);   // wait 1ms
-            time_out --;
+            SI446_time_out --;
         }
     }
     return SI446_E_CTS_TIME_OUT;
 };
-
 
 static int8_t SI446_power_up(){
     int8_t SI446_retVal;
@@ -127,11 +133,13 @@ static int8_t SI446_power_up(){
     packet[4] = (uint8_t)(xo_freq >> 16);
     packet[5] = (uint8_t)(xo_freq >> 8);
     packet[6] = (uint8_t)(xo_freq);
-    // send_CTS_HIGH
+    spi_enable_cs(SI446_SPI, SI446_CS);// send_CTS_HIGH
+
+    printf("Powering up....\r\n");
     spi_write_buf(SI446_SPI, packet, 7);
     SI446_retVal = SI446_check_CTS(50); // ensure it has been processed correctly..takes longer
-    // send_CTS_LOW
+    spi_disable_cs(SI446_SPI, SI446_CS);// send_CTS_LOW
+    printf("Powered up!\r\n");
     return SI446_retVal;
-};
-
+}
 
