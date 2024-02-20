@@ -16,7 +16,7 @@
 // https://github.com/STMicroelectronics/cmsis_device_l4/blob/master/Include/system_stm32l4xx.h
 #include "stm32l4r5xx.h"
 
-#define FREQ 4000000
+extern int FREQ;
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
 #define PINNO(pin) (pin & 255)
@@ -575,3 +575,48 @@ static inline void pwr_vdd2_init()
   RCC->APB1ENR1 |= BIT(28); // page 291
   PWR->CR2 |= BIT(9);       // set the IOSV bit in the PWR_CR2 page 186, 219
 }
+#pragma region watchdog
+//information about watchdogs cann be found here:
+//https://www.st.com/resource/en/product_training/STM32WB-WDG_TIMERS-Independent-Watchdog-IWDG.pdf 
+
+/**
+  @brief Starts the watchdog timer
+*/
+static inline void watchdog_init(){
+  //Set the IWDG_SW option bit, This is to hardware enable the watchdog instead of enabling it each time like below
+  //pretty sure the option register is write protected, there are steps to unlock. In reference manual: 3.4.2 pg141
+  //FLASH->OPTR &= ~FLASH_OPTR_IWDG_SW;       //turn the hardware IWDG on by setting bit to off
+  //FLASH->OPTR |= FLASH_OPTR_IWDG_STDBY;     //run IWDG (1 turns off stand by)
+  //FLASH->OPTR |= FLASH_OPTR_IWDG_STOP;     //run IWDG (1 turns off stop)
+
+  /*The first step is to write the Key register with value 0x0000 CCCC which starts the watchdog.
+    Then remove the independent watchdog register protection by writing 0x0000 5555 to unlock the key.
+    Set the independent watchdog prescaler in the IWDG_PR register by selecting the prescaler divider feeding the counter clock.
+    Write the reload register (IWDG_RLR) to define the value to be loaded in the watchdog counter.
+  */
+  IWDG->KR = 0xCCCC;
+  IWDG->KR = 0x5555;
+  while(IWDG->SR & ~IWDG_SR_PVU_Msk){}; //prescalar can only be set when PVU bit is reset, so hold until = 0
+  //IWDG->PR = 0x0001;  //Prescalar is 3 bits, 000 = /4, 001 = /8, 010 = /16, 011 = /32... Divides the 32kHz clock signal
+  IWDG->PR = 0x0004;
+  /*
+  To calculate the counter reload value to achieve the desired reset time limit the following formula is used:
+  RL = (Desired_Time_ms * 32,000)/(4 * 2^PR * 1000) -1
+  RL has a limit of 4095, so choose a PR to get a value less than this
+  So for a 0.5s time:
+  RL = (500 * 32,000)/(4 * 2^(1) * 1000) - 1 = 1999
+  */
+  while(IWDG->SR & ~IWDG_SR_RVU_Msk){};  //reload value can only be set when RVU bit is reset, so hold until = 0
+  IWDG->RLR = 0x7CF;  //1999, value to be reloaded into the counter on reset
+}
+
+/**
+  @brief Reset the watchdog timer to prevent a system reset
+*/
+static inline void watchdog_pat(){
+  //IWDG_KR register must be written with 0x0000AAAA
+  IWDG->KR = 0xAAAA;
+
+}
+
+#pragma endregion watchdog

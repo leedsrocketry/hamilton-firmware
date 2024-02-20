@@ -6,6 +6,7 @@
 */
 #ifndef STM32_DRIVER_H
 #define STM32_INIT_H
+
 #include "mcu.h"
 
 // System parameters
@@ -37,6 +38,12 @@ typedef struct Time
   @brief TODO
 */
 void STM32_init(void);
+
+/**
+  @brief Sets the system clock frequency 
+  @param frequency - Pass either RCC_CFGR_SW_MSI, RCC_CFGR_SW_HSI, or RCC_CFGR_SW_PLL
+*/
+void STM32_init_clock(unsigned long frequency);
 
 
 /**

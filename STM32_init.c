@@ -8,6 +8,7 @@
 #include "STM32_init.h"
 #include "mcu.h"
 
+FREQ = (int) 4000000;
 
 // Pins
 const uint16_t _vBatt   = PIN('A', 0);  
@@ -26,6 +27,25 @@ void STM32_init()
   systick_init(FREQ / 1000);     // Tick every 1 ms
   STM32_init_peripherals();
   STM32_init_internals();
+}
+
+void STM32_init_clock(unsigned long frequency){
+  if (frequency == RCC_CFGR_SW_MSI){
+    //MSI range can only be set if MSI is off, or MSI is on and MSIRDY = 1
+    RCC->CR |= RCC_CR_MSION;       //set to 1 for MSI on
+    while ((RCC->CR & RCC_CR_MSION) && !(RCC->CR & RCC_CR_MSIRDY)); //wait until off, or on and ready
+    RCC->CR = (RCC->CR & ~RCC_CR_MSIRANGE_Msk)  | RCC_CR_MSIRANGE_11; //set MSI range to 48Hz (0b1011)
+    RCC->CR |= RCC_CR_MSIRGSEL;    //set to 1 to use MSI range from CR register
+    RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_MSI; // set system clock to MSI
+    FREQ = 48000000; //48MHz
+  }else if (frequency == RCC_CFGR_SW_HSI){
+    RCC->CR |= RCC_CR_HSION;       //set to 1 for HSI on
+    while (!(RCC->CR & RCC_CR_HSIRDY)); //wait until HSI ready
+    RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_HSI; // set system clock to HSI
+    FREQ = 16000000; //16MHz
+  }else{
+    FREQ = 4000000; //default
+  }
 }
 
 

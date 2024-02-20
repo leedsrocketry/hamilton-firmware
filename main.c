@@ -138,6 +138,7 @@ void run_ADXL375_routine() {
 */
 int main(void)
 {
+  STM32_init_clock(RCC_CFGR_SW_HSI); // set clock to 16MHz internal HSI
   STM32_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
