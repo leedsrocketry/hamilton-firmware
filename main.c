@@ -19,7 +19,7 @@ FlightStages flightStage = LAUNCHPAD;
 /**
   @brief Required for compilation
 */
-static volatile uint32_t s_ticks;
+
 void SysTick_Handler(void)
 {
   s_ticks++;
@@ -29,6 +29,44 @@ void SysTick_Handler(void)
   @brief TODO
 */
 void update_sensors(){}
+
+/**
+  @brief Buzzer sound
+  @param onDurationMs
+  @param offDurationMs
+  @param noOfBeeps
+*/
+void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps)
+{
+  for (int i = 0; i < noOfBeeps; i++) {
+      gpio_write(_buzzer, HIGH);
+      delay_ms(onDurationMs);
+      gpio_write(_buzzer, LOW); 
+      delay_ms(offDurationMs);
+  }
+}
+
+/**
+  @brief Buzzer sound to indicate power on
+*/
+void STM32_indicate_on_buzzer()
+{
+  STM32_beep_buzzer(100, 100, 3);
+}
+
+/**
+  @brief Led light to indicate power on
+*/
+void STM32_indicate_on_led()
+{
+  STM32_led_on();
+  delay_ms(200);
+  STM32_led_off();
+  delay_ms(100);
+  STM32_led_on();
+  delay_ms(200);
+  STM32_led_off();
+}
 
 /*
 void send_data() {

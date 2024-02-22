@@ -7,7 +7,9 @@
         "maxm10s_driver.h": "c",
         "lsm6ds3_driver.h": "c",
         "cstdint": "c",
-        "bme280_driver.h": "c"
+        "bme280_driver.h": "c",
+        "stm32_init.h": "c",
+        "ms5611_driver.h": "c"
     },
     "cmake.configureOnOpen": true
 }

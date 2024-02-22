@@ -58,26 +58,6 @@ void STM32_init_internals(void);
 void STM32_init_peripherals(void);
 
 
-/**
-  @brief TODO
-  @param onDurationMs
-  @param offDurationMs
-  @param noOfBeeps
-*/
-void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps);
-
-
-/**
-  @brief TODO
-*/
-void STM32_indicate_on_buzzer();
-
-
-/**
-  @brief TODO
-*/
-void STM32_indicate_on_red_led();
-
 
 /**
   @brief TODO

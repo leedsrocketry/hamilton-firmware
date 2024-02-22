@@ -107,49 +107,6 @@ void STM32_led_off()
 }
 
 
-/**
-  @brief Buzzer sound
-*/
-void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps)
-{
-  for (int i = 0; i < noOfBeeps; i++) {
-      gpio_write(_buzzer, HIGH);
-      delay(onDurationMs);
-      gpio_write(_buzzer, LOW); 
-      delay(offDurationMs);
-  }
-}
-
-
-/**
-  @brief Buzzer sound to indicate power on
-*/
-void STM32_indicate_on_buzzer()
-{
-  gpio_write(_buzzer, HIGH);
-  delay(300);
-  gpio_write(_buzzer, LOW);
-  delay(300);
-  gpio_write(_buzzer, HIGH);
-  delay(300);
-  gpio_write(_buzzer, LOW);
-}
-
-
-/**
-  @brief Led light to indicate power on
-*/
-void STM32_indicate_on_led()
-{
-  led_on();
-  delay(500);
-  led_off();
-  delay(500);
-  led_on();
-  delay(500);
-  led_off();
-}
-
 
 /**
   @brief Check battery charge

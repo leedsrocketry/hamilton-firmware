@@ -16,7 +16,9 @@
 // https://github.com/STMicroelectronics/cmsis_device_l4/blob/master/Include/system_stm32l4xx.h
 #include "stm32l4r5xx.h"
 
+static volatile uint32_t s_ticks;
 extern int FREQ;
+
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
 #define PINNO(pin) (pin & 255)
@@ -57,24 +59,28 @@ static inline void delay_microseconds(uint32_t time)
   @brief Delay in miliseconds
   @param time Time in miliseconds
 */
-static inline void delay(uint32_t time)
-{
-  delay_microseconds(time * 1000);
+static inline void delay_ms(uint32_t time) {
+  uint32_t initial_ticks = s_ticks; 
+  while (s_ticks - initial_ticks < time); //hold until that many ticks have passed
+}
+/**
+  @brief returns system time in miliseconds
+*/
+static inline uint32_t get_time_ms(){
+  return s_ticks;
 }
 
 /**
   @brief Enable system clocks by setting frequency
   @param ticks Required frequency
 */
-
-static inline void systick_init(uint32_t ticks)
-{
-  if ((ticks - 1) > 0xffffff)
-    return; // Systick timer is 24 bit
+static inline void systick_init(uint32_t ticks) {
+  if ((ticks - 1) > 0xffffff) return;         // Systick timer is 24 bit
   SysTick->LOAD = ticks - 1;
   SysTick->VAL = 0;
-  SysTick->CTRL = BIT(0) | BIT(1) | BIT(2); // Enable systick
-  RCC->APB2ENR |= BIT(0);                   // Enable SYSCFG
+  SysTick->CTRL |= BIT(0) | BIT(1) | BIT(2);   // Enable systick, enable call back, set clk source to AHB
+  s_ticks = 0;
+  RCC->APB2ENR |= BIT(0);                     // Enable SYSCFG
 }
 
 #pragma endregion System Clk
