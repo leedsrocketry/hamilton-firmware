@@ -10,14 +10,6 @@
 
 FREQ = (int) 4000000;
 
-// Pins
-const uint16_t _vBatt   = PIN('A', 0);  
-const uint16_t _vBatt1  = PIN('A', 0); 
-const uint16_t _vBatt2  = PIN('A', 0); 
-const uint16_t _vBatt3  = PIN('A', 0); 
-const uint16_t _buzzer  = PIN('A', 0); 
-const uint16_t _blueLED = PIN('B', 7);
-
 
 /**
   @brief Initialisation of the STM32L5 board

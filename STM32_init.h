@@ -13,6 +13,14 @@
 #define SEA_LEVEL_PRESSURE_AT_SITE 1013.25 // change on the day
 #define MSL_ALT_TIMER_THRESHOLD_MS 60000 // 1 minute
 
+// Pins
+#define _vBatt   PIN('A', 0) 
+#define _vBatt1  PIN('A', 0) 
+#define _vBatt2  PIN('A', 0) 
+#define _vBatt3  PIN('A', 0) 
+#define _buzzer  PIN('A', 0) 
+#define _blueLED PIN('B', 7)
+
 // Required structures
 typedef enum FlightStages {LAUNCHPAD, ASCEND, APOGEE, DESCENT, LANDING} FlightStages;
 
