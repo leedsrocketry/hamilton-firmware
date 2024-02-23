@@ -7,38 +7,38 @@
 
 #include "MAX31855_driver.h"
 
-int8_t MAX31855_init(SPI_TypeDef spi){
-    MAX31855_SPI = spi;
+MAX31855_data MAX31855_init(MAX31855_data* data, SPI_TypeDef spi, int CS){
+    data->MAX31855_SPI = spi;
+    data->MAX31855_CS = CS;
 };
 
 
-MAX31855_data MAX31855_get_data(){
-    //data structure
-    MAX31855_data data;
+MAX31855_data MAX31855_get_data(MAX31855_data* data){
 
     //Device will start sending data as soon as CS is pulled low, no data needs to be sent
     //send no data, recieve first 14 bits which is th cold-junction compensated thermocouple temperature
 
+    
     //SPI send 0 bits, recieve 2 bytes
-    uint32_t rawData = spi_transmit_receive(MAX31855_SPI, MAX31855_CS, 0, 0, 2);
+    uint32_t rawData = spi_transmit_receive(data->MAX31855_SPI, data->MAX31855_CS, 0, 0, 2);
 
     //now have a 16 bit response where we only want the first 14 bits
     //Remove last 2 bits
     uint16_t bitShifted = (uint16_t) rawData >> 2;
 
     //convert to number using the values of each bit, 0.25 resolution.
-    data.temp = bitShifted;
-    data.temp = data.temp / 4;
+    data->temp = bitShifted;
+    data->temp = data->temp / 4;
 
     //Fault
-    data.fault = (0b000000000001 & rawData);
+    data->fault = (0b000000000001 & rawData);
 
 
     return data;
 
 };
 
-MAX31855_data MAX31855_get_full_data(){
+MAX31855_data MAX31855_get_full_data(MAX31855_data* data){
     //Device will start sending data as soon as CS is pulled low, no data needs to be sent
     //send no data, recieve 32 bits, 
     /*

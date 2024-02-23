@@ -9,14 +9,17 @@
 
 #include "mcu.h"
 
-#define MAX31855_CS       0; //update this
-SPI_TypeDef MAX31855_SPI;
+
 
 /**
  * @brief MAX31855 device structure
  */
 typedef struct MAX31855_data
 {
+  //storing SPI
+  SPI_TypeDef MAX31855_SPI;
+  //Storing CS pin
+  int MAX31855_CS;
   //Float storing temperature result
   float temp;
   //Float storing internal temperature result
@@ -35,21 +38,21 @@ typedef struct MAX31855_data
   @note Saves the SPI objects
   @return Success
 */
-int8_t MAX31855_init(SPI_TypeDef spi);
+MAX31855_data MAX31855_init(MAX31855_data* data, SPI_TypeDef spi, int CS);
 
 /**
   @brief Get float of temperature from the MAX31855 Accelerometer module
   @note Gets the first part of the data which includes temperature with 0.25 resolution
   @return MAX31855_data structure with temperature and fault
 */
-MAX31855_data MAX31855_get_data();
+MAX31855_data MAX31855_get_data(MAX31855_data* data);
 
 /**
   @brief Get data full from the MAX31855 Accelerometer module
   @note Gets full 32 bit data from sensor with Temperature, internal temperature, and fault information
   @return MAX31855_data structure
 */
-MAX31855_data MAX31855_get_full_data();
+MAX31855_data MAX31855_get_full_data(MAX31855_data* data);
 
 #pragma endregion Public
 
