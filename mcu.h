@@ -466,12 +466,10 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 */
 static inline uint8_t spi_write_byte(SPI_TypeDef *spi, uint8_t send_byte)
 {
-  printf("spi_writing_byte....");
+  printf("you want to send: %d", send_byte);
   spi_ready_write(spi);
-  printf("SPI ready to write....");
   //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
   *(volatile uint8_t *)&spi->DR = send_byte;
-  printf("byte_sent\r\n");
   return 0; // TODO check if transmit successful? (maybe in driver)
 }
 
@@ -493,11 +491,9 @@ static inline uint8_t spi_read_byte(SPI_TypeDef *spi)
 */
 static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8_t transmit_size)
 {
-  printf("writing buff....\r\n");
   for(int i = 0; i < transmit_size; i++) {
     spi_write_byte(spi, send_bytes[i]);
   }
-  printf("completed!\r\n");
   return 0;
 }
 

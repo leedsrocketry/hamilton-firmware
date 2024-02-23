@@ -99,17 +99,17 @@ int8_t SI446_init(SPI_TypeDef *spi);
 
 /**
   @brief loads the data into the FIFO ready for transmittion
-  @note
+  @note doesn't need to wait for CTS - data  can be read out straight away
   @param data ptr to the data which is to be sent
 */
-void SI446_write_data(uint8_t *data);
+int8_t SI446_write_data(uint8_t *data, size_t byteCount);
 
 /**
   @brief reads recieved data from the FIFO buffer
-  @note
+  @note doesn't need to wait for CTS - data  can be read out straight away
   @param data ptr to the data which is to be sent
 */
-void SI446_read_data(uint8_t *data);
+int8_t SI446_read_data(uint8_t *data, size_t byteCount);
 
 /**
   @brief send SI446 into recieve mode using current radio settings
@@ -122,7 +122,6 @@ int8_t SI446_recieve();
   @note
 */
 int8_t SI446_transmit();
-
 
 #pragma endregion Public
 

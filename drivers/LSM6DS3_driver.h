@@ -18,17 +18,17 @@
 #define LSM6DS3_TEMP_ADDRESS                 0x20
 
 //chip settings
-#define LSM6DS3_WHO_AM_I_EXP                 01101001 //expected val if who reg is read
-#define LSM6DS3_CTRL1_XL_ON                  01000000
-#define LSM6DS3_CTRL2_G_ON                   01000000
+#define LSM6DS3_WHO_AM_I_EXP                 0b01101001 //expected val if who reg is read
+#define LSM6DS3_CTRL1_XL_ON                  0b01000000
+#define LSM6DS3_CTRL2_G_ON                   0b01000000
 
-#define LSM6DS3_CS                           0 // ???????????????
+#define LSM6DS3_CS                           7
 
 #pragma endregion Macros
 
 #pragma region Structs/Emun //_______________ STRUCTS _______________________
 
-typedef struct LSM6DS3_data
+typedef struct LSM6DS3_DATA
 {
   int16_t LSM6DS3_TEMP;
 
@@ -40,7 +40,7 @@ typedef struct LSM6DS3_data
   int16_t LSM6DS3_ACC_Y;
   int16_t LSM6DS3_ACC_Z;
 
-} LSM6DS3_data;
+} LSM6DS3_DATA;
 
 #pragma endregion Structs/Emun
 
@@ -59,7 +59,7 @@ int8_t LSM6DS3_init();
  * @param data ptr to LSM6DS3_data struct for returning data
  * @return Success/Failure
  */
-int8_t LSM6DS3_get_data(LSM6DS3_data *data);
+int8_t LSM6DS3_get_data(LSM6DS3_DATA *data);
 
 #pragma endregion Public
 

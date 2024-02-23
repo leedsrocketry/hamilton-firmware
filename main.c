@@ -12,6 +12,8 @@
 // #include "NAND_flash_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "drivers/ADXL375_driver.h"
+#include "drivers/LSM6DS3_driver.h"
+#include "drivers/SI446_driver.h"
 
 // Flags
 FlightStages flightStage = LAUNCHPAD;
@@ -28,7 +30,7 @@ void SysTick_Handler(void)
 /**
   @brief TODO
 */
-void update_sensors(){}
+void update_sensors() {}
 
 /**
   @brief Buzzer sound
@@ -117,9 +119,10 @@ void toggle_timeout_flag() {}
 
 /**
   @brief Initial Routine to run on hardware. Should trigger RGB blink sequence
-  and Serial printing via LUART1  
+  and Serial printing via LUART1
 */
-void run_test_routine() {  
+void run_test_routine()
+{
   uint16_t led_B = PIN('H', 3);
   gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
   pwr_vdd2_init();
@@ -128,21 +131,23 @@ void run_test_routine() {
 
   uint32_t timer = 0, period = 500;
 
-  for (;;) {
-    if (timer_expired(&timer, period, s_ticks)) {
-      static bool on = true;                            // This block is executed
-      gpio_write(led_B, on);                            // Every `period` milliseconds
-      on = !on;                                         // Toggle LED state
-      printf("LED: %d, tick: %lu\r\n", on, s_ticks);    // Write message
+  for (;;)
+  {
+    if (timer_expired(&timer, period, s_ticks))
+    {
+      static bool on = true;                         // This block is executed
+      gpio_write(led_B, on);                         // Every `period` milliseconds
+      on = !on;                                      // Toggle LED state
+      printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
     }
   }
 }
 
-
 /**
   @brief Routine to test the MS5611 barometer.
 */
-void run_MS5611_routine() {  
+void run_MS5611_routine()
+{
   MS5611_init(SPI1);
   uint16_t led_B = PIN('H', 3);
   gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
@@ -151,13 +156,15 @@ void run_MS5611_routine() {
   uart_init(LUART1, 9600);
 
   uint32_t timer = 0, period = 100;
-  for (;;) {
-    if (timer_expired(&timer, period, s_ticks)) {
-      printf("Tick: %lu\r\n", s_ticks);                   // Write message
-      static bool on = true;                              // This block is executed
-      gpio_write(led_B, on);                              // Every `period` milliseconds
-      on = !on; 
-      MS5611_get_data_test();                             // Write message
+  for (;;)
+  {
+    if (timer_expired(&timer, period, s_ticks))
+    {
+      printf("Tick: %lu\r\n", s_ticks); // Write message
+      static bool on = true;            // This block is executed
+      gpio_write(led_B, on);            // Every `period` milliseconds
+      on = !on;
+      MS5611_get_data_test(); // Write message
     }
   }
 }
@@ -165,11 +172,72 @@ void run_MS5611_routine() {
 /**
   @brief Routine to test the ADXL375 accelerometer.
 */
-void run_ADXL375_routine() {  
-  //ADXL375_init(SPI1);
+void run_ADXL375_routine()
+{
+  // ADXL375_init(SPI1);
   uint32_t test = spi_transmit_receive(SPI1, ADXL375_CS, 0x23, 1, 1);
 }
 
+void SI446_Test_routine()
+{
+  printf("SI446_test_routine()...\r\n ");
+  int8_t ret_val = 123;
+  ret_val = SI446_init(SPI1);
+  printf("completed: %d \r\n ", ret_val);
+}
+
+void LSM6DS3_test_routine()
+{
+  uint16_t led_B = PIN('H', 3);
+  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
+  pwr_vdd2_init();
+  systick_init(FREQ / 1000);
+  uart_init(LUART1, 9600);
+
+  uint32_t timer = 0, period = 500;
+
+  for (;;)
+  {
+    if (timer_expired(&timer, period, s_ticks))
+    {
+      static bool on = true;                         // This block is executed
+      gpio_write(led_B, on);                         // Every `period` milliseconds
+      on = !on;                                      // Toggle LED state
+      printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
+
+      int8_t ret_val = 123;
+      ret_val = LSM6DS3_init(SPI1);
+      printf("completed: %d \r\n ", ret_val);
+    }
+  }
+}
+
+void spi_test_routine()
+{
+  uint16_t led_B = PIN('H', 3);
+  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
+  pwr_vdd2_init();
+  systick_init(FREQ / 1000);
+  uart_init(LUART1, 9600);
+
+  uint32_t timer = 0, period = 500;
+
+  for (;;)
+  {
+    if (timer_expired(&timer, period, s_ticks))
+    {
+      static bool on = true;                         // This block is executed
+      gpio_write(led_B, on);                         // Every `period` milliseconds
+      on = !on;                                      // Toggle LED state
+      printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
+      //spi_write_byte(SPI1,0);
+      uint8_t ret_val = 0;
+      spi_write_byte(SPI1,124);
+      //ret_val = spi_read_byte(SPI1);
+      printf("return: %d", ret_val);
+    }
+  }
+}
 
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
@@ -180,10 +248,11 @@ int main(void)
   STM32_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
-  printf("==================== PROGRAM START ==================\r\n");
-  run_ADXL375_routine();
+  // printf("==================== SI446_Test_routine ==================\r\n");
+  // SI446_Test_routine();
+  printf("==================== LSM6DS3_test_routine ==================\r\n");
+  spi_test_routine();
 }
-
 
 // TODO - Add the following to the main loop
 /*
