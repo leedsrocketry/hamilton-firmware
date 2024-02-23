@@ -17,6 +17,7 @@
 
 // Flags
 FlightStages flightStage = LAUNCHPAD;
+volatile uint32_t s_ticks;
 
 /**
   @brief Required for compilation

@@ -16,7 +16,7 @@
 // https://github.com/STMicroelectronics/cmsis_device_l4/blob/master/Include/system_stm32l4xx.h
 #include "stm32l4r5xx.h"
 
-static volatile uint32_t s_ticks;
+extern volatile uint32_t s_ticks;
 extern int FREQ;
 
 #define BIT(x) (1UL << (x))
