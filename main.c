@@ -12,8 +12,8 @@
 // #include "NAND_flash_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "drivers/ADXL375_driver.h"
-#include "drivers/LSM6DS3_driver.h"
-#include "drivers/SI446_driver.h"
+//#include "drivers/LSM6DS3_driver.h"
+//#include "drivers/SI446_driver.h"
 
 // Flags
 FlightStages flightStage = LAUNCHPAD;
@@ -156,7 +156,7 @@ void run_MS5611_routine()
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
 
-  uint32_t timer = 0, period = 100;
+  uint32_t timer = 0, period = 2000;
   for (;;)
   {
     if (timer_expired(&timer, period, s_ticks))
@@ -175,8 +175,8 @@ void run_MS5611_routine()
 */
 void run_ADXL375_routine()
 {
-  // ADXL375_init(SPI1);
-  uint32_t test = spi_transmit_receive(SPI1, ADXL375_CS, 0x23, 1, 1);
+  ADXL375_init(SPI1);
+  //uint32_t test = spi_transmit_receive(SPI1, ADXL375_CS, 0x23, 1, 1);
 }
 
 void SI446_Test_routine()
@@ -252,7 +252,8 @@ int main(void)
   // printf("==================== SI446_Test_routine ==================\r\n");
   // SI446_Test_routine();
   printf("==================== LSM6DS3_test_routine ==================\r\n");
-  spi_test_routine();
+  run_ADXL375_routine();
+  //spi_test_routine();
 }
 
 // TODO - Add the following to the main loop

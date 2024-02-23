@@ -30,7 +30,7 @@ PROM_data ms5611_prom_data;
 typedef struct M5611_data
 {
     int32_t temp;
-    int64_t pressure;
+    int32_t pressure;
 } M5611_data;
 
 SPI_TypeDef* MS5611_SPI;
@@ -46,16 +46,15 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
     MS5611_read_PROM(MS5611_SPI);
     M5611_data data;
     MS5611_get_data(&data);
-    printf("Temp: %u\r\n", data.temp);
 	return 0;
 }
 
 int32_t MS5611_get_data_test()
 {   
-    MS5611_read_PROM(MS5611_SPI);
+    //MS5611_read_PROM(MS5611_SPI);
     M5611_data data;
     MS5611_get_data(&data);
-    printf("Temp: %u\r\n", data.temp);
+    printf("Temp: %u Pressure: %u \r\n", data.temp, data.pressure);
 	return 0;
 }
 
@@ -66,20 +65,18 @@ uint16_t PROM_values[8];
 
 uint8_t MS5611_read_PROM()
 {
+    // Take ptr to the PROM data struct
+    int16_t *prom_ptr = (int16_t *)&ms5611_prom_data;
     for(int i = 0; i < 8; i++)
     {
-        uint16_t result = spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_READ_PROM(i), 1, 2);
-        PROM_values[i] = result;
+        uint16_t result;
+        spi_enable_cs(MS5611_SPI, MS5611_CS);
+        spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_READ_PROM(i), 1, 2, &result);
+        spi_disable_cs(MS5611_SPI, MS5611_CS);
+        
+        // Fill struct using ptr arithmatic
+        *(prom_ptr + i) = result;
     }
-
-    ms5611_prom_data.blank = PROM_values[0];
-    ms5611_prom_data.SENS = PROM_values[1];
-    ms5611_prom_data.OFF = PROM_values[2];
-    ms5611_prom_data.TCS = PROM_values[3];
-    ms5611_prom_data.TCO = PROM_values[4];
-    ms5611_prom_data.T_REF = PROM_values[5];
-    ms5611_prom_data.TEMPSENS = PROM_values[6];
-    ms5611_prom_data.SC_CRC = PROM_values[7];
     
     return 0;
 }
@@ -87,18 +84,33 @@ uint8_t MS5611_read_PROM()
 int MS5611_get_data(M5611_data* data)
 {
     // check if the device has a register that checks if the conversion is complete?
-    spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_CONVERT_D2, 1, 1);
-    delay(1);
-    int32_t D2 = spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_READ_ADC, 1, 3);
+    spi_enable_cs(MS5611_SPI, MS5611_CS);
+    spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_CONVERT_D2, 1, 0, NULL);
+    spi_disable_cs(MS5611_SPI, MS5611_CS);
+
+    delay_ms(8);
+    uint32_t D2;
+    spi_enable_cs(MS5611_SPI, MS5611_CS);
+    spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_READ_ADC, 1, 3, &D2);
+    spi_disable_cs(MS5611_SPI, MS5611_CS);
+
     int32_t dT = (D2) - ((int32_t)ms5611_prom_data.T_REF << 8);
     int32_t TEMP = 2000 + dT * ms5611_prom_data.TEMPSENS / (2<<23);
 
-    spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_CONVERT_D1, 1, 1);
-    delay(1);
-    int32_t D1 = spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_READ_ADC, 1, 3);
-    int64_t OFF = (ms5611_prom_data.OFF << 16) + (ms5611_prom_data.TCO*dT)/(2<<7);
-    int64_t SENS = (ms5611_prom_data.SENS<<15) + (ms5611_prom_data.TCS*dT)/(2<<8);
-    int64_t PRESSURE = ((((int64_t) D1 * SENS) >> 21) - OFF) >> 15;
+    spi_enable_cs(MS5611_SPI, MS5611_CS);
+    spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_CONVERT_D1, 1, 0, NULL);
+    spi_disable_cs(MS5611_SPI, MS5611_CS);
+
+    delay_ms(8);
+
+    uint32_t D1;
+    spi_enable_cs(MS5611_SPI, MS5611_CS);
+    spi_transmit_receive(MS5611_SPI, MS5611_CS, MS5611_CMD_READ_ADC, 1, 3, &D1);
+    spi_disable_cs(MS5611_SPI, MS5611_CS);
+
+    int64_t OFF = (ms5611_prom_data.OFF * pow(2,16)) + (ms5611_prom_data.TCO*dT)/pow(2,7);
+    int64_t SENS = (ms5611_prom_data.SENS * pow(2,15)) + (ms5611_prom_data.TCS*dT)/pow(2,8);
+    int32_t PRESSURE = (D1 * SENS / pow(2,21) - OFF) / pow(2,15);
     data->temp = TEMP;
     data->pressure = PRESSURE;
 

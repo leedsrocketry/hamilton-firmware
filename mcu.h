@@ -510,6 +510,57 @@ static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uin
   return retval; // TODO error checking
 }
 
+static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
+{
+  uint8_t recieve_byte = 0;
+  spi_ready_write(spi);
+  //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
+  *(volatile uint8_t *)&spi->DR = send_byte;
+  spi_ready_read(spi);
+  recieve_byte = *((volatile uint8_t *)&(spi->DR));
+  return recieve_byte;
+}
+
+static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t cs, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size, void* result_ptr)
+{
+  uint8_t ret_value = 0;
+  //spi_enable_cs(spi, cs);
+  spi_ready_write(spi);
+
+  // Not currently implemented
+  while (transmit_size > 0)
+  {
+    spi_transmit(spi, send_byte);
+    transmit_size--;
+  }
+
+  uint32_t result = 0;
+  int8_t rs = receive_size;
+  while (rs > 0)
+  {
+    uint8_t received = spi_transmit(spi, 0x00);
+    result = (result << 8);
+    result = result | received;
+    rs--;
+    //printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
+    spi_ready_write(spi);
+  }
+  //spi_disable_cs(spi, cs);
+  //printf("RESULT: %d\r\n", result);
+  if(receive_size == 1)
+  {
+    *((uint8_t*)result_ptr) = result;
+  } else if (receive_size == 2)
+  {
+    *((uint16_t*)result_ptr) = result;
+  } else if (receive_size > 2)
+  {
+    *((uint32_t*)result_ptr) = result;
+  }
+
+  return ret_value;
+}
+
 // 10000010 1100000 100111110
 // 11010111 1100000 
 

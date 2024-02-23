@@ -23,7 +23,8 @@ uint8_t ADXL375_init(SPI_TypeDef * spi) {
     ADXL375_reg_write(ADXL375_POWER_CTL, 0x08);
 
     // Check the device name
-    uint32_t devid = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, ADXL375_DEVID, 1, 1);
+    uint32_t devid;
+    spi_transmit_receive(ADXL375_SPI, ADXL375_CS, ADXL375_DEVID, 1, 1, &devid);
     if (devid != ADXL375_DEVID_ID)
         printf("ADXL375 wrong device ID: %d\r\n", (uint8_t)devid);
 
@@ -60,7 +61,7 @@ ADXL375_data ADXL375_get_data(){
     uint16_t commnds_x[1] = {ADXL375_X_REG_DATAX0, ADXL375_X_REG_DATAX1};
     uint16_t x[1];
     for (int i = 0; i < 2; i++){
-        x[i] = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_x[i], 1, 1); 
+        spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_x[i], 1, 1, x[i]); 
     }
     data.x = (x[1] << 8) | x[0];
     printf("x: %d, ", data.x);
@@ -69,7 +70,7 @@ ADXL375_data ADXL375_get_data(){
     uint16_t commnds_y[1] = {ADXL375_Y_REG_DATAY0, ADXL375_Y_REG_DATAY1};
     uint16_t y[1];
     for (int i = 0; i < 2; i++){
-        y[i] = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_y[i], 1, 1); 
+        spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_x[i], 1, 1, y[i]); 
     }
     data.y = (y[1] << 8) | y[0];
     printf("y: %d, ", data.y);
@@ -78,7 +79,7 @@ ADXL375_data ADXL375_get_data(){
     uint16_t commnds_z[1] = {ADXL375_Z_REG_DATAZ0, ADXL375_Z_REG_DATAZ1};
     uint16_t z[1];
     for (int i = 0; i < 2; i++){
-        z[i] = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_z[i], 1, 1); 
+        spi_transmit_receive(ADXL375_SPI, ADXL375_CS, commnds_z[i], 1, 1, z[i]); 
     }
     data.z = (z[1] << 8) | z[0];
     printf("z: %d,/n", data.z);
@@ -94,7 +95,8 @@ void ADXL375_reg_write(uint8_t addr, uint8_t value) {
     uint8_t	d[2];
     d[0] = addr;
 	d[1] = value;
-    uint32_t r = spi_transmit_receive(ADXL375_SPI, ADXL375_CS, d, 2, 1);
+    uint32_t r;
+    spi_transmit_receive(ADXL375_SPI, ADXL375_CS, d, 2, 1, &r);
 }
 
 /*
