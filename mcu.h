@@ -459,26 +459,46 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 }
 
 /**
-  @brief Transmit single byte to and from SPI peripheral
+  @brief Transmit single byte to and recieve a byte from SPI peripheral
   @param spi Selected SPI (1, 2 or 3)
   @param send_byte Byte to be sent via SPI
   @return Byte from SPI
 */
-static inline uint8_t spi_write_byte(SPI_TypeDef *spi, uint8_t send_byte)
+static inline uint8_t spi_ReadWrite_byte(SPI_TypeDef *spi, uint8_t send_byte)
 {
+  uint8_t recieve_byte = 123;
   printf("you want to send: %d", send_byte);
   spi_ready_write(spi);
   //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
   *(volatile uint8_t *)&spi->DR = send_byte;
-  return 0; // TODO check if transmit successful? (maybe in driver)
+  // since SPI is asyncronous communication, we gotta recieve a bit aswell....
+  spi_ready_read(spi);
+  recieve_byte = *((volatile uint8_t *)&(spi->DR)); 
+  return recieve_byte;
 }
 
+/**
+  @brief Transmit single byte to SPI peripheral
+  @param spi Selected SPI (1, 2 or 3)
+  @param send_byte Byte to be sent via SPI
+  @return data recieved whilst byte is being transmitted
+*/
+static inline uint8_t spi_write_byte(SPI_TypeDef *spi, uint8_t send_byte)
+{
+  uint8_t recieve_byte = 123;
+  recieve_byte = spi_ReadWrite_byte(spi, send_byte);
+  return recieve_byte;
+}
+
+/**
+  @brief Transmit single byte to and from SPI peripheral
+  @param spi Selected SPI (1, 2 or 3)
+  @return Byte from SPI
+*/
 static inline uint8_t spi_read_byte(SPI_TypeDef *spi)
 {
   uint8_t recieve_byte = 123;
-  spi_write_byte(spi,0);
-  spi_ready_read(spi);
-  recieve_byte = *((volatile uint8_t *)&(spi->DR));
+  spi_ReadWrite_byte(spi, 0x00);
   return recieve_byte;
 }
 
