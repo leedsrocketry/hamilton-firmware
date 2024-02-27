@@ -26,7 +26,7 @@ uint8_t ADXL375_init(SPI_TypeDef * spi) {
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     int8_t devid;
     //spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 1, 1, &devid);
-    devid = spi_transmit(ADXL375_SPI, 0x00);
+    devid = spi_transmit(ADXL375_SPI, 0x80);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 
     if (devid != ADXL375_DEVID_ID)
