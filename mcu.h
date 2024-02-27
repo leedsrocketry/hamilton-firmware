@@ -477,7 +477,7 @@ static inline uint8_t spi_ReadWrite_byte(SPI_TypeDef *spi, uint8_t send_byte)
   return recieve_byte;
 }
 
-static inline uint8_t spi_ReadWrite_byte(SPI_TypeDef *spi, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size, void* result_ptr)
+static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size, void* result_ptr)
 {
   uint8_t ret_value = 0;
   //spi_enable_cs(spi, cs);
