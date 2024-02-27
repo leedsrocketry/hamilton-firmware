@@ -467,7 +467,7 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 static inline uint8_t spi_ReadWrite_byte(SPI_TypeDef *spi, uint8_t send_byte)
 {
   uint8_t recieve_byte = 123;
-  printf("you want to send: %d", send_byte);
+  //printf("you want to send: %d", send_byte);
   spi_ready_write(spi);
   //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
   *(volatile uint8_t *)&spi->DR = send_byte;
@@ -477,17 +477,44 @@ static inline uint8_t spi_ReadWrite_byte(SPI_TypeDef *spi, uint8_t send_byte)
   return recieve_byte;
 }
 
-/**
-  @brief Transmit single byte to SPI peripheral
-  @param spi Selected SPI (1, 2 or 3)
-  @param send_byte Byte to be sent via SPI
-  @return data recieved whilst byte is being transmitted
-*/
-static inline uint8_t spi_write_byte(SPI_TypeDef *spi, uint8_t send_byte)
+static inline uint8_t spi_ReadWrite_byte(SPI_TypeDef *spi, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size, void* result_ptr)
 {
-  uint8_t recieve_byte = 123;
-  recieve_byte = spi_ReadWrite_byte(spi, send_byte);
-  return recieve_byte;
+  uint8_t ret_value = 0;
+  //spi_enable_cs(spi, cs);
+  spi_ready_write(spi);
+
+  // Not currently implemented
+  while (transmit_size > 0)
+  {
+    spi_ReadWrite_byte(spi, send_byte);
+    transmit_size--;
+  }
+
+  uint32_t result = 0;
+  int8_t rs = receive_size;
+  while (rs > 0)
+  {
+    uint8_t received = spi_ReadWrite_byte(spi, 0x00);
+    result = (result << 8);
+    result = result | received;
+    rs--;
+    //printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
+    spi_ready_write(spi);
+  }
+  //spi_disable_cs(spi, cs);
+  //printf("RESULT: %d\r\n", result);
+  if(receive_size == 1)
+  {
+    *((uint8_t*)result_ptr) = result;
+  } else if (receive_size == 2)
+  {
+    *((uint16_t*)result_ptr) = result;
+  } else if (receive_size > 2)
+  {
+    *((uint32_t*)result_ptr) = result;
+  }
+
+  return ret_value;
 }
 
 /**
@@ -497,8 +524,8 @@ static inline uint8_t spi_write_byte(SPI_TypeDef *spi, uint8_t send_byte)
 */
 static inline uint8_t spi_read_byte(SPI_TypeDef *spi)
 {
-  uint8_t recieve_byte = 123;
-  spi_ReadWrite_byte(spi, 0x00);
+  uint8_t recieve_byte = 99;
+  recieve_byte = spi_ReadWrite_byte(spi, 0x00);
   return recieve_byte;
 }
 
