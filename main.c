@@ -175,13 +175,18 @@ void run_MS5611_routine()
 */
 void run_ADXL375_routine()
 {
-  // ADXL375_init(SPI1);
-  uint32_t test = spi_transmit_receive(SPI1, ADXL375_CS, 0x23, 1, 1);
+  printf("================ ADXL375_routine ================ \r\n");
+  ADXL375_init(SPI1);
+
+  ADXL375_data data;
+  data = ADXL375_get_data();
+  printf("x: %d\r\n", data.x);
+  // uint32_t test = spi_transmit_receive(SPI1, ADXL375_CS, 0x23, 1, 1);
 }
 
 void SI446_Test_routine()
 {
-  printf("SI446_test_routine()...\r\n ");
+  printf("================ SI446_routine ================ \r\n");
   int8_t ret_val = 123;
   ret_val = SI446_init(SPI1);
   printf("completed: %d \r\n ", ret_val);
@@ -189,6 +194,7 @@ void SI446_Test_routine()
 
 void LSM6DS3_test_routine()
 {
+  printf("================ LSM6DS3_routine ================ \r\n");
   uint16_t led_B = PIN('H', 3);
   gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
   pwr_vdd2_init();
@@ -249,11 +255,7 @@ int main(void)
   STM32_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
-  // printf("==================== SI446_Test_routine ==================\r\n");
-  // SI446_Test_routine();
-  printf("==================== LSM6DS3_test_routine ==================\r\n");
-  //spi_test_routine();
-  run_MS5611_routine();
+  run_ADXL375_routine();
 }
 
 // TODO - Add the following to the main loop

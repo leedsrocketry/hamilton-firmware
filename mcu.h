@@ -486,7 +486,7 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte, 
   // Not currently implemented
   while (transmit_size > 0)
   {
-    spi_ReadWrite_byte(spi, send_byte);
+    spi_transmit(spi, send_byte);
     transmit_size--;
   }
 
@@ -494,7 +494,7 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte, 
   int8_t rs = receive_size;
   while (rs > 0)
   {
-    uint8_t received = spi_ReadWrite_byte(spi, 0x00);
+    uint8_t received = spi_transmit(spi, 0x00);
     result = (result << 8);
     result = result | received;
     rs--;
@@ -525,7 +525,7 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte, 
 static inline uint8_t spi_read_byte(SPI_TypeDef *spi)
 {
   uint8_t recieve_byte = 99;
-  recieve_byte = spi_ReadWrite_byte(spi, 0x00);
+  recieve_byte = spi_transmit(spi, 0x00);
   return recieve_byte;
 }
 

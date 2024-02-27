@@ -39,7 +39,7 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
 {
     MS5611_SPI = spi;
     spi_enable_cs(MS5611_SPI, MS5611_CS);
-    uint8_t init = spi_ReadWrite_byte(MS5611_SPI, MS5611_CMD_RESET);
+    uint8_t init = spi_transmit(MS5611_SPI, MS5611_CMD_RESET);
     printf("MS5611 init\r\n");
     spi_disable_cs(MS5611_SPI, MS5611_CS);
 
