@@ -161,7 +161,7 @@ void run_MS5611_routine()
   {
     if (timer_expired(&timer, period, s_ticks))
     {
-      printf("Tick: %lu\r\n", s_ticks); // Write message
+      //printf("Tick: %lu\r\n", s_ticks); // Write message
       static bool on = true;            // This block is executed
       gpio_write(led_B, on);            // Every `period` milliseconds
       on = !on;
@@ -233,7 +233,7 @@ void spi_test_routine()
       printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
       //spi_write_byte(SPI1,0);
       uint8_t ret_val = 0;
-      spi_write_byte(SPI1,124);
+      //spi_write_byte(SPI1,124);
       //ret_val = spi_read_byte(SPI1);
       printf("return: %d", ret_val);
     }
@@ -252,7 +252,8 @@ int main(void)
   // printf("==================== SI446_Test_routine ==================\r\n");
   // SI446_Test_routine();
   printf("==================== LSM6DS3_test_routine ==================\r\n");
-  spi_test_routine();
+  //spi_test_routine();
+  run_MS5611_routine();
 }
 
 // TODO - Add the following to the main loop
