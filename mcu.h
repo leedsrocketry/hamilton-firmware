@@ -464,7 +464,7 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
   @param send_byte Byte to be sent via SPI
   @return Byte from SPI
 */
-static inline uint8_t spi_ReadWrite_byte(SPI_TypeDef *spi, uint8_t send_byte)
+static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 {
   uint8_t recieve_byte = 123;
   //printf("you want to send: %d", send_byte);
