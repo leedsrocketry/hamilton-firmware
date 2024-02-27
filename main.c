@@ -178,9 +178,17 @@ void run_ADXL375_routine()
   printf("================ ADXL375_routine ================ \r\n");
   ADXL375_init(SPI1);
 
-  //ADXL375_data data;
-  //data = ADXL375_get_data();
-  //printf("x: %d\r\n", data.x);
+  ADXL375_data data;
+  
+  uint32_t timer = 0, period = 500;
+  for (;;)
+  {
+    if (timer_expired(&timer, period, s_ticks))
+    {
+      data = ADXL375_get_data();
+      printf("x: %d \r\n", data.x);
+    }
+  }
 }
 
 void SI446_Test_routine()
