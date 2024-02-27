@@ -25,7 +25,8 @@ uint8_t ADXL375_init(SPI_TypeDef * spi) {
     // Check the device name
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     int8_t devid;
-    spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 1, 1, &devid);
+    //spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 1, 1, &devid);
+    devid = spi_transmit(ADXL375_SPI, 0x80);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 
     if (devid != ADXL375_DEVID_ID)
@@ -65,7 +66,9 @@ ADXL375_data ADXL375_get_data(){
     uint16_t x[1];
     for (int i = 0; i < 2; i++){
         x[i];
+        spi_enable_cs(ADXL375_SPI, ADXL375_CS);
         spi_transmit_receive(ADXL375_SPI, commnds_x[i], 1, 1, &x[i]); 
+        spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     }
     data.x = (x[1] << 8) | x[0];
     printf("x: %d, ", data.x);
@@ -75,7 +78,9 @@ ADXL375_data ADXL375_get_data(){
     uint16_t y[1];
     for (int i = 0; i < 2; i++){
         y[i];
+        spi_enable_cs(ADXL375_SPI, ADXL375_CS);
         spi_transmit_receive(ADXL375_SPI, commnds_y[i], 1, 1, &y[i]); 
+        spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     }
     data.y = (y[1] << 8) | y[0];
     printf("y: %d, ", data.y);
@@ -84,7 +89,9 @@ ADXL375_data ADXL375_get_data(){
     uint16_t commnds_z[1] = {ADXL375_Z_REG_DATAZ0, ADXL375_Z_REG_DATAZ1};
     uint16_t z[1];
     for (int i = 0; i < 2; i++){
+        spi_enable_cs(ADXL375_SPI, ADXL375_CS);
         z[i] = spi_transmit_receive(ADXL375_SPI, commnds_z[i], 1, 1, &z[i]); 
+        spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     }
     data.z = (z[1] << 8) | z[0];
     //printf("z: %d,/n", data.z);
@@ -101,7 +108,11 @@ void ADXL375_reg_write(uint8_t addr, uint8_t value) {
     d[0] = addr;
 	d[1] = value;
     uint32_t r;
+    spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     spi_transmit_receive(ADXL375_SPI, d, 2, 1, &r);
+    //spi_transmit(ADXL375_SPI, d[0]);
+    //spi_transmit(ADXL375_SPI, d[1]);
+    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 }
 
 /*

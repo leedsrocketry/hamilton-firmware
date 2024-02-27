@@ -178,10 +178,16 @@ void run_ADXL375_routine()
   printf("================ ADXL375_routine ================ \r\n");
   ADXL375_init(SPI1);
 
-  ADXL375_data data;
-  data = ADXL375_get_data();
-  printf("x: %d\r\n", data.x);
-  // uint32_t test = spi_transmit_receive(SPI1, ADXL375_CS, 0x23, 1, 1);
+
+  //ADXL375_data data;
+  //data = ADXL375_get_data();
+  //printf("x: %d\r\n", data.x);
+  //uint32_t test = spi_transmit_receive(SPI1, ADXL375_CS, 0x23, 1, 1);
+  // printf("%d\r\n", ADXL375_DATA_FORMAT_SETTINGS(0));
+  // spi_enable_cs(SPI1, ADXL375_CS);
+  // int8_t devid;
+  // spi_transmit_receive(SPI1, ADXL375_DEVID, 1, 1, &devid);
+  // spi_disable_cs(SPI1, ADXL375_CS);
 }
 
 void SI446_Test_routine()

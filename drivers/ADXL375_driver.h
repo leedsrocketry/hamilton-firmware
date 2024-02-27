@@ -84,7 +84,7 @@
 		(self_test << ADXL375_DATA_FORMAT_SELF_TEST) |	\
 		(ADXL375_DATA_FORMAT_SPI_4_WIRE << ADXL375_DATA_FORMAT_SPI) | \
 		(0 << ADXL375_DATA_FORMAT_INT_INVERT) |		\
-		(0 << ADXL375_DATA_FORMAT_JUSTIFY))
+		(1 << ADXL375_DATA_FORMAT_JUSTIFY))
 #pragma endregion Macros
 
 #pragma region Structs/Emun

@@ -1,7 +1,7 @@
 Archive member included to satisfy reference by file (symbol)
 
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
-                              /tmp/cc91U3G8.o (printf)
+                              /tmp/cclooe96.o (printf)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o) (_vfprintf_r)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wbuf.o)
@@ -11,7 +11,7 @@ Archive member included to satisfy reference by file (symbol)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o) (_printf_i)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-puts.o)
-                              /tmp/cc91U3G8.o (puts)
+                              /tmp/cclooe96.o (puts)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-impure.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o) (_impure_ptr)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fflush.o)
@@ -19,7 +19,7 @@ Archive member included to satisfy reference by file (symbol)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memchr.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o) (memchr)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memcpy-stub.o)
-                              /tmp/ccxD6pN1.o (memcpy)
+                              /tmp/ccmFOwIu.o (memcpy)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fflush.o) (__sglue)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
@@ -35,7 +35,7 @@ Archive member included to satisfy reference by file (symbol)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memmove.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fvwrite.o) (memmove)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memset.o)
-                              /tmp/ccxD6pN1.o (memset)
+                              /tmp/ccmFOwIu.o (memset)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-reallocr.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fvwrite.o) (_realloc_r)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-freer.o)
@@ -63,13 +63,13 @@ Archive member included to satisfy reference by file (symbol)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-sbrkr.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mallocr.o) (_sbrk_r)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_muldf3.o)
-                              /tmp/ccGWfREm.o (__aeabi_dmul)
+                              /tmp/ccuNauGn.o (__aeabi_dmul)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_addsubdf3.o)
-                              /tmp/ccGWfREm.o (__aeabi_dsub)
+                              /tmp/ccuNauGn.o (__aeabi_dsub)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_fixdfsi.o)
-                              /tmp/ccGWfREm.o (__aeabi_d2iz)
+                              /tmp/ccuNauGn.o (__aeabi_d2iz)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a(_fixdfdi.o)
-                              /tmp/ccGWfREm.o (__aeabi_d2lz)
+                              /tmp/ccuNauGn.o (__aeabi_d2lz)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a(_fixunsdfdi.o)
                               /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a(_fixdfdi.o) (__aeabi_d2ulz)
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a(_arm_cmpdf2.o)
@@ -79,933 +79,939 @@ Archive member included to satisfy reference by file (symbol)
 
 Discarded input sections
 
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/cc91U3G8.o
- .text          0x00000000        0x0 /tmp/cc91U3G8.o
- .data          0x00000000        0x0 /tmp/cc91U3G8.o
- .bss           0x00000000        0x0 /tmp/cc91U3G8.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/cclooe96.o
+ .text          0x00000000        0x0 /tmp/cclooe96.o
+ .data          0x00000000        0x0 /tmp/cclooe96.o
+ .bss           0x00000000        0x0 /tmp/cclooe96.o
  .text.delay_ms
-                0x00000000       0x14 /tmp/cc91U3G8.o
+                0x00000000       0x14 /tmp/cclooe96.o
  .text.timer_expired
-                0x00000000       0x26 /tmp/cc91U3G8.o
+                0x00000000       0x26 /tmp/cclooe96.o
  .text.pwr_vdd2_init
-                0x00000000       0x1c /tmp/cc91U3G8.o
+                0x00000000       0x1c /tmp/cclooe96.o
  .text.gpio_write.constprop.0
-                0x00000000       0x18 /tmp/cc91U3G8.o
+                0x00000000       0x18 /tmp/cclooe96.o
  .text.update_sensors
-                0x00000000        0x2 /tmp/cc91U3G8.o
+                0x00000000        0x2 /tmp/cclooe96.o
  .text.STM32_beep_buzzer
-                0x00000000       0x38 /tmp/cc91U3G8.o
+                0x00000000       0x38 /tmp/cclooe96.o
  .text.STM32_indicate_on_buzzer
-                0x00000000        0xa /tmp/cc91U3G8.o
+                0x00000000        0xa /tmp/cclooe96.o
  .text.STM32_indicate_on_led
-                0x00000000       0x28 /tmp/cc91U3G8.o
+                0x00000000       0x28 /tmp/cclooe96.o
  .text.toggle_timeout_flag
-                0x00000000        0x2 /tmp/cc91U3G8.o
+                0x00000000        0x2 /tmp/cclooe96.o
  .rodata.run_test_routine.str1.1
-                0x00000000       0x15 /tmp/cc91U3G8.o
+                0x00000000       0x15 /tmp/cclooe96.o
  .text.run_test_routine
-                0x00000000       0x68 /tmp/cc91U3G8.o
+                0x00000000       0x68 /tmp/cclooe96.o
  .text.run_MS5611_routine
-                0x00000000       0x64 /tmp/cc91U3G8.o
+                0x00000000       0x64 /tmp/cclooe96.o
  .rodata.SI446_Test_routine.str1.1
-                0x00000000       0x2d /tmp/cc91U3G8.o
+                0x00000000       0x44 /tmp/cclooe96.o
  .text.SI446_Test_routine
-                0x00000000       0x28 /tmp/cc91U3G8.o
+                0x00000000       0x28 /tmp/cclooe96.o
+ .rodata.LSM6DS3_test_routine.str1.1
+                0x00000000       0x34 /tmp/cclooe96.o
  .text.LSM6DS3_test_routine
-                0x00000000       0x7c /tmp/cc91U3G8.o
+                0x00000000       0x88 /tmp/cclooe96.o
  .rodata.spi_test_routine.str1.1
-                0x00000000        0xb /tmp/cc91U3G8.o
+                0x00000000        0xb /tmp/cclooe96.o
  .text.spi_test_routine
-                0x00000000       0x74 /tmp/cc91U3G8.o
- .data.on.0     0x00000000        0x1 /tmp/cc91U3G8.o
- .data.on.1     0x00000000        0x1 /tmp/cc91U3G8.o
- .data.on.2     0x00000000        0x1 /tmp/cc91U3G8.o
- .data.on.3     0x00000000        0x1 /tmp/cc91U3G8.o
+                0x00000000       0x74 /tmp/cclooe96.o
+ .data.on.0     0x00000000        0x1 /tmp/cclooe96.o
+ .data.on.1     0x00000000        0x1 /tmp/cclooe96.o
+ .data.on.2     0x00000000        0x1 /tmp/cclooe96.o
+ .data.on.3     0x00000000        0x1 /tmp/cclooe96.o
  .bss.flightStage
-                0x00000000        0x1 /tmp/cc91U3G8.o
- .group         0x00000000        0xc /tmp/ccxD6pN1.o
- .text          0x00000000        0x0 /tmp/ccxD6pN1.o
- .data          0x00000000        0x0 /tmp/ccxD6pN1.o
- .bss           0x00000000        0x0 /tmp/ccxD6pN1.o
- .debug_macro   0x00000000      0xacc /tmp/ccxD6pN1.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/cc2Y7m8M.o
- .text          0x00000000        0x0 /tmp/cc2Y7m8M.o
- .data          0x00000000        0x0 /tmp/cc2Y7m8M.o
- .bss           0x00000000        0x0 /tmp/cc2Y7m8M.o
- .text._open    0x00000000        0x6 /tmp/cc2Y7m8M.o
- .text._exit    0x00000000        0x4 /tmp/cc2Y7m8M.o
- .text._kill    0x00000000        0x2 /tmp/cc2Y7m8M.o
- .text._getpid  0x00000000        0x6 /tmp/cc2Y7m8M.o
- .text._link    0x00000000        0x6 /tmp/cc2Y7m8M.o
- .text._unlink  0x00000000        0x6 /tmp/cc2Y7m8M.o
- .text._stat    0x00000000        0x6 /tmp/cc2Y7m8M.o
- .text.mkdir    0x00000000        0x6 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0xacc /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x22 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x5b /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x2a /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x94 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x43 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0x103 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x57 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x6a /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0x1df /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0x460 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x22 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x9e /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0x370 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x10 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x16 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x4a /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x34 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x10 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x58 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x8e /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x1c /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0x177 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x16 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x16 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0x146 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x16 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x3c /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x16 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x29 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x16 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x10 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x10 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x10 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x1c /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x52 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x22 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x10 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x52 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0xc1 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x1c /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x3d /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x35 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0x12c /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x28 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x1c /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0x22 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0xd9 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000     0x102d /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000      0x11f /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000    0x1cb71 /tmp/cc2Y7m8M.o
- .debug_macro   0x00000000       0xd6 /tmp/cc2Y7m8M.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccBXkIIV.o
- .text          0x00000000        0x0 /tmp/ccBXkIIV.o
- .data          0x00000000        0x0 /tmp/ccBXkIIV.o
- .bss           0x00000000        0x0 /tmp/ccBXkIIV.o
+                0x00000000        0x1 /tmp/cclooe96.o
+ .group         0x00000000        0xc /tmp/ccmFOwIu.o
+ .text          0x00000000        0x0 /tmp/ccmFOwIu.o
+ .data          0x00000000        0x0 /tmp/ccmFOwIu.o
+ .bss           0x00000000        0x0 /tmp/ccmFOwIu.o
+ .debug_macro   0x00000000      0xacc /tmp/ccmFOwIu.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccCFlxeb.o
+ .text          0x00000000        0x0 /tmp/ccCFlxeb.o
+ .data          0x00000000        0x0 /tmp/ccCFlxeb.o
+ .bss           0x00000000        0x0 /tmp/ccCFlxeb.o
+ .text._open    0x00000000        0x6 /tmp/ccCFlxeb.o
+ .text._exit    0x00000000        0x4 /tmp/ccCFlxeb.o
+ .text._kill    0x00000000        0x2 /tmp/ccCFlxeb.o
+ .text._getpid  0x00000000        0x6 /tmp/ccCFlxeb.o
+ .text._link    0x00000000        0x6 /tmp/ccCFlxeb.o
+ .text._unlink  0x00000000        0x6 /tmp/ccCFlxeb.o
+ .text._stat    0x00000000        0x6 /tmp/ccCFlxeb.o
+ .text.mkdir    0x00000000        0x6 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0xacc /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x22 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x5b /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x2a /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x94 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x43 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0x103 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x57 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x6a /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0x1df /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0x460 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x22 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x9e /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0x370 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x10 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x16 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x4a /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x34 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x10 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x58 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x8e /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x1c /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0x177 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x16 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x16 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0x146 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x16 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x3c /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x16 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x29 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x16 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x10 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x10 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x10 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x1c /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x52 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x22 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x10 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x52 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0xc1 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x1c /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x3d /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x35 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0x12c /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x28 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x1c /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0x22 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0xd9 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000     0x102d /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000      0x11f /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000    0x1cb71 /tmp/ccCFlxeb.o
+ .debug_macro   0x00000000       0xd6 /tmp/ccCFlxeb.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccJZpJ8G.o
+ .text          0x00000000        0x0 /tmp/ccJZpJ8G.o
+ .data          0x00000000        0x0 /tmp/ccJZpJ8G.o
+ .bss           0x00000000        0x0 /tmp/ccJZpJ8G.o
  .text.STM32_led_on
-                0x00000000       0x10 /tmp/ccBXkIIV.o
+                0x00000000       0x10 /tmp/ccJZpJ8G.o
  .text.STM32_led_off
-                0x00000000       0x10 /tmp/ccBXkIIV.o
+                0x00000000       0x10 /tmp/ccJZpJ8G.o
  .text.STM32_get_battery_capacity
-                0x00000000       0x28 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0xacc /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x22 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x5b /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x2a /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x94 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x43 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0x103 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x3a /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x57 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x6a /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0x1df /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x89 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0x460 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x22 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x1c /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x9e /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0x370 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x9b /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x10 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x16 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x4a /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x34 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x10 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x58 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x8e /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x1c /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0x177 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x16 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x16 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0x146 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x16 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x3c /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x16 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x29 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x16 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x10 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x10 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x10 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x1c /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x52 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x22 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x10 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x52 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0xc1 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x1c /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x3d /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x35 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0x12c /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x28 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x1c /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0x22 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0xd9 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000     0x102d /tmp/ccBXkIIV.o
- .debug_macro   0x00000000      0x11f /tmp/ccBXkIIV.o
- .debug_macro   0x00000000    0x1cb71 /tmp/ccBXkIIV.o
- .debug_macro   0x00000000       0xd6 /tmp/ccBXkIIV.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccGWfREm.o
- .text          0x00000000        0x0 /tmp/ccGWfREm.o
- .data          0x00000000        0x0 /tmp/ccGWfREm.o
- .bss           0x00000000        0x0 /tmp/ccGWfREm.o
+                0x00000000       0x28 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0xacc /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x22 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x5b /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x2a /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x94 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x43 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0x103 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x3a /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x57 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x6a /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0x1df /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x89 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0x460 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x22 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x1c /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x9e /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0x370 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x9b /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x10 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x16 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x4a /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x34 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x10 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x58 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x8e /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x1c /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0x177 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x16 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x16 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0x146 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x16 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x3c /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x16 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x29 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x16 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x10 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x10 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x10 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x1c /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x52 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x22 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x10 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x52 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0xc1 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x1c /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x3d /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x35 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0x12c /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x28 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x1c /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0x22 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0xd9 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000     0x102d /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000      0x11f /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000    0x1cb71 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00000000       0xd6 /tmp/ccJZpJ8G.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/ccuNauGn.o
+ .text          0x00000000        0x0 /tmp/ccuNauGn.o
+ .data          0x00000000        0x0 /tmp/ccuNauGn.o
+ .bss           0x00000000        0x0 /tmp/ccuNauGn.o
  .text.spi_enable_cs.part.0
-                0x00000000        0xe /tmp/ccGWfREm.o
+                0x00000000        0xe /tmp/ccuNauGn.o
  .text.spi_disable_cs.part.0
-                0x00000000        0xe /tmp/ccGWfREm.o
+                0x00000000        0xe /tmp/ccuNauGn.o
  .text.spi_transmit
-                0x00000000       0x18 /tmp/ccGWfREm.o
+                0x00000000       0x18 /tmp/ccuNauGn.o
  .text.spi_transmit_receive.constprop.0.isra.0
-                0x00000000       0x58 /tmp/ccGWfREm.o
+                0x00000000       0x58 /tmp/ccuNauGn.o
  .text.MS5611_read_PROM
-                0x00000000       0x58 /tmp/ccGWfREm.o
+                0x00000000       0x58 /tmp/ccuNauGn.o
  .text.MS5611_get_data
-                0x00000000      0x188 /tmp/ccGWfREm.o
+                0x00000000      0x188 /tmp/ccuNauGn.o
  .rodata.MS5611_init.str1.1
-                0x00000000        0xd /tmp/ccGWfREm.o
+                0x00000000        0xd /tmp/ccuNauGn.o
  .text.MS5611_init
-                0x00000000       0x44 /tmp/ccGWfREm.o
+                0x00000000       0x44 /tmp/ccuNauGn.o
  .rodata.MS5611_get_data_test.str1.1
-                0x00000000       0x19 /tmp/ccGWfREm.o
+                0x00000000       0x19 /tmp/ccuNauGn.o
  .text.MS5611_get_data_test
-                0x00000000       0x20 /tmp/ccGWfREm.o
+                0x00000000       0x20 /tmp/ccuNauGn.o
  .bss.PROM_values
-                0x00000000       0x10 /tmp/ccGWfREm.o
+                0x00000000       0x10 /tmp/ccuNauGn.o
  .bss.MS5611_SPI
-                0x00000000        0x4 /tmp/ccGWfREm.o
+                0x00000000        0x4 /tmp/ccuNauGn.o
  .bss.ms5611_prom_data
-                0x00000000       0x10 /tmp/ccGWfREm.o
- .debug_info    0x00000000      0xefd /tmp/ccGWfREm.o
- .debug_abbrev  0x00000000      0x433 /tmp/ccGWfREm.o
+                0x00000000       0x10 /tmp/ccuNauGn.o
+ .debug_info    0x00000000      0xefd /tmp/ccuNauGn.o
+ .debug_abbrev  0x00000000      0x433 /tmp/ccuNauGn.o
  .debug_loclists
-                0x00000000      0x4c3 /tmp/ccGWfREm.o
+                0x00000000      0x4c3 /tmp/ccuNauGn.o
  .debug_aranges
-                0x00000000       0x58 /tmp/ccGWfREm.o
+                0x00000000       0x58 /tmp/ccuNauGn.o
  .debug_rnglists
-                0x00000000       0x92 /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x2c7 /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0xacc /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x22 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x8e /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x51 /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x103 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x6a /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x1df /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x22 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x61 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x2a /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x43 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x3a /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x89 /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x460 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x1c /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x9e /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x370 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x9b /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x10 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x16 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x4a /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x34 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x10 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x58 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x8e /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x1c /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x177 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x16 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x16 /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x146 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x16 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x3c /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x16 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x29 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x16 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x10 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x10 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x10 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x1c /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x52 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x22 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x10 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x52 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0xc1 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x1c /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x3d /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x35 /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x12c /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x28 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x1c /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x22 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0xd9 /tmp/ccGWfREm.o
- .debug_macro   0x00000000     0x102d /tmp/ccGWfREm.o
- .debug_macro   0x00000000      0x11f /tmp/ccGWfREm.o
- .debug_macro   0x00000000    0x1cb71 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0xd6 /tmp/ccGWfREm.o
- .debug_macro   0x00000000       0x82 /tmp/ccGWfREm.o
- .debug_line    0x00000000      0x92d /tmp/ccGWfREm.o
- .debug_str     0x00000000    0xb2b0f /tmp/ccGWfREm.o
- .comment       0x00000000       0x45 /tmp/ccGWfREm.o
- .debug_frame   0x00000000       0xe0 /tmp/ccGWfREm.o
+                0x00000000       0x92 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x2c7 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0xacc /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x22 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x8e /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x51 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x103 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x6a /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x1df /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x22 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x61 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x2a /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x43 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x3a /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x89 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x460 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x1c /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x9e /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x370 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x9b /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x10 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x16 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x4a /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x34 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x10 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x58 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x8e /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x1c /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x177 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x16 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x16 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x146 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x16 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x3c /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x16 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x29 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x16 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x10 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x10 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x10 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x1c /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x52 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x22 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x10 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x52 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0xc1 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x1c /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x3d /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x35 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x12c /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x28 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x1c /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x22 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0xd9 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000     0x102d /tmp/ccuNauGn.o
+ .debug_macro   0x00000000      0x11f /tmp/ccuNauGn.o
+ .debug_macro   0x00000000    0x1cb71 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0xd6 /tmp/ccuNauGn.o
+ .debug_macro   0x00000000       0x82 /tmp/ccuNauGn.o
+ .debug_line    0x00000000      0x92d /tmp/ccuNauGn.o
+ .debug_str     0x00000000    0xb2b0f /tmp/ccuNauGn.o
+ .comment       0x00000000       0x45 /tmp/ccuNauGn.o
+ .debug_frame   0x00000000       0xe0 /tmp/ccuNauGn.o
  .ARM.attributes
-                0x00000000       0x34 /tmp/ccGWfREm.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccEE4IUy.o
- .text          0x00000000        0x0 /tmp/ccEE4IUy.o
- .data          0x00000000        0x0 /tmp/ccEE4IUy.o
- .bss           0x00000000        0x0 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0xacc /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x22 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x5b /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x2a /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x94 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x43 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0x103 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x3a /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x57 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x6a /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0x1df /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x89 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0x460 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x22 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x1c /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x9e /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0x370 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x9b /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x10 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x16 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x4a /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x34 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x10 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x58 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x8e /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x1c /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0x177 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x16 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x16 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0x146 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x16 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x3c /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x16 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x29 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x16 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x10 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x10 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x10 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x1c /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x52 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x22 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x10 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x52 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0xc1 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x1c /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x3d /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x35 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0x12c /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x28 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x1c /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0x22 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0xd9 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000     0x102d /tmp/ccEE4IUy.o
- .debug_macro   0x00000000      0x11f /tmp/ccEE4IUy.o
- .debug_macro   0x00000000    0x1cb71 /tmp/ccEE4IUy.o
- .debug_macro   0x00000000       0xd6 /tmp/ccEE4IUy.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/ccgOWlZY.o
- .text          0x00000000        0x0 /tmp/ccgOWlZY.o
- .data          0x00000000        0x0 /tmp/ccgOWlZY.o
- .bss           0x00000000        0x0 /tmp/ccgOWlZY.o
+                0x00000000       0x34 /tmp/ccuNauGn.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cc39F8iS.o
+ .text          0x00000000        0x0 /tmp/cc39F8iS.o
+ .data          0x00000000        0x0 /tmp/cc39F8iS.o
+ .bss           0x00000000        0x0 /tmp/cc39F8iS.o
+ .rodata.ADXL375_get_data.str1.1
+                0x00000000       0x10 /tmp/cc39F8iS.o
+ .text.ADXL375_get_data
+                0x00000000      0x114 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0xacc /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x22 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x5b /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x2a /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x94 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x43 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0x103 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x3a /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x57 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x6a /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0x1df /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x89 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0x460 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x22 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x1c /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x9e /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0x370 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x9b /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x10 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x16 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x4a /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x34 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x10 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x58 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x8e /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x1c /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0x177 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x16 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x16 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0x146 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x16 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x3c /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x16 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x29 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x16 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x10 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x10 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x10 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x1c /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x52 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x22 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x10 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x52 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0xc1 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x1c /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x3d /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x35 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0x12c /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x28 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x1c /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0x22 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0xd9 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000     0x102d /tmp/cc39F8iS.o
+ .debug_macro   0x00000000      0x11f /tmp/cc39F8iS.o
+ .debug_macro   0x00000000    0x1cb71 /tmp/cc39F8iS.o
+ .debug_macro   0x00000000       0xd6 /tmp/cc39F8iS.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cceeMBOw.o
+ .text          0x00000000        0x0 /tmp/cceeMBOw.o
+ .data          0x00000000        0x0 /tmp/cceeMBOw.o
+ .bss           0x00000000        0x0 /tmp/cceeMBOw.o
  .text.spi_enable_cs.part.0
-                0x00000000        0xe /tmp/ccgOWlZY.o
+                0x00000000        0xe /tmp/cceeMBOw.o
  .text.spi_disable_cs.part.0
-                0x00000000        0xe /tmp/ccgOWlZY.o
+                0x00000000        0xe /tmp/cceeMBOw.o
  .text.spi_write_buf.isra.0
-                0x00000000       0x1c /tmp/ccgOWlZY.o
+                0x00000000       0x1c /tmp/cceeMBOw.o
  .text.spi_read_byte
-                0x00000000       0x1a /tmp/ccgOWlZY.o
+                0x00000000       0x1a /tmp/cceeMBOw.o
  .rodata.SI446_init.str1.1
-                0x00000000       0x5b /tmp/ccgOWlZY.o
+                0x00000000       0x5b /tmp/cceeMBOw.o
  .text.SI446_init
-                0x00000000       0xd4 /tmp/ccgOWlZY.o
+                0x00000000       0xd4 /tmp/cceeMBOw.o
  .text.SI446_transmit
-                0x00000000       0x6c /tmp/ccgOWlZY.o
+                0x00000000       0x6c /tmp/cceeMBOw.o
  .text.SI446_Recieve
-                0x00000000       0x6c /tmp/ccgOWlZY.o
+                0x00000000       0x6c /tmp/cceeMBOw.o
  .text.SI446_write_data
-                0x00000000       0x3c /tmp/ccgOWlZY.o
+                0x00000000       0x3c /tmp/cceeMBOw.o
  .text.SI446_read_data
-                0x00000000       0x54 /tmp/ccgOWlZY.o
+                0x00000000       0x54 /tmp/cceeMBOw.o
  .bss.chip_settings
-                0x00000000        0x4 /tmp/ccgOWlZY.o
+                0x00000000        0x4 /tmp/cceeMBOw.o
  .bss.SI446_SPI
-                0x00000000        0x4 /tmp/ccgOWlZY.o
- .debug_info    0x00000000      0xe35 /tmp/ccgOWlZY.o
- .debug_abbrev  0x00000000      0x432 /tmp/ccgOWlZY.o
+                0x00000000        0x4 /tmp/cceeMBOw.o
+ .debug_info    0x00000000      0xe35 /tmp/cceeMBOw.o
+ .debug_abbrev  0x00000000      0x432 /tmp/cceeMBOw.o
  .debug_loclists
-                0x00000000      0x48c /tmp/ccgOWlZY.o
+                0x00000000      0x48c /tmp/cceeMBOw.o
  .debug_aranges
-                0x00000000       0x60 /tmp/ccgOWlZY.o
+                0x00000000       0x60 /tmp/cceeMBOw.o
  .debug_rnglists
-                0x00000000       0xe1 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x2c1 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0xacc /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x22 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x5b /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x2a /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x94 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x43 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x103 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x3a /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x57 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x6a /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x1df /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x89 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x460 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x22 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x1c /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x9e /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x370 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x9b /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x10 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x16 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x4a /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x34 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x10 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x58 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x8e /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x1c /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x177 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x16 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x16 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x146 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x16 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x3c /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x16 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x29 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x16 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x10 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x10 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x10 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x1c /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x52 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x22 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x10 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x52 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0xc1 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x1c /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x3d /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x35 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x12c /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x28 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x1c /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0x22 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0xd9 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000     0x102d /tmp/ccgOWlZY.o
- .debug_macro   0x00000000      0x11f /tmp/ccgOWlZY.o
- .debug_macro   0x00000000    0x1cb71 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0xd6 /tmp/ccgOWlZY.o
- .debug_macro   0x00000000       0xac /tmp/ccgOWlZY.o
- .debug_line    0x00000000      0x95d /tmp/ccgOWlZY.o
- .debug_str     0x00000000    0xb2b1d /tmp/ccgOWlZY.o
- .comment       0x00000000       0x45 /tmp/ccgOWlZY.o
- .debug_frame   0x00000000       0xf8 /tmp/ccgOWlZY.o
+                0x00000000       0xe1 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x2c1 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0xacc /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x22 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x5b /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x2a /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x94 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x43 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x103 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x3a /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x57 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x6a /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x1df /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x89 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x460 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x22 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x1c /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x9e /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x370 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x9b /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x10 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x16 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x4a /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x34 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x10 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x58 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x8e /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x1c /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x177 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x16 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x16 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x146 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x16 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x3c /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x16 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x29 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x16 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x10 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x10 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x10 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x1c /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x52 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x22 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x10 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x52 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0xc1 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x1c /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x3d /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x35 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x12c /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x28 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x1c /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0x22 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0xd9 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000     0x102d /tmp/cceeMBOw.o
+ .debug_macro   0x00000000      0x11f /tmp/cceeMBOw.o
+ .debug_macro   0x00000000    0x1cb71 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0xd6 /tmp/cceeMBOw.o
+ .debug_macro   0x00000000       0xac /tmp/cceeMBOw.o
+ .debug_line    0x00000000      0x95d /tmp/cceeMBOw.o
+ .debug_str     0x00000000    0xb2b1d /tmp/cceeMBOw.o
+ .comment       0x00000000       0x45 /tmp/cceeMBOw.o
+ .debug_frame   0x00000000       0xf8 /tmp/cceeMBOw.o
  .ARM.attributes
-                0x00000000       0x34 /tmp/ccgOWlZY.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .group         0x00000000        0xc /tmp/cciOiMfv.o
- .text          0x00000000        0x0 /tmp/cciOiMfv.o
- .data          0x00000000        0x0 /tmp/cciOiMfv.o
- .bss           0x00000000        0x0 /tmp/cciOiMfv.o
+                0x00000000       0x34 /tmp/cceeMBOw.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .group         0x00000000        0xc /tmp/cch5WeN9.o
+ .text          0x00000000        0x0 /tmp/cch5WeN9.o
+ .data          0x00000000        0x0 /tmp/cch5WeN9.o
+ .bss           0x00000000        0x0 /tmp/cch5WeN9.o
  .text.LSM6DS3_write_reg.constprop.0.isra.0
-                0x00000000       0x44 /tmp/cciOiMfv.o
+                0x00000000       0x44 /tmp/cch5WeN9.o
  .text.spi_transmit
-                0x00000000       0x18 /tmp/cciOiMfv.o
+                0x00000000       0x18 /tmp/cch5WeN9.o
  .text.LSM6DS3_get_sens_val
-                0x00000000       0x30 /tmp/cciOiMfv.o
+                0x00000000       0x30 /tmp/cch5WeN9.o
  .rodata.LSM6DS3_init.str1.1
-                0x00000000       0x82 /tmp/cciOiMfv.o
+                0x00000000       0x82 /tmp/cch5WeN9.o
  .text.LSM6DS3_init
-                0x00000000       0xd0 /tmp/cciOiMfv.o
+                0x00000000       0xd0 /tmp/cch5WeN9.o
  .text.LSM6DS3_get_data
-                0x00000000       0x74 /tmp/cciOiMfv.o
+                0x00000000       0x74 /tmp/cch5WeN9.o
  .bss.LSM6DS3_data
-                0x00000000        0xe /tmp/cciOiMfv.o
+                0x00000000        0xe /tmp/cch5WeN9.o
  .bss.LSM6DS3_SPI
-                0x00000000        0x4 /tmp/cciOiMfv.o
- .debug_info    0x00000000      0xddc /tmp/cciOiMfv.o
- .debug_abbrev  0x00000000      0x42d /tmp/cciOiMfv.o
+                0x00000000        0x4 /tmp/cch5WeN9.o
+ .debug_info    0x00000000      0xddc /tmp/cch5WeN9.o
+ .debug_abbrev  0x00000000      0x42d /tmp/cch5WeN9.o
  .debug_loclists
-                0x00000000      0x4ed /tmp/cciOiMfv.o
+                0x00000000      0x4ed /tmp/cch5WeN9.o
  .debug_aranges
-                0x00000000       0x40 /tmp/cciOiMfv.o
+                0x00000000       0x40 /tmp/cch5WeN9.o
  .debug_rnglists
-                0x00000000       0xdd /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x2c1 /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0xacc /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x22 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x5b /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x2a /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x94 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x43 /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x103 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x3a /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x57 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x6a /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x1df /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x89 /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x460 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x22 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x1c /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x9e /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x370 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x9b /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x10 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x16 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x4a /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x34 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x10 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x58 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x8e /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x1c /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x177 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x16 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x16 /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x146 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x16 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x3c /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x16 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x29 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x16 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x10 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x10 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x10 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x1c /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x52 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x22 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x10 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x52 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0xc1 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x1c /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x3d /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x35 /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x12c /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x28 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x1c /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x22 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0xd9 /tmp/cciOiMfv.o
- .debug_macro   0x00000000     0x102d /tmp/cciOiMfv.o
- .debug_macro   0x00000000      0x11f /tmp/cciOiMfv.o
- .debug_macro   0x00000000    0x1cb71 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0xd6 /tmp/cciOiMfv.o
- .debug_macro   0x00000000       0x34 /tmp/cciOiMfv.o
- .debug_line    0x00000000      0x91e /tmp/cciOiMfv.o
- .debug_str     0x00000000    0xb293f /tmp/cciOiMfv.o
- .comment       0x00000000       0x45 /tmp/cciOiMfv.o
- .debug_frame   0x00000000       0x8c /tmp/cciOiMfv.o
+                0x00000000       0xdd /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x2c1 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0xacc /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x22 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x5b /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x2a /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x94 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x43 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x103 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x3a /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x57 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x6a /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x1df /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x89 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x460 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x22 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x1c /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x9e /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x370 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x9b /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x10 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x16 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x4a /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x34 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x10 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x58 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x8e /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x1c /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x177 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x16 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x16 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x146 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x16 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x3c /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x16 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x29 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x16 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x10 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x10 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x10 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x1c /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x52 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x22 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x10 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x52 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0xc1 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x1c /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x3d /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x35 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x12c /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x28 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x1c /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x22 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0xd9 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000     0x102d /tmp/cch5WeN9.o
+ .debug_macro   0x00000000      0x11f /tmp/cch5WeN9.o
+ .debug_macro   0x00000000    0x1cb71 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0xd6 /tmp/cch5WeN9.o
+ .debug_macro   0x00000000       0x34 /tmp/cch5WeN9.o
+ .debug_line    0x00000000      0x91e /tmp/cch5WeN9.o
+ .debug_str     0x00000000    0xb293f /tmp/cch5WeN9.o
+ .comment       0x00000000       0x45 /tmp/cch5WeN9.o
+ .debug_frame   0x00000000       0x8c /tmp/cch5WeN9.o
  .ARM.attributes
-                0x00000000       0x34 /tmp/cciOiMfv.o
+                0x00000000       0x34 /tmp/cch5WeN9.o
  .text          0x00000000        0x0 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
  .data          0x00000000        0x0 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
  .bss           0x00000000        0x0 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
@@ -1232,259 +1238,256 @@ sram             0x20000000         0x00030000         xrw
 
 Linker script and memory map
 
-LOAD /tmp/cc91U3G8.o
-LOAD /tmp/ccxD6pN1.o
-LOAD /tmp/cc2Y7m8M.o
-LOAD /tmp/ccBXkIIV.o
-LOAD /tmp/ccGWfREm.o
-LOAD /tmp/ccEE4IUy.o
-LOAD /tmp/ccgOWlZY.o
-LOAD /tmp/cciOiMfv.o
+LOAD /tmp/cclooe96.o
+LOAD /tmp/ccmFOwIu.o
+LOAD /tmp/ccCFlxeb.o
+LOAD /tmp/ccJZpJ8G.o
+LOAD /tmp/ccuNauGn.o
+LOAD /tmp/cc39F8iS.o
+LOAD /tmp/cceeMBOw.o
+LOAD /tmp/cch5WeN9.o
 LOAD /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a
 LOAD /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/libgcc.a
                 0x20030000                        _estack = (ORIGIN (sram) + LENGTH (sram))
 
 .vectors        0x08000000      0x1bc
  *(.vectors)
- .vectors       0x08000000      0x1bc /tmp/ccxD6pN1.o
+ .vectors       0x08000000      0x1bc /tmp/ccmFOwIu.o
                 0x08000000                tab
 
-.text           0x080001c0     0x1684
+.text           0x080001c0     0x15d4
  *(.text*)
  .text.systick_init
-                0x080001c0       0x34 /tmp/cc91U3G8.o
+                0x080001c0       0x34 /tmp/cclooe96.o
  .text.gpio_set_mode
-                0x080001f4       0x34 /tmp/cc91U3G8.o
+                0x080001f4       0x34 /tmp/cclooe96.o
  .text.gpio_set_af
-                0x08000228       0x2e /tmp/cc91U3G8.o
+                0x08000228       0x2e /tmp/cclooe96.o
  *fill*         0x08000256        0x2 
  .text.uart_init.constprop.0
-                0x08000258       0x60 /tmp/cc91U3G8.o
+                0x08000258       0x60 /tmp/cclooe96.o
  .text.SysTick_Handler
-                0x080002b8       0x10 /tmp/cc91U3G8.o
+                0x080002b8       0x10 /tmp/cclooe96.o
                 0x080002b8                SysTick_Handler
  .text.run_ADXL375_routine
-                0x080002c8       0x28 /tmp/cc91U3G8.o
+                0x080002c8       0x1c /tmp/cclooe96.o
                 0x080002c8                run_ADXL375_routine
  .text.startup.main
-                0x080002f0       0x38 /tmp/cc91U3G8.o
-                0x080002f0                main
- .text._reset   0x08000328       0x50 /tmp/ccxD6pN1.o
-                0x08000328                _reset
- .text._fstat   0x08000378       0x12 /tmp/cc2Y7m8M.o
-                0x08000378                _fstat
- *fill*         0x0800038a        0x2 
- .text._sbrk    0x0800038c       0x1c /tmp/cc2Y7m8M.o
-                0x0800038c                _sbrk
- .text._close   0x080003a8        0x6 /tmp/cc2Y7m8M.o
-                0x080003a8                _close
- .text._isatty  0x080003ae        0x4 /tmp/cc2Y7m8M.o
-                0x080003ae                _isatty
- .text._lseek   0x080003b2        0x4 /tmp/cc2Y7m8M.o
-                0x080003b2                _lseek
- .text._read    0x080003b6        0x6 /tmp/cc2Y7m8M.o
-                0x080003b6                _read
- .text._write   0x080003bc       0x34 /tmp/cc2Y7m8M.o
-                0x080003bc                _write
+                0x080002e4       0x2c /tmp/cclooe96.o
+                0x080002e4                main
+ .text._reset   0x08000310       0x50 /tmp/ccmFOwIu.o
+                0x08000310                _reset
+ .text._fstat   0x08000360       0x12 /tmp/ccCFlxeb.o
+                0x08000360                _fstat
+ *fill*         0x08000372        0x2 
+ .text._sbrk    0x08000374       0x1c /tmp/ccCFlxeb.o
+                0x08000374                _sbrk
+ .text._close   0x08000390        0x6 /tmp/ccCFlxeb.o
+                0x08000390                _close
+ .text._isatty  0x08000396        0x4 /tmp/ccCFlxeb.o
+                0x08000396                _isatty
+ .text._lseek   0x0800039a        0x4 /tmp/ccCFlxeb.o
+                0x0800039a                _lseek
+ .text._read    0x0800039e        0x6 /tmp/ccCFlxeb.o
+                0x0800039e                _read
+ .text._write   0x080003a4       0x34 /tmp/ccCFlxeb.o
+                0x080003a4                _write
  .text.systick_init
-                0x080003f0       0x34 /tmp/ccBXkIIV.o
+                0x080003d8       0x34 /tmp/ccJZpJ8G.o
  .text.gpio_set_mode
-                0x08000424       0x34 /tmp/ccBXkIIV.o
+                0x0800040c       0x34 /tmp/ccJZpJ8G.o
  .text.gpio_set_af
-                0x08000458       0x2e /tmp/ccBXkIIV.o
- *fill*         0x08000486        0x2 
+                0x08000440       0x2e /tmp/ccJZpJ8G.o
+ *fill*         0x0800046e        0x2 
  .text.uart_init.constprop.0
-                0x08000488       0xd0 /tmp/ccBXkIIV.o
+                0x08000470       0xd0 /tmp/ccJZpJ8G.o
  .text.STM32_init_clock
-                0x08000558       0x78 /tmp/ccBXkIIV.o
-                0x08000558                STM32_init_clock
+                0x08000540       0x78 /tmp/ccJZpJ8G.o
+                0x08000540                STM32_init_clock
  .text.STM32_init_internals
-                0x080005d0      0x10c /tmp/ccBXkIIV.o
-                0x080005d0                STM32_init_internals
+                0x080005b8      0x10c /tmp/ccJZpJ8G.o
+                0x080005b8                STM32_init_internals
  .text.STM32_init_peripherals
-                0x080006dc       0x30 /tmp/ccBXkIIV.o
-                0x080006dc                STM32_init_peripherals
+                0x080006c4       0x30 /tmp/ccJZpJ8G.o
+                0x080006c4                STM32_init_peripherals
  .text.STM32_init
-                0x0800070c       0x24 /tmp/ccBXkIIV.o
-                0x0800070c                STM32_init
- .text.spi_ready_write.isra.0
-                0x08000730        0x8 /tmp/ccEE4IUy.o
+                0x080006f4       0x24 /tmp/ccJZpJ8G.o
+                0x080006f4                STM32_init
+ .text.spi_enable_cs.part.0
+                0x08000718        0xe /tmp/cc39F8iS.o
+ .text.spi_disable_cs.part.0
+                0x08000726        0xe /tmp/cc39F8iS.o
+ .text.spi_transmit
+                0x08000734       0x18 /tmp/cc39F8iS.o
  .text.spi_transmit_receive.constprop.0
-                0x08000738       0x4e /tmp/ccEE4IUy.o
- *fill*         0x08000786        0x2 
- .text.ADXL375_get_data
-                0x08000788       0xa4 /tmp/ccEE4IUy.o
-                0x08000788                ADXL375_get_data
+                0x0800074c       0x32 /tmp/cc39F8iS.o
+ *fill*         0x0800077e        0x2 
  .text.ADXL375_reg_write
-                0x0800082c       0x20 /tmp/ccEE4IUy.o
-                0x0800082c                ADXL375_reg_write
+                0x08000780       0x40 /tmp/cc39F8iS.o
+                0x08000780                ADXL375_reg_write
  .text.ADXL375_init
-                0x0800084c       0x6c /tmp/ccEE4IUy.o
-                0x0800084c                ADXL375_init
- .text.printf   0x080008b8       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
-                0x080008b8                printf
-                0x080008b8                iprintf
+                0x080007c0       0x4c /tmp/cc39F8iS.o
+                0x080007c0                ADXL375_init
+ .text.printf   0x0800080c       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
+                0x0800080c                printf
+                0x0800080c                iprintf
  .text.__sfputc_r
-                0x080008dc       0x2e /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
+                0x08000830       0x2e /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
  .text.__sfputs_r
-                0x0800090a       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
-                0x0800090a                __sfputs_r
- *fill*         0x0800092e        0x2 
+                0x0800085e       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
+                0x0800085e                __sfputs_r
+ *fill*         0x08000882        0x2 
  .text._vfprintf_r
-                0x08000930      0x230 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
-                0x08000930                _vfiprintf_r
-                0x08000930                _vfprintf_r
+                0x08000884      0x230 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
+                0x08000884                _vfiprintf_r
+                0x08000884                _vfprintf_r
  .text.__swbuf_r
-                0x08000b60       0x7c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wbuf.o)
-                0x08000b60                __swbuf_r
+                0x08000ab4       0x7c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wbuf.o)
+                0x08000ab4                __swbuf_r
  .text.__swsetup_r
-                0x08000bdc       0xac /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wsetup.o)
-                0x08000bdc                __swsetup_r
+                0x08000b30       0xac /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wsetup.o)
+                0x08000b30                __swsetup_r
  .text._printf_common
-                0x08000c88       0xda /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
-                0x08000c88                _printf_common
- *fill*         0x08000d62        0x2 
+                0x08000bdc       0xda /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
+                0x08000bdc                _printf_common
+ *fill*         0x08000cb6        0x2 
  .text._printf_i
-                0x08000d64      0x23c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
-                0x08000d64                _printf_i
- .text._puts_r  0x08000fa0       0xaa /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-puts.o)
-                0x08000fa0                _puts_r
- *fill*         0x0800104a        0x2 
- .text.puts     0x0800104c       0x10 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-puts.o)
-                0x0800104c                puts
+                0x08000cb8      0x23c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
+                0x08000cb8                _printf_i
+ .text._puts_r  0x08000ef4       0xaa /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-puts.o)
+                0x08000ef4                _puts_r
+ *fill*         0x08000f9e        0x2 
+ .text.puts     0x08000fa0       0x10 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-puts.o)
+                0x08000fa0                puts
  .text.__sflush_r
-                0x0800105c      0x108 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fflush.o)
-                0x0800105c                __sflush_r
+                0x08000fb0      0x108 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fflush.o)
+                0x08000fb0                __sflush_r
  .text._fflush_r
-                0x08001164       0x50 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fflush.o)
-                0x08001164                _fflush_r
- *fill*         0x080011b4        0xc 
- .text          0x080011c0       0xa0 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memchr.o)
-                0x080011c0                memchr
- .text.memcpy   0x08001260       0x1c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memcpy-stub.o)
-                0x08001260                memcpy
- .text.std      0x0800127c       0x6c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
+                0x080010b8       0x50 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fflush.o)
+                0x080010b8                _fflush_r
+ *fill*         0x08001108        0x8 
+ .text          0x08001110       0xa0 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memchr.o)
+                0x08001110                memchr
+ .text.memcpy   0x080011b0       0x1c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memcpy-stub.o)
+                0x080011b0                memcpy
+ .text.std      0x080011cc       0x6c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
  .text.stdio_exit_handler
-                0x080012e8       0x18 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
+                0x08001238       0x18 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
  .text.cleanup_stdio
-                0x08001300       0x40 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
+                0x08001250       0x40 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
  .text.global_stdio_init.part.0
-                0x08001340       0x3c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
+                0x08001290       0x3c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
  .text.__sfp_lock_acquire
-                0x0800137c        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
-                0x0800137c                __sfp_lock_acquire
+                0x080012cc        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
+                0x080012cc                __sfp_lock_acquire
  .text.__sfp_lock_release
-                0x08001388        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
-                0x08001388                __sfp_lock_release
- .text.__sinit  0x08001394       0x30 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
-                0x08001394                __sinit
- .text.__sread  0x080013c4       0x22 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
-                0x080013c4                __sread
+                0x080012d8        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
+                0x080012d8                __sfp_lock_release
+ .text.__sinit  0x080012e4       0x30 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
+                0x080012e4                __sinit
+ .text.__sread  0x08001314       0x22 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
+                0x08001314                __sread
  .text.__swrite
-                0x080013e6       0x38 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
-                0x080013e6                __swrite
- .text.__sseek  0x0800141e       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
-                0x0800141e                __sseek
+                0x08001336       0x38 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
+                0x08001336                __swrite
+ .text.__sseek  0x0800136e       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
+                0x0800136e                __sseek
  .text.__sclose
-                0x08001442        0x8 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
-                0x08001442                __sclose
- *fill*         0x0800144a        0x2 
- .text._read_r  0x0800144c       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-readr.o)
-                0x0800144c                _read_r
+                0x08001392        0x8 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
+                0x08001392                __sclose
+ *fill*         0x0800139a        0x2 
+ .text._read_r  0x0800139c       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-readr.o)
+                0x0800139c                _read_r
  .text._write_r
-                0x08001470       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-writer.o)
-                0x08001470                _write_r
+                0x080013c0       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-writer.o)
+                0x080013c0                _write_r
  .text._fwalk_sglue
-                0x08001494       0x3c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fwalk.o)
-                0x08001494                _fwalk_sglue
- .text.memset   0x080014d0       0x10 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memset.o)
-                0x080014d0                memset
- .text._free_r  0x080014e0       0x94 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-freer.o)
-                0x080014e0                _free_r
+                0x080013e4       0x3c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fwalk.o)
+                0x080013e4                _fwalk_sglue
+ .text.memset   0x08001420       0x10 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memset.o)
+                0x08001420                memset
+ .text._free_r  0x08001430       0x94 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-freer.o)
+                0x08001430                _free_r
  .text.__retarget_lock_init_recursive
-                0x08001574        0x2 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
-                0x08001574                __retarget_lock_init_recursive
+                0x080014c4        0x2 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
+                0x080014c4                __retarget_lock_init_recursive
  .text.__retarget_lock_acquire_recursive
-                0x08001576        0x2 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
-                0x08001576                __retarget_lock_acquire_recursive
+                0x080014c6        0x2 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
+                0x080014c6                __retarget_lock_acquire_recursive
  .text.__retarget_lock_release_recursive
-                0x08001578        0x2 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
-                0x08001578                __retarget_lock_release_recursive
+                0x080014c8        0x2 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
+                0x080014c8                __retarget_lock_release_recursive
  .text.__swhatbuf_r
-                0x0800157a       0x4c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-makebuf.o)
-                0x0800157a                __swhatbuf_r
+                0x080014ca       0x4c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-makebuf.o)
+                0x080014ca                __swhatbuf_r
  .text.__smakebuf_r
-                0x080015c6       0x78 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-makebuf.o)
-                0x080015c6                __smakebuf_r
- *fill*         0x0800163e        0x2 
+                0x08001516       0x78 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-makebuf.o)
+                0x08001516                __smakebuf_r
+ *fill*         0x0800158e        0x2 
  .text._close_r
-                0x08001640       0x20 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-closer.o)
-                0x08001640                _close_r
+                0x08001590       0x20 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-closer.o)
+                0x08001590                _close_r
  .text.sbrk_aligned
-                0x08001660       0x44 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mallocr.o)
+                0x080015b0       0x44 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mallocr.o)
  .text._malloc_r
-                0x080016a4      0x100 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mallocr.o)
-                0x080016a4                _malloc_r
+                0x080015f4      0x100 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mallocr.o)
+                0x080015f4                _malloc_r
  .text._fstat_r
-                0x080017a4       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fstatr.o)
-                0x080017a4                _fstat_r
+                0x080016f4       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fstatr.o)
+                0x080016f4                _fstat_r
  .text._isatty_r
-                0x080017c8       0x20 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-isattyr.o)
-                0x080017c8                _isatty_r
+                0x08001718       0x20 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-isattyr.o)
+                0x08001718                _isatty_r
  .text._lseek_r
-                0x080017e8       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lseekr.o)
-                0x080017e8                _lseek_r
+                0x08001738       0x24 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lseekr.o)
+                0x08001738                _lseek_r
  .text.__malloc_lock
-                0x0800180c        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mlock.o)
-                0x0800180c                __malloc_lock
+                0x0800175c        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mlock.o)
+                0x0800175c                __malloc_lock
  .text.__malloc_unlock
-                0x08001818        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mlock.o)
-                0x08001818                __malloc_unlock
- .text._sbrk_r  0x08001824       0x20 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-sbrkr.o)
-                0x08001824                _sbrk_r
+                0x08001768        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mlock.o)
+                0x08001768                __malloc_unlock
+ .text._sbrk_r  0x08001774       0x20 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-sbrkr.o)
+                0x08001774                _sbrk_r
 
-.glue_7         0x08001844        0x0
- .glue_7        0x08001844        0x0 linker stubs
+.glue_7         0x08001794        0x0
+ .glue_7        0x08001794        0x0 linker stubs
 
-.glue_7t        0x08001844        0x0
- .glue_7t       0x08001844        0x0 linker stubs
+.glue_7t        0x08001794        0x0
+ .glue_7t       0x08001794        0x0 linker stubs
 
-.vfp11_veneer   0x08001844        0x0
- .vfp11_veneer  0x08001844        0x0 linker stubs
+.vfp11_veneer   0x08001794        0x0
+ .vfp11_veneer  0x08001794        0x0 linker stubs
 
-.v4_bx          0x08001844        0x0
- .v4_bx         0x08001844        0x0 linker stubs
+.v4_bx          0x08001794        0x0
+ .v4_bx         0x08001794        0x0 linker stubs
 
-.iplt           0x08001844        0x0
- .iplt          0x08001844        0x0 /tmp/cc91U3G8.o
+.iplt           0x08001794        0x0
+ .iplt          0x08001794        0x0 /tmp/cclooe96.o
 
-.rodata         0x08001844       0xa7
+.rodata         0x08001794       0x85
  *(.rodata*)
  .rodata.run_ADXL375_routine.str1.1
-                0x08001844       0xa7 /tmp/cc91U3G8.o
-                                  0x8 (size before relaxing)
- .rodata.main.str1.1
-                0x080018eb       0x3e /tmp/cc91U3G8.o
- .rodata.ADXL375_get_data.str1.1
-                0x080018eb       0x10 /tmp/ccEE4IUy.o
+                0x08001794       0x85 /tmp/cclooe96.o
+                                 0x34 (size before relaxing)
  .rodata.ADXL375_init.str1.1
-                0x080018eb       0x1e /tmp/ccEE4IUy.o
+                0x08001819       0x1e /tmp/cc39F8iS.o
  .rodata._vfprintf_r.str1.1
-                0x080018eb       0x11 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
+                0x08001819       0x11 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
  .rodata._printf_i.str1.1
-                0x080018eb       0x22 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
+                0x08001819       0x22 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
 
-.ARM.exidx      0x080018ec        0x8
- .ARM.exidx     0x080018ec        0x8 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memchr.o)
+.ARM.exidx      0x0800181c        0x8
+ .ARM.exidx     0x0800181c        0x8 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memchr.o)
 
-.rel.dyn        0x080018f4        0x0
- .rel.iplt      0x080018f4        0x0 /tmp/cc91U3G8.o
+.rel.dyn        0x08001824        0x0
+ .rel.iplt      0x08001824        0x0 /tmp/cclooe96.o
 
-.data           0x20000000       0x60 load address 0x080018f4
+.data           0x20000000       0x60 load address 0x08001824
                 0x20000000                        _sdata = .
  *(.first_data)
  *(.data SORT_BY_NAME(.data.*))
- .data.FREQ     0x20000000        0x4 /tmp/ccBXkIIV.o
+ .data.FREQ     0x20000000        0x4 /tmp/ccJZpJ8G.o
                 0x20000000                FREQ
  .data.__sglue  0x20000004        0xc /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
                 0x20000004                __sglue
@@ -1495,16 +1498,16 @@ LOAD /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/
                 0x2000005c        0x4 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-impure.o)
                 0x2000005c                _impure_ptr
                 0x20000060                        _edata = .
-                0x080018f4                        _sidata = LOADADDR (.data)
+                0x08001824                        _sidata = LOADADDR (.data)
 
-.igot.plt       0x20000060        0x0 load address 0x08001954
- .igot.plt      0x20000060        0x0 /tmp/cc91U3G8.o
+.igot.plt       0x20000060        0x0 load address 0x08001884
+ .igot.plt      0x20000060        0x0 /tmp/cclooe96.o
 
-.bss            0x20000060      0x158 load address 0x08001954
+.bss            0x20000060      0x158 load address 0x08001884
                 0x20000060                        _sbss = .
  *(.bss SORT_BY_NAME(.bss.*) COMMON)
  .bss.ADXL375_SPI
-                0x20000060        0x4 /tmp/ccEE4IUy.o
+                0x20000060        0x4 /tmp/cc39F8iS.o
                 0x20000060                ADXL375_SPI
  .bss.__lock___malloc_recursive_mutex
                 0x20000064        0x1 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
@@ -1526,8 +1529,8 @@ LOAD /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/
                 0x200001a8                __stdio_exit_handler
  .bss.errno     0x200001ac        0x4 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-reent.o)
                 0x200001ac                errno
- .bss.heap.0    0x200001b0        0x4 /tmp/cc2Y7m8M.o
- .bss.s_ticks   0x200001b4        0x4 /tmp/cc91U3G8.o
+ .bss.heap.0    0x200001b0        0x4 /tmp/ccCFlxeb.o
+ .bss.s_ticks   0x200001b4        0x4 /tmp/cclooe96.o
                 0x200001b4                s_ticks
                 0x200001b8                        _ebss = .
                 0x200001b8                        . = ALIGN (0x8)
@@ -1535,164 +1538,164 @@ LOAD /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/thumb/v7e-m+fp/hard/
 OUTPUT(firmware.elf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x00000000     0x34ae
- .debug_info    0x00000000     0x13c9 /tmp/cc91U3G8.o
- .debug_info    0x000013c9      0x139 /tmp/ccxD6pN1.o
- .debug_info    0x00001502      0x7f9 /tmp/cc2Y7m8M.o
- .debug_info    0x00001cfb      0xdda /tmp/ccBXkIIV.o
- .debug_info    0x00002ad5      0x9d9 /tmp/ccEE4IUy.o
+.debug_info     0x00000000     0x376b
+ .debug_info    0x00000000     0x1339 /tmp/cclooe96.o
+ .debug_info    0x00001339      0x139 /tmp/ccmFOwIu.o
+ .debug_info    0x00001472      0x7f9 /tmp/ccCFlxeb.o
+ .debug_info    0x00001c6b      0xdda /tmp/ccJZpJ8G.o
+ .debug_info    0x00002a45      0xd26 /tmp/cc39F8iS.o
 
-.debug_abbrev   0x00000000      0xed6
- .debug_abbrev  0x00000000      0x484 /tmp/cc91U3G8.o
- .debug_abbrev  0x00000484       0xe8 /tmp/ccxD6pN1.o
- .debug_abbrev  0x0000056c      0x29f /tmp/cc2Y7m8M.o
- .debug_abbrev  0x0000080b      0x324 /tmp/ccBXkIIV.o
- .debug_abbrev  0x00000b2f      0x3a7 /tmp/ccEE4IUy.o
+.debug_abbrev   0x00000000      0xeef
+ .debug_abbrev  0x00000000      0x461 /tmp/cclooe96.o
+ .debug_abbrev  0x00000461       0xe8 /tmp/ccmFOwIu.o
+ .debug_abbrev  0x00000549      0x29f /tmp/ccCFlxeb.o
+ .debug_abbrev  0x000007e8      0x324 /tmp/ccJZpJ8G.o
+ .debug_abbrev  0x00000b0c      0x3e3 /tmp/cc39F8iS.o
 
 .debug_loclists
-                0x00000000      0xaf7
+                0x00000000      0xc90
  .debug_loclists
-                0x00000000      0x2ba /tmp/cc91U3G8.o
+                0x00000000      0x2ba /tmp/cclooe96.o
  .debug_loclists
-                0x000002ba      0x225 /tmp/cc2Y7m8M.o
+                0x000002ba      0x225 /tmp/ccCFlxeb.o
  .debug_loclists
-                0x000004df      0x300 /tmp/ccBXkIIV.o
+                0x000004df      0x300 /tmp/ccJZpJ8G.o
  .debug_loclists
-                0x000007df      0x318 /tmp/ccEE4IUy.o
+                0x000007df      0x4b1 /tmp/cc39F8iS.o
 
-.debug_aranges  0x00000000      0x220
+.debug_aranges  0x00000000      0x230
  .debug_aranges
-                0x00000000       0xc0 /tmp/cc91U3G8.o
+                0x00000000       0xc0 /tmp/cclooe96.o
  .debug_aranges
-                0x000000c0       0x20 /tmp/ccxD6pN1.o
+                0x000000c0       0x20 /tmp/ccmFOwIu.o
  .debug_aranges
-                0x000000e0       0x90 /tmp/cc2Y7m8M.o
+                0x000000e0       0x90 /tmp/ccCFlxeb.o
  .debug_aranges
-                0x00000170       0x70 /tmp/ccBXkIIV.o
+                0x00000170       0x70 /tmp/ccJZpJ8G.o
  .debug_aranges
-                0x000001e0       0x40 /tmp/ccEE4IUy.o
+                0x000001e0       0x50 /tmp/cc39F8iS.o
 
 .debug_rnglists
-                0x00000000      0x23d
+                0x00000000      0x293
  .debug_rnglists
-                0x00000000       0xd6 /tmp/cc91U3G8.o
+                0x00000000       0xd8 /tmp/cclooe96.o
  .debug_rnglists
-                0x000000d6       0x13 /tmp/ccxD6pN1.o
+                0x000000d8       0x13 /tmp/ccmFOwIu.o
  .debug_rnglists
-                0x000000e9       0x7f /tmp/cc2Y7m8M.o
+                0x000000eb       0x7f /tmp/ccCFlxeb.o
  .debug_rnglists
-                0x00000168       0x5e /tmp/ccBXkIIV.o
+                0x0000016a       0x5e /tmp/ccJZpJ8G.o
  .debug_rnglists
-                0x000001c6       0x77 /tmp/ccEE4IUy.o
+                0x000001c8       0xcb /tmp/cc39F8iS.o
 
 .debug_macro    0x00000000    0x212f8
- .debug_macro   0x00000000      0x2eb /tmp/cc91U3G8.o
- .debug_macro   0x000002eb      0xacc /tmp/cc91U3G8.o
- .debug_macro   0x00000db7       0x22 /tmp/cc91U3G8.o
- .debug_macro   0x00000dd9       0x5b /tmp/cc91U3G8.o
- .debug_macro   0x00000e34       0x2a /tmp/cc91U3G8.o
- .debug_macro   0x00000e5e       0x94 /tmp/cc91U3G8.o
- .debug_macro   0x00000ef2       0x43 /tmp/cc91U3G8.o
- .debug_macro   0x00000f35       0x34 /tmp/cc91U3G8.o
- .debug_macro   0x00000f69       0x16 /tmp/cc91U3G8.o
- .debug_macro   0x00000f7f       0x57 /tmp/cc91U3G8.o
- .debug_macro   0x00000fd6       0x9e /tmp/cc91U3G8.o
- .debug_macro   0x00001074      0x370 /tmp/cc91U3G8.o
- .debug_macro   0x000013e4      0x112 /tmp/cc91U3G8.o
- .debug_macro   0x000014f6       0x10 /tmp/cc91U3G8.o
- .debug_macro   0x00001506       0x16 /tmp/cc91U3G8.o
- .debug_macro   0x0000151c       0x4a /tmp/cc91U3G8.o
- .debug_macro   0x00001566       0x34 /tmp/cc91U3G8.o
- .debug_macro   0x0000159a       0x10 /tmp/cc91U3G8.o
- .debug_macro   0x000015aa       0x58 /tmp/cc91U3G8.o
- .debug_macro   0x00001602       0x8e /tmp/cc91U3G8.o
- .debug_macro   0x00001690       0x1c /tmp/cc91U3G8.o
- .debug_macro   0x000016ac      0x177 /tmp/cc91U3G8.o
- .debug_macro   0x00001823       0x16 /tmp/cc91U3G8.o
- .debug_macro   0x00001839       0x16 /tmp/cc91U3G8.o
- .debug_macro   0x0000184f      0x146 /tmp/cc91U3G8.o
- .debug_macro   0x00001995      0x103 /tmp/cc91U3G8.o
- .debug_macro   0x00001a98       0x6a /tmp/cc91U3G8.o
- .debug_macro   0x00001b02      0x1df /tmp/cc91U3G8.o
- .debug_macro   0x00001ce1       0x3c /tmp/cc91U3G8.o
- .debug_macro   0x00001d1d      0x460 /tmp/cc91U3G8.o
- .debug_macro   0x0000217d       0x22 /tmp/cc91U3G8.o
- .debug_macro   0x0000219f       0x16 /tmp/cc91U3G8.o
- .debug_macro   0x000021b5       0x16 /tmp/cc91U3G8.o
- .debug_macro   0x000021cb       0x29 /tmp/cc91U3G8.o
- .debug_macro   0x000021f4       0x16 /tmp/cc91U3G8.o
- .debug_macro   0x0000220a       0x10 /tmp/cc91U3G8.o
- .debug_macro   0x0000221a       0x10 /tmp/cc91U3G8.o
- .debug_macro   0x0000222a       0x10 /tmp/cc91U3G8.o
- .debug_macro   0x0000223a       0x1c /tmp/cc91U3G8.o
- .debug_macro   0x00002256       0x52 /tmp/cc91U3G8.o
- .debug_macro   0x000022a8       0x22 /tmp/cc91U3G8.o
- .debug_macro   0x000022ca       0x10 /tmp/cc91U3G8.o
- .debug_macro   0x000022da       0x52 /tmp/cc91U3G8.o
- .debug_macro   0x0000232c       0xc1 /tmp/cc91U3G8.o
- .debug_macro   0x000023ed       0x1c /tmp/cc91U3G8.o
- .debug_macro   0x00002409       0x3d /tmp/cc91U3G8.o
- .debug_macro   0x00002446       0x35 /tmp/cc91U3G8.o
- .debug_macro   0x0000247b      0x12c /tmp/cc91U3G8.o
- .debug_macro   0x000025a7       0x28 /tmp/cc91U3G8.o
- .debug_macro   0x000025cf       0x1c /tmp/cc91U3G8.o
- .debug_macro   0x000025eb       0x22 /tmp/cc91U3G8.o
- .debug_macro   0x0000260d       0xd9 /tmp/cc91U3G8.o
- .debug_macro   0x000026e6     0x102d /tmp/cc91U3G8.o
- .debug_macro   0x00003713      0x11f /tmp/cc91U3G8.o
- .debug_macro   0x00003832    0x1cb71 /tmp/cc91U3G8.o
- .debug_macro   0x000203a3       0xd6 /tmp/cc91U3G8.o
- .debug_macro   0x00020479       0x3a /tmp/cc91U3G8.o
- .debug_macro   0x000204b3       0x88 /tmp/cc91U3G8.o
- .debug_macro   0x0002053b      0x172 /tmp/cc91U3G8.o
- .debug_macro   0x000206ad       0x3a /tmp/cc91U3G8.o
- .debug_macro   0x000206e7       0xb2 /tmp/cc91U3G8.o
- .debug_macro   0x00020799       0x11 /tmp/ccxD6pN1.o
- .debug_macro   0x000207aa      0x2b2 /tmp/cc2Y7m8M.o
- .debug_macro   0x00020a5c       0x3a /tmp/cc2Y7m8M.o
- .debug_macro   0x00020a96       0x89 /tmp/cc2Y7m8M.o
- .debug_macro   0x00020b1f       0x1c /tmp/cc2Y7m8M.o
- .debug_macro   0x00020b3b       0x9b /tmp/cc2Y7m8M.o
- .debug_macro   0x00020bd6      0x2c1 /tmp/ccBXkIIV.o
- .debug_macro   0x00020e97       0x34 /tmp/ccBXkIIV.o
- .debug_macro   0x00020ecb      0x2c1 /tmp/ccEE4IUy.o
- .debug_macro   0x0002118c      0x16c /tmp/ccEE4IUy.o
+ .debug_macro   0x00000000      0x2eb /tmp/cclooe96.o
+ .debug_macro   0x000002eb      0xacc /tmp/cclooe96.o
+ .debug_macro   0x00000db7       0x22 /tmp/cclooe96.o
+ .debug_macro   0x00000dd9       0x5b /tmp/cclooe96.o
+ .debug_macro   0x00000e34       0x2a /tmp/cclooe96.o
+ .debug_macro   0x00000e5e       0x94 /tmp/cclooe96.o
+ .debug_macro   0x00000ef2       0x43 /tmp/cclooe96.o
+ .debug_macro   0x00000f35       0x34 /tmp/cclooe96.o
+ .debug_macro   0x00000f69       0x16 /tmp/cclooe96.o
+ .debug_macro   0x00000f7f       0x57 /tmp/cclooe96.o
+ .debug_macro   0x00000fd6       0x9e /tmp/cclooe96.o
+ .debug_macro   0x00001074      0x370 /tmp/cclooe96.o
+ .debug_macro   0x000013e4      0x112 /tmp/cclooe96.o
+ .debug_macro   0x000014f6       0x10 /tmp/cclooe96.o
+ .debug_macro   0x00001506       0x16 /tmp/cclooe96.o
+ .debug_macro   0x0000151c       0x4a /tmp/cclooe96.o
+ .debug_macro   0x00001566       0x34 /tmp/cclooe96.o
+ .debug_macro   0x0000159a       0x10 /tmp/cclooe96.o
+ .debug_macro   0x000015aa       0x58 /tmp/cclooe96.o
+ .debug_macro   0x00001602       0x8e /tmp/cclooe96.o
+ .debug_macro   0x00001690       0x1c /tmp/cclooe96.o
+ .debug_macro   0x000016ac      0x177 /tmp/cclooe96.o
+ .debug_macro   0x00001823       0x16 /tmp/cclooe96.o
+ .debug_macro   0x00001839       0x16 /tmp/cclooe96.o
+ .debug_macro   0x0000184f      0x146 /tmp/cclooe96.o
+ .debug_macro   0x00001995      0x103 /tmp/cclooe96.o
+ .debug_macro   0x00001a98       0x6a /tmp/cclooe96.o
+ .debug_macro   0x00001b02      0x1df /tmp/cclooe96.o
+ .debug_macro   0x00001ce1       0x3c /tmp/cclooe96.o
+ .debug_macro   0x00001d1d      0x460 /tmp/cclooe96.o
+ .debug_macro   0x0000217d       0x22 /tmp/cclooe96.o
+ .debug_macro   0x0000219f       0x16 /tmp/cclooe96.o
+ .debug_macro   0x000021b5       0x16 /tmp/cclooe96.o
+ .debug_macro   0x000021cb       0x29 /tmp/cclooe96.o
+ .debug_macro   0x000021f4       0x16 /tmp/cclooe96.o
+ .debug_macro   0x0000220a       0x10 /tmp/cclooe96.o
+ .debug_macro   0x0000221a       0x10 /tmp/cclooe96.o
+ .debug_macro   0x0000222a       0x10 /tmp/cclooe96.o
+ .debug_macro   0x0000223a       0x1c /tmp/cclooe96.o
+ .debug_macro   0x00002256       0x52 /tmp/cclooe96.o
+ .debug_macro   0x000022a8       0x22 /tmp/cclooe96.o
+ .debug_macro   0x000022ca       0x10 /tmp/cclooe96.o
+ .debug_macro   0x000022da       0x52 /tmp/cclooe96.o
+ .debug_macro   0x0000232c       0xc1 /tmp/cclooe96.o
+ .debug_macro   0x000023ed       0x1c /tmp/cclooe96.o
+ .debug_macro   0x00002409       0x3d /tmp/cclooe96.o
+ .debug_macro   0x00002446       0x35 /tmp/cclooe96.o
+ .debug_macro   0x0000247b      0x12c /tmp/cclooe96.o
+ .debug_macro   0x000025a7       0x28 /tmp/cclooe96.o
+ .debug_macro   0x000025cf       0x1c /tmp/cclooe96.o
+ .debug_macro   0x000025eb       0x22 /tmp/cclooe96.o
+ .debug_macro   0x0000260d       0xd9 /tmp/cclooe96.o
+ .debug_macro   0x000026e6     0x102d /tmp/cclooe96.o
+ .debug_macro   0x00003713      0x11f /tmp/cclooe96.o
+ .debug_macro   0x00003832    0x1cb71 /tmp/cclooe96.o
+ .debug_macro   0x000203a3       0xd6 /tmp/cclooe96.o
+ .debug_macro   0x00020479       0x3a /tmp/cclooe96.o
+ .debug_macro   0x000204b3       0x88 /tmp/cclooe96.o
+ .debug_macro   0x0002053b      0x172 /tmp/cclooe96.o
+ .debug_macro   0x000206ad       0x3a /tmp/cclooe96.o
+ .debug_macro   0x000206e7       0xb2 /tmp/cclooe96.o
+ .debug_macro   0x00020799       0x11 /tmp/ccmFOwIu.o
+ .debug_macro   0x000207aa      0x2b2 /tmp/ccCFlxeb.o
+ .debug_macro   0x00020a5c       0x3a /tmp/ccCFlxeb.o
+ .debug_macro   0x00020a96       0x89 /tmp/ccCFlxeb.o
+ .debug_macro   0x00020b1f       0x1c /tmp/ccCFlxeb.o
+ .debug_macro   0x00020b3b       0x9b /tmp/ccCFlxeb.o
+ .debug_macro   0x00020bd6      0x2c1 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00020e97       0x34 /tmp/ccJZpJ8G.o
+ .debug_macro   0x00020ecb      0x2c1 /tmp/cc39F8iS.o
+ .debug_macro   0x0002118c      0x16c /tmp/cc39F8iS.o
 
-.debug_line     0x00000000     0x2027
- .debug_line    0x00000000      0x9be /tmp/cc91U3G8.o
- .debug_line    0x000009be       0x6b /tmp/ccxD6pN1.o
- .debug_line    0x00000a29      0x5e8 /tmp/cc2Y7m8M.o
- .debug_line    0x00001011      0x8fe /tmp/ccBXkIIV.o
- .debug_line    0x0000190f      0x718 /tmp/ccEE4IUy.o
+.debug_line     0x00000000     0x2205
+ .debug_line    0x00000000      0x9b7 /tmp/cclooe96.o
+ .debug_line    0x000009b7       0x6b /tmp/ccmFOwIu.o
+ .debug_line    0x00000a22      0x5e8 /tmp/ccCFlxeb.o
+ .debug_line    0x0000100a      0x8fe /tmp/ccJZpJ8G.o
+ .debug_line    0x00001908      0x8fd /tmp/cc39F8iS.o
 
 .debug_str      0x00000000    0xb3ad1
- .debug_str     0x00000000    0xb3ad1 /tmp/cc91U3G8.o
-                              0xb39bd (size before relaxing)
- .debug_str     0x000b3ad1     0x2ea6 /tmp/ccxD6pN1.o
- .debug_str     0x000b3ad1    0xb2827 /tmp/cc2Y7m8M.o
- .debug_str     0x000b3ad1    0xb2a82 /tmp/ccBXkIIV.o
- .debug_str     0x000b3ad1    0xb2f30 /tmp/ccEE4IUy.o
+ .debug_str     0x00000000    0xb3ad1 /tmp/cclooe96.o
+                              0xb3988 (size before relaxing)
+ .debug_str     0x000b3ad1     0x2ea6 /tmp/ccmFOwIu.o
+ .debug_str     0x000b3ad1    0xb2827 /tmp/ccCFlxeb.o
+ .debug_str     0x000b3ad1    0xb2a82 /tmp/ccJZpJ8G.o
+ .debug_str     0x000b3ad1    0xb2f30 /tmp/cc39F8iS.o
 
 .comment        0x00000000       0x44
- .comment       0x00000000       0x44 /tmp/cc91U3G8.o
+ .comment       0x00000000       0x44 /tmp/cclooe96.o
                                  0x45 (size before relaxing)
- .comment       0x00000044       0x45 /tmp/ccxD6pN1.o
- .comment       0x00000044       0x45 /tmp/cc2Y7m8M.o
- .comment       0x00000044       0x45 /tmp/ccBXkIIV.o
- .comment       0x00000044       0x45 /tmp/ccEE4IUy.o
+ .comment       0x00000044       0x45 /tmp/ccmFOwIu.o
+ .comment       0x00000044       0x45 /tmp/ccCFlxeb.o
+ .comment       0x00000044       0x45 /tmp/ccJZpJ8G.o
+ .comment       0x00000044       0x45 /tmp/cc39F8iS.o
 
 .ARM.attributes
                 0x00000000       0x32
  .ARM.attributes
-                0x00000000       0x34 /tmp/cc91U3G8.o
+                0x00000000       0x34 /tmp/cclooe96.o
  .ARM.attributes
-                0x00000034       0x34 /tmp/ccxD6pN1.o
+                0x00000034       0x34 /tmp/ccmFOwIu.o
  .ARM.attributes
-                0x00000068       0x34 /tmp/cc2Y7m8M.o
+                0x00000068       0x34 /tmp/ccCFlxeb.o
  .ARM.attributes
-                0x0000009c       0x34 /tmp/ccBXkIIV.o
+                0x0000009c       0x34 /tmp/ccJZpJ8G.o
  .ARM.attributes
-                0x000000d0       0x34 /tmp/ccEE4IUy.o
+                0x000000d0       0x34 /tmp/cc39F8iS.o
  .ARM.attributes
                 0x00000104       0x34 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
  .ARM.attributes
@@ -1748,37 +1751,37 @@ LOAD linker stubs
  .ARM.attributes
                 0x00000634       0x34 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-sbrkr.o)
 
-.debug_frame    0x00000000      0xca4
- .debug_frame   0x00000000      0x1fc /tmp/cc91U3G8.o
- .debug_frame   0x000001fc       0x20 /tmp/ccxD6pN1.o
- .debug_frame   0x0000021c      0x108 /tmp/cc2Y7m8M.o
- .debug_frame   0x00000324      0x100 /tmp/ccBXkIIV.o
- .debug_frame   0x00000424       0x94 /tmp/ccEE4IUy.o
- .debug_frame   0x000004b8       0x6c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
- .debug_frame   0x00000524       0xa8 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
- .debug_frame   0x000005cc       0x40 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wbuf.o)
- .debug_frame   0x0000060c       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wsetup.o)
- .debug_frame   0x00000638       0x60 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
- .debug_frame   0x00000698       0x3c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-puts.o)
- .debug_frame   0x000006d4       0x5c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fflush.o)
- .debug_frame   0x00000730       0x28 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memcpy-stub.o)
- .debug_frame   0x00000758      0x144 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
- .debug_frame   0x0000089c       0x88 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
- .debug_frame   0x00000924       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-readr.o)
- .debug_frame   0x00000950       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-writer.o)
- .debug_frame   0x0000097c       0x34 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fwalk.o)
- .debug_frame   0x000009b0       0x20 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memset.o)
- .debug_frame   0x000009d0       0x38 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-freer.o)
- .debug_frame   0x00000a08       0xb0 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
- .debug_frame   0x00000ab8       0x58 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-makebuf.o)
- .debug_frame   0x00000b10       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-closer.o)
- .debug_frame   0x00000b3c       0x38 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-reent.o)
- .debug_frame   0x00000b74       0x50 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mallocr.o)
- .debug_frame   0x00000bc4       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fstatr.o)
- .debug_frame   0x00000bf0       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-isattyr.o)
- .debug_frame   0x00000c1c       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lseekr.o)
- .debug_frame   0x00000c48       0x30 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mlock.o)
- .debug_frame   0x00000c78       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-sbrkr.o)
+.debug_frame    0x00000000      0xcc8
+ .debug_frame   0x00000000      0x1fc /tmp/cclooe96.o
+ .debug_frame   0x000001fc       0x20 /tmp/ccmFOwIu.o
+ .debug_frame   0x0000021c      0x108 /tmp/ccCFlxeb.o
+ .debug_frame   0x00000324      0x100 /tmp/ccJZpJ8G.o
+ .debug_frame   0x00000424       0xb8 /tmp/cc39F8iS.o
+ .debug_frame   0x000004dc       0x6c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-printf.o)
+ .debug_frame   0x00000548       0xa8 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf.o)
+ .debug_frame   0x000005f0       0x40 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wbuf.o)
+ .debug_frame   0x00000630       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-wsetup.o)
+ .debug_frame   0x0000065c       0x60 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-nano-vfprintf_i.o)
+ .debug_frame   0x000006bc       0x3c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-puts.o)
+ .debug_frame   0x000006f8       0x5c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fflush.o)
+ .debug_frame   0x00000754       0x28 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memcpy-stub.o)
+ .debug_frame   0x0000077c      0x144 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
+ .debug_frame   0x000008c0       0x88 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o)
+ .debug_frame   0x00000948       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-readr.o)
+ .debug_frame   0x00000974       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-writer.o)
+ .debug_frame   0x000009a0       0x34 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fwalk.o)
+ .debug_frame   0x000009d4       0x20 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memset.o)
+ .debug_frame   0x000009f4       0x38 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-freer.o)
+ .debug_frame   0x00000a2c       0xb0 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
+ .debug_frame   0x00000adc       0x58 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-makebuf.o)
+ .debug_frame   0x00000b34       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-closer.o)
+ .debug_frame   0x00000b60       0x38 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-reent.o)
+ .debug_frame   0x00000b98       0x50 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mallocr.o)
+ .debug_frame   0x00000be8       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-fstatr.o)
+ .debug_frame   0x00000c14       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-isattyr.o)
+ .debug_frame   0x00000c40       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lseekr.o)
+ .debug_frame   0x00000c6c       0x30 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mlock.o)
+ .debug_frame   0x00000c9c       0x2c /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-sbrkr.o)
 
 .debug_line_str
                 0x00000000       0xda
