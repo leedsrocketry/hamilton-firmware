@@ -24,13 +24,12 @@ uint8_t ADXL375_init(SPI_TypeDef * spi) {
 
     // Check the device name
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
-    int8_t devid;
-    //spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 1, 1, &devid);
-    devid = spi_transmit(ADXL375_SPI, 0x80);
+    uint8_t devid;
+    spi_transmit_receive(ADXL375_SPI, 0x80, 2, 1, &devid);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 
     if (devid != ADXL375_DEVID_ID)
-        printf("ADXL375 wrong device ID: %d\r\n", (uint8_t)devid);
+        printf("ADXL375 wrong device ID: %d\r\n", devid);
 
     /*
     // Set the data rate
@@ -110,8 +109,6 @@ void ADXL375_reg_write(uint8_t addr, uint8_t value) {
     uint32_t r;
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     spi_transmit_receive(ADXL375_SPI, d, 2, 1, &r);
-    //spi_transmit(ADXL375_SPI, d[0]);
-    //spi_transmit(ADXL375_SPI, d[1]);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 }
 
