@@ -476,17 +476,13 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
   return recieve_byte;
 }
 
-static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t send_byte, uint8_t transmit_size, uint8_t receive_size, void* result_ptr)
+static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t *send_bytes, uint8_t transmit_size, uint8_t receive_size, void* result_ptr)
 {
   uint8_t ret_value = 0;
-  //spi_enable_cs(spi, cs);
   spi_ready_write(spi);
 
-  // Not currently implemented
-  while (transmit_size > 0)
-  {
-    spi_transmit(spi, send_byte);
-    transmit_size--;
+  for (int i = 0; i<transmit_size; i++) {
+    spi_transmit(spi, ((uint8_t *)send_bytes)[i]);
   }
 
   uint32_t result = 0;
