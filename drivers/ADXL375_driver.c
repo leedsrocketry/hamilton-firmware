@@ -50,7 +50,13 @@ uint8_t ADXL375_init(SPI_TypeDef * spi) {
 			    (1 << ADXL375_POWER_CTL_MEASURE) |
 			    (0 << ADXL375_POWER_CTL_SLEEP) |
 			    (ADXL375_POWER_CTL_WAKEUP_8 << ADXL375_POWER_CTL_WAKEUP)); 
-  
+
+
+    // Place in FIFO Stream mode
+    // FIFO buffer holds the last 32 samples. When the buffer is full, 
+    // the oldest data is overwritten with newer data.
+    ADXL375_reg_write(ADXL375_FIFO_CTL, ADXL375_FIFO_CTL_MODE_STREAM);
+
     return 0;
 };
 
@@ -61,23 +67,14 @@ ADXL375_data ADXL375_get_data(){
 
     // x-axis
     uint8_t commnds_x[2] = {ADXL375_X_REG_DATAX0, ADXL375_X_REG_DATAX1};
-    //uint16_t x[1];
-    uint16_t test;
+    uint16_t x[1];
     
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
-    spi_transmit_receive(ADXL375_SPI, commnds_x, 2, 2, &test); 
+    spi_transmit_receive(ADXL375_SPI, commnds_x, 2, 2, &data.x); 
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
-    printf("x: %d, ", test);
+    printf("x: %d, ", data.x);
 
-    delay(5);
-
-    /*
-    for (int i = 0; i < 2; i++){
-        spi_transmit_receive(ADXL375_SPI, commnds_x[i], 1, 1, &x[i]); 
-    }
-    */
-    //data.x = (x[1] << 8) | x[0];
-    //printf("x: %d, ", data.x);
+    delay_ms(1);
     
     /*
     // y-axis

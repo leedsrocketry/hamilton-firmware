@@ -59,6 +59,13 @@
 #define ADXL375_POWER_CTL_WAKEUP_4			  1
 #define ADXL375_POWER_CTL_WAKEUP_2			  2
 
+// FIFO Buffer for data extraction
+#define ADXL375_FIFO_CTL		              0x38
+#define ADXL375_FIFO_CTL_MODE_BYPASS		  0x00
+#define ADXL375_FIFO_CTL_MODE_FIFO		    0x50
+#define ADXL375_FIFO_CTL_MODE_STREAM		  0x90
+#define ADXL375_FIFO_CTL_MODE_TRIGGER		  0xF0
+
 // Data registers
 #define ADXL375_OFSX			                0x1E
 #define ADXL375_OFSY			                0x1F
@@ -73,8 +80,6 @@
 
 #define ADXL375_MEASURE                   0x08
 #define ADXL375_CS								        6
-
-// FIFO Buffer for data extraction
 
 // Self test
 #define ADXL375_SELF_TEST_SAMPLES	        10
