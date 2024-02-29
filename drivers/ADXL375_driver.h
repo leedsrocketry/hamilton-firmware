@@ -17,6 +17,7 @@
 #define ADXL375_INT_MAP		                0x2F  // Interrupt enable control
 #define ADXL375_INT_SOURCE		            0x30  // Interrupt mapping control
 
+// Configuration registers
 #define ADXL375_DATA_FORMAT		            0x31
 #define ADXL375_DATA_FORMAT_FIXED		      0x0B	// these bits must be set to 1 
 #define ADXL375_DATA_FORMAT_SELF_TEST	    7
@@ -26,6 +27,7 @@
 #define ADXL375_DATA_FORMAT_INT_INVERT	  5
 #define ADXL375_DATA_FORMAT_JUSTIFY		    2
 
+// Data rates
 #define ADXL375_BW_RATE		                0x2C
 #define ADXL375_BW_RATE_LOW_POWER		      4
 #define ADXL375_BW_RATE_RATE		          0
@@ -46,10 +48,7 @@
 #define ADXL375_BW_RATE_RATE_0_20		      0x1
 #define ADXL375_BW_RATE_RATE_0_10		      0x0
 
-#define ADXL375_OFSX			                0x1E
-#define ADXL375_OFSY			                0x1F
-#define ADXL375_OFSZ			                0x20
-
+// Powering modes
 #define ADXL375_POWER_CTL		              0x2D
 #define ADXL375_POWER_CTL_LINK		        5
 #define ADXL375_POWER_CTL_AUTO_SLEEP	    4
@@ -60,6 +59,11 @@
 #define ADXL375_POWER_CTL_WAKEUP_4			  1
 #define ADXL375_POWER_CTL_WAKEUP_2			  2
 
+// Data registers
+#define ADXL375_OFSX			                0x1E
+#define ADXL375_OFSY			                0x1F
+#define ADXL375_OFSZ			                0x20
+
 #define ADXL375_X_REG_DATAX0              0x32
 #define ADXL375_X_REG_DATAX1              0x33
 #define ADXL375_Y_REG_DATAY0              0x34
@@ -68,9 +72,11 @@
 #define ADXL375_Z_REG_DATAZ1              0x37
 
 #define ADXL375_MEASURE                   0x08
-
 #define ADXL375_CS								        6
 
+// FIFO Buffer for data extraction
+
+// Self test
 #define ADXL375_SELF_TEST_SAMPLES	        10
 #define ADXL375_SELF_TEST_SETTLE	        4
 #define ADXL375_MIN_LSB_G	                18.4

@@ -20,14 +20,13 @@ uint8_t ADXL375_init(SPI_TypeDef * spi) {
     ADXL375_reg_write(ADXL375_DATA_FORMAT, ADXL375_DATA_FORMAT_SETTINGS(0));
 
     // Power the CTL Register
-    ADXL375_reg_write(ADXL375_POWER_CTL, 0x08);
+    ADXL375_reg_write(ADXL375_POWER_CTL, ADXL375_MEASURE);
 
     // Check the device name
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     uint8_t devid;
-    spi_transmit_receive(ADXL375_SPI, 0x80, 2, 1, &devid);
+    spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 2, 1, &devid);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
-
     if (devid != ADXL375_DEVID_ID)
         printf("ADXL375 wrong device ID: %d\r\n", devid);
 
@@ -42,7 +41,7 @@ uint8_t ADXL375_init(SPI_TypeDef * spi) {
     ADXL375_reg_write(ADXL375_OFSZ, 0);   
 
     // Clear interrupts
-	ADXL375_reg_write(ADXL375_INT_ENABLE, 0);     
+	ADXL375_reg_write(ADXL375_INT_ENABLE, 0);
 
     // Place in measurement mode
     ADXL375_reg_write(ADXL375_POWER_CTL,
@@ -67,15 +66,18 @@ ADXL375_data ADXL375_get_data(){
     
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     spi_transmit_receive(ADXL375_SPI, commnds_x, 2, 2, &test); 
+    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+    printf("x: %d, ", test);
+
+    delay(5);
+
     /*
     for (int i = 0; i < 2; i++){
         spi_transmit_receive(ADXL375_SPI, commnds_x[i], 1, 1, &x[i]); 
     }
     */
-    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     //data.x = (x[1] << 8) | x[0];
     //printf("x: %d, ", data.x);
-    printf("x: %d, ", test);
     
     /*
     // y-axis
