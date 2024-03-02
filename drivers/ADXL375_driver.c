@@ -65,41 +65,23 @@ ADXL375_data ADXL375_get_data(){
     struct ADXL375_data data;
     data.x = 0;
 
-    // x-axis
-    uint8_t commnds_x[2] = {ADXL375_X_REG_DATAX0, ADXL375_X_REG_DATAX1};
-    uint16_t x[1];
-    
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
+    // x-axis
+    uint8_t commnds_x[2] = {(ADXL375_X_REG_DATAX0|0x80), (ADXL375_X_REG_DATAX1|0x80)};
     spi_transmit_receive(ADXL375_SPI, commnds_x, 2, 2, &data.x); 
-    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     printf("x: %d, ", data.x);
-
-    delay_ms(1);
     
-    /*
     // y-axis
-    uint16_t commnds_y[1] = {ADXL375_Y_REG_DATAY0, ADXL375_Y_REG_DATAY1};
-    uint16_t y[1];
-    for (int i = 0; i < 2; i++){
-        y[i];
-        spi_enable_cs(ADXL375_SPI, ADXL375_CS);
-        spi_transmit_receive(ADXL375_SPI, commnds_y[i], 1, 1, &y[i]); 
-        spi_disable_cs(ADXL375_SPI, ADXL375_CS);
-    }
-    data.y = (y[1] << 8) | y[0];
+    uint16_t commnds_y[1] = {ADXL375_Y_REG_DATAY0|0x80, ADXL375_Y_REG_DATAY1|0x80};
+    spi_transmit_receive(ADXL375_SPI, commnds_y, 2, 2, &data.y); 
     printf("y: %d, ", data.y);
 
     // z-axis
-    uint16_t commnds_z[1] = {ADXL375_Z_REG_DATAZ0, ADXL375_Z_REG_DATAZ1};
-    uint16_t z[1];
-    for (int i = 0; i < 2; i++){
-        spi_enable_cs(ADXL375_SPI, ADXL375_CS);
-        z[i] = spi_transmit_receive(ADXL375_SPI, commnds_z[i], 1, 1, &z[i]); 
-        spi_disable_cs(ADXL375_SPI, ADXL375_CS);
-    }
-    data.z = (z[1] << 8) | z[0];
+    uint16_t commnds_z[1] = {ADXL375_Z_REG_DATAZ0|0x80, ADXL375_Z_REG_DATAZ1|0x80};
+    spi_transmit_receive(ADXL375_SPI, commnds_z, 2, 2, &data.z); 
     printf("z: %d\r\n", data.z);
-    */
+    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+
     return data;
 };
 #pragma endregion Public

@@ -480,10 +480,13 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t *send_bytes
 {
   uint8_t ret_value = 0;
   spi_ready_write(spi);
+  //int8_t x[1];
 
   for (int i = 0; i<transmit_size; i++) {
     spi_transmit(spi, ((uint8_t *)send_bytes)[i]);
   }
+
+  //printf("x_inside: %d ", (x[1] << 8) | x[0]);
 
   uint32_t result = 0;
   int8_t rs = receive_size;

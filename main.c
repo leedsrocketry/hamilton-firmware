@@ -186,7 +186,6 @@ void run_ADXL375_routine()
     if (timer_expired(&timer, period, s_ticks))
     {
       data = ADXL375_get_data();
-      printf("x: %d \r\n", data.x);
     }
   }
 }
