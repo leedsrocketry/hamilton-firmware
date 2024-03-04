@@ -6,7 +6,6 @@
 */
 
 #include "STM32_init.h"
-#include "mcu.h"
 
 FREQ = (int) 4000000;
 

@@ -120,6 +120,6 @@ uint8_t ADXL375_init(SPI_TypeDef* spi);
   @param data ptr to ADXL375_data struct for returning data
   @return Success/Failure
 */
-ADXL375_data ADXL375_get_data();
+uint8_t ADXL375_get_data(ADXL375_data* data);
 
 #endif /* ADXL375_DRIVER_H */

@@ -115,7 +115,7 @@ static int8_t SI446_check_CTS(int desired){
         }
         else{
             printf("No data!");
-            delay(1);   // wait 1ms
+            delay_ms(1);   // wait 1ms
             SI446_time_out --;
         }
     }

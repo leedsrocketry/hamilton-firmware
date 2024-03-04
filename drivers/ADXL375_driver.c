@@ -12,7 +12,7 @@
 #pragma region Public
 SPI_TypeDef* ADXL375_SPI;
 
-uint8_t ADXL375_init(SPI_TypeDef * spi) {
+uint8_t ADXL375_init(SPI_TypeDef* spi) {
     // Set up SPI
     ADXL375_SPI = spi;
 
@@ -61,28 +61,25 @@ uint8_t ADXL375_init(SPI_TypeDef * spi) {
 };
 
 
-ADXL375_data ADXL375_get_data(){
-    struct ADXL375_data data;
-    data.x = 0;
-
+uint8_t ADXL375_get_data(ADXL375_data* data){
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     // x-axis
     uint8_t commnds_x[2] = {(ADXL375_X_REG_DATAX0|0x80), (ADXL375_X_REG_DATAX1|0x80)};
-    spi_transmit_receive(ADXL375_SPI, commnds_x, 2, 2, &data.x); 
-    printf("x: %d, ", data.x);
+    spi_transmit_receive(ADXL375_SPI, commnds_x, 2, 2, &data->x); 
+    printf("x: %d, ", data->x);
     
     // y-axis
     uint16_t commnds_y[1] = {ADXL375_Y_REG_DATAY0|0x80, ADXL375_Y_REG_DATAY1|0x80};
-    spi_transmit_receive(ADXL375_SPI, commnds_y, 2, 2, &data.y); 
-    printf("y: %d, ", data.y);
+    spi_transmit_receive(ADXL375_SPI, commnds_y, 2, 2, &data->y); 
+    printf("y: %d, ", data->y);
 
     // z-axis
     uint16_t commnds_z[1] = {ADXL375_Z_REG_DATAZ0|0x80, ADXL375_Z_REG_DATAZ1|0x80};
-    spi_transmit_receive(ADXL375_SPI, commnds_z, 2, 2, &data.z); 
-    printf("z: %d\r\n", data.z);
+    spi_transmit_receive(ADXL375_SPI, commnds_z, 2, 2, &data->z); 
+    printf("z: %d\r\n", data->z);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 
-    return data;
+    return 0;
 };
 #pragma endregion Public
 
@@ -113,7 +110,7 @@ static void ADXL375_get_test_value(struct ADXL375_data *data, int samples)
 		data->x += 0;
 		data->y += 0;
 		data->z += (z_1 << 8) | z_0;
-		delay(10);
+		delay_ms(10);
 	}
 }
 */

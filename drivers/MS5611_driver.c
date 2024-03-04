@@ -7,7 +7,6 @@
 
 #include "MS5611_driver.h"
 #include "stdint.h"
-#include "mcu.h"
 
 // min OSR by default
 // static uint8_t pressAddr  = PRESSURE_OSR_256;
@@ -27,12 +26,6 @@ typedef struct PROM_data
 
 PROM_data ms5611_prom_data;
 
-typedef struct M5611_data
-{
-    int32_t temp;
-    int32_t pressure;
-} M5611_data;
-
 SPI_TypeDef* MS5611_SPI;
 
 uint8_t MS5611_init(SPI_TypeDef* spi)
@@ -50,8 +43,7 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
 }
 
 int32_t MS5611_get_data_test()
-{   
-    //MS5611_read_PROM(MS5611_SPI);
+{
     M5611_data data;
     MS5611_get_data(&data);
     printf("Temp: %u Pressure: %u \r\n", data.temp, data.pressure);

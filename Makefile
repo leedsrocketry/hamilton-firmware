@@ -4,8 +4,7 @@ CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
             -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(EXTRA_CFLAGS)
 LDFLAGS ?= -Tlink.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=$@.map
 SOURCES ?=	main.c startup.c syscalls.c STM32_init.c drivers/MS5611_driver.c \
-			drivers/ADXL375_driver.c drivers/SI446_driver.c drivers/LSM6DS3_driver.c \
-			test_routines.c
+			drivers/ADXL375_driver.c test_routines.c
 
 # Ensure make clean is cross platform
 ifeq ($(OS), Windows_NT)

@@ -18,7 +18,6 @@
 #ifndef SI446_DRIVER_H
 #define SI446_DRIVER_H
 
-
 #include "mcu.h"
 
 #pragma region Macros //_______________ MACROS _______________________
