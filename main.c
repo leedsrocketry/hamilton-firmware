@@ -9,29 +9,24 @@
 #include "mcu.h"
 #include "STM32_init.h"
 #include "stm32l4r5xx.h"
-// #include "NAND_flash_driver.h"
+#include "NAND_flash_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "drivers/ADXL375_driver.h"
-#include "drivers/LSM6DS3_driver.h"
-#include "drivers/SI446_driver.h"
+//#include "drivers/LSM6DS3_driver.h"
+//#include "drivers/SI446_driver.h"
 
 // Flags
 FlightStages flightStage = LAUNCHPAD;
 volatile uint32_t s_ticks;
 
+#pragma region Buzzer-LED
 /**
   @brief Required for compilation
 */
-
 void SysTick_Handler(void)
 {
   s_ticks++;
 }
-
-/**
-  @brief TODO
-*/
-void update_sensors() {}
 
 /**
   @brief Buzzer sound
@@ -63,60 +58,52 @@ void STM32_indicate_on_buzzer()
 void STM32_indicate_on_led()
 {
   STM32_led_on();
-  delay_ms(200);
+  delay_ms(100);
   STM32_led_off();
   delay_ms(100);
   STM32_led_on();
-  delay_ms(200);
-  STM32_led_off();
 }
-
-/*
-void send_data() {
-  setControlPins(WRITE_PROTECT);                  // Write Protection
-  setControlPins(WRITE_PROTECT_OFF);              // Write Protection Off
-
-  uint8_t dataArray[128];
-  _memset(dataArray, 0x0, 128);
-
-  for (uint8_t i = 0; i < 128; i ++) {
-    dataArray[i] = i;
-  }
-
-  eraseBlock(0);
-  eraseALL();
-
-  writeFrame(0, dataArray);
-  readFrame(10000, dataArray);
-  FrameArray _input = unzip(dataArray);
-  frameArray _output;
-
-  int data_intact = 0;
-  int data_fixed = 0;
-  int data_error = 0;
-  int startAddr = frameAddressPointer;
-
-  int numOfFramesToTest = 100;
-  for (int i = 0; i < numOfFramesToTest; i++) {
-    for (uint8_t j = 0; j < 128; j ++) {
-      dataArray[j] = j;
-    }
-    dataArray[0] = 0;
-    dataArray[1] = 0;
-    _input = unzip(dataArray);
-    log_frame(_input);
-    printf("======================== DONE ========================");
-  }
-  printf("==================== DONE WRITING ====================\r\n");
-  read_all();
-  print_capacity_info();
-}
-*/
+#pragma endregion Buzzer-LED
 
 /**
-  @brief TODO
+  @brief Retrieve data from sensors
+  @param _M5611_data - MS5611 barometer data
+  @param _ADXL375_data - ADXL375 accelerometer data
+  @param _LSM6DS3_data - LSM6DS3 IMU data
+
 */
-void toggle_timeout_flag() {}
+void update_sensors(M5611_data* _M5611_data, 
+                    ADXL375_data* _ADXL375_data) {
+  
+  MS5611_get_data(&_M5611_data);
+  ADXL375_get_data(&_ADXL375_data);
+}
+
+/**
+  @brief Send data to the ground station
+  @param frameAddressPointer - Address of the frame in the NAND flash
+  @param _M5611_data - MS5611 barometer data
+  @param _ADXL375_data - ADXL375 accelerometer data
+*/
+void log_data(uint32_t frameAddressPointer,
+              M5611_data* _M5611_data, 
+              ADXL375_data* _ADXL375_data) {
+  set_control_pins(WRITE_PROTECT);      // Write Protection
+  set_control_pins(WRITE_PROTECT_OFF);  // Write Protection Off
+
+  // Convert data to frame
+  Vector3 _acc_high_g = { _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z };
+
+  // Add data to the frame
+  FrameArray _frameArray;
+  int startAddr = frameAddressPointer;
+  _frameArray.barometer = _M5611_data->pressure;
+  _frameArray.temp = _M5611_data->temp;
+  _frameArray.accelHighG = _acc_high_g; 
+
+  // Add data to NAND flash
+  log_frame(_frameArray);
+}
 
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
@@ -129,77 +116,65 @@ int main(void)
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
   pwr_vdd2_init();
+  STM32_indicate_on_led();
+  STM32_indicate_on_buzzer();
   printf("================ PROGRAM START ================\r\n");
 
-  // Test
-  run_ADXL375_routine();
-}
+  printf("=============== INITIALISE FLASH ==============\r\n");
+  // init_flash();
+  // erase_all();
+  // uint32_t frameAddressPointer = 0;
 
-// TODO - Add the following to the main loop
-/*
-STM32_init(); // Initialise the board
-printf("==================== PROGRAM START ==================\r\n");
+  printf("============== INITIALISE DRIVERS =============\r\n");
+  MS5611_init(SPI1);      // Barometer
+  ADXL375_init(SPI1);     // Accelerometer
+  // LSM6DS3_init(SPI1);  // IMU
+  // BME280_init(SPI1);   // Temperature + Humidity
+  // SI446_init(SPI1);    // Pad Radio
 
-// Initialise the drivers
-printf("================ INITIALISE FC DRIVERS ===============\`r\n");
-init_flash();
-//erase_all();
-frameAddressPointer = 0;
-// init_MAXM10S(); GNSS
-// init_BME280(); Temperature + Humidity
-// init_MS5611(); Barometer
-// init_ADXL375(); Accelerometer
-// init_LSM6DS3(); Gyroscope
-// init_MAX31855(); Temperature
-// init_SI446(); Pad Radio
+  printf("============= ENTER MAIN PROCEDURE ============\r\n");
+  for (;;) {
+    #pragma region Flight Stages
+    switch (flightStage) {
+      case LAUNCHPAD:
+        // TODO
+        // save a circular buffer of sensor readings (when launch is detected)
+        // check for altitude off GPS and -> Barometer
+        // check for acceleration (mostly)
+        // if above threshold, change flightStage to ASCEND
+        break;
 
-printf("================ ENTER MAIN PROCEDURE ================\r\n");
+      case ASCEND:
+        // TODO
+        // update all sensor readings at high rate
+        // save sensor readings to FDR/over telemetry link
+        // detect apogee based on gradient of altitude
+        break;
 
-for (;;) {
-  // Complete based on flight stage
-  #pragma region Flight Stages
-  switch (flightStage) {
-  case LAUNCHPAD:
-      // TODO
-      // save a circular buffer of sensor readings (when launch is detected)
-      // check for altitude off GPS and -> Barometer
-      // check for acceleration (mostly)
-      // if above threshold, change flightStage to ASCEND
-      break;
+      case APOGEE:
+        // TODO
+        // update all sensor readings at high rate
+        // save sensor readings to FDR/over telemetry link
+        // trigger recovery system
+        break;
 
-  case ASCEND:
-      // TODO
-      // update all sensor readings at high rate
-      // save sensor readings to FDR/over telemetry link
-      // detect apogee based on gradient of altitude
-      break;
+      case DESCENT:
+        // TODO
+        // update all sensor readings at lower rate
+        // save sensor readings to FDR/over telemetry link
+        // if no acceleration/costant altitude, change flightStage to LANDING
+        break;
 
-  case APOGEE:
-      // TODO
-      // update all sensor readings at high rate
-      // save sensor readings to FDR/over telemetry link
-      // trigger recovery system
-      break;
+      case LANDING:
+        // TODO
+        // stop recording
+        // change buzzer sequence
+        // change LED sequence
+        break;
+    }
 
-  case DESCENT:
-      // TODO
-      // update all sensor readings at lower rate
-      // save sensor readings to FDR/over telemetry link
-      // if no acceleration/costant altitude, change flightStage to LANDING
-      break;
-
-  case LANDING:
-      // TODO
-      // stop recording
-      // change buzzer sequence
-      // change LED sequence
-      break;
+    //send_data();
   }
-  #pragma endregion Flight Stages
 
-  //send_data();
+  printf("===================== PROGRAM END ====================");
 }
-
-// Exit program
-printf("===================== PROGRAM END ====================");
-*/
