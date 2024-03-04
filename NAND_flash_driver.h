@@ -5,6 +5,11 @@
   Description: NAND Flash driver
 */
 
+#pragma once
+
+#ifndef NAND_DRIVER_H
+#define NAND_DRIVER_H
+
 #include "mcu.h"
 
 #define NONE 0
@@ -61,7 +66,7 @@ typedef struct GNSS_Data{
 
 typedef struct FrameArray {
   DateTime date;
-  uint16_t changeFlag;  //IS THIS NEEDED? CAN THIS BE DONE BETTER?
+  uint16_t changeFlag;  // IS THIS NEEDED? CAN THIS BE DONE BETTER?
   Vector3 accelHighG;
   Vector3 accelLowG;
   Vector3 gyroscope;
@@ -604,7 +609,7 @@ void write_frame(uint32_t frameAddr, uint8_t *bytes) {
   wait_for_ready_flag();
   send_byte_to_flash(0x80, COMMAND_INPUT);
   send_addr_to_flash(frameAddr, 0);  // Address Input
-  delay(1);
+  delay_ms(1);
   for (int byteAddr = 0; byteAddr < 128; byteAddr++) {
     send_byte_to_flash(bytes[byteAddr], DATA_INPUT);
   }
@@ -635,7 +640,7 @@ void erase_all(){
     printf("ERASING DATA IN: ");
     printf("%i", countDown);
     printf(" Seconds\r\n");
-    delay(1);
+    delay_ms(1);
   }
 
   for (uint32_t block = 0; block < 64*4096; block++) {
@@ -1028,3 +1033,5 @@ void read_all (){
   printf("%i", (data_intact + data_fixed)/(4096*64*(4096/128)));
   printf("%%\r\n");
 }
+
+#endif /* NAND_DRIVER_H */
