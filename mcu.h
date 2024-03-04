@@ -4,7 +4,6 @@
   Created on: 27 Feb 2023
   Description: Main header file for the HFC firmware; suitable for STM32L4R5
 */
-
 #pragma once
 
 #include <inttypes.h>
@@ -665,5 +664,4 @@ static inline void watchdog_pat(){
   IWDG->KR = 0xAAAA;
 
 }
-
 #pragma endregion watchdog

@@ -43,7 +43,7 @@ typedef struct Time
 
 // Functions
 /**
-  @brief TODO
+  @brief Initialisation of the STM32L5 board
 */
 void STM32_init(void);
 
@@ -55,34 +55,27 @@ void STM32_init_clock(unsigned long frequency);
 
 
 /**
-  @brief TODO
+  @brief Initialisation of the STM32L4R5 board internals (UART, SPI, Power, etc.)
 */
 void STM32_init_internals(void);
 
 
 /**
-  @brief TODO
+  @brief Initialisation of the STM32L5 board externals (GPIO, ADC, etc.)
 */
 void STM32_init_peripherals(void);
 
 
 
 /**
-  @brief TODO
+  @brief Led on
 */
 void STM32_leds_on();
 
 
 /**
-  @brief TODO
+  @brief Led off
 */
 void STM32_leds_off();
-
-
-/**
-  @brief TODO
-*/
-double STM32_get_battery_capacity(uint8_t batteryNo);
-
 
 #endif /* STM32_DRIVER_H */

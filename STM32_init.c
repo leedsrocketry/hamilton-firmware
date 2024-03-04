@@ -1,6 +1,6 @@
 /*
 	Leeds University Rocketry Organisation - LURA
-  Author Name: Alexandra Posta
+  Author Name: Alexandra Posta, Oliver Martin
   Created on: 11 June 2023
   Description: STM32L4R5 class
 */
@@ -10,10 +10,6 @@
 
 FREQ = (int) 4000000;
 
-
-/**
-  @brief Initialisation of the STM32L5 board
-*/
 void STM32_init()
 {
   systick_init(FREQ / 1000);     // Tick every 1 ms
@@ -23,27 +19,23 @@ void STM32_init()
 
 void STM32_init_clock(unsigned long frequency){
   if (frequency == RCC_CFGR_SW_MSI){
-    //MSI range can only be set if MSI is off, or MSI is on and MSIRDY = 1
-    RCC->CR |= RCC_CR_MSION;       //set to 1 for MSI on
+    // MSI range can only be set if MSI is off, or MSI is on and MSIRDY = 1
+    RCC->CR |= RCC_CR_MSION;       // set to 1 for MSI on
     while ((RCC->CR & RCC_CR_MSION) && !(RCC->CR & RCC_CR_MSIRDY)); //wait until off, or on and ready
     RCC->CR = (RCC->CR & ~RCC_CR_MSIRANGE_Msk)  | RCC_CR_MSIRANGE_11; //set MSI range to 48Hz (0b1011)
-    RCC->CR |= RCC_CR_MSIRGSEL;    //set to 1 to use MSI range from CR register
+    RCC->CR |= RCC_CR_MSIRGSEL;    // set to 1 to use MSI range from CR register
     RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_MSI; // set system clock to MSI
-    FREQ = 48000000; //48MHz
-  }else if (frequency == RCC_CFGR_SW_HSI){
-    RCC->CR |= RCC_CR_HSION;       //set to 1 for HSI on
-    while (!(RCC->CR & RCC_CR_HSIRDY)); //wait until HSI ready
+    FREQ = 48000000; // 48MHz
+  } else if (frequency == RCC_CFGR_SW_HSI){
+    RCC->CR |= RCC_CR_HSION;       // set to 1 for HSI on
+    while (!(RCC->CR & RCC_CR_HSIRDY)); // wait until HSI ready
     RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_HSI; // set system clock to HSI
-    FREQ = 16000000; //16MHz
-  }else{
-    FREQ = 4000000; //default
+    FREQ = 16000000; // 16MHz
+  } else {
+    FREQ = 4000000; // default
   }
 }
 
-
-/**
-  @brief Initialisation of the STM32L4R5 board internals (UART, SPI, Power, etc.)
-*/
 void STM32_init_internals()
 {
   // UART
@@ -53,17 +45,13 @@ void STM32_init_internals()
   uart_init(UART2,  115200);  // Initialise UART2;
   uart_init(UART3,  115200);  // Initialise UART3;
 
-  // SPI TODO
+  // SPI 
   spi_init(SPI1);
 
   // Additional
   pwr_vdd2_init();            // Initialise VDD2 for GPIO G
 }
 
-
-/**
-  @brief Initialisation of the STM32L5 board externals (GPIO, ADC, etc.)
-*/
 void STM32_init_peripherals()
 {
   // Initialise the multiplexer if Flight Computer is connected
@@ -80,43 +68,12 @@ void STM32_init_peripherals()
   gpio_write(_buzzer, LOW);
 }
 
-
-/**
-  @brief Led on
-*/
 void STM32_led_on()
 {
   gpio_write(_blueLED, HIGH);
 }
 
-
-/**
-  @brief Led off
-*/
 void STM32_led_off()
 {
   gpio_write(_blueLED, LOW);
-}
-
-
-
-/**
-  @brief Check battery charge
-  @note Do not run if below TODO  
-*/
-double STM32_get_battery_capacity(uint8_t batteryNo)
-{
-  switch (batteryNo)
-  {
-    case 1:
-        return _vBatt*3.3/1023-0.07;
-    case 2:
-        return _vBatt1*3.3/1023-0.07;
-    case 3:
-        return _vBatt2*3.3/1023-0.07;
-    case 4:
-        return _vBatt3*3.3/1023-0.07;
-    default:
-        return -1;
-  }
 }
