@@ -142,11 +142,12 @@ int main(void)
       case LAUNCHPAD:
         update_sensors(&_M5611_data, &_ADXL375_data);
         update_buffer(&_M5611_data, &_M5611_buffer);
+        /*
         if (_M5611_buffer.count > 5) {
           if (_M5611_buffer.readings[0] - _M5611_buffer.readings[_M5611_buffer.end-1] > LAUNCH_THRESHOLD) {
             flightStage = ASCEND;
           }
-        }
+        }*/
         break;
 
       case ASCEND:
