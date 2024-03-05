@@ -48,8 +48,7 @@ void run_MS5611_routine()
       static bool on = true;                // This block is executed
       gpio_write(led_B, on);                // Every `period` milliseconds
       on = !on;
-      MS5611_get_data(&_data); // Write message
-      printf("Temp: %u Pressure: %u \r\n", _data.temp, _data.pressure);
+      MS5611_get_data_test();
     }
   }
 }
