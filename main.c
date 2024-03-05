@@ -12,6 +12,7 @@
 #include "NAND_flash_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "drivers/ADXL375_driver.h"
+#include "data_buffer.h"
 //#include "drivers/LSM6DS3_driver.h"
 //#include "drivers/SI446_driver.h"
 
@@ -41,68 +42,9 @@ void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t n
       delay_ms(offDurationMs);
   }
 }
-
-/**
-  @brief Buzzer sound to indicate power on
-*/
-void STM32_indicate_on_buzzer() {
-  STM32_beep_buzzer(100, 100, 3);
-}
-
-/**
-  @brief Led light to indicate power on
-*/
-void STM32_indicate_on_led() {
-  STM32_led_on();
-  delay_ms(100);
-  STM32_led_off();
-  delay_ms(100);
-  STM32_led_on();
-}
 #pragma endregion Buzzer-LED
 
-#pragma region Events-Claculations
-// Define Constants and Thresholds
-#define BUFFER_SIZE       50
-#define LAUNCH_THRESHOLD  50      // mbar for detecting a decrease
-#define APOGEE_THRESHOLD  50      // mbar for detecting an increase
-#define WINDOW_SIZE       10      // Number of readings to compute
-
-// Buffer for data storing
-typedef struct dataBuffer {
-  int readings[BUFFER_SIZE];      // Circular buffer
-  int start;                      // Start index
-  int end;                        // End index (where the next value is inserted)
-  int count;                      // Number of elements currently in buffer
-} dataBuffer;
-
-// FIFO Buffer logic for data extraction
-void update_buffer(void* reading, dataBuffer* buffer) {
-  buffer->readings[buffer->end] = reading;
-  buffer->end = (buffer->end + 1) % BUFFER_SIZE;
-  if (buffer->count < BUFFER_SIZE) {
-    buffer->count++;
-  } else {
-    buffer->start = (buffer->start + 1) % BUFFER_SIZE;
-  }
-}
-#pragma endregion Events-Claculations
-
 #pragma region Sensors
-/**
-  @brief Retrieve data from sensors
-  @param _M5611_data - MS5611 barometer data
-  @param _ADXL375_data - ADXL375 accelerometer data
-  @param _LSM6DS3_data - LSM6DS3 IMU data
-
-*/
-void update_sensors(M5611_data* _M5611_data, 
-                    ADXL375_data* _ADXL375_data) {
-  
-  MS5611_get_data(&_M5611_data);
-  ADXL375_get_data(&_ADXL375_data);
-}
-
 /**
   @brief Send data to the ground station
   @param frameAddressPointer - Address of the frame in the NAND flash
@@ -128,7 +70,41 @@ void log_data(uint32_t frameAddressPointer,
   // Add data to NAND flash
   log_frame(_frameArray);
 }
+
+/**
+  @brief Retrieve data from sensors
+  @param _M5611_data - MS5611 barometer data
+  @param _ADXL375_data - ADXL375 accelerometer data
+  @param _LSM6DS3_data - LSM6DS3 IMU data
+
+*/
+void update_sensors(M5611_data* _M5611_data, 
+                    ADXL375_data* _ADXL375_data) {
+  
+  MS5611_get_data(&_M5611_data);
+  ADXL375_get_data(&_ADXL375_data);
+}
+
 #pragma endregion Sensors
+
+/**
+  @brief Buzzer sound to indicate power on
+*/
+void STM32_indicate_on_buzzer() {
+  STM32_beep_buzzer(100, 100, 3);
+}
+
+/**
+  @brief Led light to indicate power on
+*/
+void STM32_indicate_on_led() {
+  STM32_led_on();
+  delay_ms(100);
+  STM32_led_off();
+  delay_ms(100);
+  STM32_led_on();
+}
+#pragma endregion Buzzer-LED
 
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
