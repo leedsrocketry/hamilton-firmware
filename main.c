@@ -19,32 +19,11 @@
 // Flags
 FlightStages flightStage = LAUNCHPAD;
 volatile uint32_t s_ticks;
-
-#pragma region Buzzer-LED
-/**
-  @brief Required for compilation
-*/
 void SysTick_Handler(void) {
   s_ticks++;
 }
 
-/**
-  @brief Buzzer sound
-  @param onDurationMs
-  @param offDurationMs
-  @param noOfBeeps
-*/
-void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps) {
-  for (int i = 0; i < noOfBeeps; i++) {
-      gpio_write(_buzzer, HIGH);
-      delay_ms(onDurationMs);
-      gpio_write(_buzzer, LOW); 
-      delay_ms(offDurationMs);
-  }
-}
-#pragma endregion Buzzer-LED
-
-#pragma region Sensors
+#pragma region Updates
 /**
   @brief Send data to the ground station
   @param frameAddressPointer - Address of the frame in the NAND flash
@@ -84,27 +63,7 @@ void update_sensors(M5611_data* _M5611_data,
   MS5611_get_data(&_M5611_data);
   //ADXL375_get_data(&_ADXL375_data);
 }
-
-#pragma endregion Sensors
-
-/**
-  @brief Buzzer sound to indicate power on
-*/
-void STM32_indicate_on_buzzer() {
-  STM32_beep_buzzer(100, 100, 3);
-}
-
-/**
-  @brief Led light to indicate power on
-*/
-void STM32_indicate_on_led() {
-  STM32_led_on();
-  delay_ms(100);
-  STM32_led_off();
-  delay_ms(100);
-  STM32_led_on();
-}
-#pragma endregion Buzzer-LED
+#pragma endregion Updates
 
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
@@ -116,9 +75,15 @@ int main(void)
   STM32_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
-  pwr_vdd2_init();
-  STM32_indicate_on_led();
-  STM32_indicate_on_buzzer();
+  STM32_indicate_on();
+  
+  /*
+  for (int i = 0; i < 10; i++) {
+    static bool on = true;
+    gpio_write(BLUE_LED, on);
+    on = !on;
+  }*/
+
   printf("================ PROGRAM START ================\r\n");
 
   printf("=============== INITIALISE FLASH ==============\r\n");
@@ -135,19 +100,16 @@ int main(void)
   ADXL375_data _ADXL375_data;
   dataBuffer _ADXL375_buffer;
 
+  //printf("============== ADD TESTS HERE ==============\r\n");
+
+  /*
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   for (;;) {
     #pragma region Flight Stages
     switch (flightStage) {
       case LAUNCHPAD:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        update_buffer(&_M5611_data, &_M5611_buffer);
-        /*
-        if (_M5611_buffer.count > 5) {
-          if (_M5611_buffer.readings[0] - _M5611_buffer.readings[_M5611_buffer.end-1] > LAUNCH_THRESHOLD) {
-            flightStage = ASCEND;
-          }
-        }*/
+        //update_buffer(&_M5611_data, &_M5611_buffer);
         break;
 
       case ASCEND:
@@ -166,12 +128,12 @@ int main(void)
         break;
 
       case LANDING:
-        STM32_indicate_on_buzzer();
+        //indicate_on_buzzer();
         break;
     }
 
     //send_data();
-  }
+  }*/
 
   printf("===================== PROGRAM END ====================");
 }

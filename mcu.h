@@ -26,6 +26,7 @@ extern int FREQ;
 #define LOW 0
 #define HIGH 1
 
+
 #pragma region System Clk
 /**
   @brief The low level delay
@@ -235,7 +236,6 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 }
 #pragma endregion UART
 
-
 #pragma region Multiplexer IC201
 // Define Select pins on the multiplexer
 #define A0 PIN('E', 6)
@@ -310,7 +310,6 @@ static inline void multiplexer_init()
   gpio_set_mode(A3, GPIO_MODE_OUTPUT);
 }
 #pragma endregion Multiplexer IC201
-
 
 #pragma region SPI
 /**
@@ -594,6 +593,7 @@ static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) 
 }*/
 #pragma endregion SPI
 
+#pragma region Watchdog
 /**
   @brief Set timer
   @param t Expiration time
@@ -621,7 +621,7 @@ static inline void pwr_vdd2_init()
   RCC->APB1ENR1 |= BIT(28); // page 291
   PWR->CR2 |= BIT(9);       // set the IOSV bit in the PWR_CR2 page 186, 219
 }
-#pragma region watchdog
+
 //information about watchdogs cann be found here:
 //https://www.st.com/resource/en/product_training/STM32WB-WDG_TIMERS-Independent-Watchdog-IWDG.pdf 
 
@@ -664,4 +664,4 @@ static inline void watchdog_pat(){
   IWDG->KR = 0xAAAA;
 
 }
-#pragma endregion watchdog
+#pragma endregion Watchdog

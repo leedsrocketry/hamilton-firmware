@@ -14,8 +14,6 @@
 void run_test_routine()
 {
   uint16_t led_B = PIN('H', 3);
-  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
-
   uint32_t timer = 0, period = 500;
 
   for (;;)

@@ -14,12 +14,8 @@
 #define MSL_ALT_TIMER_THRESHOLD_MS 60000 // 1 minute
 
 // Pins
-#define _vBatt   PIN('A', 0) 
-#define _vBatt1  PIN('A', 0) 
-#define _vBatt2  PIN('A', 0) 
-#define _vBatt3  PIN('A', 0) 
-#define _buzzer  PIN('A', 0) 
-#define _blueLED PIN('B', 7)
+#define BUZZER PIN('A', 0)
+#define BLUE_LED PIN('H', 3)
 
 // Required structures
 typedef enum FlightStages {LAUNCHPAD, ASCEND, APOGEE, DESCENT, LANDING} FlightStages;
@@ -65,17 +61,10 @@ void STM32_init_internals(void);
 */
 void STM32_init_peripherals(void);
 
+void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps);
 
+void STM32_indicate_on_led();
 
-/**
-  @brief Led on
-*/
-void STM32_leds_on();
-
-
-/**
-  @brief Led off
-*/
-void STM32_leds_off();
+void STM32_indicate_on_buzzer();
 
 #endif /* STM32_DRIVER_H */
