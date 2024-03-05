@@ -33,15 +33,11 @@ void SysTick_Handler(void) {
 void log_data(uint32_t frameAddressPointer,
               M5611_data* _M5611_data, 
               ADXL375_data* _ADXL375_data) {
-  set_control_pins(WRITE_PROTECT);      // Write Protection
-  set_control_pins(WRITE_PROTECT_OFF);  // Write Protection Off
-
   // Convert data to frame
   Vector3 _acc_high_g = { _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z };
 
   // Add data to the frame
   FrameArray _frameArray;
-  int startAddr = frameAddressPointer;
   _frameArray.barometer = _M5611_data->pressure;
   _frameArray.temp = _M5611_data->temp;
   _frameArray.accelHighG = _acc_high_g; 
@@ -79,10 +75,8 @@ int main(void)
   printf("================ PROGRAM START ================\r\n");
   STM32_indicate_on();
 
-  printf("=============== INITIALISE FLASH ==============\r\n");
+  printf("============ INITIALISE NAND FLASH ============\r\n");
   // init_flash();
-  // erase_all();
-  // uint32_t frameAddressPointer = 0;
 
   printf("============== INITIALISE DRIVERS =============\r\n");
   //MS5611_init(SPI1);      // Barometer
