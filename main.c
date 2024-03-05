@@ -23,8 +23,7 @@ volatile uint32_t s_ticks;
 /**
   @brief Required for compilation
 */
-void SysTick_Handler(void)
-{
+void SysTick_Handler(void) {
   s_ticks++;
 }
 
@@ -34,8 +33,7 @@ void SysTick_Handler(void)
   @param offDurationMs
   @param noOfBeeps
 */
-void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps)
-{
+void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps) {
   for (int i = 0; i < noOfBeeps; i++) {
       gpio_write(_buzzer, HIGH);
       delay_ms(onDurationMs);
@@ -47,16 +45,14 @@ void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t n
 /**
   @brief Buzzer sound to indicate power on
 */
-void STM32_indicate_on_buzzer()
-{
+void STM32_indicate_on_buzzer() {
   STM32_beep_buzzer(100, 100, 3);
 }
 
 /**
   @brief Led light to indicate power on
 */
-void STM32_indicate_on_led()
-{
+void STM32_indicate_on_led() {
   STM32_led_on();
   delay_ms(100);
   STM32_led_off();
@@ -65,6 +61,34 @@ void STM32_indicate_on_led()
 }
 #pragma endregion Buzzer-LED
 
+#pragma region Events-Claculations
+// Define Constants and Thresholds
+#define BUFFER_SIZE       50
+#define LAUNCH_THRESHOLD  50      // mbar for detecting a decrease
+#define APOGEE_THRESHOLD  50      // mbar for detecting an increase
+#define WINDOW_SIZE       10      // Number of readings to compute
+
+// Buffer for data storing
+typedef struct dataBuffer {
+  int readings[BUFFER_SIZE];      // Circular buffer
+  int start;                      // Start index
+  int end;                        // End index (where the next value is inserted)
+  int count;                      // Number of elements currently in buffer
+} dataBuffer;
+
+// FIFO Buffer logic for data extraction
+void update_buffer(void* reading, dataBuffer* buffer) {
+  buffer->readings[buffer->end] = reading;
+  buffer->end = (buffer->end + 1) % BUFFER_SIZE;
+  if (buffer->count < BUFFER_SIZE) {
+    buffer->count++;
+  } else {
+    buffer->start = (buffer->start + 1) % BUFFER_SIZE;
+  }
+}
+#pragma endregion Events-Claculations
+
+#pragma region Sensors
 /**
   @brief Retrieve data from sensors
   @param _M5611_data - MS5611 barometer data
@@ -104,6 +128,7 @@ void log_data(uint32_t frameAddressPointer,
   // Add data to NAND flash
   log_frame(_frameArray);
 }
+#pragma endregion Sensors
 
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
@@ -128,48 +153,43 @@ int main(void)
   printf("============== INITIALISE DRIVERS =============\r\n");
   MS5611_init(SPI1);      // Barometer
   ADXL375_init(SPI1);     // Accelerometer
-  // LSM6DS3_init(SPI1);  // IMU
-  // BME280_init(SPI1);   // Temperature + Humidity
-  // SI446_init(SPI1);    // Pad Radio
+
+  M5611_data _M5611_data;
+  dataBuffer _M5611_buffer;
+  ADXL375_data _ADXL375_data;
+  dataBuffer _ADXL375_buffer;
 
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   for (;;) {
     #pragma region Flight Stages
     switch (flightStage) {
       case LAUNCHPAD:
-        // TODO
-        // save a circular buffer of sensor readings (when launch is detected)
-        // check for altitude off GPS and -> Barometer
-        // check for acceleration (mostly)
-        // if above threshold, change flightStage to ASCEND
+        update_sensors(&_M5611_data, &_ADXL375_data);
+        update_buffer(&_M5611_data, &_M5611_buffer);
+        if (_M5611_buffer.count > 5) {
+          if (_M5611_buffer.readings[0] - _M5611_buffer.readings[_M5611_buffer.end-1] > LAUNCH_THRESHOLD) {
+            flightStage = ASCEND;
+          }
+        }
         break;
 
       case ASCEND:
-        // TODO
-        // update all sensor readings at high rate
-        // save sensor readings to FDR/over telemetry link
-        // detect apogee based on gradient of altitude
+        update_sensors(&_M5611_data, &_ADXL375_data);
+        update_buffer(&_M5611_data, &_M5611_buffer);
         break;
 
       case APOGEE:
-        // TODO
-        // update all sensor readings at high rate
-        // save sensor readings to FDR/over telemetry link
-        // trigger recovery system
+        update_sensors(&_M5611_data, &_ADXL375_data);
+        update_buffer(&_M5611_data, &_M5611_buffer);
         break;
 
       case DESCENT:
-        // TODO
-        // update all sensor readings at lower rate
-        // save sensor readings to FDR/over telemetry link
-        // if no acceleration/costant altitude, change flightStage to LANDING
+        update_sensors(&_M5611_data, &_ADXL375_data);
+        update_buffer(&_M5611_data, &_M5611_buffer);
         break;
 
       case LANDING:
-        // TODO
-        // stop recording
-        // change buzzer sequence
-        // change LED sequence
+        STM32_indicate_on_buzzer();
         break;
     }
 
