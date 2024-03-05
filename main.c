@@ -82,7 +82,7 @@ void update_sensors(M5611_data* _M5611_data,
                     ADXL375_data* _ADXL375_data) {
   
   MS5611_get_data(&_M5611_data);
-  ADXL375_get_data(&_ADXL375_data);
+  //ADXL375_get_data(&_ADXL375_data);
 }
 
 #pragma endregion Sensors
@@ -128,7 +128,7 @@ int main(void)
 
   printf("============== INITIALISE DRIVERS =============\r\n");
   MS5611_init(SPI1);      // Barometer
-  ADXL375_init(SPI1);     // Accelerometer
+  //ADXL375_init(SPI1);     // Accelerometer
 
   M5611_data _M5611_data;
   dataBuffer _M5611_buffer;
