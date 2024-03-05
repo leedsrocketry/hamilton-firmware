@@ -75,16 +75,9 @@ int main(void)
   STM32_init();
   systick_init(FREQ / 1000);
   uart_init(LUART1, 9600);
-  STM32_indicate_on();
-  
-  /*
-  for (int i = 0; i < 10; i++) {
-    static bool on = true;
-    gpio_write(BLUE_LED, on);
-    on = !on;
-  }*/
 
   printf("================ PROGRAM START ================\r\n");
+  STM32_indicate_on();
 
   printf("=============== INITIALISE FLASH ==============\r\n");
   // init_flash();
@@ -92,7 +85,7 @@ int main(void)
   // uint32_t frameAddressPointer = 0;
 
   printf("============== INITIALISE DRIVERS =============\r\n");
-  MS5611_init(SPI1);      // Barometer
+  //MS5611_init(SPI1);      // Barometer
   //ADXL375_init(SPI1);     // Accelerometer
 
   M5611_data _M5611_data;

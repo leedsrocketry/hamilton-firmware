@@ -65,23 +65,24 @@ void STM32_init_peripherals()
 
 void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps) {
   for (int i = 0; i < noOfBeeps; i++) {
-    gpio_write(BUZZER, HIGH);
+    // ! because it seems as it works the other way?
+    gpio_write(BUZZER, !HIGH);
     delay_ms(onDurationMs);
-    gpio_write(BUZZER, LOW); 
+    gpio_write(BUZZER, !LOW); 
     delay_ms(offDurationMs);
   }
 }
 
 void STM32_flash_LED (uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfFlash) {
   for (int i = 0; i < noOfFlash; i++) {
-    gpio_write(BLUE_LED, HIGH);
+    gpio_write(BLUE_LED, !HIGH);
     delay_ms(onDurationMs);
-    gpio_write(BLUE_LED, LOW); 
+    gpio_write(BLUE_LED, !LOW); 
     delay_ms(offDurationMs);
   }
 }
 
 void STM32_indicate_on() {
-  STM32_beep_buzzer(10, 10, 3);
-  STM32_flash_LED(10, 10, 3);
+  STM32_beep_buzzer(500, 500, 3);
+  STM32_flash_LED(500, 500, 3);
 }

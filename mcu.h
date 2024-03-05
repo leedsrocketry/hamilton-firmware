@@ -23,8 +23,8 @@ extern int FREQ;
 #define PINNO(pin) (pin & 255)
 #define PINBANK(pin) (pin >> 8)
 
-#define LOW 0
-#define HIGH 1
+#define LOW false
+#define HIGH true
 
 
 #pragma region System Clk
@@ -464,7 +464,6 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 {
   uint8_t recieve_byte = 123;
-  //printf("you want to send: %d", send_byte);
   spi_ready_write(spi);
   //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
   *(volatile uint8_t *)&spi->DR = send_byte;

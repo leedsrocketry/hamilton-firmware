@@ -14,7 +14,7 @@
 #define MSL_ALT_TIMER_THRESHOLD_MS 60000 // 1 minute
 
 // Pins
-#define BUZZER PIN('A', 0)
+#define BUZZER PIN('B', 7)
 #define BLUE_LED PIN('H', 3)
 
 // Required structures
