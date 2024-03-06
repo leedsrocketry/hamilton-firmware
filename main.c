@@ -56,8 +56,8 @@ void log_data(uint32_t frameAddressPointer,
 void update_sensors(M5611_data* _M5611_data, 
                     ADXL375_data* _ADXL375_data) {
   
-  //MS5611_get_data(&_M5611_data);
-  ADXL375_get_data(&_ADXL375_data);
+  MS5611_get_data(_M5611_data);
+  //ADXL375_get_data(_ADXL375_data);
 }
 #pragma endregion Updates
 
@@ -89,14 +89,15 @@ int main(void)
 
   //printf("============== ADD TESTS HERE ==============\r\n");
 
-  /*
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   for (;;) {
     #pragma region Flight Stages
     switch (flightStage) {
       case LAUNCHPAD:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        //update_buffer(&_M5611_data, &_M5611_buffer);
+        printf("p: %d, t: %d \r\n", _M5611_data.pressure, _M5611_data.temp);
+        //printf("x: %d, y: %d, z: %d\r\n", _ADXL375_data.x, _ADXL375_data.y, _ADXL375_data.z);
+        // update_buffer(&_M5611_data, &_M5611_buffer);
         break;
 
       case ASCEND:
@@ -120,7 +121,7 @@ int main(void)
     }
 
     //send_data();
-  }*/
+  }
 
   printf("===================== PROGRAM END ====================");
 }

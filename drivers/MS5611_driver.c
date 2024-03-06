@@ -34,7 +34,6 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
     spi_enable_cs(MS5611_SPI, MS5611_CS);
     int cmd = MS5611_CMD_RESET;
     uint8_t init = spi_transmit(MS5611_SPI, &cmd);
-    printf("MS5611 init\r\n");
     spi_disable_cs(MS5611_SPI, MS5611_CS);
 
     MS5611_read_PROM(MS5611_SPI);
@@ -42,15 +41,6 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
     MS5611_get_data(&data);
 	return 0;
 }
-
-int32_t MS5611_get_data_test()
-{
-    M5611_data data;
-    MS5611_get_data(&data);
-    printf("Temp: %u Pressure: %u \r\n", data.temp, data.pressure);
-	return 0;
-}
-
 
 /* ---------------------------------- Private Functions ---------------------------------- */
 
@@ -70,10 +60,7 @@ uint8_t MS5611_read_PROM()
         
         // Fill struct using ptr arithmatic
         *(prom_ptr + i) = result;
-
-        printf("%d\r\n", result);
     }
-    
     return 0;
 }
 
@@ -114,7 +101,6 @@ int MS5611_get_data(M5611_data* data)
     int32_t PRESSURE = (D1 * SENS / pow(2,21) - OFF) / pow(2,15);
     data->temp = TEMP;
     data->pressure = PRESSURE;
-    printf("TEMP: %d PRESSURE: %d \r\n", TEMP, PRESSURE);
 
     return 0;
 }

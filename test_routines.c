@@ -46,7 +46,9 @@ void run_MS5611_routine()
       static bool on = true;                // This block is executed
       gpio_write(led_B, on);                // Every `period` milliseconds
       on = !on;
-      MS5611_get_data_test();
+      M5611_data data;
+      MS5611_get_data(&data);
+      printf("p: %d, t: %d, \r\n", data.pressure, data.temp);
     }
   }
 }
@@ -136,6 +138,7 @@ void spi_test_routine()
 /**
   @brief Routine to test NAND Flash reading and writing.
 */
+/*
 void NAND_flash_test_routine()
 {
   printf("==================== START WRITING ====================\r\n");
@@ -166,3 +169,4 @@ void NAND_flash_test_routine()
   read_all();
   print_capacity_info();
 }
+*/
