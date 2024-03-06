@@ -56,7 +56,7 @@ void log_data(uint32_t frameAddressPointer,
 void update_sensors(M5611_data* _M5611_data, 
                     ADXL375_data* _ADXL375_data) {
   
-  MS5611_get_data(_M5611_data);
+  //MS5611_get_data(_M5611_data);
   ADXL375_get_data(_ADXL375_data);
 }
 #pragma endregion Updates
@@ -73,19 +73,22 @@ int main(void)
   uart_init(LUART1, 9600);
 
   printf("================ PROGRAM START ================\r\n");
-  STM32_indicate_on();
+  //STM32_indicate_on();
 
   printf("============ INITIALISE NAND FLASH ============\r\n");
   // init_flash();
 
   printf("============== INITIALISE DRIVERS =============\r\n");
-  MS5611_init(SPI1);      // Barometer
+  //MS5611_init(SPI1);      // Barometer
   ADXL375_init(SPI1);     // Accelerometer
 
   M5611_data _M5611_data;
   dataBuffer _M5611_buffer;
+  _M5611_buffer.type = MS5611_buffer_type;
+
   ADXL375_data _ADXL375_data;
   dataBuffer _ADXL375_buffer;
+  _ADXL375_buffer.type = ADXL375_buffer_type;
 
   //printf("============== ADD TESTS HERE ==============\r\n");
 
@@ -95,7 +98,9 @@ int main(void)
     switch (flightStage) {
       case LAUNCHPAD:
         update_sensors(&_M5611_data, &_ADXL375_data);
+        
         update_buffer(&_M5611_data, &_M5611_buffer);
+        update_buffer(&_ADXL375_data, &_ADXL375_buffer);
         break;
 
       case ASCEND:

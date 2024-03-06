@@ -8,7 +8,7 @@
 #include "data_buffer.h"
 
 // FIFO Buffer logic for data extraction
-void update_buffer(struct void* reading, dataBuffer* buffer) {
+void update_buffer(void** reading, dataBuffer* buffer) {
   //printf("%p \r\n", *reading->pressure);
   //buffer->readings[buffer->end] = reading;
   //buffer->end = (buffer->end + 1) % BUFFER_SIZE;
@@ -22,6 +22,20 @@ void update_buffer(struct void* reading, dataBuffer* buffer) {
     buffer->start = (buffer->start + 1) % BUFFER_SIZE;
   }
   */
+ void* data;
+
+ switch(buffer->type)
+ {
+  case ADXL375_buffer_type:
+    ADXL375_data _ADXL375_data = *(ADXL375_data*)reading;
+    data = &_ADXL375_data;
+    break;
+
+  case MS5611_buffer_type: 
+    M5611_data _MS5611_data = *(M5611_data*)reading;
+    data = &_MS5611_data;
+    break;
+ }
 }
 
 int cmpfunc (const void * a, const void * b) {
