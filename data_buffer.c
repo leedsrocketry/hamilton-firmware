@@ -8,7 +8,7 @@
 #include "data_buffer.h"
 
 // FIFO Buffer logic for data extraction
-void update_buffer(void* reading, dataBuffer* buffer) {
+void update_buffer(struct void* reading, dataBuffer* buffer) {
   //printf("%p \r\n", *reading->pressure);
   //buffer->readings[buffer->end] = reading;
   //buffer->end = (buffer->end + 1) % BUFFER_SIZE;

@@ -20,13 +20,13 @@
 
 // Buffer for data storing
 typedef struct dataBuffer {
-  void* readings[BUFFER_SIZE];  // Circular buffer
+  struct void* readings[BUFFER_SIZE];        // Circular buffer
   int start;                          // Start index
   int end;                            // End index (where the next value is inserted)
   int count;                          // Number of elements currently in buffer
 } dataBuffer;
 
-void update_buffer(void* reading, dataBuffer* buffer);
+void update_buffer(struct void* reading, dataBuffer* buffer);
 
 int buffer_median(dataBuffer* buffer, int start, int end);
 

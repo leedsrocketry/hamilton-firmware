@@ -57,7 +57,7 @@ void update_sensors(M5611_data* _M5611_data,
                     ADXL375_data* _ADXL375_data) {
   
   MS5611_get_data(_M5611_data);
-  //ADXL375_get_data(_ADXL375_data);
+  ADXL375_get_data(_ADXL375_data);
 }
 #pragma endregion Updates
 
@@ -95,9 +95,7 @@ int main(void)
     switch (flightStage) {
       case LAUNCHPAD:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        printf("p: %d, t: %d \r\n", _M5611_data.pressure, _M5611_data.temp);
-        //printf("x: %d, y: %d, z: %d\r\n", _ADXL375_data.x, _ADXL375_data.y, _ADXL375_data.z);
-        // update_buffer(&_M5611_data, &_M5611_buffer);
+        update_buffer(&_M5611_data, &_M5611_buffer);
         break;
 
       case ASCEND:
