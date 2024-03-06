@@ -8,12 +8,10 @@
 #include "data_buffer.h"
 
 // FIFO Buffer logic for data extraction
-void update_buffer(void** reading, dataBuffer* buffer) {
-  //printf("%p \r\n", *reading->pressure);
-  //buffer->readings[buffer->end] = reading;
-  //buffer->end = (buffer->end + 1) % BUFFER_SIZE;
+void update_buffer(FrameArray frame, dataBuffer* buffer) {
+  buffer->frames[buffer->end] = frame;
+  buffer->end = (buffer->end + 1) % BUFFER_SIZE;
 
-  /*
   if (buffer->count < BUFFER_SIZE) {
     printf("1. Buffer count: %d\r\n", buffer->count);
     buffer->count++;
@@ -21,21 +19,6 @@ void update_buffer(void** reading, dataBuffer* buffer) {
     printf("2. Buffer start: %d\r\n", buffer->start);
     buffer->start = (buffer->start + 1) % BUFFER_SIZE;
   }
-  */
- void* data;
-
- switch(buffer->type)
- {
-  case ADXL375_buffer_type:
-    ADXL375_data _ADXL375_data = *(ADXL375_data*)reading;
-    data = &_ADXL375_data;
-    break;
-
-  case MS5611_buffer_type: 
-    M5611_data _MS5611_data = *(M5611_data*)reading;
-    data = &_MS5611_data;
-    break;
- }
 }
 
 int cmpfunc (const void * a, const void * b) {
@@ -45,10 +28,10 @@ int cmpfunc (const void * a, const void * b) {
 int buffer_median(dataBuffer* buffer, int start, int end)
 {
     int size = end-start;
-    qsort(buffer->readings, size, sizeof(int), cmpfunc);
+    qsort(buffer->frames, size, sizeof(int), cmpfunc);
 
     for(int i = 0; i < size; i++)
     {
-        printf("%d\r\n", buffer->readings[i]);
+        printf("%d\r\n", buffer->frames[i]);
     }
 }
