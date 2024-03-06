@@ -18,19 +18,15 @@
 #define APOGEE_THRESHOLD  50      // mbar for detecting an increase
 #define WINDOW_SIZE       10      // Number of readings to compute
 
-enum bufferType {ADXL375_buffer_type, MS5611_buffer_type};
-
 // Buffer for data storing
 typedef struct dataBuffer {
-  enum bufferType type;
-  void** readings[BUFFER_SIZE];        // Circular buffer
-
+  FrameArray frames[BUFFER_SIZE];     // Circular buffer
   int start;                          // Start index
   int end;                            // End index (where the next value is inserted)
   int count;                          // Number of elements currently in buffer
 } dataBuffer;
 
-void update_buffer(void** reading, dataBuffer* buffer);
+void update_buffer(FrameArray frame, dataBuffer* buffer);
 
 int buffer_median(dataBuffer* buffer, int start, int end);
 

@@ -26,24 +26,22 @@ void SysTick_Handler(void) {
 #pragma region Updates
 /**
   @brief Send data to the ground station
-  @param frameAddressPointer - Address of the frame in the NAND flash
-  @param _M5611_data - MS5611 barometer data
-  @param _ADXL375_data - ADXL375 accelerometer data
 */
-void log_data(uint32_t frameAddressPointer,
-              M5611_data* _M5611_data, 
-              ADXL375_data* _ADXL375_data) {
+void log_data(FrameArray _frameArray) {
+  // Add data to NAND flash
+  log_frame(_frameArray);
+}
+
+void get_frame_array(FrameArray* _frameArray, 
+                    M5611_data* _M5611_data, 
+                    ADXL375_data* _ADXL375_data) {
   // Convert data to frame
   Vector3 _acc_high_g = { _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z };
 
   // Add data to the frame
-  FrameArray _frameArray;
-  _frameArray.barometer = _M5611_data->pressure;
-  _frameArray.temp = _M5611_data->temp;
-  _frameArray.accelHighG = _acc_high_g; 
-
-  // Add data to NAND flash
-  log_frame(_frameArray);
+  _frameArray->barometer = _M5611_data->pressure;
+  _frameArray->temp = _M5611_data->temp;
+  _frameArray->accelHighG = _acc_high_g; 
 }
 
 /**
@@ -79,43 +77,42 @@ int main(void)
   // init_flash();
 
   printf("============== INITIALISE DRIVERS =============\r\n");
-  //MS5611_init(SPI1);      // Barometer
-  ADXL375_init(SPI1);     // Accelerometer
+  MS5611_init(SPI1);          // Barometer
+  ADXL375_init(SPI1);         // Accelerometer
 
+  FrameArray frame;           // initialise the frameArray that keeps updating
+  dataBuffer frame_buffer;    // contains FrameArrays
   M5611_data _M5611_data;
-  dataBuffer _M5611_buffer;
-  _M5611_buffer.type = MS5611_buffer_type;
-
   ADXL375_data _ADXL375_data;
-  dataBuffer _ADXL375_buffer;
-  _ADXL375_buffer.type = ADXL375_buffer_type;
 
   //printf("============== ADD TESTS HERE ==============\r\n");
 
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   for (;;) {
+    delay_ms(200);
     #pragma region Flight Stages
     switch (flightStage) {
       case LAUNCHPAD:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        
-        update_buffer(&_M5611_data, &_M5611_buffer);
-        update_buffer(&_ADXL375_data, &_ADXL375_buffer);
-        break;
+        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);
+        update_buffer(frame, &frame_buffer);
 
       case ASCEND:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        update_buffer(&_M5611_data, &_M5611_buffer);
+        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);
+        update_buffer(frame, &frame_buffer);
         break;
 
       case APOGEE:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        update_buffer(&_M5611_data, &_M5611_buffer);
+        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);
+        update_buffer(frame, &frame_buffer);
         break;
 
       case DESCENT:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        update_buffer(&_M5611_data, &_M5611_buffer);
+        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);
+        update_buffer(frame, &frame_buffer);
         break;
 
       case LANDING:
