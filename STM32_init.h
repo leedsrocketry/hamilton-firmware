@@ -49,12 +49,10 @@ void STM32_init(void);
 */
 void STM32_init_clock(unsigned long frequency);
 
-
 /**
   @brief Initialisation of the STM32L4R5 board internals (UART, SPI, Power, etc.)
 */
 void STM32_init_internals(void);
-
 
 /**
   @brief Initialisation of the STM32L5 board externals (GPIO, ADC, etc.)
