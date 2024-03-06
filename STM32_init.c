@@ -12,8 +12,8 @@ FREQ = (int) 4000000;
 void STM32_init()
 {
   systick_init(FREQ / 1000);     // Tick every 1 ms
-  STM32_init_peripherals();
   STM32_init_internals();
+  STM32_init_peripherals();
 }
 
 void STM32_init_clock(unsigned long frequency){
@@ -56,23 +56,33 @@ void STM32_init_peripherals()
   // Initialise the multiplexer if Flight Computer is connected
   #ifdef FLIGHT_COMPUTER
     multiplexer_init();
+
+    // LED/BUZZER
+    gpio_set_mode(BUZZER, GPIO_MODE_OUTPUT);
+    gpio_set_mode(BLUE_LED, GPIO_MODE_OUTPUT);
   #endif
-
-  // Define inputs and outputs
-  gpio_set_mode(_buzzer, GPIO_MODE_OUTPUT);
-  gpio_set_mode(_blueLED, GPIO_MODE_OUTPUT);
-
-  // Initialise
-  gpio_write(_blueLED, HIGH);
-  gpio_write(_buzzer, LOW);
 }
 
-void STM32_led_on()
-{
-  gpio_write(_blueLED, HIGH);
+void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps) {
+  for (int i = 0; i < noOfBeeps; i++) {
+    // ! because it seems as it works the other way?
+    gpio_write(BUZZER, !HIGH);
+    delay_ms(onDurationMs);
+    gpio_write(BUZZER, !LOW); 
+    delay_ms(offDurationMs);
+  }
 }
 
-void STM32_led_off()
-{
-  gpio_write(_blueLED, LOW);
+void STM32_flash_LED (uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfFlash) {
+  for (int i = 0; i < noOfFlash; i++) {
+    gpio_write(BLUE_LED, !HIGH);
+    delay_ms(onDurationMs);
+    gpio_write(BLUE_LED, !LOW); 
+    delay_ms(offDurationMs);
+  }
+}
+
+void STM32_indicate_on() {
+  STM32_beep_buzzer(500, 500, 3);
+  STM32_flash_LED(500, 500, 3);
 }

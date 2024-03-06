@@ -14,8 +14,6 @@
 void run_test_routine()
 {
   uint16_t led_B = PIN('H', 3);
-  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
-
   uint32_t timer = 0, period = 500;
 
   for (;;)
@@ -138,40 +136,27 @@ void spi_test_routine()
 /**
   @brief Routine to test NAND Flash reading and writing.
 */
-/*
 void NAND_flash_test_routine()
 {
   printf("==================== START WRITING ====================\r\n");
-  set_control_pins(WRITE_PROTECT);      // Write Protection
-  set_control_pins(WRITE_PROTECT_OFF);  // Write Protection Off
-
   uint8_t dataArray[128];
   _memset(dataArray, 0x0, 128);
 
   for (uint8_t i = 0; i < 128; i ++) {
     dataArray[i] = i;
   }
-
-  erase_block(0);
-  erase_all();
-
-  write_frame(0, dataArray);
-  read_frame(10000, dataArray, 8);
+  
   FrameArray _input = unzip(dataArray);
-  FrameArray _output;
-
-  int data_intact = 0;
-  int data_fixed = 0;
-  int data_error = 0;
-  // int startAddr = frameAddressPointer;
 
   int numOfFramesToTest = 100;
   for (int i = 0; i < numOfFramesToTest; i++) {
     for (uint8_t j = 0; j < 128; j ++) {
       dataArray[j] = j;
     }
+
     dataArray[0] = 0;
     dataArray[1] = 0;
+
     _input = unzip(dataArray);
     log_frame(_input);
     printf("======================== DONE ========================\r\n");
@@ -180,4 +165,4 @@ void NAND_flash_test_routine()
   
   read_all();
   print_capacity_info();
-}*/
+}

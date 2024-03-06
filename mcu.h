@@ -23,8 +23,9 @@ extern int FREQ;
 #define PINNO(pin) (pin & 255)
 #define PINBANK(pin) (pin >> 8)
 
-#define LOW 0
-#define HIGH 1
+#define LOW false
+#define HIGH true
+
 
 #pragma region System Clk
 /**
@@ -235,7 +236,6 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 }
 #pragma endregion UART
 
-
 #pragma region Multiplexer IC201
 // Define Select pins on the multiplexer
 #define A0 PIN('E', 6)
@@ -310,7 +310,6 @@ static inline void multiplexer_init()
   gpio_set_mode(A3, GPIO_MODE_OUTPUT);
 }
 #pragma endregion Multiplexer IC201
-
 
 #pragma region SPI
 /**
@@ -465,7 +464,6 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 {
   uint8_t recieve_byte = 123;
-  //printf("you want to send: %d", send_byte);
   spi_ready_write(spi);
   //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
   *(volatile uint8_t *)&spi->DR = send_byte;
@@ -593,6 +591,7 @@ static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) 
 }*/
 #pragma endregion SPI
 
+#pragma region Watchdog
 /**
   @brief Set timer
   @param t Expiration time
@@ -620,7 +619,7 @@ static inline void pwr_vdd2_init()
   RCC->APB1ENR1 |= BIT(28); // page 291
   PWR->CR2 |= BIT(9);       // set the IOSV bit in the PWR_CR2 page 186, 219
 }
-#pragma region watchdog
+
 //information about watchdogs cann be found here:
 //https://www.st.com/resource/en/product_training/STM32WB-WDG_TIMERS-Independent-Watchdog-IWDG.pdf 
 
@@ -663,4 +662,4 @@ static inline void watchdog_pat(){
   IWDG->KR = 0xAAAA;
 
 }
-#pragma endregion watchdog
+#pragma endregion Watchdog
