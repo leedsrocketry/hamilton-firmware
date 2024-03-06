@@ -35,6 +35,28 @@ void STM32_init_clock(unsigned long frequency){
   }
 }
 
+void init_delay_timer(){
+  //use general purpose timer 2 which is a 32bit auto-reload timer
+  RCC->APB1ENR1 = RCC_APB1ENR1_TIM2EN;
+
+  RCC->APB1RSTR1 |= RCC_APB1RSTR1_TIM2RST;
+  RCC->APB1RSTR1 &= ~RCC_APB1RSTR1_TIM2RST;
+
+  //prescaler must make clock period = 1ns from system clock of (16MHz)
+  uint32_t prescaler = FREQ/1000000 - 1; //should be 15
+  TIM2->PSC = 15; 
+
+  // Send an update event to reset the timer and apply settings.
+  TIM2->EGR  |= TIM_EGR_UG;
+
+  //reload value
+  //TIM2->ARR = 999;
+  
+  //enable timer
+  TIM2->CR1 = (1 << 0);
+  
+}
+
 void STM32_init_internals()
 {
   // UART

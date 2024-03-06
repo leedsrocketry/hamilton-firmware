@@ -50,6 +50,11 @@ void STM32_init(void);
 void STM32_init_clock(unsigned long frequency);
 
 /**
+  @brief Sets up addition timers
+*/
+void init_delay_timer();
+
+/**
   @brief Initialisation of the STM32L4R5 board internals (UART, SPI, Power, etc.)
 */
 void STM32_init_internals(void);

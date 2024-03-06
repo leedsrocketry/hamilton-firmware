@@ -37,22 +37,30 @@ static inline void spin(volatile uint32_t count)
     asm("nop");
 }
 
+static inline uint32_t get_time_us(){
+  return TIM2->CNT;
+}
+
+static inline uint32_t get_time_ms(){
+  return s_ticks;
+}
+
 /**
   @brief Delay in nanoseconds
   @param time Time in nanoseconds
 */
-static inline void delay_nanoseconds(uint32_t time)
-{
+static inline void delay_nanoseconds(uint32_t time) {
   spin(time);
 }
+
 
 /**
   @brief Delay in microseconds
   @param time Time in microseconds
 */
-static inline void delay_microseconds(uint32_t time)
-{
-  delay_nanoseconds(time * 1000);
+static inline void delay_microseconds(uint32_t time) {
+  uint32_t startTime = get_time_us();
+  while ((get_time_us() - startTime) < time);
 }
 
 /**
@@ -63,11 +71,11 @@ static inline void delay_ms(uint32_t time) {
   uint32_t initial_ticks = s_ticks; 
   while (s_ticks - initial_ticks < time); //hold until that many ticks have passed
 }
-/**
-  @brief returns system time in miliseconds
-*/
-static inline uint32_t get_time_ms(){
-  return s_ticks;
+
+static inline void delay(uint32_t time){
+  uint32_t startTime = get_time_us();
+  uint32_t delayPeriod = time*1000;
+  while ((get_time_us() - startTime) < delayPeriod);
 }
 
 /**
