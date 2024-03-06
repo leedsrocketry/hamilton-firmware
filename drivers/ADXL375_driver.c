@@ -61,23 +61,45 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
 };
 
 
+/**
+  @brief Get x, y, z data from ADXL375
+  @param data struct for returning x, y, z data by reference
+  @note currently returns raw data, needs to be offset and calibrated in future
+  @note if floating points were available, all data would be multiplied by 0.049
+  @return 0
+*/
 uint8_t ADXL375_get_data(ADXL375_data* data){
-    spi_enable_cs(ADXL375_SPI, ADXL375_CS);
+
     // x-axis
-    uint8_t commnds_x[2] = {(ADXL375_X_REG_DATAX0|0x80), (ADXL375_X_REG_DATAX1|0x80)};
-    spi_transmit_receive(ADXL375_SPI, commnds_x, 2, 2, &data->x); 
-    printf("x: %d, ", data->x);
-    
+    spi_enable_cs(ADXL375_SPI, ADXL375_CS);
+    delay_ms(1);
+    int x_values[2] = {0,0};
+    ADXL375_reg_read(ADXL375_X_REG_DATAX0, x_values, 2);
+    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+    int16_t x = ((uint16_t)x_values[1] << 8) | (uint16_t)x_values[0];
+    x = x;
+
     // y-axis
-    uint16_t commnds_y[1] = {ADXL375_Y_REG_DATAY0|0x80, ADXL375_Y_REG_DATAY1|0x80};
-    spi_transmit_receive(ADXL375_SPI, commnds_y, 2, 2, &data->y); 
-    printf("y: %d, ", data->y);
+    spi_enable_cs(ADXL375_SPI, ADXL375_CS);
+    delay_ms(1);
+    int y_values[2] = {0,0};
+    ADXL375_reg_read(ADXL375_Y_REG_DATAY0, y_values, 2);
+    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+    int16_t y = ((uint16_t)y_values[1] << 8) | (uint16_t)y_values[0];
+    y = y ;
 
     // z-axis
-    uint16_t commnds_z[1] = {ADXL375_Z_REG_DATAZ0|0x80, ADXL375_Z_REG_DATAZ1|0x80};
-    spi_transmit_receive(ADXL375_SPI, commnds_z, 2, 2, &data->z); 
-    printf("z: %d\r\n", data->z);
+    spi_enable_cs(ADXL375_SPI, ADXL375_CS);
+    delay_ms(1);
+    int z_values[2] = {0,0};
+    ADXL375_reg_read(ADXL375_Z_REG_DATAZ0, z_values, 2);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+    int16_t z = ((uint16_t)z_values[1] << 8) | (uint16_t)z_values[0];
+    z = (z );
+
+    data->x = x;
+    data->y = y;
+    data->z = z;
 
     return 0;
 };
@@ -93,6 +115,19 @@ void ADXL375_reg_write(uint8_t addr, uint8_t value) {
     uint32_t r;
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     spi_transmit_receive(ADXL375_SPI, d, 2, 1, &r);
+    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+}
+
+void ADXL375_reg_read(uint8_t addr, uint8_t *values, int num_val)
+{
+    int address = addr | 0x80;
+    address = address | 0x40;
+    spi_enable_cs(ADXL375_SPI, ADXL375_CS);
+    spi_transmit(ADXL375_SPI, address);
+    for(int i = 0; i < num_val; i++)
+    {
+        values[i] = spi_transmit(ADXL375_SPI, 0x00);
+    }
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 }
 

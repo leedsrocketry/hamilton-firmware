@@ -493,7 +493,6 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t *send_bytes
     result = (result << 8);
     result = result | received;
     rs--;
-    //printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
     spi_ready_write(spi);
   }
   //spi_disable_cs(spi, cs);
