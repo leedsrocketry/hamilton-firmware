@@ -56,6 +56,7 @@ void update_sensors(M5611_data* _M5611_data,
   
   MS5611_get_data(_M5611_data);
   ADXL375_get_data(_ADXL375_data);
+  //printf("Accel: %d, %d, %d\r\n", _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z);
 }
 #pragma endregion Updates
 
@@ -87,6 +88,7 @@ int main(void)
   _memset(dataArray, 0, sizeof(dataArray)); // set the necessary memory and set values to 0
   zip(frame, dataArray);
   dataBuffer frame_buffer;                  // contains FrameArrays
+  FrameArray window[WINDOW_SIZE];           // contains last WINDOW_SIZE readings
   init_buffer(&frame_buffer);               // initialise the buffer
 
   // Buffer data
@@ -100,11 +102,39 @@ int main(void)
     #pragma region Flight Stages
     switch (flightStage) {
       case LAUNCHPAD:
+        // Get the sensor readings
         update_sensors(&_M5611_data, &_ADXL375_data);
-        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);        
-        update_buffer(frame, &frame_buffer);
+        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);  
+        
+        // Update buffer and window  
+        update_buffer(&frame, &frame_buffer);
+        if (frame_buffer.count > WINDOW_SIZE*2) {
+          for (int i = 0; i < WINDOW_SIZE; i++) {
+            int frame_number = (frame_buffer.index - WINDOW_SIZE + i);
+            if (frame_number < 0) {
+              frame_number = BUFFER_SIZE + frame_number;
+            }
+            window[i] = frame_buffer.frames[i];
+          }
+
+          // get the window barometer median
+          int _data[WINDOW_SIZE];
+          for (int i = 0; i < WINDOW_SIZE; i++) {
+            _data[i] = window[i].barometer;
+          }
+          int current_val = get_median(_data, WINDOW_SIZE);
+
+          // Check for launch given pressure decrease
+          if ((frame_buffer.ground_ref - current_val) > LAUNCH_THRESHOLD) {
+            printf("Ground: %d\r\n, Now: %d\r\n", frame_buffer.ground_ref, current_val);
+            printf("Difference: %d\r\n", (frame_buffer.ground_ref - current_val));
+            flightStage = ASCEND;
+          }
+        }
+      break;
 
       case ASCEND:
+        printf("ASCEND\r\n");
         update_sensors(&_M5611_data, &_ADXL375_data);
         break;
 

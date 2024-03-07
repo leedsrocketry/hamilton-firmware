@@ -16,8 +16,8 @@
 
 // Define Constants and Thresholds
 #define BUFFER_SIZE       50
-#define LAUNCH_THRESHOLD  50      // mbar for detecting a decrease
-#define APOGEE_THRESHOLD  50      // mbar for detecting an increase
+#define LAUNCH_THRESHOLD  50      // micro bar for detecting a decrease
+#define APOGEE_THRESHOLD  50      // micro bar for detecting an increase
 #define WINDOW_SIZE       10      // Number of readings to compute
 
 // Circular Buffer for data storing
@@ -30,8 +30,28 @@ typedef struct dataBuffer {
 
 void init_buffer(dataBuffer* buffer);
 
-void update_buffer(FrameArray frame, dataBuffer* buffer);
+/**
+  @brief Get the median of the data
+  @param data - array of data
+  @param size - size of the array
+  @return median value
+*/
+int get_median(int data[], int size);
 
-int buffer_median(dataBuffer* buffer, int start, int end);
+/**
+  @brief Set the ground reference for the buffer
+  @param frame - one reading data frame to add
+  @param buffer - data buffer
+*/
+void update_buffer(FrameArray* frame, dataBuffer* buffer);
 
+
+/**
+  @brief Get the last window of data
+  @param buffer - data buffer
+  @param window - array of frames that should be returned
+
+
+void get_last_window(dataBuffer* buffer, FrameArray window[]);
+*/
 #endif /* BUFFER_H */

@@ -7,36 +7,45 @@
 
 #include "data_buffer.h"
 
-int cmpfunc(const void * a, const void * b) {
-   return ( *(int*)a - *(int*)b );
-}
-
 void init_buffer(dataBuffer* buffer) {
   buffer->ground_ref = 0;
   buffer->index = 0;
   buffer->count = 0;
 
-  // Allocate memory for the buffer
-  //buffer->frames = (FrameArray*)malloc(BUFFER_SIZE * 128);
+  // TODO: Allocate memory for the buffer
 }
 
-// Set the values for ground level
+/**
+  @brief Compare function for sorting purposes
+  @param a - first element
+  @param b - second element
+  @return comparison value
+*/
+int cmpfunc(const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
+}
+
+int get_median(int data[], int size) {
+  qsort(data, sizeof(data), sizeof(int), cmpfunc);
+  if (sizeof(data) % 2 != 0)
+    return data[(size / 2) + 1];
+  return (data[size / 2] + data[(size / 2)+ 1]) / 2;
+}
+
 void set_ground_reference(dataBuffer* buffer) {
   // Create copy of buffer data to sort
   int _data[WINDOW_SIZE];
   for (int i = 0; i < WINDOW_SIZE; i++) {
     _data[i] = buffer->frames[i].barometer;
   }
-  qsort(_data, WINDOW_SIZE, sizeof(int), cmpfunc);
 
-  if (sizeof(_data) % 2 != 0)
-    buffer->ground_ref = _data[(WINDOW_SIZE / 2) + 1];
-  buffer->ground_ref = (_data[WINDOW_SIZE / 2] + _data[(WINDOW_SIZE / 2)+ 1]) / 2; 
+  // get the ground reference as median
+  buffer->ground_ref = get_median(_data, WINDOW_SIZE);
 }
 
 // Circular Buffer logic to update data
-void update_buffer(FrameArray frame, dataBuffer* buffer) {
-  buffer->frames[buffer->index] = frame;
+void update_buffer(FrameArray* frame, dataBuffer* buffer) {
+  buffer->frames[buffer->index] = *frame;
   buffer->index = (buffer->index + 1) % BUFFER_SIZE;
 
   // Increase count and set ground reference
@@ -47,13 +56,14 @@ void update_buffer(FrameArray frame, dataBuffer* buffer) {
   }
 }
 
-int buffer_median(dataBuffer* buffer, int start, int end)
-{
-    int size = end - start;
-    qsort(buffer->frames, size, sizeof(int), cmpfunc);
-
-    for(int i = 0; i < size; i++)
-    {
-        printf("%d\r\n", buffer->frames[i]);
-    }
+/*
+// Return last WINDOW_SIZE readings
+void get_last_window(dataBuffer* buffer, FrameArray window[]) {
+  for (int i = 0; i < WINDOW_SIZE; i++) {
+    printf("here");
+    //int frame_number = (buffer->index - WINDOW_SIZE + i) % BUFFER_SIZE;
+    window[i] = buffer->frames[i];
+  }
+  return window;
 }
+*/
