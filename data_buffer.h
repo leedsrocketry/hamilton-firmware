@@ -10,6 +10,8 @@
 
 #include "drivers/ADXL375_driver.h"
 #include "drivers/MS5611_driver.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include "mcu.h"
 
 // Define Constants and Thresholds
@@ -18,13 +20,15 @@
 #define APOGEE_THRESHOLD  50      // mbar for detecting an increase
 #define WINDOW_SIZE       10      // Number of readings to compute
 
-// Buffer for data storing
+// Circular Buffer for data storing
 typedef struct dataBuffer {
   FrameArray frames[BUFFER_SIZE];     // Circular buffer
-  int start;                          // Start index
-  int end;                            // End index (where the next value is inserted)
+  int ground_ref;                     // Set of reference values for launch
+  int index;                          // End index (value is inserted)
   int count;                          // Number of elements currently in buffer
 } dataBuffer;
+
+void init_buffer(dataBuffer* buffer);
 
 void update_buffer(FrameArray frame, dataBuffer* buffer);
 

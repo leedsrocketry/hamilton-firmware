@@ -41,7 +41,7 @@ void get_frame_array(FrameArray* _frameArray,
   // Add data to the frame
   _frameArray->barometer = _M5611_data->pressure;
   _frameArray->temp = _M5611_data->temp;
-  _frameArray->accelHighG = _acc_high_g; 
+  _frameArray->accelHighG = _acc_high_g;  
 }
 
 /**
@@ -54,7 +54,7 @@ void get_frame_array(FrameArray* _frameArray,
 void update_sensors(M5611_data* _M5611_data, 
                     ADXL375_data* _ADXL375_data) {
   
-  //MS5611_get_data(_M5611_data);
+  MS5611_get_data(_M5611_data);
   ADXL375_get_data(_ADXL375_data);
 }
 #pragma endregion Updates
@@ -71,17 +71,25 @@ int main(void)
   uart_init(LUART1, 9600);
 
   printf("================ PROGRAM START ================\r\n");
-  //STM32_indicate_on();
+  STM32_indicate_on();
 
   printf("============ INITIALISE NAND FLASH ============\r\n");
   // init_flash();
 
   printf("============== INITIALISE DRIVERS =============\r\n");
+  // Sensor initialisation
   MS5611_init(SPI1);          // Barometer
   ADXL375_init(SPI1);         // Accelerometer
 
-  FrameArray frame;           // initialise the frameArray that keeps updating
-  dataBuffer frame_buffer;    // contains FrameArrays
+  // Buffer
+  FrameArray frame;                         // initialise the frameArray that keeps updating
+  uint8_t dataArray[128];                   // dummy array to store the frame data
+  _memset(dataArray, 0, sizeof(dataArray)); // set the necessary memory and set values to 0
+  zip(frame, dataArray);
+  dataBuffer frame_buffer;                  // contains FrameArrays
+  init_buffer(&frame_buffer);               // initialise the buffer
+
+  // Buffer data
   M5611_data _M5611_data;
   ADXL375_data _ADXL375_data;
 
@@ -89,34 +97,27 @@ int main(void)
 
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   for (;;) {
-    delay_ms(200);
     #pragma region Flight Stages
     switch (flightStage) {
       case LAUNCHPAD:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);
+        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);        
         update_buffer(frame, &frame_buffer);
 
       case ASCEND:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);
-        update_buffer(frame, &frame_buffer);
         break;
 
       case APOGEE:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);
-        update_buffer(frame, &frame_buffer);
         break;
 
       case DESCENT:
         update_sensors(&_M5611_data, &_ADXL375_data);
-        get_frame_array(&frame, &_M5611_data, &_ADXL375_data);
-        update_buffer(frame, &frame_buffer);
         break;
 
       case LANDING:
-        //indicate_on_buzzer();
+        STM32_indicate_on();
         break;
     }
 

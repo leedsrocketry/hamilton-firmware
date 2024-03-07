@@ -105,6 +105,6 @@ void STM32_flash_LED (uint32_t onDurationMs, uint32_t offDurationMs, uint16_t no
 }
 
 void STM32_indicate_on() {
-  STM32_beep_buzzer(500, 500, 3);
-  STM32_flash_LED(500, 500, 3);
+  STM32_beep_buzzer(200, 200, 3);
+  STM32_flash_LED(200, 200, 3);
 }
