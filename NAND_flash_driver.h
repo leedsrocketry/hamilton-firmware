@@ -12,16 +12,19 @@
 
 #include "mcu.h"
 
+// Defines which are used when returning the status of a write to flash
 #define NONE 0
 #define SUCCESS 1
 #define STORAGE_FULL_WARNING 2
 #define STORAGE_FULL_ERROR 3
 
+// Defines used in the status of frames which have been gone through error correction
 #define DATA_INTACT 1
 #define DATA_FIXED 2
 #define DATA_CORRUPTED 3
 #define EMPTY 4
 
+// Defines a global delay mostly for debugging
 #define DELAY 1
 #define DELAY_PINMODE 50
 
@@ -34,17 +37,18 @@
 #define WRITE_PROTECT     0b00001000 // CE# CLE ALE WE# RE# WP# X X
 #define WRITE_PROTECT_OFF 0b00001100 // CE# CLE ALE WE# RE# WP# X X
 
-// In case you need to send more than one byte
+// Defines used to toggle the WE or RE pins to latch a byte into the flash chip
 #define WE_HIGH           0b00010000  // CE# CLE ALE WE# RE# WP# X X
 #define RE_HIGH           0b00001000
 
+// Structure used to break the address bits into block->page->column which have meanings defined by the flash chip
 typedef struct Address {
     uint16_t block;  // 12 bits
     uint8_t page;    // 6 bits
     uint16_t column; // 13 bits (12 used)
 } Address;
 
-// Data Pins
+// Data Pins - pins used in data/control/address transmission (8 bit parrallel bus)
 uint16_t data0 = PIN('D', 0); // 2;
 uint16_t data1 = PIN('D', 1); // 3;
 uint16_t data2 = PIN('D', 2); // 4;
@@ -54,7 +58,7 @@ uint16_t data5 = PIN('D', 5); // 12;
 uint16_t data6 = PIN('D', 6); // 8;
 uint16_t data7 = PIN('D', 7); // 9;
 
-// Control Pins
+// Control Pins - pins used to control the state of the flash chip
 uint16_t WP  = PIN('D', 8);  // 13, Write Protection;
 uint16_t WE  = PIN('D', 9);  // 14, Write Enable;
 uint16_t ALE = PIN('E', 7);  // 15, Address latch enable (where in the memory to store);
@@ -63,35 +67,38 @@ uint16_t CE  = PIN('E', 9);  // 17, Check Enable (in case we want to test separa
 uint16_t RE  = PIN('E', 11); // 18, Read Enable;
 uint16_t RB  = PIN('E', 13); // 19, Ready/Busy;
 
+// Stores the address of the next available frame (set of 128 bytes) (assumes all frames prior to this are full of valuable data)
+// This variable is set by the get_next_available_frame_addr() function
 uint32_t frameAddressPointer = 0;
 
+// Set all pins as gpio outputs by default
 uint8_t globalPinMode = GPIO_MODE_OUTPUT;
 
 /**
-  @brief TODO
-  @param arr
-  @param pos
-  @return
+  @brief: This function returns only the specified bit from an array of bytes
+  @param arr: an array of bytes (uint8)
+  @param pos: which bit in the array of bytes to access (msb: 0 to lsb: 8*length(arr)-1)
+  @return: the value of the bit at position "pos" in the byte array "arr"
 */
 static inline bool get_bit_arr(uint8_t *arr, int pos) {
   return (bool)(arr[pos/8] & (1 << (7-(pos%8))));
 }
 
 /**
-  @brief TODO
-  @param byte
-  @param pos
-  @return
+  @brief This function returns the specific bit within a byte
+  @param byte: the input byte
+  @param pos: the position of the bit in question (msb: 0 to lsb: 7)
+  @return: The value of the "pos" bit in the byte
 */
 static inline bool get_bit(uint8_t byte, int pos) {
   return (bool)(byte & (1 << (7-(pos%8))));
 }
 
 /**
-  @brief FrameArray to Array
-  @param unzippedData
-  @param zippedData
-  @return
+  @brief Converts a FrameArray struct to an array of bytes
+  @param unzippedData: the frame array object to zip
+  @param zippedData: a pass by reference to the byte array where the output is stored
+  @return: None
 */
 static inline void zip(FrameArray unzippedData, uint8_t *zippedData) {
   int i = -1;
@@ -187,7 +194,11 @@ static inline void zip(FrameArray unzippedData, uint8_t *zippedData) {
   zippedData[127] = (uint8_t)(unzippedData.CRC_Check & 0xFF);
 }
 
-// Array to FrameArray
+/**
+  @brief Converts a byte array to a FrameArray struct
+  @param zippedData: a pass by reference to the byte array to be converted
+  @return: the FrameArray
+*/
 static inline FrameArray unzip(uint8_t *zippedData) {
   FrameArray unzippedData;
   int i = -1;
@@ -412,7 +423,7 @@ static inline void print_frame_csv(FrameArray frameFormat) {
 }
 
 /**
-  @brief Wait for the ready flag to be set 
+  @brief Wait for the ready flag to be set
 */
 static inline void wait_for_ready_flag() {
   int count = 1000*100; // Try for 1 second before giving error
@@ -426,7 +437,7 @@ static inline void wait_for_ready_flag() {
 }
 
 /**
-  @brief TODO 
+  @brief Set all pins to the global pin mode (either GPIO_MODE_INPUT or GPIO_MODE_OUTPUT)
 */
 static inline void set_pin_modes() {
   gpio_set_mode(data0, globalPinMode);
@@ -441,10 +452,10 @@ static inline void set_pin_modes() {
 }
 
 /**
-  @brief TODO 
+  @brief Set the control pins based on the input byte (i.e. COMMAND_INPUT, DATA_INPUT)
 */
 static inline void set_control_pins(uint8_t controlRegister) {  // CE# CLE ALE WE# RE# WP#
-  //gpio_write(CE, get_bit(controlRegister, 0));
+  //gpio_write(CE, get_bit(controlRegister, 0));  // TODO: Why is this commented out?
   gpio_write(CLE, get_bit(controlRegister, 1));
   gpio_write(ALE, get_bit(controlRegister, 2));
   gpio_write(WE, get_bit(controlRegister, 3));
@@ -453,7 +464,7 @@ static inline void set_control_pins(uint8_t controlRegister) {  // CE# CLE ALE W
 }
 
 /**
-  @brief TODO 
+  @brief Set the data pins to the desired input byte (can be data, control or address information)
 */
 static inline void set_data_pins(uint8_t Byte) {
   if (globalPinMode == GPIO_MODE_INPUT) {
@@ -472,8 +483,8 @@ static inline void set_data_pins(uint8_t Byte) {
 }
 
 /**
-  @brief TODO
-  @param cmd: composed of the data bits
+  @brief Write a single byte to the flash with control pins set to the "mode" byte and data pins set to the "cmd" byte (can be data, command or address byte)
+  @param cmd: composed of the data pins
   @param mode: composed of the control pins
 */
 static inline void send_byte_to_flash(uint8_t cmd, uint8_t mode) {
@@ -487,7 +498,7 @@ static inline void send_byte_to_flash(uint8_t cmd, uint8_t mode) {
 }
 
 /**
-  @brief TODO
+  @brief Read a single byte from the flash (assumes address to read from has been set before calling this function)
   @return 
 */
 static inline uint8_t receive_byte_from_flash() {
@@ -514,10 +525,10 @@ static inline uint8_t receive_byte_from_flash() {
 }
 
 /**
-  @brief sends the 5-byte-address to the nand using the frame and byte address as input
+  @brief sends the 5-byte-address to the nand flash using the frame and byte address as input
   @note 8,388,608 frames each with 128 bytes. frameAddr has 23 valid bits. byteAddr has 7 valid bits
-  @param frameAddr
-  @param byteAddr 
+  @param frameAddr: The address of the frame to write/read to/from (0 to 8,388,608)
+  @param byteAddr: The address of which byte to write/read to/from within the frame (0 - 127) (typically 0 as we want to start writing/reading from the first byte of a frame)
 */
 static inline void send_addr_to_flash(uint32_t frameAddr, uint8_t byteAddr) {
   Address addr = {(frameAddr >> 11) & 0b0000111111111111,                      // block
@@ -532,8 +543,8 @@ static inline void send_addr_to_flash(uint32_t frameAddr, uint8_t byteAddr) {
 }
 
 /**
-  @brief TODO
-  @param blockAddr 
+  @brief Sets the address to the first byte of the specified block
+  @param blockAddr: Which block to set the address to (0 - 4095)
 */
 static inline void send_block_addr_to_flash(uint32_t blockAddr) {
   send_byte_to_flash((uint8_t)(((blockAddr & 0b0000000000000011) << 6) | (0b00000000 & 0b00111111)), ADDRESS_INPUT);
@@ -542,8 +553,8 @@ static inline void send_block_addr_to_flash(uint32_t blockAddr) {
 }
 
 /**
-  @brief Read the status register from the nand flash
-  @return 
+  @brief Read the status register from the nand flash. Same as the RB (Read/Busy) input pin
+  @return The status register of the flash
 */
 static inline uint8_t read_flash_status() {
   wait_for_ready_flag();
@@ -552,8 +563,8 @@ static inline uint8_t read_flash_status() {
 }
 
 /**
-  @brief Read the ID register from the nand flash
-  @return 
+  @brief Read the ID register from the nand flash (not unique to each nand flash?)
+  @return ID register of the nand flash
 */
 static inline uint64_t read_flash_ID() {
   uint64_t id = 0;
@@ -575,7 +586,7 @@ static inline uint64_t read_flash_ID() {
 }
 
 /**
-  @brief TODO
+  @brief Enable the flash write protection to prevent writing on accident. More info in flash data sheet
 */
 static inline void write_protection() {
   wait_for_ready_flag();
@@ -583,7 +594,10 @@ static inline void write_protection() {
 }
 
 /**
-  @brief Code to read 1 frame from flash
+  @brief Code to read 1 frame (128 consecutive bytes) from flash
+  @frameAddr: The address of the frame to read from (0 to 8,388,608)
+  @readFrameBytes: A pass by reference array of 128 bytes to store the read data
+  @_length: How many bytes to read (typically 128 to get the full frame)
 */
 static inline void read_frame(uint32_t frameAddr, uint8_t *readFrameBytes, uint8_t _length) {
   wait_for_ready_flag();
@@ -598,7 +612,9 @@ static inline void read_frame(uint32_t frameAddr, uint8_t *readFrameBytes, uint8
 }
 
 /**
-  @brief Code to write 1 frame to the flash
+  @brief Code to write 1 frame (128 consecutive bytes) to the flash
+  @frameAddr: The address of the frame to write to (0 to 8,388,608)
+  @bytes: A pass by reference array of 128 bytes to write to the flash
 */
 static inline void write_frame(uint32_t frameAddr, uint8_t *bytes) {
   wait_for_ready_flag();
@@ -614,6 +630,7 @@ static inline void write_frame(uint32_t frameAddr, uint8_t *bytes) {
 
 /**
   @brief A blocking function which will erase a block on the flash
+  @blockAddr: 0 to 4095
 */
 static inline void erase_block(uint32_t blockAddr) {
   wait_for_ready_flag();
@@ -624,7 +641,7 @@ static inline void erase_block(uint32_t blockAddr) {
 }
 
 /**
-  @brief A blocking function which will erase a block on the flash
+  @brief A blocking function which will erase the entire flash (all 4096 blocks)
 */
 static inline void erase_all(){
   printf("WARNING: ERASING ALL DATA (UNPLUG NAND FLASH TO ABORT)\r\n");
@@ -658,21 +675,21 @@ static inline void erase_all(){
 }
 
 /**
-  @brief TODO
+  @brief returns the larger of x1 and x2
 */
 static inline uint16_t max(uint16_t x1, uint16_t x2){
   return (x1 > x2) ? x1 : x2;
 }
 
 /**
-  @brief TODO
+  @brief returns the smaller of x1 and x2
 */
 static inline uint16_t min(uint16_t x1, uint16_t x2){
   return (x1 < x2) ? x1 : x2;
 }
 
 /**
-  @brief TODO
+  @brief returns the absolute difference of x1 and x2
 */
 static inline uint16_t diff(uint16_t x1, uint16_t x2) {
   return (uint16_t)abs((int)((int)x1 - (int)x2));
@@ -765,7 +782,7 @@ void test_routine() {
 */
 
 /**
-  @brief TODO
+  @brief Initialisation function to set pin modes and get the next free frame on the flash (saving this in frameAddressPointer)
 */
 static inline void init_flash() {
   gpio_set_mode(data0, GPIO_MODE_OUTPUT);
@@ -794,7 +811,7 @@ static inline void init_flash() {
   }
 }
 
-// --------------------------------
+// --------------- ERROR CORRECTION CODE BELOW -----------------
 
 /**
   @brief Calculates CRC16-CCITT Checksum
@@ -826,7 +843,7 @@ static inline void hash(uint8_t *_input, uint8_t *_output) {
 }
 
 /**
-  @brief TODO
+  @brief returns true if x is a power of 2, else false
   @return
 */
 static inline bool is_power_of_two(int x) {
@@ -879,7 +896,7 @@ static inline void calculate_parity_bits(uint8_t *_input, uint8_t *_output) {
 }
 
 /**
-  @brief Hamming and CRC Checking
+  @brief Hamming and CRC Encoding
   @return bytes
 */
 static inline void encode_parity(FrameArray dataFrame, uint8_t *bytes) {
@@ -896,7 +913,7 @@ static inline void encode_parity(FrameArray dataFrame, uint8_t *bytes) {
 }
 
 /**
-  @brief TODO
+  @brief Prints the capacity left on the flash to the terminal
 */
 static inline void print_capacity_info() {
   uint32_t lastFrameUsed = get_next_available_frame_addr();
@@ -922,7 +939,7 @@ static inline void print_capacity_info() {
 }
 
 /**
-  @brief TODO
+  @brief Writes a single FrameArray to the next available space on the flash
 */
 static inline int log_frame(FrameArray _input) {
   //printf("LOGFRAME addr ");
@@ -949,7 +966,7 @@ static inline int log_frame(FrameArray _input) {
 }
 
 /**
-  @brief Outputs the frame array
+  @brief Outputs the frame array at the address frameAddr
 */
 static inline FrameArray recall_frame(uint32_t frameAddr) {
   uint8_t encoded[128];
@@ -1070,7 +1087,7 @@ static inline void read_all_csv(){
 }
 
 /**
-  @brief TODO
+  @brief Reads the entire flash and returns the info on the capacity of the flash and the amount of corruption (checks CRC and Hamming codes)
 */
 static inline void read_all(){
   FrameArray _output;
