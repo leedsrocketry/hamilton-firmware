@@ -1,6 +1,6 @@
 /*
   Leeds University Rocketry Organisation - LURA
-  Author Name: Alexandra Posta
+  Author Name: Oliver Martin
   Created on: 01 February 2024
   Description: header file for the IMU module LSM6DS3
 */
@@ -8,91 +8,132 @@
 #define LSM6DS3_DRIVER_H
 #include "mcu.h"
 
-#pragma region Macros //_______________ MACROS _______________________
-//register addresses
-#define LSM6DS3_WHO_AM_I_ADRS                0x0F
+#pragma once
 
-#define LSM6DS3_CTRL1_XL_ADRS                0x10
-#define LSM6DS3_CTRL2_G_ADRS                 0x11
-#define LSM6DS3_CTRL3_C_ADRS                 0x12
-#define LSM6DS3_CTRL4_C_ADRS                 0x13
+#define LSM6DS3_CS              7
+#define LSM6DSO_CHIP_ID         0x6C
+
+// equivalent to 70 mdps/LSB, as specified in LSM6DSO datasheet section 4.1, symbol G_So
+#define LSM6DSO_GYRO_SCALE_2000DPS 0.070f
+
+#define LSM6DS3_WHO_AM_I_EXP    0b01101010
+
+// LSM6DSO registers (not the complete list)
+
+#define LSM6DSO_REG_INT1_CTRL   0x0D  // int pin 1 control
+#define LSM6DSO_REG_INT2_CTRL   0x0E  // int pin 2 control
+#define LSM6DSO_REG_WHO_AM_I    0x0F  // chip ID
+#define LSM6DSO_REG_CTRL1_XL    0x10  // accelerometer control
+#define LSM6DSO_REG_CTRL2_G     0x11  // gyro control
+#define LSM6DSO_REG_CTRL3_C     0x12  // control register 3
+#define LSM6DSO_REG_CTRL4_C     0x13  // control register 4
+#define LSM6DSO_REG_CTRL5_C     0x14  // control register 5
+#define LSM6DSO_REG_CTRL6_C     0x15  // control register 6
+#define LSM6DSO_REG_CTRL7_G     0x16  // control register 7
+#define LSM6DSO_REG_CTRL8_XL    0x17  // control register 8
+#define LSM6DSO_REG_CTRL9_XL    0x18  // control register 9
+#define LSM6DSO_REG_CTRL10_C    0x19  // control register 10
+#define LSM6DSO_REG_STATUS      0x1E  // status register
+#define LSM6DSO_REG_OUT_TEMP_L  0x20  // temperature LSB
+#define LSM6DSO_REG_OUT_TEMP_H  0x21  // temperature MSB
+#define LSM6DSO_REG_OUTX_L_G    0x22  // gyro X axis LSB
+#define LSM6DSO_REG_OUTX_H_G    0x23  // gyro X axis MSB
+#define LSM6DSO_REG_OUTY_L_G    0x24  // gyro Y axis LSB
+#define LSM6DSO_REG_OUTY_H_G    0x25  // gyro Y axis MSB
+#define LSM6DSO_REG_OUTZ_L_G    0x26  // gyro Z axis LSB
+#define LSM6DSO_REG_OUTZ_H_G    0x27  // gyro Z axis MSB
+#define LSM6DSO_REG_OUTX_L_A    0x28  // acc X axis LSB
+#define LSM6DSO_REG_OUTX_H_A    0x29  // acc X axis MSB
+#define LSM6DSO_REG_OUTY_L_A    0x2A  // acc Y axis LSB
+#define LSM6DSO_REG_OUTY_H_A    0x2B  // acc Y axis MSB
+#define LSM6DSO_REG_OUTZ_L_A    0x2C  // acc Z axis LSB
+#define LSM6DSO_REG_OUTZ_H_A    0x2D  // acc Z axis MSB
 
 
-#define LSM6DS3_TEMP_ADDRESS                 0x20
+// LSM6DSO register configuration values
+#define LSM6DSO_VAL_INT1_CTRL 0x02             // enable gyro data ready interrupt pin 1
+#define LSM6DSO_VAL_INT2_CTRL 0x02             // enable gyro data ready interrupt pin 2
+#define LSM6DSO_VAL_CTRL1_XL_ODR833 0x07       // accelerometer 833hz output data rate (gyro/8)
+#define LSM6DSO_VAL_CTRL1_XL_ODR1667 0x08      // accelerometer 1666hz output data rate (gyro/4)
+#define LSM6DSO_VAL_CTRL1_XL_ODR3332 0x09      // accelerometer 3332hz output data rate (gyro/2)
+#define LSM6DSO_VAL_CTRL1_XL_ODR3333 0x0A      // accelerometer 6664hz output data rate (gyro/1)
+#define LSM6DSO_VAL_CTRL1_XL_8G 0x03           // accelerometer 8G scale
+#define LSM6DSO_VAL_CTRL1_XL_16G 0x01          // accelerometer 16G scale
+#define LSM6DSO_VAL_CTRL1_XL_LPF1 0x00         // accelerometer output from LPF1
+#define LSM6DSO_VAL_CTRL1_XL_LPF2 0x01         // accelerometer output from LPF2
+#define LSM6DSO_VAL_CTRL2_G_ODR6664 0x0A       // gyro 6664hz output data rate
+#define LSM6DSO_VAL_CTRL2_G_ODR26 0x02         // gyro 26hz output data rate
+#define LSM6DSO_VAL_CTRL2_G_2000DPS 0x03       // gyro 2000dps scale
+#define LSM6DSO_VAL_CTRL2_G_245DPS 0x00        // gyro 245dps scale
+#define LSM6DSO_VAL_CTRL3_C_BDU BIT(6)         // (bit 6) output registers are not updated until MSB and LSB have been read (prevents MSB from being updated while burst reading LSB/MSB)
+#define LSM6DSO_VAL_CTRL3_C_H_LACTIVE 0        // (bit 5) interrupt pins active high
+#define LSM6DSO_VAL_CTRL3_C_PP_OD 0            // (bit 4) interrupt pins push/pull
+#define LSM6DSO_VAL_CTRL3_C_SIM 0              // (bit 3) SPI 4-wire interface mode
+#define LSM6DSO_VAL_CTRL3_C_IF_INC BIT(2)      // (bit 2) auto-increment address for burst reads
+#define LSM6DSO_VAL_CTRL4_C_I2C_DISABLE BIT(2) // (bit 2) disable I2C interface
+#define LSM6DSO_VAL_CTRL4_C_LPF1_SEL_G BIT(1)  // (bit 1) enable gyro LPF1
+#define LSM6DSO_VAL_CTRL6_C_XL_HM_MODE 0       // (bit 4) enable accelerometer high performance mode
+#define LSM6DSO_VAL_CTRL6_C_FTYPE_335HZ 0x00   // (bits 2:0) gyro LPF1 cutoff 335.5hz
+#define LSM6DSO_VAL_CTRL6_C_FTYPE_232HZ 0x01   // (bits 2:0) gyro LPF1 cutoff 232.0hz
+#define LSM6DSO_VAL_CTRL6_C_FTYPE_171HZ 0x02   // (bits 2:0) gyro LPF1 cutoff 171.1hz
+#define LSM6DSO_VAL_CTRL6_C_FTYPE_609HZ 0x03   // (bits 2:0) gyro LPF1 cutoff 609.0hz
+#define LSM6DSO_VAL_CTRL9_XL_I3C_DISABLE BIT(1)// (bit 1) disable I3C interface
 
-//chip settings
-#define LSM6DS3_WHO_AM_I_EXP                 0b01101010 //expected val if who reg is read
-#define LSM6DS3_CTRL1_XL_ON                  0b01000000
-#define LSM6DS3_CTRL2_G_ON                   0b01000000
-#define LSM6DS3_CTRL3_C_RESET                0b00000101
-#define LSM6DS3_CTRL4_C_DISABLE_I2C          0b00000100
+// LSM6DSO register configuration bit masks
+#define LSM6DSO_MASK_CTRL3_C 0x7C              // 0b01111100
+#define LSM6DSO_MASK_CTRL3_C_RESET BIT(0)      // 0b00000001
+#define LSM6DSO_MASK_CTRL4_C 0x06              // 0b00000110
+#define LSM6DSO_MASK_CTRL6_C 0x17              // 0b00010111
+#define LSM6DSO_MASK_CTRL9_XL 0x02             // 0b00000010
 
-#define LSM6DS3_CS                           7
+// Calibration parameters
+#define LSM6DSO_OFFSET_BUFF_LEN 100
+#define LSM6DS6_DOWNSAMPLE_SIZE 4
+#define LMS6DS6_ANGULAR_RATE_SENSITIVITY  70 //for +-2000dps sensitivity is 70mdps/LSB
 
-#pragma endregion Macros
-
-#pragma region Structs/Emun //_______________ STRUCTS _______________________
-
-typedef struct LSM6DS3_DATA
+typedef struct LSM6DS3_data
 {
-  int16_t LSM6DS3_TEMP;
+  int32_t x;
+  int32_t y;
+  int32_t z;
+  int16_t xRate;
+  int16_t yRate;
+  int16_t zRate;
+  int16_t xOffset;
+  int16_t yOffset;
+  int16_t zOffset;
+  int32_t time;
+} LSM6DS3_data;
 
-  int16_t LSM6DS3_GYRO_X;
-  int16_t LSM6DS3_GYRO_Y;
-  int16_t LSM6DS3_GYRO_Z; 
+//init functions
+uint8_t lsm6ds6_init(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
-  int16_t LSM6DS3_ACC_X;
-  int16_t LSM6DS3_ACC_Y;
-  int16_t LSM6DS3_ACC_Z;
+static void lsm6ds6WriteRegister(SPI_TypeDef *spi, uint8_t registerID, uint8_t value, unsigned delayMs);
 
-} LSM6DS3_DATA;
+static void lsm6ds6WriteRegisterBits(SPI_TypeDef *spi, uint8_t registerID, uint8_t mask, uint8_t value, unsigned delayMs);
 
-#pragma endregion Structs/Emun
+void lsm6ds6Config(SPI_TypeDef *spi);
 
-#pragma region Public
+// Contained in accgyro_spi_lsm6ds6_init.c which is size-optimized
+//uint8_t lsm6ds6Detect(SPI_TypeDef *spi);
 
-/**
-  @brief Initialization of the LSM6DS3 IMU module
-  @note
-  @return Success/Failure
-*/
-int8_t LSM6DS3_init();
+//bool lsm6ds6SpiAccDetect(SPI_TypeDef *spi);
 
-/**
- * @brief Get data from the LSM6DS3 IMU module
- * @note
- * @param data ptr to LSM6DS3_data struct for returning data
- * @return Success/Failure
- */
-int8_t LSM6DS3_get_data(LSM6DS3_DATA *data);
+//bool lsm6ds6SpiGyroDetect(SPI_TypeDef *spi);
 
-#pragma endregion Public
+// Contained in accgyro_spi_lsm6ds6.c which is speed-optimized
+//void lsm6ds6ExtiHandler(extiCallbackRec_t *cb);
 
-#pragma region Private
-/**
- * @brief write to a specific register
- * @note
- * @param address the register to write to
- * @param data data to send
- * @return Success/Failure
- */
-static uint8_t LSM6DS3_write_reg(uint8_t address, uint8_t data);
+bool lsm6ds6AccRead(SPI_TypeDef *spi);
 
-/**
- * @brief Get a value from a register
- * @note
- * @param address the register to write to
- * @return the value read
- */
-static uint8_t LSM6DS3_read_reg(uint8_t address);
+bool lsm6ds6GyroRead(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
-/**
- * @brief extract and combine results from sensor registors
- * @note  doesnt deal with CS - purely for public get_data function
- * @return Success/Failure
- */
-static int16_t LSM6DS3_get_sens_val();
+bool lsm6ds6GyroReadAngle(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
-#pragma endregion Private
+//calculates the gyro offset values
+bool lsm6ds6GyroOffsets(SPI_TypeDef *spi, LSM6DS3_data* gyro);
+
+//keeps angle between +-180,000 mDeg
+int32_t LSM6DS3_angle_overflow(int32_t mDeg);
 
 #endif /* LSM6DS3_DRIVER_H */

@@ -71,7 +71,7 @@ void run_ADXL375_routine()
 /**
   @brief Routine to test the SI446 radio module.
 */
-void SI446_Test_routine()
+void run_SI446_routine()
 {
   printf("================ SI446_routine ================\r\n");
   int8_t ret_val = 123;
@@ -79,27 +79,22 @@ void SI446_Test_routine()
   printf("completed: %d \r\n ", ret_val);
 }
 
-/**
-  @brief Routine to test the LSM6DS3 IMU.
-*/
-void LSM6DS3_test_routine()
+void run_LSM6DS3_routine()
 {
   printf("================ LSM6DS3_routine ================\r\n");
+  LSM6DS3_data gyro_data;
+  delay_ms(50);
+  lsm6ds6_init(SPI1, &gyro_data);
+  
   uint32_t timer = 0, period = 500;
-
   for (;;)
   {
     if (timer_expired(&timer, period, s_ticks))
     {
-      static bool on = true;                         // This block is executed
-      gpio_write(GREEN_LED, on);                         // Every `period` milliseconds
-      on = !on;                                      // Toggle LED state
-      printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
-
-      int8_t ret_val = 123;
-      ret_val = LSM6DS3_init(SPI1);
-      printf("completed: %d \r\n ", ret_val);
+      lsm6ds6GyroReadAngle(SPI1, &gyro_data);
+      printf("Gyro: %d, %d, %d, \r\n", gyro_data.x, gyro_data.y, gyro_data.z);
     }
+  
   }
 }
 
@@ -126,7 +121,6 @@ void spi_test_routine()
     }
   }
 }
-
 
 /**
   @brief Routine to test NAND Flash reading and writing.
