@@ -30,6 +30,11 @@ void get_frame_array(FrameArray* _frameArray,
   // Convert data to frame TODO
   Vector3 _acc_high_g = { _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z };
 
+  //add time stamp
+  _frameArray->date.minute = (get_time_us()/(1000000*60))%60; //minuts
+  _frameArray->date.second = (get_time_us()/1000000)%60; //seconds
+  _frameArray->date.millisecond = (get_time_us()/1000)%1000; //milli seconds
+  _frameArray->date.microsecond = get_time_us()%1000; //Mirco seconds
   // Add data to the frame
   _frameArray->barometer = _M5611_data->pressure;
   _frameArray->temp = _M5611_data->temp;
