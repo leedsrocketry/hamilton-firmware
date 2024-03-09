@@ -17,12 +17,13 @@
 // Define Constants and Thresholds
 #define BUFFER_SIZE       50
 #define LAUNCH_THRESHOLD  50      // micro bar for detecting a decrease
-#define APOGEE_THRESHOLD  50      // micro bar for detecting an increase
+#define GROUND_THRESHOLD  30      // micro bar for detecting ground
 #define WINDOW_SIZE       10      // Number of readings to compute
 
 // Circular Buffer for data storing
 typedef struct dataBuffer {
   FrameArray frames[BUFFER_SIZE];     // Circular buffer
+  FrameArray window[WINDOW_SIZE];     // Last window readings
   int ground_ref;                     // Set of reference values for launch
   int index;                          // End index (value is inserted)
   int count;                          // Number of elements currently in buffer

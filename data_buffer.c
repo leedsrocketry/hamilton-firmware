@@ -12,7 +12,8 @@ void init_buffer(dataBuffer* buffer) {
   buffer->index = 0;
   buffer->count = 0;
 
-  // TODO: Allocate memory for the buffer
+  // TODO: Allocate memory for the buffer array
+  // TODO: Allocate memory for the window array
 }
 
 /**
@@ -54,16 +55,24 @@ void update_buffer(FrameArray* frame, dataBuffer* buffer) {
       set_ground_reference(buffer);
     buffer->count++;
   }
+
+  // Update window
+  if (buffer->count > WINDOW_SIZE*2) {
+    for (int i = 0; i < WINDOW_SIZE; i++) {
+      int frame_number = (buffer->index - WINDOW_SIZE + i);
+      if (frame_number < 0)
+        frame_number = BUFFER_SIZE + frame_number;
+      buffer->window[i] = buffer->frames[i];
+    }
+  }
 }
 
-/*
-// Return last WINDOW_SIZE readings
-void get_last_window(dataBuffer* buffer, FrameArray window[]) {
+// Check if stationary
+bool is_stationary(int data[]) {
+  int sum = 0;
   for (int i = 0; i < WINDOW_SIZE; i++) {
-    printf("here");
-    //int frame_number = (buffer->index - WINDOW_SIZE + i) % BUFFER_SIZE;
-    window[i] = buffer->frames[i];
+    sum += data[i];
   }
-  return window;
+  return (sum / WINDOW_SIZE) < GROUND_THRESHOLD;
 }
-*/
+
