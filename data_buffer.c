@@ -75,4 +75,3 @@ bool is_stationary(int data[]) {
   }
   return (sum / WINDOW_SIZE) < GROUND_THRESHOLD;
 }
-

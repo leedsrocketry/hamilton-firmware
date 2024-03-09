@@ -22,13 +22,17 @@
 
 // Circular Buffer for data storing
 typedef struct dataBuffer {
-  FrameArray frames[BUFFER_SIZE];     // Circular buffer
-  FrameArray window[WINDOW_SIZE];     // Last window readings
-  int ground_ref;                     // Set of reference values for launch
-  int index;                          // End index (value is inserted)
-  int count;                          // Number of elements currently in buffer
+  FrameArray frames[BUFFER_SIZE]; // Circular buffer
+  FrameArray window[WINDOW_SIZE]; // Last window readings
+  int ground_ref;                 // Set of reference values for launch
+  int index;                      // End index (value is inserted)
+  int count;                      // Number of elements currently in buffer
 } dataBuffer;
 
+/**
+  @brief Initialize the buffer
+  @param buffer - data buffer
+*/
 void init_buffer(dataBuffer* buffer);
 
 /**
@@ -45,14 +49,4 @@ int get_median(int data[], int size);
   @param buffer - data buffer
 */
 void update_buffer(FrameArray* frame, dataBuffer* buffer);
-
-
-/**
-  @brief Get the last window of data
-  @param buffer - data buffer
-  @param window - array of frames that should be returned
-
-
-void get_last_window(dataBuffer* buffer, FrameArray window[]);
-*/
 #endif /* BUFFER_H */

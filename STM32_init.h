@@ -14,11 +14,11 @@
 #define MSL_ALT_TIMER_THRESHOLD_MS 60000 // 1 minute
 
 // Pins
-#define BUZZER PIN('B', 7)
-#define BLUE_LED PIN('H', 3)
+#define BUZZER PIN('B', 9)
+#define GREEN_LED PIN('B', 8)
 
 // Required structures
-typedef enum FlightStages {LAUNCHPAD, ASCEND, APOGEE, DESCENT, LANDING} FlightStages;
+typedef enum FlightStages {LAUNCHPAD, ASCENT, APOGEE, DESCENT, LANDING} FlightStages;
 
 
 typedef struct Date 

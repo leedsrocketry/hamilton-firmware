@@ -36,13 +36,13 @@ void STM32_init_clock(unsigned long frequency){
 }
 
 void init_delay_timer(){
-  //use general purpose timer 2 which is a 32bit auto-reload timer
+  // Use general purpose timer 2 which is a 32bit auto-reload timer
   RCC->APB1ENR1 = RCC_APB1ENR1_TIM2EN;
 
   RCC->APB1RSTR1 |= RCC_APB1RSTR1_TIM2RST;
   RCC->APB1RSTR1 &= ~RCC_APB1RSTR1_TIM2RST;
 
-  //prescaler must make clock period = 1ns from system clock of (16MHz)
+  // Prescaler must make clock period = 1ns from system clock of (16MHz)
   uint32_t prescaler = FREQ/1000000 - 1; //should be 15
   TIM2->PSC = 15; 
 
@@ -81,13 +81,14 @@ void STM32_init_peripherals()
 
     // LED/BUZZER
     gpio_set_mode(BUZZER, GPIO_MODE_OUTPUT);
-    gpio_set_mode(BLUE_LED, GPIO_MODE_OUTPUT);
+
+
+    gpio_set_mode(GREEN_LED, GPIO_MODE_OUTPUT);
   #endif
 }
 
 void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps) {
   for (int i = 0; i < noOfBeeps; i++) {
-    // ! because it seems as it works the other way?
     gpio_write(BUZZER, !HIGH);
     delay_ms(onDurationMs);
     gpio_write(BUZZER, !LOW); 
@@ -95,16 +96,27 @@ void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t n
   }
 }
 
-void STM32_flash_LED (uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfFlash) {
+void STM32_flash_LED(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfFlash) {
   for (int i = 0; i < noOfFlash; i++) {
-    gpio_write(BLUE_LED, !HIGH);
+    gpio_write(GREEN_LED, !HIGH);
     delay_ms(onDurationMs);
-    gpio_write(BLUE_LED, !LOW); 
+    gpio_write(GREEN_LED, !LOW); 
     delay_ms(offDurationMs);
+    
   }
 }
 
 void STM32_indicate_on() {
-  STM32_beep_buzzer(200, 200, 3);
-  STM32_flash_LED(200, 200, 3);
+  gpio_write(BUZZER, !LOW); 
+
+  for (int i = 0; i < 3; i++) {
+    gpio_write(BUZZER, !HIGH);
+    gpio_write(GREEN_LED, !HIGH);
+    delay_ms(200);
+    gpio_write(BUZZER, !LOW); 
+    gpio_write(GREEN_LED, !LOW); 
+    delay_ms(200);
+  }
+
+  gpio_write(BUZZER, !HIGH); 
 }

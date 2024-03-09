@@ -30,7 +30,7 @@ void get_frame_array(FrameArray* _frameArray,
   // Convert data to frame TODO
   Vector3 _acc_high_g = { _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z };
 
-  //add time stamp
+  // Add time stamp
   _frameArray->date.minute = (get_time_us()/(1000000*60))%60; //minuts
   _frameArray->date.second = (get_time_us()/1000000)%60; //seconds
   _frameArray->date.millisecond = (get_time_us()/1000)%1000; //milli seconds
@@ -41,19 +41,12 @@ void get_frame_array(FrameArray* _frameArray,
   _frameArray->accelHighG = _acc_high_g;  
 }
 
-/**
-  @brief Retrieve data from sensors
-  @param _M5611_data - MS5611 barometer data
-  @param _ADXL375_data - ADXL375 accelerometer data
-  @param _LSM6DS3_data - LSM6DS3 IMU data
-
-*/
 void update_sensors(M5611_data* _M5611_data, 
                     ADXL375_data* _ADXL375_data) {
   
   MS5611_get_data(_M5611_data);
   ADXL375_get_data(_ADXL375_data);
-  printf("Accel: %d, %d, %d\r\n", _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z);
+  //printf("Accel: %d, %d, %d\r\n", _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z);
 }
 #pragma endregion Updates
 
@@ -101,7 +94,6 @@ int main(void)
 
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   for (;;) {
-    #pragma region Flight Stages
     switch (flightStage) {
       case LAUNCHPAD:
         // Get the sensor readings
@@ -112,7 +104,6 @@ int main(void)
         update_buffer(&frame, &frame_buffer);
         if (frame_buffer.count > WINDOW_SIZE*2) {
           // Get the window barometer median
-          int _data[WINDOW_SIZE];
           for (int i = 0; i < WINDOW_SIZE; i++) {
             _data[i] = frame_buffer.window[i].barometer;
           }
@@ -122,25 +113,26 @@ int main(void)
           if ((frame_buffer.ground_ref - current_value) > LAUNCH_THRESHOLD) {
             printf("Ground: %d\r\n, Now: %d\r\n", frame_buffer.ground_ref, current_value);
             printf("Difference: %d\r\n", (frame_buffer.ground_ref - current_value));
-            flightStage = ASCEND;
+            flightStage = ASCENT;
 
             // Log all data from the buffer
             //for (int i = 0; i < WINDOW_SIZE; i++) {
-            // log_frame(frame_buffer.frames[1]);
+            // log_frame(frame_buffer.frames[i]);
+            //}
           }
         }
-      break;
+        break;
 
-      case ASCEND:
+      case ASCENT:
         // TODO: set a sampling rate
 
-        printf("ASCEND\r\n");
+        printf("ASCENT\r\n");
         // Get the sensor readings
         update_sensors(&_M5611_data, &_ADXL375_data);
         get_frame_array(&frame, &_M5611_data, &_ADXL375_data); 
 
         // Log data
-        log_frame(frame);
+        //log_frame(frame);
 
         // Update buffer and window  
         update_buffer(&frame, &frame_buffer);
@@ -164,7 +156,7 @@ int main(void)
         get_frame_array(&frame, &_M5611_data, &_ADXL375_data); 
 
         // Log data
-        log_frame(frame);
+        //log_frame(frame);
 
         // Update buffer and window  
         update_buffer(&frame, &frame_buffer);
@@ -184,10 +176,11 @@ int main(void)
         get_frame_array(&frame, &_M5611_data, &_ADXL375_data); 
 
         // Log data
-        log_frame(frame);
+        //log_frame(frame);
 
         // Update buffer and window  
         update_buffer(&frame, &frame_buffer);
+
         // Get window median readings
         int _data[WINDOW_SIZE];
         for (int i = 0; i < WINDOW_SIZE; i++) {
@@ -201,7 +194,7 @@ int main(void)
         break;
 
       case LANDING:
-        STM32_indicate_on();
+        STM32_beep_buzzer(200, 200, 1);
         break;
     }
   }

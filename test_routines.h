@@ -7,6 +7,7 @@
 #ifndef TESTING_ROUTINE_H
 
 #include "mcu.h"
+#include "STM32_init.h"
 #include "drivers/MS5611_driver.h"
 #include "drivers/ADXL375_driver.h"
 #include "drivers/LSM6DS3_driver.h"

@@ -13,7 +13,6 @@
 */
 void run_test_routine()
 {
-  uint16_t led_B = PIN('H', 3);
   uint32_t timer = 0, period = 500;
 
   for (;;)
@@ -21,7 +20,7 @@ void run_test_routine()
     if (timer_expired(&timer, period, s_ticks))
     {
       static bool on = true;                         // This block is executed
-      gpio_write(led_B, on);                         // Every `period` milliseconds
+      gpio_write(GREEN_LED, on);                         // Every `period` milliseconds
       on = !on;                                      // Toggle LED state
       printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
     }
@@ -34,8 +33,6 @@ void run_test_routine()
 void run_MS5611_routine()
 {
   printf("================ MS5611_routine ================\r\n");
-  uint16_t led_B = PIN('H', 3);
-  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
   M5611_data _data;
 
   uint32_t timer = 0, period = 100;
@@ -44,7 +41,7 @@ void run_MS5611_routine()
     if (timer_expired(&timer, period, s_ticks))
     {
       static bool on = true;                // This block is executed
-      gpio_write(led_B, on);                // Every `period` milliseconds
+      gpio_write(GREEN_LED, on);                // Every `period` milliseconds
       on = !on;
       M5611_data data;
       MS5611_get_data(&data);
@@ -88,8 +85,6 @@ void SI446_Test_routine()
 void LSM6DS3_test_routine()
 {
   printf("================ LSM6DS3_routine ================\r\n");
-  uint16_t led_B = PIN('H', 3);
-  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
   uint32_t timer = 0, period = 500;
 
   for (;;)
@@ -97,7 +92,7 @@ void LSM6DS3_test_routine()
     if (timer_expired(&timer, period, s_ticks))
     {
       static bool on = true;                         // This block is executed
-      gpio_write(led_B, on);                         // Every `period` milliseconds
+      gpio_write(GREEN_LED, on);                         // Every `period` milliseconds
       on = !on;                                      // Toggle LED state
       printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
 
@@ -113,8 +108,6 @@ void LSM6DS3_test_routine()
 */
 void spi_test_routine()
 {
-  uint16_t led_B = PIN('H', 3);
-  gpio_set_mode(led_B, GPIO_MODE_OUTPUT);
   uint32_t timer = 0, period = 500;
 
   for (;;)
@@ -122,7 +115,7 @@ void spi_test_routine()
     if (timer_expired(&timer, period, s_ticks))
     {
       static bool on = true;                         // This block is executed
-      gpio_write(led_B, on);                         // Every `period` milliseconds
+      gpio_write(GREEN_LED, on);                         // Every `period` milliseconds
       on = !on;                                      // Toggle LED state
       printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
       //spi_write_byte(SPI1,0);
