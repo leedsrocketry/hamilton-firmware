@@ -239,7 +239,7 @@ static inline void uart_init(USART_TypeDef *uart, unsigned long baud)
   gpio_set_mode(rx, GPIO_MODE_AF);
   gpio_set_af(rx, af);
   uart->CR1 = 0;                                // Disable this UART                              
-  uart->BRR = 256*FREQ / baud;                  // FREQ is a CPU frequency
+  uart->BRR = FREQ / baud;                      // FREQ is a CPU frequency
   uart->CR1 |= BIT(0) | BIT(2) | BIT(3);        // Set UE, RE, TE Datasheet 50.8.1 
 }
 
@@ -393,10 +393,10 @@ static inline void spi_init(SPI_TypeDef *spi) {
   // Nucleo pins
   if (spi == SPI1)
     RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('A', 5), miso = PIN('A', 6), mosi = PIN('A', 7);
-  if (spi == SPI2)
-    RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
-  if (spi == SPI3)
-    RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
+  //if (spi == SPI2)
+  //  RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
+  //if (spi == SPI3)
+  //  RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
 
   #endif
 

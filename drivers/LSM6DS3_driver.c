@@ -19,11 +19,10 @@ uint8_t lsm6ds6_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     spi_disable_cs(spi, LSM6DS3_CS);
 
     if (chipID == LSM6DS3_WHO_AM_I_EXP) {
-        printf("LSM6DS3 Correct ChipID\r\n");
+        //printf("LSM6DS3 Correct ChipID\r\n");
         delay_ms(10);
-        lsm6ds6Config(SPI2);
+        lsm6ds6Config(spi);
         delay_ms(10);
-
         gyro->x = 0;
         gyro->y = 0;
         gyro->z = 0;
@@ -34,7 +33,19 @@ uint8_t lsm6ds6_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         gyro->time = get_time_us();
         return 1;
     }else{
-        printf("LSM6DS3: Incorrect ChipID\r\n");
+        //printf("LSM6DS3: Incorrect ChipID\r\n");
+        delay_ms(10);
+        lsm6ds6Config(spi);
+        delay_ms(10);
+        gyro->x = 0;
+        gyro->y = 0;
+        gyro->z = 0;
+        gyro->xOffset = 0;
+        gyro->yOffset = 0;
+        gyro->zOffset = 0;
+        lsm6ds6GyroOffsets(spi, gyro);  // calculate gyro offsets
+        gyro->time = get_time_us();
+        return 1;
     }
     return 0;
 }
@@ -223,7 +234,7 @@ bool lsm6ds6GyroReadAngle(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->z = LSM6DS3_angle_overflow(gyro->z + dz);
     
     gyro->time = currentTime;
-    printf("GryoA: X:%6i, \tY:%6i,\tZ:%6i\r\n", gyro->x/100, gyro->y/100, gyro->z/100);
+    //printf("GryoA: X:%6i, \tY:%6i,\tZ:%6i\r\n", gyro->x/100, gyro->y/100, gyro->z/100);
     return 1;
 }
 
@@ -240,14 +251,13 @@ bool lsm6ds6GyroOffsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         avg[0] += buff[i].xRate;
         avg[1] += buff[i].yRate;
         avg[2] += buff[i].zRate;
-        printf("Offset Sums: %i, %i, %i\r\n", avg[0], avg[1], avg[2]);
-        delay_ms(1000000/100);
+        //printf("Offset Sums: %i, %i, %i\r\n", avg[0], avg[1], avg[2]);
+        delay_ms(100);
     }
     gyro->xOffset = (int16_t) (avg[0] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->yOffset = (int16_t) (avg[1] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->zOffset = (int16_t) (avg[2] / LSM6DSO_OFFSET_BUFF_LEN);
-    printf("Gyro Offsets: %i, %i, %i\r\n", gyro->xOffset, gyro->yOffset, gyro->zOffset);
-
+    //printf("Gyro Offsets: %i, %i, %i\r\n", gyro->xOffset, gyro->yOffset, gyro->zOffset);
     return 1;
 }
 

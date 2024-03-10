@@ -11,34 +11,35 @@ FREQ = (int) 4000000;
 
 void STM32_init()
 {
-  systick_init(FREQ / 1000);     // Tick every 1 ms
-  STM32_init_internals();
+  uint32_t ticks_per_ms = FREQ / 1000;
+  systick_init(ticks_per_ms);   // Tick every 1 us
+  init_delay_timer();
   STM32_init_peripherals();
+  STM32_init_internals();
 }
 
-void STM32_init_clock(unsigned long frequency){
+void STM32_init_clock(unsigned long frequency) {
   if (frequency == RCC_CFGR_SW_MSI){
-    // MSI range can only be set if MSI is off, or MSI is on and MSIRDY = 1
-    RCC->CR |= RCC_CR_MSION;       // set to 1 for MSI on
+    //MSI range can only be set if MSI is off, or MSI is on and MSIRDY = 1
+    RCC->CR |= RCC_CR_MSION;       //set to 1 for MSI on
     while ((RCC->CR & RCC_CR_MSION) && !(RCC->CR & RCC_CR_MSIRDY)); //wait until off, or on and ready
     RCC->CR = (RCC->CR & ~RCC_CR_MSIRANGE_Msk)  | RCC_CR_MSIRANGE_11; //set MSI range to 48Hz (0b1011)
-    RCC->CR |= RCC_CR_MSIRGSEL;    // set to 1 to use MSI range from CR register
+    RCC->CR |= RCC_CR_MSIRGSEL;    //set to 1 to use MSI range from CR register
     RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_MSI; // set system clock to MSI
-    FREQ = 48000000; // 48MHz
-  } else if (frequency == RCC_CFGR_SW_HSI){
-    RCC->CR |= RCC_CR_HSION;       // set to 1 for HSI on
-    while (!(RCC->CR & RCC_CR_HSIRDY)); // wait until HSI ready
+    FREQ = 48000000; //48MHz
+  }else if (frequency == RCC_CFGR_SW_HSI){
+    RCC->CR |= RCC_CR_HSION;       //set to 1 for HSI on
+    while (!(RCC->CR & RCC_CR_HSIRDY)); //wait until HSI ready
     RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_HSI; // set system clock to HSI
-    FREQ = 16000000; // 16MHz
-  } else {
-    FREQ = 4000000; // default
+    FREQ = 16000000; //16MHz
+  }else{
+    FREQ = 4000000; //default
   }
 }
 
-void init_delay_timer(){
+void init_delay_timer() {
   // Use general purpose timer 2 which is a 32bit auto-reload timer
   RCC->APB1ENR1 = RCC_APB1ENR1_TIM2EN;
-
   RCC->APB1RSTR1 |= RCC_APB1RSTR1_TIM2RST;
   RCC->APB1RSTR1 &= ~RCC_APB1RSTR1_TIM2RST;
 
@@ -49,22 +50,22 @@ void init_delay_timer(){
   // Send an update event to reset the timer and apply settings.
   TIM2->EGR  |= TIM_EGR_UG;
 
-  //reload value
+  // Reload value
   //TIM2->ARR = 999;
   
-  //enable timer
+  // Enable timer
   TIM2->CR1 = (1 << 0);
-  
 }
 
 void STM32_init_internals()
 {
   // UART
-  systick_init(FREQ / 1000);  // Tick every 1 ms
-  uart_init(LUART1, 115200);  // Initialise Low Power UART;
-  uart_init(UART1,  115200);  // Initialise UART1;
-  uart_init(UART2,  115200);  // Initialise UART2;
-  uart_init(UART3,  115200);  // Initialise UART3;
+  //systick_init(FREQ / 1000);  // Tick every 1 ms
+  //uart_init(LUART1, 9600);    // Initialise Low Power UART;
+  //uart_init(UART1,  9600);    // Initialise UART1;
+  uart_init(USART1, 9600);  // Initialise USART1;
+  //uart_init(UART2,  9600);    // Initialise UART2;
+  //uart_init(UART3,  9600);    // Initialise UART3;
 
   // SPI 
   spi_init(SPI1);
@@ -81,8 +82,6 @@ void STM32_init_peripherals()
 
     // LED/BUZZER
     gpio_set_mode(BUZZER, GPIO_MODE_OUTPUT);
-
-
     gpio_set_mode(GREEN_LED, GPIO_MODE_OUTPUT);
   #endif
 }
@@ -118,5 +117,5 @@ void STM32_indicate_on() {
     delay_ms(200);
   }
 
-  gpio_write(BUZZER, !HIGH); 
+  gpio_write(BUZZER, !LOW); 
 }

@@ -65,7 +65,7 @@ uint16_t ALE = PIN('E', 7);  // 15, Address latch enable (where in the memory to
 uint16_t CLE = PIN('E', 8);  // 16, Command latch enable (When on, you can sent command);
 uint16_t CE  = PIN('E', 9);  // 17, Check Enable (in case we want to test separatly);
 uint16_t RE  = PIN('E', 11); // 18, Read Enable;
-uint16_t RB  = PIN('E', 13); // 19, Ready/Busy;
+uint16_t RB  = PIN('A', 8); // 19, Ready/Busy;
 
 // Stores the address of the next available frame (set of 128 bytes) (assumes all frames prior to this are full of valuable data)
 // This variable is set by the get_next_available_frame_addr() function
@@ -428,7 +428,7 @@ static inline void print_frame_csv(FrameArray frameFormat) {
 static inline void wait_for_ready_flag() {
   int count = 1000*100; // Try for 1 second before giving error
   while (gpio_read(RB) == LOW && count > 0) {
-    delay_nanoseconds(1);
+    delay_ms(1);
     count--;
   }
   if (count < 1) {
@@ -448,14 +448,14 @@ static inline void set_pin_modes() {
   gpio_set_mode(data5, globalPinMode);
   gpio_set_mode(data6, globalPinMode);
   gpio_set_mode(data7, globalPinMode);
-  delay_microseconds(DELAY_PINMODE);
+  delay_ms(DELAY_PINMODE);
 }
 
 /**
   @brief Set the control pins based on the input byte (i.e. COMMAND_INPUT, DATA_INPUT)
 */
 static inline void set_control_pins(uint8_t controlRegister) {  // CE# CLE ALE WE# RE# WP#
-  //gpio_write(CE, get_bit(controlRegister, 0));  // TODO: Why is this commented out?
+  gpio_write(CE, get_bit(controlRegister, 0));  // TODO: Why is this commented out?
   gpio_write(CLE, get_bit(controlRegister, 1));
   gpio_write(ALE, get_bit(controlRegister, 2));
   gpio_write(WE, get_bit(controlRegister, 3));
@@ -501,12 +501,12 @@ static inline void send_byte_to_flash(uint8_t cmd, uint8_t mode) {
   @brief Read a single byte from the flash (assumes address to read from has been set before calling this function)
   @return 
 */
-static inline uint8_t receive_byte_from_flash() {
-  delay_nanoseconds(DELAY);
+static inline uint8_t receive_byte_from_flash() {  
+  delay_ms(DELAY);
   set_control_pins(DATA_OUTPUT);
-  delay_nanoseconds(DELAY);
+  delay_ms(DELAY);
   set_control_pins(DATA_OUTPUT & (~RE_HIGH));  // setting RE LOW
-  delay_nanoseconds(DELAY);
+  delay_ms(DELAY);
 
   if (globalPinMode != GPIO_MODE_INPUT) {
     globalPinMode = GPIO_MODE_INPUT;
@@ -620,7 +620,7 @@ static inline void write_frame(uint32_t frameAddr, uint8_t *bytes) {
   wait_for_ready_flag();
   send_byte_to_flash(0x80, COMMAND_INPUT);
   send_addr_to_flash(frameAddr, 0);  // Address Input
-  delay_nanoseconds(10); //was 1 ms but I think that needs decreasing
+  delay_ms(10); //was 1 ms but I think that needs decreasing
   for (int byteAddr = 0; byteAddr < 128; byteAddr++) {
     send_byte_to_flash(bytes[byteAddr], DATA_INPUT);
   }
@@ -702,7 +702,7 @@ static inline uint16_t diff(uint16_t x1, uint16_t x2) {
 static inline uint32_t get_next_available_frame_addr() {
   uint16_t prevPointer = 4096;
   uint16_t pointer = prevPointer / 2;
-  uint8_t _check = 0;
+  uint8_t _check = 0; 
   
   for (int i = 0; i < 11; i++) {
     read_frame(max(pointer - 1, 0) * 64 * 32, &_check, 1);  // Dosn't need to be the whole frame -------
@@ -796,7 +796,7 @@ static inline void init_flash() {
 
   gpio_set_mode(ALE, GPIO_MODE_OUTPUT);
   gpio_set_mode(CLE, GPIO_MODE_OUTPUT);
-  //gpio_set_mode(CE,  GPIO_MODE_OUTPUT);
+  gpio_set_mode(CE,  GPIO_MODE_OUTPUT);
   gpio_set_mode(RE,  GPIO_MODE_OUTPUT);
   gpio_set_mode(WE,  GPIO_MODE_OUTPUT);
   gpio_set_mode(WP,  GPIO_MODE_OUTPUT);
@@ -805,6 +805,8 @@ static inline void init_flash() {
   
   frameAddressPointer = get_next_available_frame_addr();
   printf("FRAME ADDRESS POINTER %i.\r\n", frameAddressPointer);
+
+  printf("%d\r\n", read_flash_ID());
 
   if (read_flash_ID() != 0){
     printf("Flash Working Correctly\r\n");
