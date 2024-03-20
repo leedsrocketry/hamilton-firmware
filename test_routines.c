@@ -17,12 +17,12 @@ void run_test_routine()
 
   for (;;)
   {
-    if (timer_expired(&timer, period, s_ticks))
+    if (timer_expired(&timer, period, 1000))
     {
       static bool on = true;                         // This block is executed
       gpio_write(GREEN_LED, on);                         // Every `period` milliseconds
       on = !on;                                      // Toggle LED state
-      printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
+      printf("LED: %d, tick: %lu\r\n", on, 1000); // Write message
     }
   }
 }
@@ -34,19 +34,13 @@ void run_MS5611_routine()
 {
   printf("================ MS5611_routine ================\r\n");
   M5611_data _data;
-
-  uint32_t timer = 0, period = 100;
-  for (;;)
-  {
-    if (timer_expired(&timer, period, s_ticks))
-    {
-      static bool on = true;                // This block is executed
-      gpio_write(GREEN_LED, on);                // Every `period` milliseconds
-      on = !on;
-      M5611_data data;
-      MS5611_get_data(&data);
-      printf("p: %d, t: %d, \r\n", data.pressure, data.temp);
-    }
+  bool on = true;
+  for (;;) {
+    delay_ms(1000);
+    gpio_write(GREEN_LED, on);
+    on = !on;
+    MS5611_get_data(&_data);
+    printf("p: %d, t: %d, \r\n", _data.pressure, _data.temp);
   }
 }
 
@@ -61,7 +55,7 @@ void run_ADXL375_routine()
   uint32_t timer = 0, period = 500;
   for (;;)
   {
-    if (timer_expired(&timer, period, s_ticks))
+    if (timer_expired(&timer, period, 1000))
     {
       ADXL375_get_data(&_data);
     }
@@ -79,6 +73,9 @@ void run_SI446_routine()
   printf("completed: %d \r\n ", ret_val);
 }
 
+/**
+  @brief Routine to test the LSM6DS3 IMU.
+*/
 void run_LSM6DS3_routine()
 {
   printf("================ LSM6DS3_routine ================\r\n");
@@ -89,7 +86,7 @@ void run_LSM6DS3_routine()
   uint32_t timer = 0, period = 500;
   for (;;)
   {
-    if (timer_expired(&timer, period, s_ticks))
+    if (timer_expired(&timer, period, 1000))
     {
       lsm6ds6GyroReadAngle(SPI1, &gyro_data);
       printf("Gyro: %d, %d, %d, \r\n", gyro_data.x, gyro_data.y, gyro_data.z);
@@ -107,12 +104,12 @@ void spi_test_routine()
 
   for (;;)
   {
-    if (timer_expired(&timer, period, s_ticks))
+    if (timer_expired(&timer, period, 1000))
     {
       static bool on = true;                         // This block is executed
       gpio_write(GREEN_LED, on);                         // Every `period` milliseconds
       on = !on;                                      // Toggle LED state
-      printf("LED: %d, tick: %lu\r\n", on, s_ticks); // Write message
+      printf("LED: %d, tick: %lu\r\n", on, 1000); // Write message
       //spi_write_byte(SPI1,0);
       uint8_t ret_val = 0;
       //spi_write_byte(SPI1,124);
@@ -121,6 +118,44 @@ void spi_test_routine()
     }
   }
 }
+
+// 10000010 1100000 100111110
+// 11010111 1100000
+/**
+  @brief Test that the SPI works appropriately; use Putty to check the LUART output
+  @param spi Selected SPI (1, 2 or 3)
+*/
+/*
+static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) {
+  valueToSend++;
+
+  // Convert the integer to a byte array
+  uint8_t byteBuffer[sizeof(valueToSend)];
+  for (size_t i = 0; i < sizeof(valueToSend); ++i) {
+    byteBuffer[i] = (uint8_t)(valueToSend >> (i * 8)) & 0xFF;
+  }
+
+  // Calculate the length of the byte array
+  size_t bufferLength = sizeof(byteBuffer);
+
+  spi_write_buf(spi, (char *)byteBuffer, bufferLength);
+
+  // Wait for transfer to complete (until receive buffer is not empty)
+  spi_ready_read(spi);
+
+  // Read received data from SPI
+  uint16_t receivedValue = spi_read_byte(spi);
+
+  // Convert the received byte array back to an integer
+  for (size_t i = 0; i < sizeof(receivedValue); ++i) {
+    receivedValue |= ((uint16_t)byteBuffer[i] << (i * 8));
+  }
+
+  // Print the received integer
+  printf("Received Value: %hu\r\n", receivedValue);
+
+  return 0;
+}*/
 
 /**
   @brief Routine to test NAND Flash reading and writing.

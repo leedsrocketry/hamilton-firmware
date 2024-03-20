@@ -384,19 +384,19 @@ static inline void spi_init(SPI_TypeDef *spi) {
   // Flight Computer pins maybe A4 or B0 or E12 or G5 or A15
   if (spi == SPI1)
     RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('E', 13), miso = PIN('E', 14), mosi = PIN('E', 15);
-  //if (spi == SPI2)
-  //  RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
-  //if (spi == SPI3)
-  //  RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
+  if (spi == SPI2)
+    RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
+  if (spi == SPI3)
+    RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
 
   #else
   // Nucleo pins
   if (spi == SPI1)
     RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('A', 5), miso = PIN('A', 6), mosi = PIN('A', 7);
-  //if (spi == SPI2)
-  //  RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
-  //if (spi == SPI3)
-  //  RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
+  if (spi == SPI2)
+    RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
+  if (spi == SPI3)
+    RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
 
   #endif
 
@@ -412,37 +412,35 @@ static inline void spi_init(SPI_TypeDef *spi) {
   gpio_set_af(miso, af);
   gpio_set_af(mosi, af);
 
-  // MCU clock speed (FREQ) is 4 MHz and max MCU SPI speed is FREQ / 2.
-  spi->CR1 &= ~(7U << 3);
+  // MCU clock speed (FREQ) is 16 MHz and max MCU SPI speed is FREQ / 2.
+  spi->CR1 &= ~(7U << 3);   // Clears BR (bits 5:3) to 000 which is = system clock/2
+  spi->CR1 |= (3U << 3);    // Sets BR to 011, systemclk/16, so 1MHz
 
   // CPOL (clk polarity) and CPHA (clk phase) defaults  to produce the desired clock/data relationship
+  // CPOL controls the idle state value of the clock when no data is being transferred.
   spi->CR1 |= BIT(0);
   spi->CR1 |= BIT(1);
 
   // MCU datasheet "Select simplex or half-duplex mode by configuring
   // RXONLY or BIDIMODE and BIDIOE (RXONLY and BIDIMODE cannot be set
   // at the same time)"
-  spi->CR1 &= ~BIT(10);
-  spi->CR1 &= ~BIT(15);
+  spi->CR1 &= ~BIT(10); // full duplex
+  spi->CR1 &= ~BIT(15); //2 line unidirectional data mode
 
   // Datasheet: "The MSB of a byte is transmitted first"
   spi->CR1 &= ~BIT(7);
 
-  // CRC not needed so ignoring CRCL and CRCEN
-
   // Software slave management seems required
-  spi->CR1 |= BIT(9);
+  spi->CR1 |= BIT(9); // Manually do ss
 
   // Configuring the mcu as SPI master
   spi->CR1 |= BIT(2);
 
   // Frame size is 8 bits
   spi->CR2 |= (7U << 8);
-  // spi->CR2 |= (15u << 8);
 
   // Activating SS output enable
   spi->CR2 |= BIT(2);
-  // spi->CR2 |= BIT(3);
 
   spi->CR2 |= BIT(12);
 
@@ -462,17 +460,14 @@ static inline void spi_init(SPI_TypeDef *spi) {
   @return True when ready
 */
 static inline int spi_ready_read(SPI_TypeDef *spi) {
-  while (!(spi->SR & BIT(1)))
-    ; // Wait until transmit buffer is empty
-  while (!(spi->SR & BIT(0)))
-    ; // Wait until receive buffer is not empty (RxNE, 52.4.9)
+  while (!(spi->SR & BIT(1))); // Wait until transmit buffer is empty
+  while (!(spi->SR & BIT(0))); // Wait until receive buffer is not empty (RxNE, 52.4.9)
 
   return 1; // data is ready
 }
 
 static inline int spi_ready_write(SPI_TypeDef *spi) {
-  while ((spi->SR & BIT(7)))
-    ; // Wait until SPI is not busy
+  while ((spi->SR & BIT(7))); // Wait until SPI is not busy
   return 1; // data is ready
 }
 
@@ -488,7 +483,6 @@ static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
   if (spi == SPI1)
     gpio_write(PIN('A', 4), LOW);
   #endif
-  cs = 0;
 }
 
 /**
@@ -504,7 +498,6 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
   if (spi == SPI1)
     gpio_write(PIN('A', 4), HIGH);
   #endif
-  cs = 0;
 }
 
 /**
@@ -517,22 +510,26 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 {
   uint8_t recieve_byte = 123;
   spi_ready_write(spi);
-  //*((volatile uint8_t *)&(spi->DR)) = send_byte << 8;
   *(volatile uint8_t *)&spi->DR = send_byte;
-  // since SPI is asyncronous communication, we gotta recieve a bit aswell....
+  
+  // Since SPI is asyncronous communication, we recieve a bit as well
   spi_ready_read(spi);
-  recieve_byte = *((volatile uint8_t *)&(spi->DR)); 
+  recieve_byte = *((volatile uint8_t *)&(spi->DR));
   return recieve_byte;
 }
 
-static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi, uint8_t *send_bytes, uint8_t transmit_size, uint8_t receive_size, void* result_ptr)
+static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
+                                          uint8_t *send_byte,
+                                          uint8_t transmit_size,
+                                          uint8_t receive_size,
+                                          void* result_ptr)
 {
   uint8_t ret_value = 0;
   spi_ready_write(spi);
   //int8_t x[1];
 
   for (int i = 0; i<transmit_size; i++) {
-    spi_transmit(spi, ((uint8_t *)send_bytes)[i]);
+    spi_transmit(spi, send_byte[i]);
   }
 
   //printf("x_inside: %d ", (x[1] << 8) | x[0]);
@@ -585,7 +582,7 @@ static inline uint8_t spi_read_byte(SPI_TypeDef *spi)
 static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8_t transmit_size)
 {
   for(int i = 0; i < transmit_size; i++) {
-    spi_write_byte(spi, send_bytes[i]);
+    spi_transmit(spi, send_bytes[i]);
   }
   return 0;
 }
@@ -602,45 +599,6 @@ static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uin
   }
   return retval; // TODO error checking
 }
-
-// 10000010 1100000 100111110
-// 11010111 1100000 
-
-/**
-  @brief Test that the SPI works appropriately; use Putty to check the LUART output
-  @param spi Selected SPI (1, 2 or 3)
-*/
-/*
-static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) {
-  valueToSend++;
-
-  // Convert the integer to a byte array
-  uint8_t byteBuffer[sizeof(valueToSend)];
-  for (size_t i = 0; i < sizeof(valueToSend); ++i) {
-    byteBuffer[i] = (uint8_t)(valueToSend >> (i * 8)) & 0xFF;
-  }
-
-  // Calculate the length of the byte array
-  size_t bufferLength = sizeof(byteBuffer);
-
-  spi_write_buf(spi, (char *)byteBuffer, bufferLength);
-
-  // Wait for transfer to complete (until receive buffer is not empty)
-  spi_ready_read(spi);
-
-  // Read received data from SPI
-  uint16_t receivedValue = spi_read_byte(spi);
-
-  // Convert the received byte array back to an integer
-  for (size_t i = 0; i < sizeof(receivedValue); ++i) {
-    receivedValue |= ((uint16_t)byteBuffer[i] << (i * 8));
-  }
-
-  // Print the received integer
-  printf("Received Value: %hu\r\n", receivedValue);
-
-  return 0;
-}*/
 #pragma endregion SPI
 
 #pragma region Watchdog

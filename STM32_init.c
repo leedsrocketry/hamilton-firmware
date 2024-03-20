@@ -11,11 +11,17 @@ FREQ = (int) 4000000;
 
 void STM32_init()
 {
+  // Set clock to 16MHz internal HSI
+  STM32_init_clock(RCC_CFGR_SW_HSI);
+
+  // Initialise the timer (tick every 1 us)
   uint32_t ticks_per_ms = FREQ / 1000;
-  systick_init(ticks_per_ms);   // Tick every 1 us
+  systick_init(ticks_per_ms);
   init_delay_timer();
-  STM32_init_peripherals();
+
+  // Initialise system
   STM32_init_internals();
+  STM32_init_peripherals();
 }
 
 void STM32_init_clock(unsigned long frequency) {
@@ -60,12 +66,10 @@ void init_delay_timer() {
 void STM32_init_internals()
 {
   // UART
-  //systick_init(FREQ / 1000);  // Tick every 1 ms
-  //uart_init(LUART1, 9600);    // Initialise Low Power UART;
-  //uart_init(UART1,  9600);    // Initialise UART1;
-  uart_init(USART1, 9600);  // Initialise USART1;
-  //uart_init(UART2,  9600);    // Initialise UART2;
-  //uart_init(UART3,  9600);    // Initialise UART3;
+  uart_init(LUART1, 9600);  // Initialise Low Power UART;
+  uart_init(USART1, 9600);  // Initialise UART1;
+  uart_init(USART2, 9600);  // Initialise UART2;
+  uart_init(USART3, 9600);  // Initialise UART3;
 
   // SPI 
   spi_init(SPI1);
@@ -86,36 +90,32 @@ void STM32_init_peripherals()
   #endif
 }
 
-void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps) {
-  for (int i = 0; i < noOfBeeps; i++) {
+void STM32_beep_buzzer(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_beeps) {
+  for (int i = 0; i < nom_beeps; i++) {
     gpio_write(BUZZER, !HIGH);
-    delay_ms(onDurationMs);
+    delay_ms(on_duration_ms);
     gpio_write(BUZZER, !LOW); 
-    delay_ms(offDurationMs);
+    delay_ms(off_duration_ms);
   }
 }
 
-void STM32_flash_LED(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfFlash) {
-  for (int i = 0; i < noOfFlash; i++) {
+void STM32_flash_LED(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_flash) {
+  for (int i = 0; i < nom_flash; i++) {
     gpio_write(GREEN_LED, !HIGH);
-    delay_ms(onDurationMs);
+    delay_ms(on_duration_ms);
     gpio_write(GREEN_LED, !LOW); 
-    delay_ms(offDurationMs);
+    delay_ms(off_duration_ms);
     
   }
 }
 
 void STM32_indicate_on() {
-  gpio_write(BUZZER, !LOW); 
-
   for (int i = 0; i < 3; i++) {
-    gpio_write(BUZZER, !HIGH);
-    gpio_write(GREEN_LED, !HIGH);
+    gpio_write(BUZZER, !HIGH);    // Turn on buzzer
+    gpio_write(GREEN_LED, !LOW);  // Turn off LED
     delay_ms(200);
-    gpio_write(BUZZER, !LOW); 
-    gpio_write(GREEN_LED, !LOW); 
+    gpio_write(BUZZER, !LOW);     // Turn off buzzer
+    gpio_write(GREEN_LED, !HIGH); // Turn on LED
     delay_ms(200);
   }
-
-  gpio_write(BUZZER, !LOW); 
 }

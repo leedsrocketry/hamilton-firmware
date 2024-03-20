@@ -34,11 +34,8 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
     spi_enable_cs(MS5611_SPI, MS5611_CS);
     int cmd = MS5611_CMD_RESET;
     uint8_t init = spi_transmit(MS5611_SPI, &cmd);
-    STM32_indicate_on();
     spi_disable_cs(MS5611_SPI, MS5611_CS);
     MS5611_read_PROM(MS5611_SPI);
-    M5611_data data;
-    MS5611_get_data(&data);
 	return 0;
 }
 

@@ -37,10 +37,10 @@ void get_frame_array(FrameArray* _frameArray,
   Vector3 _acc_high_g = { _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z };
 
   // Add time stamp
-  _frameArray->date.minute = (get_time_us()/(1000000*60))%60; //minuts
-  _frameArray->date.second = (get_time_us()/1000000)%60; //seconds
-  _frameArray->date.millisecond = (get_time_us()/1000)%1000; //milli seconds
-  _frameArray->date.microsecond = get_time_us()%1000; //Mirco seconds
+  _frameArray->date.minute = (get_time_us()/(1000000*60))%60; // Minuts
+  _frameArray->date.second = (get_time_us()/1000000)%60;      // Seconds
+  _frameArray->date.millisecond = (get_time_us()/1000)%1000;  // Milli seconds
+  _frameArray->date.microsecond = get_time_us()%1000;         // Mirco seconds
   
   // Add data to the frame
   _frameArray->changeFlag = flightStage;
@@ -58,7 +58,7 @@ void update_sensors(M5611_data* _M5611_data,
   
   MS5611_get_data(_M5611_data);
   ADXL375_get_data(_ADXL375_data);
-  //lsm6ds6GyroReadAngle(SPI1, _LSM6DS3_data);
+  lsm6ds6GyroReadAngle(SPI1, _LSM6DS3_data);
 
   printf("Barometer: %d, Temp: %d, Accel: %d, %d, %d, Gyro: %d, %d, %d\r\n", 
           _M5611_data->pressure, _M5611_data->temp, 
@@ -91,16 +91,13 @@ void NAND_flash_read()
 int main(void)
 {
   // STM32 setup
-  STM32_init_clock(RCC_CFGR_SW_HSI); // Set clock to 16MHz internal HSI
   STM32_init();
-  //uart_init(LUART1, 9600); // Initialise Low Power UART;
-  spi_init(SPI1);
 
   printf("================ PROGRAM START ================\r\n");
   STM32_indicate_on();  
 
   printf("============ INITIALISE NAND FLASH ============\r\n");
-  //init_flash();
+  init_flash();
 
   printf("============== INITIALISE DRIVERS =============\r\n");
   // Buffer data
@@ -111,8 +108,7 @@ int main(void)
   // Sensor initialisation
   MS5611_init(SPI1);                    // Barometer
   ADXL375_init(SPI1);                   // Accelerometer
-  //lsm6ds6_init(SPI1, &_LSM6DS3_data);   // IMU
-  delay_ms(1000);
+  lsm6ds6_init(SPI1, &_LSM6DS3_data);   // IMU
 
   // Buffer
   FrameArray frame;                         // initialise the frameArray that keeps updating
@@ -129,6 +125,7 @@ int main(void)
   int apogee_incr = 3;
 
   //printf("============== ADD TESTS HERE ==============\r\n");
+  //run_MS5611_routine();
   //run_nand_flash_erase();
   //NAND_flash_read();
 
@@ -161,7 +158,7 @@ int main(void)
               flightStage = ASCENT;
               // Log all data from the buffer
               for (int i = 0; i < BUFFER_SIZE; i++) {
-                //log_frame(frame_buffer.frames[i]);
+                log_frame(frame_buffer.frames[i]);
               }
             }
           }
@@ -178,7 +175,7 @@ int main(void)
           get_frame_array(&frame, &_M5611_data, &_ADXL375_data, &_LSM6DS3_data); 
 
           // Log data
-          //log_frame(frame);
+          log_frame(frame);
 
           // Update buffer and window  
           update_buffer(&frame, &frame_buffer);
@@ -208,7 +205,7 @@ int main(void)
           get_frame_array(&frame, &_M5611_data, &_ADXL375_data, &_LSM6DS3_data); 
 
           // Log data
-          //log_frame(frame);
+          log_frame(frame);
 
           // Update buffer and window  
           update_buffer(&frame, &frame_buffer);
@@ -231,7 +228,7 @@ int main(void)
           get_frame_array(&frame, &_M5611_data, &_ADXL375_data, &_LSM6DS3_data); 
 
           // Log data
-          //log_frame(frame);
+          log_frame(frame);
 
           // Update buffer and window  
           update_buffer(&frame, &frame_buffer);
