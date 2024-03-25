@@ -165,6 +165,7 @@ int main(void)
         }
         break;
 
+      
       case ASCENT:
         newTime = get_time_us();  // Get current time
         if ((newTime - oldTime) > (1000000 / ASCENTREADFREQ)) {
