@@ -1,38 +1,34 @@
 name: Build Firmware
 
 on:
-  push:
-    branches:
-      - main  # Adjust branch name as needed
   pull_request:
     branches:
       - main
+      - CI/CD
 
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      
-    - name: Set up ARM GCC Toolchain # Install arm-none-eabi-gcc
-      run: |
-        wget -O toolchain.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz
-        tar -xf toolchain.tar.xz
-        export PATH=$PATH:$(pwd)/arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin
-    
-    - name: Build Firmware
-      run: |
-        make build 2>&1 | tee build.log
-        if grep -q "warning" build.log; then
-          echo "Build failed due to warnings."
-          exit 1
-        fi
-      
-    - name: Upload Firmware
-      if: success()
-      uses: actions/upload-artifact@v2
-      with:
-        name: firmware
-        path: firmware.bin
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        
+      - name: Build Firmware
+        run: |
+          wget -O toolchain.tar.xz https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz
+          tar -xf toolchain.tar.xz
+          export PATH=$PATH:$(pwd)/arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin
+          
+          make build 2>&1 | tee build.log
+          if grep -q "warning" build.log; then
+            echo "Build failed due to warnings."
+            exit 1
+          fi
+        
+      - name: Upload Firmware
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: firmware
+          path: firmware.bin
