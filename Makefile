@@ -27,7 +27,7 @@ flash: firmware.bin
 clean:
 	$(RM) -rf firmware.*
 
-debug:
+debug-hardware:
 	openocd -f "debug/OpenOCD/openocd/scripts/board/st_nucleo_l4.cfg"
 
 unblock-write-protected:
