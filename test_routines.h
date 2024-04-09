@@ -14,8 +14,7 @@
 #include "drivers/SI446_driver.h"
 
 /**
-  @brief Initial Routine to run on hardware. Should trigger RGB blink sequence
-  and Serial printing via LUART1.
+  @brief Initial Routine to run on hardware. Should trigger RGB blink sequence.
 */
 void run_test_routine();
 
@@ -43,5 +42,10 @@ void LSM6DS3_test_routine();
   @brief Routine to test the SPI communication.
 */
 void spi_test_routine();
+
+/**
+  @brief Routine to test NAND Flash reading and writing.
+*/
+//void NAND_flash_test_routine();
 
 #endif /*TESTING_ROUTINE_H*/

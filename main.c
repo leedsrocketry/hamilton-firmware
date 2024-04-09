@@ -14,7 +14,6 @@
 #include "drivers/ADXL375_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "data_buffer.h"
-//#include "drivers/SI446_driver.h"
 
 #define PADREADFREQ 100 //frequency to read data during ascent
 #define ASCENTREADFREQ 1000 //frequency to read data during ascent
@@ -97,7 +96,7 @@ int main(void)
   STM32_indicate_on();  
 
   printf("============ INITIALISE NAND FLASH ============\r\n");
-  init_flash();
+  //init_flash();
 
   printf("============== INITIALISE DRIVERS =============\r\n");
   // Buffer data
@@ -124,10 +123,7 @@ int main(void)
   int current_value = 999999999;
   int apogee_incr = 3;
 
-  //printf("============== ADD TESTS HERE ==============\r\n");
-  //run_MS5611_routine();
-  //run_nand_flash_erase();
-  //NAND_flash_read();
+  printf("============== ADD TESTS HERE ==============\r\n");
 
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   uint32_t newTime = get_time_us();

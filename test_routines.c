@@ -13,17 +13,14 @@
 */
 void run_test_routine()
 {
-  uint32_t timer = 0, period = 500;
-
-  for (;;)
-  {
-    if (timer_expired(&timer, period, 1000))
-    {
-      static bool on = true;                         // This block is executed
-      gpio_write(GREEN_LED, on);                         // Every `period` milliseconds
-      on = !on;                                      // Toggle LED state
-      printf("LED: %d, tick: %lu\r\n", on, 1000); // Write message
-    }
+  printf("================ Main_test_routine ================\r\n");
+  bool on = true;
+  for (;;) {
+    delay_ms(1000);
+    on = true;                                  // This block is executed
+    gpio_write(GREEN_LED, on);                  // Every `period` milliseconds
+    on = !on;                                   // Toggle LED state
+    printf("LED: %d, tick: %lu\r\n", on, 1000); // Write message
   }
 }
 
@@ -51,14 +48,14 @@ void run_ADXL375_routine()
 {
   printf("================ ADXL375_routine ================\r\n");
   ADXL375_data _data;
+  uint8_t devid;
   
-  uint32_t timer = 0, period = 500;
-  for (;;)
-  {
-    if (timer_expired(&timer, period, 1000))
-    {
-      ADXL375_get_data(&_data);
-    }
+  for (;;) {
+    delay_ms(1000);
+    spi_enable_cs(SPI1, ADXL375_CS);
+    spi_transmit_receive(SPI1, ADXL375_DEVID, 2, 1, &devid);
+    spi_disable_cs(SPI1, ADXL375_CS);
+    printf("ADXL375 Device ID: %d\r\n", devid);
   }
 }
 
@@ -83,39 +80,30 @@ void run_LSM6DS3_routine()
   delay_ms(50);
   lsm6ds6_init(SPI1, &gyro_data);
   
-  uint32_t timer = 0, period = 500;
-  for (;;)
-  {
-    if (timer_expired(&timer, period, 1000))
-    {
-      lsm6ds6GyroReadAngle(SPI1, &gyro_data);
-      printf("Gyro: %d, %d, %d, \r\n", gyro_data.x, gyro_data.y, gyro_data.z);
-    }
-  
+  for (;;) {
+    lsm6ds6GyroReadAngle(SPI1, &gyro_data);
+    printf("Gyro: %d, %d, %d, \r\n", gyro_data.x, gyro_data.y, gyro_data.z);
   }
 }
 
 /**
   @brief Routine to test the SPI communication.
 */
-void spi_test_routine()
+void spi_test_routine(SPI_TypeDef* spi)
 {
+  printf("================ SPI_routine ================\r\n");
   uint32_t timer = 0, period = 500;
+  uint8_t ret_val = 0;
+  static bool on = true; 
 
   for (;;)
   {
-    if (timer_expired(&timer, period, 1000))
-    {
-      static bool on = true;                         // This block is executed
-      gpio_write(GREEN_LED, on);                         // Every `period` milliseconds
-      on = !on;                                      // Toggle LED state
-      printf("LED: %d, tick: %lu\r\n", on, 1000); // Write message
-      //spi_write_byte(SPI1,0);
-      uint8_t ret_val = 0;
-      //spi_write_byte(SPI1,124);
-      //ret_val = spi_read_byte(SPI1);
-      printf("return: %d", ret_val);
-    }
+    gpio_write(GREEN_LED, on);        // Every `period` milliseconds
+    on = !on;                         // Toggle LED state
+    spi_transmit(spi, 2);
+    ret_val = spi_read_byte(spi);
+    printf("SPI: %d\r\n", ret_val);   // Write message
+    delay_ms(1000);
   }
 }
 

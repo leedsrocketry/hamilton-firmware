@@ -26,6 +26,7 @@ typedef struct PROM_data
 
 PROM_data ms5611_prom_data;
 
+// TODO: Determine if this is actually set anywhere...?
 SPI_TypeDef* MS5611_SPI;
 
 uint8_t MS5611_init(SPI_TypeDef* spi)
@@ -36,6 +37,8 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
     uint8_t init = spi_transmit(MS5611_SPI, &cmd);
     spi_disable_cs(MS5611_SPI, MS5611_CS);
     MS5611_read_PROM(MS5611_SPI);
+    M5611_data data;
+    MS5611_get_data(&data);
 	return 0;
 }
 
@@ -71,7 +74,8 @@ int MS5611_get_data(M5611_data* data)
     spi_disable_cs(MS5611_SPI, MS5611_CS);
 
     delay_ms(8);
-    uint32_t D2;
+
+    uint32_t D2 = 0;
     spi_enable_cs(MS5611_SPI, MS5611_CS);
     cmd = MS5611_CMD_READ_ADC;
     spi_transmit_receive(MS5611_SPI, &cmd, 1, 3, &D2);

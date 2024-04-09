@@ -112,7 +112,7 @@ static inline void delay_microseconds(uint32_t time) {
   @param time Time in miliseconds
 */
 static inline void delay_ms(uint32_t time) {
-  uint32_t initial_ticks = s_ticks; 
+  uint32_t initial_ticks = s_ticks;
   while (s_ticks - initial_ticks < time); //hold until that many ticks have passed
 }
 
@@ -238,9 +238,10 @@ static inline void uart_init(USART_TypeDef *uart, unsigned long baud)
   gpio_set_af(tx, af);
   gpio_set_mode(rx, GPIO_MODE_AF);
   gpio_set_af(rx, af);
-  uart->CR1 = 0;                                // Disable this UART                              
-  uart->BRR = FREQ / baud;                      // FREQ is a CPU frequency
-  uart->CR1 |= BIT(0) | BIT(2) | BIT(3);        // Set UE, RE, TE Datasheet 50.8.1 
+  uart->CR1 = 0;                              // Disable this UART                              
+  uart->BRR = FREQ / baud;                    // FREQ is a CPU frequency
+  //uart->BRR = 256*FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
+  uart->CR1 |= BIT(0) | BIT(2) | BIT(3);      // Set UE, RE, TE Datasheet 50.8.1 
 }
 
 /**
@@ -414,7 +415,8 @@ static inline void spi_init(SPI_TypeDef *spi) {
 
   // MCU clock speed (FREQ) is 16 MHz and max MCU SPI speed is FREQ / 2.
   spi->CR1 &= ~(7U << 3);   // Clears BR (bits 5:3) to 000 which is = system clock/2
-  spi->CR1 |= (3U << 3);    // Sets BR to 011, systemclk/16, so 1MHz
+  // TODO: seems like clk is running two times faster? DEBUG
+  spi->CR1 |= (3U << 3);    // Sets BR to 011, systemclk/16, so 1MHz.. but actually 2Mhz
 
   // CPOL (clk polarity) and CPHA (clk phase) defaults  to produce the desired clock/data relationship
   // CPOL controls the idle state value of the clock when no data is being transferred.
@@ -425,7 +427,7 @@ static inline void spi_init(SPI_TypeDef *spi) {
   // RXONLY or BIDIMODE and BIDIOE (RXONLY and BIDIMODE cannot be set
   // at the same time)"
   spi->CR1 &= ~BIT(10); // full duplex
-  spi->CR1 &= ~BIT(15); //2 line unidirectional data mode
+  spi->CR1 &= ~BIT(15); // 2 line unidirectional data mode
 
   // Datasheet: "The MSB of a byte is transmitted first"
   spi->CR1 &= ~BIT(7);
@@ -462,7 +464,6 @@ static inline void spi_init(SPI_TypeDef *spi) {
 static inline int spi_ready_read(SPI_TypeDef *spi) {
   while (!(spi->SR & BIT(1))); // Wait until transmit buffer is empty
   while (!(spi->SR & BIT(0))); // Wait until receive buffer is not empty (RxNE, 52.4.9)
-
   return 1; // data is ready
 }
 
@@ -526,13 +527,10 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
 {
   uint8_t ret_value = 0;
   spi_ready_write(spi);
-  //int8_t x[1];
 
   for (int i = 0; i<transmit_size; i++) {
     spi_transmit(spi, send_byte[i]);
   }
-
-  //printf("x_inside: %d ", (x[1] << 8) | x[0]);
 
   uint32_t result = 0;
   int8_t rs = receive_size;
@@ -544,19 +542,14 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
     rs--;
     spi_ready_write(spi);
   }
-  //spi_disable_cs(spi, cs);
-  //printf("RESULT: %d\r\n", result);
-  if(receive_size == 1)
-  {
+
+  if(receive_size == 1) {
     *((uint8_t*)result_ptr) = result;
-  } else if (receive_size == 2)
-  {
+  } else if (receive_size == 2) {
     *((uint16_t*)result_ptr) = result;
-  } else if (receive_size > 2)
-  {
+  } else if (receive_size > 2) {
     *((uint32_t*)result_ptr) = result;
   }
-
   return ret_value;
 }
 

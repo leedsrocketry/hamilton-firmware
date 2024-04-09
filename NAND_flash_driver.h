@@ -65,7 +65,7 @@ uint16_t ALE = PIN('E', 7);  // 15, Address latch enable (where in the memory to
 uint16_t CLE = PIN('E', 8);  // 16, Command latch enable (When on, you can sent command);
 uint16_t CE  = PIN('E', 9);  // 17, Check Enable (in case we want to test separatly);
 uint16_t RE  = PIN('E', 11); // 18, Read Enable;
-uint16_t RB  = PIN('A', 8); // 19, Ready/Busy;
+uint16_t RB  = PIN('A', 8);  // 19, Ready/Busy;
 
 // Stores the address of the next available frame (set of 128 bytes) (assumes all frames prior to this are full of valuable data)
 // This variable is set by the get_next_available_frame_addr() function
