@@ -82,7 +82,7 @@ void run_LSM6DS3_routine()
   
   for (;;) {
     lsm6ds6GyroReadAngle(SPI1, &gyro_data);
-    printf("Gyro: %d, %d, %d, \r\n", gyro_data.x, gyro_data.y, gyro_data.z);
+    printf("Gyro: %d, %d, %d, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
   }
 }
 

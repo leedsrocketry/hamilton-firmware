@@ -11,6 +11,7 @@
 #define NAND_DRIVER_H
 
 #include "mcu.h"
+#include "frame_array.h"
 
 // Defines which are used when returning the status of a write to flash
 #define NONE 0
@@ -59,13 +60,14 @@ uint16_t data6 = PIN('D', 6); // 8;
 uint16_t data7 = PIN('D', 7); // 9;
 
 // Control Pins - pins used to control the state of the flash chip
-uint16_t WP  = PIN('D', 8);  // 13, Write Protection;
-uint16_t WE  = PIN('D', 9);  // 14, Write Enable;
-uint16_t ALE = PIN('E', 7);  // 15, Address latch enable (where in the memory to store);
-uint16_t CLE = PIN('E', 8);  // 16, Command latch enable (When on, you can sent command);
-uint16_t CE  = PIN('E', 9);  // 17, Check Enable (in case we want to test separatly);
-uint16_t RE  = PIN('E', 11); // 18, Read Enable;
+uint16_t WP  = PIN('D', 15); // 13, Write Protection;
+uint16_t WE  = PIN('D', 14); // 14, Write Enable;
+uint16_t ALE = PIN('D', 13); // 15, Address latch enable (where in the memory to store);
+uint16_t CLE = PIN('D', 12); // 16, Command latch enable (When on, you can sent command);
+uint16_t CE  = PIN('D', 9);  // 17, Check Enable (in case we want to test separatly);
+uint16_t RE  = PIN('D', 11); // 18, Read Enable;
 uint16_t RB  = PIN('A', 8);  // 19, Ready/Busy;
+
 
 // Stores the address of the next available frame (set of 128 bytes) (assumes all frames prior to this are full of valuable data)
 // This variable is set by the get_next_available_frame_addr() function
@@ -103,83 +105,97 @@ static inline bool get_bit(uint8_t byte, int pos) {
 static inline void zip(FrameArray unzippedData, uint8_t *zippedData) {
   int i = -1;
 
+  // Date and time
   zippedData[i++] = unzippedData.date.year;
-  zippedData[i++] = unzippedData.date.month;
-  zippedData[i++] = unzippedData.date.day;
   zippedData[i++] = unzippedData.date.minute;
   zippedData[i++] = unzippedData.date.second;
   zippedData[i++] = (uint8_t)((unzippedData.date.millisecond >> 8) & 0xFF);
   zippedData[i++] = (uint8_t)(unzippedData.date.millisecond & 0xFF);
   zippedData[i++] = (uint8_t)((unzippedData.date.microsecond >> 8) & 0xFF);
   zippedData[i++] = (uint8_t)(unzippedData.date.microsecond & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.changeFlag >> 8) & 0xFF);
+
+  // Change flag for frame optimisation
   zippedData[i++] = (uint8_t)(unzippedData.changeFlag & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.accelHighG.x  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.accelHighG.x & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.accelHighG.y  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.accelHighG.y & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.accelHighG.z  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.accelHighG.z & 0xFF);
+  // ADXL375
+  zippedData[i++] = (int8_t)((unzippedData.accel.x  >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.accel.x & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.accel.y  >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.accel.y & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.accel.z  >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.accel.z & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.accelLowG.x  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.accelLowG.x & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.accelLowG.y  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.accelLowG.y & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.accelLowG.z  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.accelLowG.z & 0xFF);
+  // LSM6DS3
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_rate >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_rate >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_rate >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.x_rate & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_rate >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_rate >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_rate >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.y_rate & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_rate >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_rate >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_rate >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.z_rate & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.gyroscope.x  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.gyroscope.x & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.gyroscope.y  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.gyroscope.y & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.gyroscope.z  >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.gyroscope.z & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_offset >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_offset >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_offset >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.x_offset & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_offset >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_offset >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_offset >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.y_offset & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_offset >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_offset >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_offset >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.z_offset & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.barometer >> 24) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.barometer >> 16) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.barometer >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.barometer & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_accel >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_accel >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.x_accel >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.x_accel & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_accel >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_accel >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.y_accel >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.y_accel & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_accel >> 24) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_accel >> 16) & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.imu.z_accel >> 8) & 0xFF);
+  zippedData[i++] = (int8_t)(unzippedData.imu.z_accel & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.thermocouple[0] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.thermocouple[0] & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.thermocouple[1] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.thermocouple[1] & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.thermocouple[2] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.thermocouple[2] & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.thermocouple[3] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.thermocouple[3] & 0xFF);
+  // MS5611
+  zippedData[i++] = (uint8_t)((unzippedData.barometer.temp >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.barometer.temp >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.barometer.temp >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.barometer.temp & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.barometer.pressure >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.barometer.pressure >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.barometer.pressure >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.barometer.pressure & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.humidity >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.humidity & 0xFF);
-  
-  zippedData[i++] = (uint8_t)((unzippedData.temp >> 24) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.temp >> 16) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.temp >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.temp & 0xFF);
-
-  zippedData[i++] = (uint8_t)((unzippedData.magneticFieldStrength >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.magneticFieldStrength & 0xFF); 
-
+  // GNSS
   zippedData[i++] = (uint8_t)((unzippedData.GNSS.latitude >> 8) & 0xFF);
   zippedData[i++] = (uint8_t)(unzippedData.GNSS.latitude & 0xFF);
   zippedData[i++] = (uint8_t)((unzippedData.GNSS.longitude >> 8) & 0xFF);
   zippedData[i++] = (uint8_t)(unzippedData.GNSS.longitude & 0xFF);
-
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.heading1 >> 24) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.heading1 >> 16) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.heading1 >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.heading1 & 0xFF);
-
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.velocity >> 24) & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.velocity >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.altitude >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.altitude & 0xFF);
   zippedData[i++] = (uint8_t)((unzippedData.GNSS.velocity >> 8) & 0xFF);
   zippedData[i++] = (uint8_t)(unzippedData.GNSS.velocity & 0xFF);
 
-  zippedData[i++] = (uint8_t)((unzippedData.ADC[0] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.ADC[0] & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.ADC[1] >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.ADC[1] & 0xFF);
+  // BME280
+  zippedData[i++] = (uint8_t)((unzippedData.bme.pressure >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.bme.pressure >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.bme.pressure >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t) (unzippedData.bme.pressure & 0xFF);
+  zippedData[i++] = (int8_t)((unzippedData.bme.temperature >> 8) & 0xFF);
+  zippedData[i++] = (int8_t) (unzippedData.bme.temperature & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.bme.humidity >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.bme.humidity >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.bme.humidity >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t) (unzippedData.bme.humidity & 0xFF);
 
   zippedData[118] = unzippedData.hammingCode[0];
   zippedData[119] = unzippedData.hammingCode[1];
@@ -203,9 +219,8 @@ static inline FrameArray unzip(uint8_t *zippedData) {
   FrameArray unzippedData;
   int i = -1;
 
+  // Date and time
   unzippedData.date.year = zippedData[i++];
-  unzippedData.date.month = zippedData[i++];
-  unzippedData.date.day = zippedData[i++];
   unzippedData.date.minute = zippedData[i++];
   unzippedData.date.second = zippedData[i++];
   unzippedData.date.millisecond = (zippedData[i++] << 8) & (0xFF << 8);
@@ -213,74 +228,88 @@ static inline FrameArray unzip(uint8_t *zippedData) {
   unzippedData.date.microsecond = (zippedData[i++] << 8) & (0xFF << 8);
   unzippedData.date.microsecond |= zippedData[i++];
 
-  unzippedData.changeFlag = (zippedData[i++] << 8) & (0xFF << 8);
+  // Change flag for frame optimisation
   unzippedData.changeFlag |= zippedData[i++];
 
-  unzippedData.accelHighG.x = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.accelHighG.x |= zippedData[i++];
-  unzippedData.accelHighG.y = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.accelHighG.y |= zippedData[i++];
-  unzippedData.accelHighG.z = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.accelHighG.z |= zippedData[i++];
+  // ADXL375
+  unzippedData.accel.x = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accel.x |= zippedData[i++];
+  unzippedData.accel.y = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accel.y |= zippedData[i++];
+  unzippedData.accel.z = (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.accel.z |= zippedData[i++];
 
-  unzippedData.accelLowG.x = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.accelLowG.x |= zippedData[i++];
-  unzippedData.accelLowG.y = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.accelLowG.y |= zippedData[i++];
-  unzippedData.accelLowG.z = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.accelLowG.z |= zippedData[i++];
+  // LSM6DS3
+  unzippedData.imu.x_rate = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.x_rate |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.x_rate |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.x_rate |= zippedData[i++];
+  unzippedData.imu.y_rate = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.y_rate |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.y_rate |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.y_rate |= zippedData[i++];
+  unzippedData.imu.z_rate = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.z_rate |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.z_rate |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.z_rate |= zippedData[i++];
 
-  unzippedData.gyroscope.x = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.gyroscope.x |= zippedData[i++];
-  unzippedData.gyroscope.y = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.gyroscope.y |= zippedData[i++];
-  unzippedData.gyroscope.z = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.gyroscope.z |= zippedData[i++];
+  unzippedData.imu.x_offset = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.x_offset |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.x_offset |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.x_offset |= zippedData[i++];
+  unzippedData.imu.y_offset = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.y_offset |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.y_offset |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.y_offset |= zippedData[i++];
+  unzippedData.imu.z_offset = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.z_offset |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.z_offset |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.z_offset |= zippedData[i++];
 
-  unzippedData.barometer = (zippedData[i++] << 24) & (0xFF << 24);
-  unzippedData.barometer |= (zippedData[i++] << 16) & (0xFF << 16);
-  unzippedData.barometer |= (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.barometer |= zippedData[i++];
+  unzippedData.imu.x_accel = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.x_accel |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.x_accel |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.x_accel |= zippedData[i++];
+  unzippedData.imu.y_accel = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.y_accel |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.y_accel |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.y_accel |= zippedData[i++];
+  unzippedData.imu.z_accel = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.imu.z_accel |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.imu.z_accel |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.imu.z_accel |= zippedData[i++];
 
-  unzippedData.thermocouple[0] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.thermocouple[0] |= zippedData[i++];
-  unzippedData.thermocouple[1] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.thermocouple[1] |= zippedData[i++];
-  unzippedData.thermocouple[2] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.thermocouple[2] |= zippedData[i++];
-  unzippedData.thermocouple[3] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.thermocouple[3] |= zippedData[i++];
+  // MS5611
+  unzippedData.barometer.temp = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.barometer.temp |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.barometer.temp |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.barometer.temp |= zippedData[i++];
+  unzippedData.barometer.pressure = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.barometer.pressure |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.barometer.pressure |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.barometer.pressure |= zippedData[i++];
 
-  unzippedData.humidity = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.humidity |= zippedData[i++];
-  
-  unzippedData.temp = (zippedData[i++] << 24) & (0xFF << 24);
-  unzippedData.temp |= (zippedData[i++] << 16) & (0xFF << 16);
-  unzippedData.temp |= (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.temp |= zippedData[i++];
-
-  unzippedData.magneticFieldStrength = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.magneticFieldStrength |= zippedData[i++];
-
+  // GNSS
   unzippedData.GNSS.latitude = (zippedData[i++] << 8) & (0xFF << 8);
   unzippedData.GNSS.latitude |= zippedData[i++];
   unzippedData.GNSS.longitude = (zippedData[i++] << 8) & (0xFF << 8);
   unzippedData.GNSS.longitude |= zippedData[i++];
-
-  unzippedData.GNSS.heading1 = (zippedData[i++] << 24) & (0xFF << 24);
-  unzippedData.GNSS.heading1 |= (zippedData[i++] << 16) & (0xFF << 16);
-  unzippedData.GNSS.heading1 |= (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.GNSS.heading1 |= zippedData[i++];
-
-  unzippedData.GNSS.velocity = (zippedData[i++] << 24) & (0xFF << 24);
-  unzippedData.GNSS.velocity |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.GNSS.altitude |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.GNSS.altitude |= zippedData[i++];
   unzippedData.GNSS.velocity |= (zippedData[i++] << 8) & (0xFF << 8);
   unzippedData.GNSS.velocity |= zippedData[i++];
 
-  unzippedData.ADC[0] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.ADC[0] |= zippedData[i++];
-  unzippedData.ADC[1] = (zippedData[i++] << 8) & (0xFF << 8);
-  unzippedData.ADC[1] |= zippedData[i++];
+  // BME280
+  unzippedData.bme.pressure = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.bme.pressure |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.bme.pressure |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.bme.pressure |= zippedData[i++];
+  unzippedData.bme.temperature |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.bme.temperature |= zippedData[i++];
+  unzippedData.bme.humidity = (zippedData[i++] << 24) & (0xFF << 24);
+  unzippedData.bme.humidity |= (zippedData[i++] << 16) & (0xFF << 16);
+  unzippedData.bme.humidity |= (zippedData[i++] << 8) & (0xFF << 8);
+  unzippedData.bme.humidity |= zippedData[i++];
 
   unzippedData.hammingCode[0] = zippedData[118];
   unzippedData.hammingCode[1] = zippedData[119];
@@ -316,9 +345,6 @@ static inline void print_byte(uint8_t myByte) {
 static inline void print_frame(uint8_t dataArray[]) {
   printf("u");
   for (int i = 0; i < 128; i++) {
-    /*if(dataArray[i] < 16) {
-      printf("0");
-    }*/
     printf("%X,", dataArray[i]); // %02X adds a paddings of 0
   }
   printf("\r\n");
@@ -359,26 +385,34 @@ static inline void _memset(uint8_t *arr, uint8_t val, int num){
   @param frameFormat
 */
 static inline void print_frame_array(FrameArray frameFormat) {
-  /*
-  uint8_t dataArray[128];
-  _memset(dataArray, 0, 128);
-  zip(frameFormat, dataArray);
-  print_frame(dataArray);
-  */
+  printf("Date: %i, %i:%i:%i:%i:%i\r\n", frameFormat.date.year, frameFormat.date.minute,
+                                               frameFormat.date.second, frameFormat.date.millisecond, 
+                                               frameFormat.date.microsecond );
 
-  printf("Date: %i/%i/%i, %i:%i:%i:%i:%i\r\n", frameFormat.date.day, frameFormat.date.month, frameFormat.date.year,
-          frameFormat.date.hour, frameFormat.date.minute, frameFormat.date.second, frameFormat.date.millisecond, frameFormat.date.microsecond );
-  //printf("ChangeFlag: %i\r\n", frameFormat.changeFlag);
-  printf("Accel HG:\tX: %i,\tY: %i,\tZ: %i\t\r\n", frameFormat.accelHighG.x, frameFormat.accelHighG.y, frameFormat.accelHighG.z);
-  //printf("Accel LG:\tX: %i,\tY: %i,\tZ: %i\r\n", frameFormat.accelLowG.x, frameFormat.accelLowG.y, frameFormat.accelLowG.z);
-  //printf("Gyro: \t\tX: %i,\tY: %i,\tZ: %i\r\n", frameFormat.gyroscope.x, frameFormat.gyroscope.y, frameFormat.gyroscope.z);
-  printf("Barometer: %i\r\n", frameFormat.barometer);
-  //printf("Therocouples: \t1: %i,\t2: %i,\t3: %i,\t4: %i\r\n", frameFormat.thermocouple[0], frameFormat.thermocouple[1], frameFormat.thermocouple[2], frameFormat.thermocouple[3]);
-  //printf("Humidity: %i\r\n", frameFormat.humidity);
-  printf("Temp: %i\r\n", frameFormat.temp);
-  //printf("Magnetic field: %i\r\n", frameFormat.magneticFieldStrength);
-  //printf("GNSS:\tLat: %i,\tLong: %i,\tHead: %i,\tVel: %i\r\n", frameFormat.GNSS.latitude, frameFormat.GNSS.longitude, frameFormat.GNSS.heading1, frameFormat.GNSS.velocity);
-  //printf("ADC: %i\r\n", frameFormat.ADC);
+  printf("ChangeFlag: %i\r\n", frameFormat.changeFlag);
+
+  printf("Accel HG: \tX: %i,\tY: %i,\tZ: %i\t\r\n", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
+
+  printf("IMU: \tX Rate: %i,\tY Rate: %i,\tZ Rate: %i,\tX Offset: %i,\tY Offset: %i, \
+        \tZ Offset: %i,\tX Accel: %i,\tY Accel: %i,\tZ Accel: %i,\r\n", frameFormat.imu.x_rate, 
+                                                                        frameFormat.imu.y_rate, 
+                                                                        frameFormat.imu.z_rate, 
+                                                                        frameFormat.imu.x_offset, 
+                                                                        frameFormat.imu.y_offset, 
+                                                                        frameFormat.imu.z_offset, 
+                                                                        frameFormat.imu.x_accel, 
+                                                                        frameFormat.imu.y_accel, 
+                                                                        frameFormat.imu.z_accel);
+
+  printf("Barometer: \ttemp: %i, \tpressure: %i\r\n", frameFormat.barometer.temp, frameFormat.barometer.pressure);
+  printf("GNSS: \tLat: %i,\tLong: %i,\tAlt: %i,\tVel: %i\r\n", frameFormat.GNSS.latitude, 
+                                                               frameFormat.GNSS.longitude, 
+                                                               frameFormat.GNSS.altitude, 
+                                                               frameFormat.GNSS.velocity);
+                                                               
+  printf("BME280: \tPressure: %i,\tTemperature: %i,\tHumidity: %i\r\n", frameFormat.bme.pressure, 
+                                                                      frameFormat.bme.temperature, 
+                                                                      frameFormat.bme.humidity);
 }
 
 /**
@@ -386,19 +420,15 @@ static inline void print_frame_array(FrameArray frameFormat) {
   @param frameFormat
 */
 static inline void print_csv_header() {
-  printf("DATE,");
-  printf("TIME,");
+  printf("Date,");
+  printf("Time,");
   printf("ChangeFlag,");
-  printf("AccelH X,AccelH Y,AccelH Z,");
-  printf("AccelL X,AccelL Y,AccelL Z,");
-  printf("GyroX,GyroY,GyroZ,");
-  printf("Barometer,");
-  printf("Thermocouple 1,Thermocouple 2,Thermocouple 3,Thermocouple 4,");
-  printf("Humidity,");
-  printf("Temp,");
-  printf("MagneticField,");
-  printf("GNSS 1,GNSS 2,GNSS 3,GNSS 4,");
-  printf("ADC,");
+  printf("ACC X,ACC Y,ACC Z,");
+  printf("IMU X_RATE,IMU Y_RATE,IMU Z_RATE,\
+          IMU X_OFFSET,IMU Y_OFFSET,IMU Z_OFFSET,IMU ACC_X,IMU ACC_Y,IMU ACC_Z,");
+  printf("MS5611 Temperature,MS5611 Pressure,");
+  printf("GNSS Lat,GNSS Long,GNSS Alt,GNSS velocity,");
+  printf("BME280 Pressure,BME280 Temperature,BME280 Humidity,");
   printf("\r\n");
 }
 /**
@@ -406,19 +436,29 @@ static inline void print_csv_header() {
   @param frameFormat
 */
 static inline void print_frame_csv(FrameArray frameFormat) {
-  printf("%i/%i/%i, %i:%i:%i:%i:%i,", frameFormat.date.day, frameFormat.date.month, frameFormat.date.year,
-          frameFormat.date.hour, frameFormat.date.minute, frameFormat.date.second, frameFormat.date.millisecond, frameFormat.date.microsecond );
+  printf("%i,", frameFormat.date.year); 
+  printf("%i:%i:%i:%i,", frameFormat.date.minute,
+                         frameFormat.date.second,
+                         frameFormat.date.millisecond,
+                         frameFormat.date.microsecond);
+
   printf("%i,", frameFormat.changeFlag);
-  printf("%i,%i,%i,", frameFormat.accelHighG.x, frameFormat.accelHighG.y, frameFormat.accelHighG.z);
-  printf("%i,%i,%i,", frameFormat.accelLowG.x, frameFormat.accelLowG.y, frameFormat.accelLowG.z);
-  printf("%i,%i,%i,", frameFormat.gyroscope.x, frameFormat.gyroscope.y, frameFormat.gyroscope.z);
-  printf("%i,", frameFormat.barometer);
-  printf("%i,%i,%i,%i,", frameFormat.thermocouple[0], frameFormat.thermocouple[1], frameFormat.thermocouple[2], frameFormat.thermocouple[3]);
-  printf("%i,", frameFormat.humidity);
-  printf("%i,", frameFormat.temp);
-  printf("%i,", frameFormat.magneticFieldStrength);
-  printf("%i,%i,%i,%i,", frameFormat.GNSS.latitude, frameFormat.GNSS.longitude, frameFormat.GNSS.heading1, frameFormat.GNSS.velocity);
-  printf("%i,", frameFormat.ADC);
+
+  printf("%i,%i,%i,", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
+
+  printf("%i,%i,%i,%i,%i,%i,%i,%i,%i,", frameFormat.imu.x_rate, 
+                                        frameFormat.imu.y_rate, 
+                                        frameFormat.imu.z_rate, 
+                                        frameFormat.imu.x_offset, 
+                                        frameFormat.imu.y_offset, 
+                                        frameFormat.imu.z_offset, 
+                                        frameFormat.imu.x_accel, 
+                                        frameFormat.imu.y_accel, 
+                                        frameFormat.imu.z_accel);
+
+  printf("%i,%i,", frameFormat.barometer.temp, frameFormat.barometer.pressure);
+  printf("%i,%i,%i,%i,", frameFormat.GNSS.latitude, frameFormat.GNSS.longitude, frameFormat.GNSS.altitude, frameFormat.GNSS.velocity);
+  printf("%i,%i,%i,", frameFormat.bme.pressure, frameFormat.bme.temperature, frameFormat.bme.humidity);
   printf("\r\n");
 }
 
@@ -455,7 +495,7 @@ static inline void set_pin_modes() {
   @brief Set the control pins based on the input byte (i.e. COMMAND_INPUT, DATA_INPUT)
 */
 static inline void set_control_pins(uint8_t controlRegister) {  // CE# CLE ALE WE# RE# WP#
-  gpio_write(CE, get_bit(controlRegister, 0));  // TODO: Why is this commented out?
+  gpio_write(CE, get_bit(controlRegister, 0));
   gpio_write(CLE, get_bit(controlRegister, 1));
   gpio_write(ALE, get_bit(controlRegister, 2));
   gpio_write(WE, get_bit(controlRegister, 3));
@@ -488,18 +528,16 @@ static inline void set_data_pins(uint8_t Byte) {
   @param mode: composed of the control pins
 */
 static inline void send_byte_to_flash(uint8_t cmd, uint8_t mode) {
-  //delayNanoseconds(DELAY); // include if needed 
-  //(pins were swicthed too quickly 600MHZ)
+  //delay_ms(DELAY); // include if needed
   set_control_pins(mode);
   set_data_pins(cmd);
-  //delayNanoseconds(DELAY);
+  //delay_ms(DELAY);
   set_control_pins(mode | WE_HIGH); // lanch what is in the data bus in the memory
-  //delayNanoseconds(DELAY);
+  //delay_ms(DELAY);
 }
 
 /**
   @brief Read a single byte from the flash (assumes address to read from has been set before calling this function)
-  @return 
 */
 static inline uint8_t receive_byte_from_flash() {  
   delay_ms(DELAY);
@@ -581,12 +619,12 @@ static inline uint64_t read_flash_ID() {
     id |= byte << (4-i);
     print_byte(byte);
   }
-
   return id;
 }
 
 /**
-  @brief Enable the flash write protection to prevent writing on accident. More info in flash data sheet
+  @brief Enable the flash write protection to prevent writing on 
+  accident. More info in flash data sheet
 */
 static inline void write_protection() {
   wait_for_ready_flag();
@@ -620,11 +658,13 @@ static inline void write_frame(uint32_t frameAddr, uint8_t *bytes) {
   wait_for_ready_flag();
   send_byte_to_flash(0x80, COMMAND_INPUT);
   send_addr_to_flash(frameAddr, 0);  // Address Input
-  delay_ms(10); //was 1 ms but I think that needs decreasing
+  delay_microseconds(10);
+  set_control_pins(DATA_INPUT);
   for (int byteAddr = 0; byteAddr < 128; byteAddr++) {
-    send_byte_to_flash(bytes[byteAddr], DATA_INPUT);
+    gpio_write(WE, 0);
+    set_data_pins(bytes[byteAddr]);
+    gpio_write(WE, 1);
   }
-  
   send_byte_to_flash(0x10, COMMAND_INPUT);
 }
 
@@ -782,7 +822,8 @@ void test_routine() {
 */
 
 /**
-  @brief Initialisation function to set pin modes and get the next free frame on the flash (saving this in frameAddressPointer)
+  @brief Initialisation function to set pin modes and get the 
+  next free frame on the flash (saving this in frameAddressPointer)
 */
 static inline void init_flash() {
   gpio_set_mode(data0, GPIO_MODE_OUTPUT);
@@ -867,22 +908,27 @@ static inline void calculate_parity_bits(uint8_t *_input, uint8_t *_output) {
   
   hash(condition, hashedData);
 
+  // Initialise variables
+  uint8_t _word[15];
+  uint8_t parities = 0;
+  uint8_t parity = 0;
+  int k = 0;
+
   for (int _set = 0; _set < 8; _set++) {
-    uint8_t _word[15];
     for (int i = 0; i < 15; i ++) {
       _word[i] = hashedData[(_set * 15) + i];
     }
     
     // Initialize parity bits to 0
-    uint8_t parities = 0;
+    parities = 0;
     // Calculate parity bits
     for (int i = 0; i < 8; i++) {
       // Calculate bit position of this parity bit
       int bit_pos = 1 << i;
       
       // Calculate parity for this bit position
-      uint8_t parity = 0;
-      int k = 0;
+      parity = 0;
+      k = 0;
       for (int j = 0; j < 128; j++) { // j from 0 - 128
         if (j + 1 != 1 && is_power_of_two(j + 1) == 0) {
           if (bit_pos & (j + 1)) {
@@ -903,12 +949,13 @@ static inline void calculate_parity_bits(uint8_t *_input, uint8_t *_output) {
 */
 static inline void encode_parity(FrameArray dataFrame, uint8_t *bytes) {
   zip(dataFrame, bytes);
-
+  /*
   uint8_t parities[8];
   calculate_parity_bits(bytes, parities);
   for (int i = 0; i < 8; i++) {
     bytes[118+i] = parities[i];
   }
+  */
   uint16_t CRC_Check = calculate_CRC(bytes, 126);
   bytes[126] = (uint8_t)((CRC_Check >> 8) & 0xFF);
   bytes[127] = (uint8_t)(CRC_Check & 0xFF);
@@ -944,15 +991,11 @@ static inline void print_capacity_info() {
   @brief Writes a single FrameArray to the next available space on the flash
 */
 static inline int log_frame(FrameArray _input) {
-  //printf("LOGFRAME addr ");
-  //printfln(frameAddressPointer);
-
-  // frameArray to array of bytes; 8388607 is 2Gb end
+  // frameArray to array of bytes; 8388607 is 8Gb end
   if (frameAddressPointer <= 8388607) {
     uint8_t encoded[128];
     _memset(encoded, 0, 128);
     encode_parity(_input, encoded);
-    //printFrame(encoded);
     write_frame(frameAddressPointer, encoded);
     frameAddressPointer++;
   } else {
@@ -974,20 +1017,7 @@ static inline FrameArray recall_frame(uint32_t frameAddr) {
   uint8_t encoded[128];
   _memset(encoded, 0, 128);
   FrameArray _output;
-  
-  // Attempts re-reading the data from the flash 10 times before it gives up
-  //_output.successFlag = DATA_CORRUPTED;
-  //int timeout = 10;  
-  //while(_output.successFlag == DATA_CORRUPTED && timeout > 0){
-  //  timeout--;
   read_frame(frameAddr, encoded, 128);
-  //  if ((encoded[0] & encoded[1]) != 0xFF) {
-  //    _output = decodeParity(encoded);  // CHANGE TO ALLOW FOR INT RETURN OF STATUS
-  //  } else {
-  //    _output = unzip(encoded);  // Don't bother decoding parity bits
-  //    _output.successFlag = EMPTY;
-  //  }
-  //}
   _output = unzip(encoded);  // Don't bother decoding parity bits
   return _output;
 }
@@ -1005,8 +1035,7 @@ static inline void read_all_raw(){
   bool skipBlank = true;
 
   for(uint32_t i = 0; i < lastFrameToRead; i++) {
-
-    //check if frame has no data written to it
+    // check if frame has no data written to it
     read_frame(i, &_check, 1);
     if (_check == 0xFF && skipBlank){
       printf("End of data in block.\r\n");
@@ -1037,18 +1066,17 @@ static inline void read_all_frame(){
   bool skipBlank = true;
 
   for(uint32_t i = 0; i < lastFrameToRead; i++) {
-
-    //check if frame has no data written to it
+    // check if frame has no data written to it
     read_frame(i, &_check, 1);
     if (_check == 0xFF && skipBlank){
       printf("End of data in block.\r\n");
-      i += 2048; //move to the next block
+      i += 2048; // move to the next block
       i = i - (i%2048) - 1;
 
-    }else{
-      //rpint out as a frame
+    } else {
+      // rpint out as a frame
       _output = recall_frame(i);
-       printf("FN:%i\r\n", i);
+        printf("FN:%i\r\n", i);
       print_frame_array(_output);
     } 
   }
@@ -1071,18 +1099,17 @@ static inline void read_all_csv(){
   print_csv_header();
 
   for(uint32_t i = 0; i < lastFrameToRead; i++) {
-
-    //check if frame has no data written to it
+    // check if frame has no data written to it
     read_frame(i, &_check, 1);
     if (_check == 0xFF && skipBlank){
       printf("End of data in block.\r\n");
-      i += 2048; //move to the next block
+      i += 2048; // move to the next block
       i = i - (i%2048) - 1;
 
     }else{
-      //rpint out as a frame
+      // rpint out as a frame
       _output = recall_frame(i);
-      //printf("FN:%i\r\n", i);
+      // printf("FN:%i\r\n", i);
       print_frame_csv(_output);
     } 
   }
@@ -1094,11 +1121,8 @@ static inline void read_all_csv(){
 static inline void read_all(){
   FrameArray _output;
   _output.successFlag = NONE;
-
   uint32_t lastFrameToRead = get_next_available_frame_addr();
-
   uint8_t _check = 0;
-  
   int data_intact = 0;
   int data_fixed = 0;
   int data_error = 0;
@@ -1113,36 +1137,11 @@ static inline void read_all(){
       printf("End of data in block.\r\n");
       i += 2048; //move to the next block
       i = i - (i%2048) - 1;
-
-    }else{
-      //read as a uint8_t array
+    } else {
+      // Read as a uint8_t array
       read_frame(i, &array, 128);
       print_frame(array);
-
-      //read as a FrameArray
-      /*
-      _output = recall_frame(i);
-       printf("FN:%i\r\n", i);
-      print_frame_array(_output);
-      */
-      //output in more useful format, as bits of data not just bytes.
-      
     }
-
-    // TODO: _output is a FrameArray convert to csv
-
-    /*int flag = _output.successFlag;
-    if(flag == DATA_INTACT){
-      data_intact += 1;
-      printFrame(_output);
-    } else if(flag == DATA_FIXED) {
-      data_fixed += 1;
-      printFrame(_output);
-    } else if(flag == EMPTY) {
-      data_empty += 1;
-    } else {
-      data_error += 1;
-    }*/   
   }
   
   printf("----------------------------------------------\r\n");

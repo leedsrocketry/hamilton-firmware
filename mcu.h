@@ -38,37 +38,12 @@ typedef struct DateTime {
   uint16_t microsecond;  // 0 - 999
 } DateTime;
 
-typedef struct Vector3 {
-  uint16_t x;
-  uint16_t y;
-  uint16_t z;
-} Vector3;
-
 typedef struct GNSS_Data{
   uint16_t latitude;
   uint16_t longitude;
-  uint32_t heading1;
-  uint32_t velocity;
+  uint16_t altitude;
+  uint16_t velocity;
 } GNSS_Data;
-
-// 128 bytes
-typedef struct FrameArray {
-  DateTime date;
-  uint16_t changeFlag;  // IS THIS NEEDED? CAN THIS BE DONE BETTER?
-  Vector3 accelHighG;
-  Vector3 accelLowG;
-  Vector3 gyroscope;
-  uint32_t barometer;
-  uint16_t thermocouple[4];
-  uint16_t humidity;
-  uint32_t temp;
-  uint16_t magneticFieldStrength;
-  GNSS_Data GNSS;
-  uint16_t ADC[2];
-  uint8_t hammingCode[8];
-  uint16_t CRC_Check;
-  int successFlag; // Not used in zip
-} FrameArray;
 #pragma endregion Struct
 
 #pragma region System Clk

@@ -37,7 +37,7 @@ void set_ground_reference(dataBuffer* buffer) {
   // Create copy of buffer data to sort
   int _data[WINDOW_SIZE];
   for (int i = 0; i < WINDOW_SIZE; i++) {
-    _data[i] = buffer->frames[i].barometer;
+    _data[i] = buffer->frames[i].barometer.pressure;
   }
 
   // get the ground reference as median

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mcu.h"
+#include "frame_array.h"
 
 // Define Constants and Thresholds
 #define BUFFER_SIZE       50
