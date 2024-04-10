@@ -46,6 +46,33 @@ typedef struct GNSS_Data{
 } GNSS_Data;
 #pragma endregion Struct
 
+/**
+  @brief Print a float
+  @param name Name of the float
+  @param value Value of the float
+  @param print_text Print text or not
+*/
+static void printf_float(char* name, float value, bool print_text) {
+  char str[30];
+
+  char *tmpSign = (value < 0) ? "-" : "";
+  float tmpVal = (value < 0) ? -value : value;
+
+  uint32_t tmpInt1 = (uint32_t) tmpVal;  // Get the integer (678).
+  float tmpFrac = (tmpVal - tmpInt1);    // Get fraction (0.0123).
+  int tmpInt2 = trunc(tmpFrac * 1000);   // Turn into integer (123).
+
+  // Print as parts, note that you need 0-padding for fractional bit.
+  // Prints in format "123.456" or "value: 123.456"
+  if (print_text)
+    sprintf(str, "%s: %s%d.%03d", name, tmpSign, tmpInt1, tmpInt2);
+  else
+    sprintf(str, "%s%d.%03d", tmpSign, tmpInt1, tmpInt2);
+
+  // Print the string
+  printf("%s", str);
+}
+
 #pragma region System Clk
 /**
   @brief The low level delay
