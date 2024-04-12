@@ -135,6 +135,8 @@ int main(void)
   int apogee_incr = 3;
 
   printf("============== ADD TESTS HERE ==============\r\n");
+  //NAND_flash_read();
+  //NAND_flash_erase();
 
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   uint32_t newTime = get_time_us();
@@ -167,8 +169,10 @@ int main(void)
             // Check for launch given pressure decrease
             if ((frame_buffer.ground_ref - current_value) > LAUNCH_THRESHOLD) {
               flightStage = ASCENT;
+              printf("FLIGHT STAGE = ASCENT\r\n");
+
               // Log all data from the buffer
-              for (int i = 0; i < BUFFER_SIZE; i++) {
+              for (int i = 0; i < WINDOW_SIZE; i++) {
                 log_frame(frame_buffer.frames[i]);
               }
             }
@@ -201,6 +205,7 @@ int main(void)
           // Check for apogee given pressure increase
           if (current_value - previous_value > APOGEE_THRESHOLD){
             flightStage = APOGEE;
+            printf("FLIGHT STAGE = APOGEE\r\n");
           } else if (previous_value > current_value){  // Storing the minimum, (median), pressure value during ascent
             previous_value = current_value;
           }
@@ -256,6 +261,7 @@ int main(void)
           // Check for landing
           if (is_stationary(_data)) {
             flightStage = LANDING;
+            printf("FLIGHT STAGE = LANDING\r\n");
           }
         }
         break;

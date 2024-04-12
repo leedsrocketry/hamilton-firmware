@@ -73,7 +73,7 @@ int MS5611_get_data(M5611_data* data)
     spi_transmit_receive(MS5611_SPI, &cmd, 1, 0, NULL);
     spi_disable_cs(MS5611_SPI, MS5611_CS);
 
-    delay_ms(8);
+    delay_microseconds(600);
 
     uint32_t D2 = 0;
     spi_enable_cs(MS5611_SPI, MS5611_CS);
@@ -89,7 +89,7 @@ int MS5611_get_data(M5611_data* data)
     spi_transmit_receive(MS5611_SPI, &cmd, 1, 0, NULL);
     spi_disable_cs(MS5611_SPI, MS5611_CS);
 
-    delay_ms(8);
+    delay_microseconds(600);
 
     uint32_t D1;
     spi_enable_cs(MS5611_SPI, MS5611_CS);
