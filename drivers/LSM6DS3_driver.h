@@ -21,7 +21,6 @@
 #define LSM6DS3_WHO_AM_I_EXP 		0b01101010
 
 // LSM6DSO registers (not the complete list)
-
 #define LSM6DSO_REG_INT1_CTRL 		0x0D   // int pin 1 control
 #define LSM6DSO_REG_INT2_CTRL 		0x0E   // int pin 2 control
 #define LSM6DSO_REG_WHO_AM_I 		0x0F   // chip ID
@@ -81,10 +80,7 @@
 #define LSM6DSO_VAL_CTRL6_C_FTYPE_609HZ 0x03   // (bits 2:0) gyro LPF1 cutoff 609.0hz
 #define LSM6DSO_VAL_CTRL9_XL_I3C_DISABLE BIT(1)// (bit 1) disable I3C interface
 
-
-
 // LSM6DSO register configuration bit masks
-
 #define LSM6DSO_MASK_CTRL3_C 0x7C         // 0b01111100
 #define LSM6DSO_MASK_CTRL3_C_RESET BIT(0) // 0b00000001
 #define LSM6DSO_MASK_CTRL4_C 0x06         // 0b00000110

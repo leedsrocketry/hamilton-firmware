@@ -67,23 +67,22 @@ void update_buffer(FrameArray* frame, dataBuffer* buffer) {
   }
 }
 
-float get_vertical_velocity(int barometer_data[], int size, int dt) {
-  float altitude_change_sum = 0.0;
+float get_vertical_velocity(int data[], int size, int dt) {
+  qsort(data, WINDOW_SIZE, sizeof(int), cmpfunc);
+  float altitude_change = 0.0;
   float previous_altitude, current_altitude;
+  float test = 0.0;
 
-  // Iterate over the barometer readings
-  for (int i = 1; i < size; ++i) {
-      // Convert current reading to altitude
-      current_altitude = 44330.7692 * (1.0 - pow(barometer_data[i] / 1013.25, 0.1902));
-      // Calculate the change in altitude
-      altitude_change_sum += current_altitude - previous_altitude;
-      previous_altitude = current_altitude;
-  }
+  previous_altitude = 44330.7692 * (1.0 - pow(((float)data[0] / 100.0f) / sea_level_pressure, 0.1902));
+  current_altitude = 44330.7692 * (1.0 - pow(((float)data[19] / 100.0f) / sea_level_pressure, 0.1902));
+  altitude_change = previous_altitude - current_altitude;
 
   // Calculate the total time covered by the readings (microseconds)
-  float total_time = dt * (size - 1) * 1e-6; 
+  float total_time = dt * WINDOW_SIZE * 1e-6f;
+  float velocity = altitude_change / total_time;
+  
   // Return vertical velocity in m/s
-  return altitude_change_sum / total_time;
+  return velocity;
 }
 
 // Check if stationary

@@ -133,6 +133,7 @@ int main(void)
   int previous_value = 999999999;
   int current_value = 999999999;
   int apogee_incr = 3;
+  bool toggle_LED = true;
 
   printf("============== ADD TESTS HERE ==============\r\n");
   //NAND_flash_read();
@@ -141,13 +142,17 @@ int main(void)
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   uint32_t newTime = get_time_us();
   uint32_t oldTime = get_time_us();
+  uint32_t dt = 0;
+  delay_microseconds(1000*1000);  // One second delay before launch for sensors to stabilise 
 
   for (;;) {
     switch (flightStage) {
       case LAUNCHPAD:
-        newTime = get_time_us();  // Get current time
+        newTime = get_time_us();              // Get current time
         if ((newTime - oldTime) > (1000000 / PADREADFREQ)) {
-          oldTime = newTime;  // old time = new time
+          oldTime = newTime;                  // old time = new time
+          gpio_write(GREEN_LED, toggle_LED);  // Flick LED
+          toggle_LED = !toggle_LED;
 
           // Get the sensor readings
           update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
