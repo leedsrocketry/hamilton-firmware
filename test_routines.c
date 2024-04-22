@@ -20,7 +20,7 @@ void run_test_routine()
     on = true;                                  // This block is executed
     gpio_write(GREEN_LED, on);                  // Every `period` milliseconds
     on = !on;                                   // Toggle LED state
-    printf("LED: %d, tick: %lu\r\n", on, 1000); // Write message
+    printf("LED: %d, tick: %u\r\n", on, 1000); // Write message
   }
 }
 
@@ -37,7 +37,7 @@ void run_MS5611_routine()
     gpio_write(GREEN_LED, on);
     on = !on;
     MS5611_get_data(&_data);
-    printf("p: %d, t: %d, \r\n", _data.pressure, _data.temp);
+    printf("p: %d, t: %ld, \r\n", _data.pressure, _data.temp);
   }
 }
 
@@ -82,7 +82,7 @@ void run_LSM6DS3_routine()
   
   for (;;) {
     lsm6ds6GyroReadAngle(SPI1, &gyro_data);
-    printf("Gyro: %d, %d, %d, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
+    printf("Gyro: %ld, %ld, %ld, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
   }
 }
 

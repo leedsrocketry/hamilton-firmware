@@ -11,12 +11,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <math.h>
 
 // https://github.com/STMicroelectronics/cmsis_device_l4/blob/master/Include/system_stm32l4xx.h
 #include "stm32l4r5xx.h"
 
 extern volatile uint32_t s_ticks;
-extern int FREQ;
+extern uint32_t FREQ;
 
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
@@ -59,15 +60,15 @@ static void printf_float(char* name, float value, bool print_text) {
   float tmpVal = (value < 0) ? -value : value;
 
   uint32_t tmpInt1 = (uint32_t) tmpVal;  // Get the integer (678).
-  float tmpFrac = (tmpVal - tmpInt1);    // Get fraction (0.0123).
-  int tmpInt2 = trunc(tmpFrac * 1000);   // Turn into integer (123).
+  float tmpFrac = (tmpVal - (float)tmpInt1);    // Get fraction (0.0123).
+  int32_t tmpInt2 = (int32_t)trunc(tmpFrac * 1000);   // Turn into integer (123).
 
   // Print as parts, note that you need 0-padding for fractional bit.
   // Prints in format "123.456" or "value: 123.456"
   if (print_text)
-    sprintf(str, "%s: %s%d.%03d", name, tmpSign, tmpInt1, tmpInt2);
+    sprintf(str, "%s: %s%ld.%03ld", name, tmpSign, tmpInt1, tmpInt2);
   else
-    sprintf(str, "%s%d.%03d", tmpSign, tmpInt1, tmpInt2);
+    sprintf(str, "%s%ld.%03ld", tmpSign, tmpInt1, tmpInt2);
 
   // Print the string
   printf("%s", str);
@@ -212,7 +213,7 @@ static inline bool gpio_read(uint16_t pin)
   @param uart Selected UART (1, 2, 3 or low power)
   @param baud Baud rate
 */
-static inline void uart_init(USART_TypeDef *uart, unsigned long baud)
+static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
 {
   uint8_t af = 8;          // Alternate function
   uint16_t rx = 0, tx = 0; // pins
@@ -486,6 +487,9 @@ static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
   if (spi == SPI1)
     gpio_write(PIN('A', 4), LOW);
   #endif
+  // Explicitely use CS and SPI to avoid warnings, this is intended behaviour
+  (void)cs;
+  (void)spi;
 }
 
 /**
@@ -501,6 +505,9 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
   if (spi == SPI1)
     gpio_write(PIN('A', 4), HIGH);
   #endif
+  // Explicitely use CS and SPI to avoid warnings, this is intended behaviour
+  (void)cs;
+  (void)spi;
 }
 
 /**

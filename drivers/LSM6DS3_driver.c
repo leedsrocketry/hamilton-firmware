@@ -204,7 +204,7 @@ bool Lsm6ds3GyroOffsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->x_offset = (avg[0] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->y_offset = (avg[1] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->z_offset = (avg[2] / LSM6DSO_OFFSET_BUFF_LEN);
-    printf("Gyro Offsets: %i, %i, %i\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
+    printf("Gyro Offsets: %li, %li, %li\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
 
     return 1;
 }

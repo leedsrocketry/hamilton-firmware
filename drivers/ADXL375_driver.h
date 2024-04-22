@@ -122,4 +122,8 @@ uint8_t ADXL375_init(SPI_TypeDef* spi);
 */
 uint8_t ADXL375_get_data(ADXL375_data* data);
 
+void ADXL375_reg_write(uint8_t addr, uint8_t value);
+
+void ADXL375_reg_read(uint8_t addr, uint8_t *values, int num_val);
+
 #endif /* ADXL375_DRIVER_H */

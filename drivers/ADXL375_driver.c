@@ -74,7 +74,7 @@ uint8_t ADXL375_get_data(ADXL375_data* data){
     // x-axis
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     delay_ms(1);
-    int x_values[2] = {0,0};
+    uint8_t x_values[2] = {0,0};
     ADXL375_reg_read(ADXL375_X_REG_DATAX0, x_values, 2);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     int16_t x = ((uint16_t)x_values[1] << 8) | (uint16_t)x_values[0];
@@ -82,7 +82,7 @@ uint8_t ADXL375_get_data(ADXL375_data* data){
     // y-axis
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     delay_ms(1);
-    int y_values[2] = {0,0};
+    uint8_t y_values[2] = {0,0};
     ADXL375_reg_read(ADXL375_Y_REG_DATAY0, y_values, 2);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     int16_t y = ((uint16_t)y_values[1] << 8) | (uint16_t)y_values[0];
@@ -90,7 +90,7 @@ uint8_t ADXL375_get_data(ADXL375_data* data){
     // z-axis
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     delay_ms(1);
-    int z_values[2] = {0,0};
+    uint8_t z_values[2] = {0,0};
     ADXL375_reg_read(ADXL375_Z_REG_DATAZ0, z_values, 2);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     int16_t z = ((uint16_t)z_values[1] << 8) | (uint16_t)z_values[0];
@@ -118,7 +118,7 @@ void ADXL375_reg_write(uint8_t addr, uint8_t value) {
 
 void ADXL375_reg_read(uint8_t addr, uint8_t *values, int num_val)
 {
-    int address = addr | 0x80;
+    uint8_t address = addr | 0x80;
     address = address | 0x40;
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     spi_transmit(ADXL375_SPI, address);
