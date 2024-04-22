@@ -27,7 +27,7 @@
 
 // Defines a global delay mostly for debugging
 #define DELAY 1
-#define DELAY_PINMODE 50
+#define DELAY_PINMODE 5
 
 // Manipulate control pins for commands
 #define STANDBY           0b10001100 // CE# CLE ALE WE# RE# WP# X X
@@ -466,9 +466,9 @@ static inline void print_frame_csv(FrameArray frameFormat) {
   @brief Wait for the ready flag to be set
 */
 static inline void wait_for_ready_flag() {
-  int count = 1000*100; // Try for 1 second before giving error
+  int count = 1000*10; // Try for 1 second before giving error
   while (gpio_read(RB) == LOW && count > 0) {
-    delay_ms(1);
+    delay_microseconds(1);
     count--;
   }
   if (count < 1) {
@@ -488,7 +488,7 @@ static inline void set_pin_modes() {
   gpio_set_mode(data5, globalPinMode);
   gpio_set_mode(data6, globalPinMode);
   gpio_set_mode(data7, globalPinMode);
-  delay_ms(DELAY_PINMODE);
+  delay_microseconds(DELAY_PINMODE);
 }
 
 /**
@@ -540,11 +540,11 @@ static inline void send_byte_to_flash(uint8_t cmd, uint8_t mode) {
   @brief Read a single byte from the flash (assumes address to read from has been set before calling this function)
 */
 static inline uint8_t receive_byte_from_flash() {  
-  delay_ms(DELAY);
+  delay_microseconds(DELAY);
   set_control_pins(DATA_OUTPUT);
-  delay_ms(DELAY);
+  delay_microseconds(DELAY);
   set_control_pins(DATA_OUTPUT & (~RE_HIGH));  // setting RE LOW
-  delay_ms(DELAY);
+  delay_microseconds(DELAY);
 
   if (globalPinMode != GPIO_MODE_INPUT) {
     globalPinMode = GPIO_MODE_INPUT;

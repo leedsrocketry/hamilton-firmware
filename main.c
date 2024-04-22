@@ -160,7 +160,7 @@ int main(void)
                           _BME280_data, _GNSS_data);
 
           // Log data
-          log_frame(frame);
+          //log_frame(frame);
           
           // Update buffer and window  
           update_buffer(&frame, &frame_buffer);
