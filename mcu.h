@@ -563,13 +563,13 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
 
   //(*result_ptr++) = result;
 
-  // if(receive_size == 1) {
-  //   *((uint8_t*)result_ptr) = result;
-  // } else if (receive_size == 2) {
-  //   *((uint16_t*)result_ptr) = result;
-  // } else if (receive_size > 2) {
-  //   *((uint32_t*)result_ptr) = result;
-  // }
+  if(receive_size == 1) {
+    *((uint8_t*)result_ptr) = result;
+  } else if (receive_size == 2) {
+    *((uint16_t*)result_ptr) = result;
+  } else if (receive_size > 2) {
+    *((uint32_t*)result_ptr) = result;
+  }
   return ret_value;
 }
 
