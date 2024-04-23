@@ -11,12 +11,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <math.h>
 
 // https://github.com/STMicroelectronics/cmsis_device_l4/blob/master/Include/system_stm32l4xx.h
 #include "stm32l4r5xx.h"
 
 extern volatile uint32_t s_ticks;
-extern int FREQ;
+extern uint32_t FREQ;
 
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
@@ -38,38 +39,40 @@ typedef struct DateTime {
   uint16_t microsecond;  // 0 - 999
 } DateTime;
 
-typedef struct Vector3 {
-  uint16_t x;
-  uint16_t y;
-  uint16_t z;
-} Vector3;
-
 typedef struct GNSS_Data{
   uint16_t latitude;
   uint16_t longitude;
-  uint32_t heading1;
-  uint32_t velocity;
+  uint16_t altitude;
+  uint16_t velocity;
 } GNSS_Data;
-
-// 128 bytes
-typedef struct FrameArray {
-  DateTime date;
-  uint16_t changeFlag;  // IS THIS NEEDED? CAN THIS BE DONE BETTER?
-  Vector3 accelHighG;
-  Vector3 accelLowG;
-  Vector3 gyroscope;
-  uint32_t barometer;
-  uint16_t thermocouple[4];
-  uint16_t humidity;
-  uint32_t temp;
-  uint16_t magneticFieldStrength;
-  GNSS_Data GNSS;
-  uint16_t ADC[2];
-  uint8_t hammingCode[8];
-  uint16_t CRC_Check;
-  int successFlag; // Not used in zip
-} FrameArray;
 #pragma endregion Struct
+
+/**
+  @brief Print a float
+  @param name Name of the float
+  @param value Value of the float
+  @param print_text Print text or not
+*/
+static void printf_float(char* name, float value, bool print_text) {
+  char str[30];
+
+  char *tmpSign = (value < 0) ? "-" : "";
+  float tmpVal = (value < 0) ? -value : value;
+
+  uint32_t tmpInt1 = (uint32_t) tmpVal;  // Get the integer (678).
+  float tmpFrac = (tmpVal - (float)tmpInt1);    // Get fraction (0.0123).
+  int32_t tmpInt2 = (int32_t)trunc(tmpFrac * 1000);   // Turn into integer (123).
+
+  // Print as parts, note that you need 0-padding for fractional bit.
+  // Prints in format "123.456" or "value: 123.456"
+  if (print_text)
+    sprintf(str, "%s: %s%ld.%03ld", name, tmpSign, tmpInt1, tmpInt2);
+  else
+    sprintf(str, "%s%ld.%03ld", tmpSign, tmpInt1, tmpInt2);
+
+  // Print the string
+  printf("%s", str);
+}
 
 #pragma region System Clk
 /**
@@ -112,7 +115,7 @@ static inline void delay_microseconds(uint32_t time) {
   @param time Time in miliseconds
 */
 static inline void delay_ms(uint32_t time) {
-  uint32_t initial_ticks = s_ticks; 
+  uint32_t initial_ticks = s_ticks;
   while (s_ticks - initial_ticks < time); //hold until that many ticks have passed
 }
 
@@ -210,7 +213,7 @@ static inline bool gpio_read(uint16_t pin)
   @param uart Selected UART (1, 2, 3 or low power)
   @param baud Baud rate
 */
-static inline void uart_init(USART_TypeDef *uart, unsigned long baud)
+static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
 {
   uint8_t af = 8;          // Alternate function
   uint16_t rx = 0, tx = 0; // pins
@@ -238,9 +241,10 @@ static inline void uart_init(USART_TypeDef *uart, unsigned long baud)
   gpio_set_af(tx, af);
   gpio_set_mode(rx, GPIO_MODE_AF);
   gpio_set_af(rx, af);
-  uart->CR1 = 0;                                // Disable this UART                              
-  uart->BRR = FREQ / baud;                      // FREQ is a CPU frequency
-  uart->CR1 |= BIT(0) | BIT(2) | BIT(3);        // Set UE, RE, TE Datasheet 50.8.1 
+  uart->CR1 = 0;                              // Disable this UART                              
+  uart->BRR = FREQ / baud;                    // FREQ is a CPU frequency
+  //uart->BRR = 256*FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
+  uart->CR1 |= BIT(0) | BIT(2) | BIT(3);      // Set UE, RE, TE Datasheet 50.8.1 
 }
 
 /**
@@ -414,7 +418,8 @@ static inline void spi_init(SPI_TypeDef *spi) {
 
   // MCU clock speed (FREQ) is 16 MHz and max MCU SPI speed is FREQ / 2.
   spi->CR1 &= ~(7U << 3);   // Clears BR (bits 5:3) to 000 which is = system clock/2
-  spi->CR1 |= (3U << 3);    // Sets BR to 011, systemclk/16, so 1MHz
+  // TODO: seems like clk is running two times faster? DEBUG
+  spi->CR1 |= (3U << 3);    // Sets BR to 011, systemclk/16, so 1MHz.. but actually 2Mhz
 
   // CPOL (clk polarity) and CPHA (clk phase) defaults  to produce the desired clock/data relationship
   // CPOL controls the idle state value of the clock when no data is being transferred.
@@ -425,7 +430,7 @@ static inline void spi_init(SPI_TypeDef *spi) {
   // RXONLY or BIDIMODE and BIDIOE (RXONLY and BIDIMODE cannot be set
   // at the same time)"
   spi->CR1 &= ~BIT(10); // full duplex
-  spi->CR1 &= ~BIT(15); //2 line unidirectional data mode
+  spi->CR1 &= ~BIT(15); // 2 line unidirectional data mode
 
   // Datasheet: "The MSB of a byte is transmitted first"
   spi->CR1 &= ~BIT(7);
@@ -462,7 +467,6 @@ static inline void spi_init(SPI_TypeDef *spi) {
 static inline int spi_ready_read(SPI_TypeDef *spi) {
   while (!(spi->SR & BIT(1))); // Wait until transmit buffer is empty
   while (!(spi->SR & BIT(0))); // Wait until receive buffer is not empty (RxNE, 52.4.9)
-
   return 1; // data is ready
 }
 
@@ -483,6 +487,9 @@ static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
   if (spi == SPI1)
     gpio_write(PIN('A', 4), LOW);
   #endif
+  // Explicitely use CS and SPI to avoid warnings, this is intended behaviour
+  (void)cs;
+  (void)spi;
 }
 
 /**
@@ -498,11 +505,14 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
   if (spi == SPI1)
     gpio_write(PIN('A', 4), HIGH);
   #endif
+  // Explicitely use CS and SPI to avoid warnings, this is intended behaviour
+  (void)cs;
+  (void)spi;
 }
 
 /**
   @brief Transmit single byte to and recieve a byte from SPI peripheral
-  @param spi Selected SPI (1, 2 or 3)
+  @param spi Selected SPI
   @param send_byte Byte to be sent via SPI
   @return Byte from SPI
 */
@@ -518,21 +528,27 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
   return recieve_byte;
 }
 
+/**
+  @brief Transmit multiples bytes to and recieve multiple bytes from SPI peripheral
+  @param spi Selected SPI
+  @param send_byte Byte to be sent via SPI
+  @param transmit_size Int specifying number of bytes being sent over SPI
+  @param receive_size Int specifying number of bytes being receiving over SPI
+  @param result_ptr ptr to array of results
+  @return Byte from SPI
+*/
 static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
                                           uint8_t *send_byte,
                                           uint8_t transmit_size,
                                           uint8_t receive_size,
-                                          void* result_ptr)
+                                          uint8_t* result_ptr)
 {
   uint8_t ret_value = 0;
   spi_ready_write(spi);
-  //int8_t x[1];
 
   for (int i = 0; i<transmit_size; i++) {
     spi_transmit(spi, send_byte[i]);
   }
-
-  //printf("x_inside: %d ", (x[1] << 8) | x[0]);
 
   uint32_t result = 0;
   int8_t rs = receive_size;
@@ -544,19 +560,16 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
     rs--;
     spi_ready_write(spi);
   }
-  //spi_disable_cs(spi, cs);
-  //printf("RESULT: %d\r\n", result);
-  if(receive_size == 1)
-  {
+
+  //(*result_ptr++) = result;
+
+  if(receive_size == 1) {
     *((uint8_t*)result_ptr) = result;
-  } else if (receive_size == 2)
-  {
+  } else if (receive_size == 2) {
     *((uint16_t*)result_ptr) = result;
-  } else if (receive_size > 2)
-  {
+  } else if (receive_size > 2) {
     *((uint32_t*)result_ptr) = result;
   }
-
   return ret_value;
 }
 
@@ -587,7 +600,14 @@ static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8
   return 0;
 }
 
-
+/**
+  @brief Read multiple bytes from SPI peripheral
+  @param spi Selected SPI (1, 2 or 3)
+  @param recieve_bytes Bytes to be read over SPI
+  @param receive_size Number of bytes to be read
+  @note TO BE DEPRECATED
+  @return value read
+*/
 static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uint8_t receive_size){
   uint8_t retval = 0;
   uint8_t i = 0;

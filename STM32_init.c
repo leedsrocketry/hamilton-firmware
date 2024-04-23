@@ -7,7 +7,7 @@
 
 #include "STM32_init.h"
 
-FREQ = (int) 4000000;
+uint32_t FREQ = (uint32_t) 4000000;
 
 void STM32_init()
 {
@@ -50,7 +50,7 @@ void init_delay_timer() {
   RCC->APB1RSTR1 &= ~RCC_APB1RSTR1_TIM2RST;
 
   // Prescaler must make clock period = 1ns from system clock of (16MHz)
-  uint32_t prescaler = FREQ/1000000 - 1; //should be 15
+  // uint32_t prescaler = FREQ/1000000 - 1; //should be 15
   TIM2->PSC = 15; 
 
   // Send an update event to reset the timer and apply settings.
@@ -65,13 +65,16 @@ void init_delay_timer() {
 
 void STM32_init_internals()
 {
-  // UART
-  uart_init(LUART1, 9600);  // Initialise Low Power UART;
-  uart_init(USART1, 9600);  // Initialise UART1;
-  uart_init(USART2, 9600);  // Initialise UART2;
-  uart_init(USART3, 9600);  // Initialise UART3;
+  // FPU
+  SCB->CPACR |= ((3UL << 10*2) | (3UL << 11*2));  // set CP10 and CP11 Full Access
 
-  // SPI 
+  // UART
+  //uart_init(LUART1, 9600);  // Initialise Low Power UART;
+  uart_init(USART1, 115200);  // Initialise UART1;
+  //uart_init(USART2, 115200);  // Initialise UART2;
+  //uart_init(USART3, 115200);  // Initialise UART3;
+
+  // SPI
   spi_init(SPI1);
 
   // Additional

@@ -27,6 +27,7 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
     uint8_t devid;
     spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 2, 1, &devid);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+    
     if (devid != ADXL375_DEVID_ID)
         printf("ADXL375 wrong device ID: %d\r\n", devid);
 
@@ -73,29 +74,26 @@ uint8_t ADXL375_get_data(ADXL375_data* data){
     // x-axis
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     delay_ms(1);
-    int x_values[2] = {0,0};
+    uint8_t x_values[2] = {0,0};
     ADXL375_reg_read(ADXL375_X_REG_DATAX0, x_values, 2);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     int16_t x = ((uint16_t)x_values[1] << 8) | (uint16_t)x_values[0];
-    x = x;
 
     // y-axis
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     delay_ms(1);
-    int y_values[2] = {0,0};
+    uint8_t y_values[2] = {0,0};
     ADXL375_reg_read(ADXL375_Y_REG_DATAY0, y_values, 2);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     int16_t y = ((uint16_t)y_values[1] << 8) | (uint16_t)y_values[0];
-    y = y ;
 
     // z-axis
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     delay_ms(1);
-    int z_values[2] = {0,0};
+    uint8_t z_values[2] = {0,0};
     ADXL375_reg_read(ADXL375_Z_REG_DATAZ0, z_values, 2);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     int16_t z = ((uint16_t)z_values[1] << 8) | (uint16_t)z_values[0];
-    z = (z );
 
     data->x = x;
     data->y = y;
@@ -120,7 +118,7 @@ void ADXL375_reg_write(uint8_t addr, uint8_t value) {
 
 void ADXL375_reg_read(uint8_t addr, uint8_t *values, int num_val)
 {
-    int address = addr | 0x80;
+    uint8_t address = addr | 0x80;
     address = address | 0x40;
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     spi_transmit(ADXL375_SPI, address);
@@ -150,40 +148,3 @@ static void ADXL375_get_test_value(struct ADXL375_data *data, int samples)
 }
 */
 #pragma endregion Private
-
-
-/* ADD UNDER INIT
-// Perform self checks
-    struct ADXL375_data	self_test_off, self_test_on;
-
-    ADXL375_reg_write(ADXL375_DATA_FORMAT, ADXL375_DATA_FORMAT_SETTINGS(1)); 
-
-    // Discard some samples to let it settle down
-	ADXL375_get_test_value(&self_test_off, ADXL375_SELF_TEST_SETTLE);
-
-	// Get regular values 
-	ADXL375_get_test_value(&self_test_off, ADXL375_SELF_TEST_SAMPLES);
-
-    // Turn back to normal mode
-    ADXL375_reg_write(ADXL375_DATA_FORMAT, ADXL375_DATA_FORMAT_SETTINGS(0));
-
-    // Discard some samples to let it settle down
-	ADXL375_get_test_value(&self_test_off, ADXL375_SELF_TEST_SETTLE);
-
-	// Get regular values 
-	ADXL375_get_test_value(&self_test_off, ADXL375_SELF_TEST_SAMPLES);
-
-    // Verify if Z axis values are in range
-    int16_t	z_change = self_test_on.z - self_test_off.z;
-    self_test_value = z_change;
-
-    // TODO: Check if the self test value is valid
-
-
-static void ADXL375_start(void) {	
-    TO DO: configure chip for: 
-        ADXL375_CS_PIN,
-        ADXL375_SPI_INDEX,
-        ADXL375_SPI_SPEED);
-}
-*/

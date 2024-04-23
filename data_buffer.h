@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mcu.h"
+#include "frame_array.h"
 
 // Define Constants and Thresholds
 #define BUFFER_SIZE       50
@@ -20,7 +21,9 @@
 #define APOGEE_THRESHOLD  50      // micro bar for detecting apogee
 #define DESCENT_THRESHOLD 50      // micro bar for detecting an increase
 #define GROUND_THRESHOLD  30      // micro bar for detecting ground
-#define WINDOW_SIZE       10      // Number of readings to compute
+#define WINDOW_SIZE       20      // Number of readings to compute
+
+static float sea_level_pressure = 1013.25;    // Sea level presser in micro bar
 
 // Circular Buffer for data storing
 typedef struct dataBuffer {
@@ -51,4 +54,20 @@ int get_median(int data[], int size);
   @param buffer - data buffer
 */
 void update_buffer(FrameArray* frame, dataBuffer* buffer);
+
+/**
+  @brief Get the velocity from the buffer based on barometer readings
+  @param barometer_data - array of barometer data in mbar
+  @param size - size of the array
+  @param dt - time interval between readings in microseconds
+  @return float vertical velocity value in m/s
+*/
+float get_vertical_velocity(int barometer_data[], int size, int dt);
+
+/**
+  @brief Check if the rocket is stationary
+  @param data - array of data
+  @return true if the rocket is stationary
+*/
+bool is_stationary(int data[]);
 #endif /* BUFFER_H */

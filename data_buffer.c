@@ -26,6 +26,12 @@ int cmpfunc(const void * a, const void * b) {
    return ( *(int*)a - *(int*)b );
 }
 
+/**
+  @brief Return median of array of integers
+  @param data Array of integers
+  @param size Size of array
+  @return True when ready
+*/
 int get_median(int data[], int size) {
   qsort(data, sizeof(data), sizeof(int), cmpfunc);
   if (sizeof(data) % 2 != 0)
@@ -37,7 +43,7 @@ void set_ground_reference(dataBuffer* buffer) {
   // Create copy of buffer data to sort
   int _data[WINDOW_SIZE];
   for (int i = 0; i < WINDOW_SIZE; i++) {
-    _data[i] = buffer->frames[i].barometer;
+    _data[i] = buffer->frames[i].barometer.pressure;
   }
 
   // get the ground reference as median
@@ -67,11 +73,34 @@ void update_buffer(FrameArray* frame, dataBuffer* buffer) {
   }
 }
 
+float get_vertical_velocity(int data[], int size, int dt) {
+  qsort(data, WINDOW_SIZE, sizeof(int), cmpfunc);
+  float altitude_change = 0.0;
+  float previous_altitude, current_altitude;
+  float test = 0.0;
+
+  previous_altitude = 44330.7692 * (1.0 - pow(((float)data[0] / 100.0f) / sea_level_pressure, 0.1902));
+  current_altitude = 44330.7692 * (1.0 - pow(((float)data[19] / 100.0f) / sea_level_pressure, 0.1902));
+  altitude_change = previous_altitude - current_altitude;
+
+  // Calculate the total time covered by the readings (microseconds)
+  float total_time = dt * WINDOW_SIZE * 1e-6f;
+  float velocity = altitude_change / total_time;
+  
+  // Return vertical velocity in m/s
+  return velocity;
+}
+
 // Check if stationary
 bool is_stationary(int data[]) {
   int sum = 0;
   for (int i = 0; i < WINDOW_SIZE; i++) {
     sum += data[i];
   }
-  return (sum / WINDOW_SIZE) < GROUND_THRESHOLD;
+  int mean = sum / WINDOW_SIZE;
+  int variance = 0;
+  for (int i = 0; i < WINDOW_SIZE; i++) {
+    variance += pow((data[i] - mean), 2);
+  }
+  return sqrt(variance / WINDOW_SIZE) < GROUND_THRESHOLD;
 }
