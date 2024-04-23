@@ -512,7 +512,7 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
 
 /**
   @brief Transmit single byte to and recieve a byte from SPI peripheral
-  @param spi Selected SPI (1, 2 or 3)
+  @param spi Selected SPI
   @param send_byte Byte to be sent via SPI
   @return Byte from SPI
 */
@@ -528,11 +528,20 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
   return recieve_byte;
 }
 
+/**
+  @brief Transmit multiples bytes to and recieve multiple bytes from SPI peripheral
+  @param spi Selected SPI
+  @param send_byte Byte to be sent via SPI
+  @param transmit_size Int specifying number of bytes being sent over SPI
+  @param receive_size Int specifying number of bytes being receiving over SPI
+  @param result_ptr ptr to array of results
+  @return Byte from SPI
+*/
 static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
                                           uint8_t *send_byte,
                                           uint8_t transmit_size,
                                           uint8_t receive_size,
-                                          void* result_ptr)
+                                          uint8_t* result_ptr)
 {
   uint8_t ret_value = 0;
   spi_ready_write(spi);
@@ -552,13 +561,15 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
     spi_ready_write(spi);
   }
 
-  if(receive_size == 1) {
-    *((uint8_t*)result_ptr) = result;
-  } else if (receive_size == 2) {
-    *((uint16_t*)result_ptr) = result;
-  } else if (receive_size > 2) {
-    *((uint32_t*)result_ptr) = result;
-  }
+  //(*result_ptr++) = result;
+
+  // if(receive_size == 1) {
+  //   *((uint8_t*)result_ptr) = result;
+  // } else if (receive_size == 2) {
+  //   *((uint16_t*)result_ptr) = result;
+  // } else if (receive_size > 2) {
+  //   *((uint32_t*)result_ptr) = result;
+  // }
   return ret_value;
 }
 
@@ -589,7 +600,14 @@ static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8
   return 0;
 }
 
-
+/**
+  @brief Read multiple bytes from SPI peripheral
+  @param spi Selected SPI (1, 2 or 3)
+  @param recieve_bytes Bytes to be read over SPI
+  @param receive_size Number of bytes to be read
+  @note TO BE DEPRECATED
+  @return value read
+*/
 static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uint8_t receive_size){
   uint8_t retval = 0;
   uint8_t i = 0;
