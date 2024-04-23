@@ -77,12 +77,14 @@ void run_LSM6DS3_routine()
 {
   printf("================ LSM6DS3_routine ================\r\n");
   LSM6DS3_data gyro_data;
-  delay_ms(50);
-  lsm6ds6_init(SPI1, &gyro_data);
+  delay_ms(1000*1000);
+  Lsm6ds3Init(SPI1, &gyro_data);
   
   for (;;) {
-    lsm6ds6GyroReadAngle(SPI1, &gyro_data);
-    printf("Gyro: %d, %d, %d, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
+    Lsm6ds3GyroRead(SPI1, &gyro_data);
+    Lsm6ds3AccRead(SPI1, &gyro_data);
+    printf("A, X: %i, Y: %i, Z:%i \t", gyro_data.x_accel, gyro_data.y_accel, gyro_data.z_accel);
+    printf("G, X: %i, Y: %i, Z:%i \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
   }
 }
 
