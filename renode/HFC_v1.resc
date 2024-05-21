@@ -1,0 +1,23 @@
+:name: Hamilton Flight Computer TEST
+:description: This script runs the Hamilton firmware on the HFC v1 board.
+
+using sysbus
+$name?="HFC_v1"
+mach create $name
+i @renode/STM32L4_RCC.cs
+
+machine LoadPlatformDescription @renode/STM32L4.repl
+
+cpu PerformanceInMips 125
+
+
+showAnalyzer sysbus.usart1
+
+macro reset
+"""
+    sysbus LoadELF @firmware.elf
+
+
+"""
+
+runMacro $reset
