@@ -4,12 +4,12 @@
 using sysbus
 $name?="HFC_v1"
 mach create $name
-i @renode/STM32L4_RCC.cs
+i @renode/STM32L4R5_RCC.cs
 
-machine LoadPlatformDescription @renode/STM32L4.repl
+machine LoadPlatformDescription @renode/HFC_v1.repl
 
 cpu PerformanceInMips 125
-
+cpu LogFunctionNames true true
 
 showAnalyzer sysbus.usart1
 
