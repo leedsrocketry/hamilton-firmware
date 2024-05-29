@@ -11,12 +11,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <math.h>
 
 // https://github.com/STMicroelectronics/cmsis_device_l4/blob/master/Include/system_stm32l4xx.h
 #include "stm32l4r5xx.h"
 
 extern volatile uint32_t s_ticks;
-extern int FREQ;
+extern uint32_t FREQ;
 
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
@@ -59,15 +60,15 @@ static void printf_float(char* name, float value, bool print_text) {
   float tmpVal = (value < 0) ? -value : value;
 
   uint32_t tmpInt1 = (uint32_t) tmpVal;  // Get the integer (678).
-  float tmpFrac = (tmpVal - tmpInt1);    // Get fraction (0.0123).
-  int tmpInt2 = trunc(tmpFrac * 1000);   // Turn into integer (123).
+  float tmpFrac = (tmpVal - (float)tmpInt1);    // Get fraction (0.0123).
+  int32_t tmpInt2 = (int32_t)trunc(tmpFrac * 1000);   // Turn into integer (123).
 
   // Print as parts, note that you need 0-padding for fractional bit.
   // Prints in format "123.456" or "value: 123.456"
   if (print_text)
-    sprintf(str, "%s: %s%d.%03d", name, tmpSign, tmpInt1, tmpInt2);
+    sprintf(str, "%s: %s%ld.%03ld", name, tmpSign, tmpInt1, tmpInt2);
   else
-    sprintf(str, "%s%d.%03d", tmpSign, tmpInt1, tmpInt2);
+    sprintf(str, "%s%ld.%03ld", tmpSign, tmpInt1, tmpInt2);
 
   // Print the string
   printf("%s", str);
@@ -212,7 +213,7 @@ static inline bool gpio_read(uint16_t pin)
   @param uart Selected UART (1, 2, 3 or low power)
   @param baud Baud rate
 */
-static inline void uart_init(USART_TypeDef *uart, unsigned long baud)
+static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
 {
   uint8_t af = 8;          // Alternate function
   uint16_t rx = 0, tx = 0; // pins
@@ -486,6 +487,9 @@ static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
   if (spi == SPI1)
     gpio_write(PIN('A', 4), LOW);
   #endif
+  // Explicitely use CS and SPI to avoid warnings, this is intended behaviour
+  (void)cs;
+  (void)spi;
 }
 
 /**
@@ -501,11 +505,14 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
   if (spi == SPI1)
     gpio_write(PIN('A', 4), HIGH);
   #endif
+  // Explicitely use CS and SPI to avoid warnings, this is intended behaviour
+  (void)cs;
+  (void)spi;
 }
 
 /**
   @brief Transmit single byte to and recieve a byte from SPI peripheral
-  @param spi Selected SPI (1, 2 or 3)
+  @param spi Selected SPI
   @param send_byte Byte to be sent via SPI
   @return Byte from SPI
 */
@@ -521,11 +528,20 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
   return recieve_byte;
 }
 
+/**
+  @brief Transmit multiples bytes to and recieve multiple bytes from SPI peripheral
+  @param spi Selected SPI
+  @param send_byte Byte to be sent via SPI
+  @param transmit_size Int specifying number of bytes being sent over SPI
+  @param receive_size Int specifying number of bytes being receiving over SPI
+  @param result_ptr ptr to array of results
+  @return Byte from SPI
+*/
 static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
                                           uint8_t *send_byte,
                                           uint8_t transmit_size,
                                           uint8_t receive_size,
-                                          void* result_ptr)
+                                          uint8_t* result_ptr)
 {
   uint8_t ret_value = 0;
   spi_ready_write(spi);
@@ -544,6 +560,8 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
     rs--;
     spi_ready_write(spi);
   }
+
+  //(*result_ptr++) = result;
 
   if(receive_size == 1) {
     *((uint8_t*)result_ptr) = result;
@@ -582,7 +600,14 @@ static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8
   return 0;
 }
 
-
+/**
+  @brief Read multiple bytes from SPI peripheral
+  @param spi Selected SPI (1, 2 or 3)
+  @param recieve_bytes Bytes to be read over SPI
+  @param receive_size Number of bytes to be read
+  @note TO BE DEPRECATED
+  @return value read
+*/
 static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uint8_t receive_size){
   uint8_t retval = 0;
   uint8_t i = 0;

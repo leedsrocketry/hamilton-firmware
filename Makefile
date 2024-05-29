@@ -1,4 +1,4 @@
-CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
+CFLAGS  ?=  -W -Wall -Wpedantic -Wextra -Wundef -Wshadow -Wdouble-promotion \
             -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas \
             -g3 -O0 -ffunction-sections -fdata-sections -I. -Iinclude \
             -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(EXTRA_CFLAGS) \
@@ -44,3 +44,6 @@ hfc: CFLAGS += -DFLIGHT_COMPUTER
 hfc: build
 
 hfc-flash: hfc flash
+
+emulate: hfc
+	./renode/run-emulator.sh renode/HFC_v1.resc

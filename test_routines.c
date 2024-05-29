@@ -20,7 +20,7 @@ void run_test_routine()
     on = true;                                  // This block is executed
     gpio_write(GREEN_LED, on);                  // Every `period` milliseconds
     on = !on;                                   // Toggle LED state
-    printf("LED: %d, tick: %lu\r\n", on, 1000); // Write message
+    printf("LED: %d, tick: %u\r\n", on, 1000); // Write message
   }
 }
 
@@ -37,7 +37,7 @@ void run_MS5611_routine()
     gpio_write(GREEN_LED, on);
     on = !on;
     MS5611_get_data(&_data);
-    printf("p: %d, t: %d, \r\n", _data.pressure, _data.temp);
+    printf("p: %d, t: %ld, \r\n", _data.pressure, _data.temp);
   }
 }
 
@@ -77,14 +77,12 @@ void run_LSM6DS3_routine()
 {
   printf("================ LSM6DS3_routine ================\r\n");
   LSM6DS3_data gyro_data;
-  delay_ms(1000*1000);
-  Lsm6ds3Init(SPI1, &gyro_data);
+  delay_ms(50);
+  lsm6ds6_init(SPI1, &gyro_data);
   
   for (;;) {
-    Lsm6ds3GyroRead(SPI1, &gyro_data);
-    Lsm6ds3AccRead(SPI1, &gyro_data);
-    printf("A, X: %i, Y: %i, Z:%i \t", gyro_data.x_accel, gyro_data.y_accel, gyro_data.z_accel);
-    printf("G, X: %i, Y: %i, Z:%i \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
+    lsm6ds6GyroReadAngle(SPI1, &gyro_data);
+    printf("Gyro: %ld, %ld, %ld, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
   }
 }
 

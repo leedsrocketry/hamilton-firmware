@@ -385,16 +385,16 @@ static inline void _memset(uint8_t *arr, uint8_t val, int num){
   @param frameFormat
 */
 static inline void print_frame_array(FrameArray frameFormat) {
-  printf("Date: %i, %i:%i:%i:%i:%i\r\n", frameFormat.date.year, frameFormat.date.minute,
+  printf("Date: %i, %i:%i:%i:%i:\r\n", frameFormat.date.year, frameFormat.date.minute,
                                                frameFormat.date.second, frameFormat.date.millisecond, 
                                                frameFormat.date.microsecond );
 
-  printf("ChangeFlag: %i\r\n", frameFormat.changeFlag);
+  printf("ChangeFlag: %u\r\n", frameFormat.changeFlag);
 
   printf("Accel HG: \tX: %i,\tY: %i,\tZ: %i\t\r\n", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
 
-  printf("IMU: \tX Rate: %i,\tY Rate: %i,\tZ Rate: %i,\tX Offset: %i,\tY Offset: %i, \
-        \tZ Offset: %i,\tX Accel: %i,\tY Accel: %i,\tZ Accel: %i,\r\n", frameFormat.imu.x_rate, 
+  printf("IMU: \tX Rate: %d,\tY Rate: %d,\tZ Rate: %d,\tX Offset: %d,\tY Offset: %d, \
+        \tZ Offset: %d,\tX Accel: %d,\tY Accel: %d,\tZ Accel: %d,\r\n", frameFormat.imu.x_rate, 
                                                                         frameFormat.imu.y_rate, 
                                                                         frameFormat.imu.z_rate, 
                                                                         frameFormat.imu.x_offset, 
@@ -404,13 +404,13 @@ static inline void print_frame_array(FrameArray frameFormat) {
                                                                         frameFormat.imu.y_accel, 
                                                                         frameFormat.imu.z_accel);
 
-  printf("Barometer: \ttemp: %i, \tpressure: %i\r\n", frameFormat.barometer.temp, frameFormat.barometer.pressure);
+  printf("Barometer: \ttemp: %li, \tpressure: %li\r\n", frameFormat.barometer.temp, frameFormat.barometer.pressure);
   printf("GNSS: \tLat: %i,\tLong: %i,\tAlt: %i,\tVel: %i\r\n", frameFormat.GNSS.latitude, 
                                                                frameFormat.GNSS.longitude, 
                                                                frameFormat.GNSS.altitude, 
                                                                frameFormat.GNSS.velocity);
                                                                
-  printf("BME280: \tPressure: %i,\tTemperature: %i,\tHumidity: %i\r\n", frameFormat.bme.pressure, 
+  printf("BME280: \tPressure: %li,\tTemperature: %i,\tHumidity: %li\r\n", frameFormat.bme.pressure, 
                                                                       frameFormat.bme.temperature, 
                                                                       frameFormat.bme.humidity);
 }
@@ -446,7 +446,7 @@ static inline void print_frame_csv(FrameArray frameFormat) {
 
   printf("%i,%i,%i,", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
 
-  printf("%i,%i,%i,%i,%i,%i,%i,%i,%i,", frameFormat.imu.x_rate, 
+  printf("%li,%li,%li,%li,%li,%li,%i,%i,%i,", frameFormat.imu.x_rate, 
                                         frameFormat.imu.y_rate, 
                                         frameFormat.imu.z_rate, 
                                         frameFormat.imu.x_offset, 
@@ -456,9 +456,9 @@ static inline void print_frame_csv(FrameArray frameFormat) {
                                         frameFormat.imu.y_accel, 
                                         frameFormat.imu.z_accel);
 
-  printf("%i,%i,", frameFormat.barometer.temp, frameFormat.barometer.pressure);
+  printf("%li,%li,", frameFormat.barometer.temp, frameFormat.barometer.pressure);
   printf("%i,%i,%i,%i,", frameFormat.GNSS.latitude, frameFormat.GNSS.longitude, frameFormat.GNSS.altitude, frameFormat.GNSS.velocity);
-  printf("%i,%i,%i,", frameFormat.bme.pressure, frameFormat.bme.temperature, frameFormat.bme.humidity);
+  printf("%li,%i,%li,", frameFormat.bme.pressure, frameFormat.bme.temperature, frameFormat.bme.humidity);
   printf("\r\n");
 }
 
@@ -845,9 +845,9 @@ static inline void init_flash() {
   gpio_set_mode(RB,  GPIO_MODE_INPUT);
   
   frameAddressPointer = get_next_available_frame_addr();
-  printf("FRAME ADDRESS POINTER %i.\r\n", frameAddressPointer);
+  printf("FRAME ADDRESS POINTER %li.\r\n", frameAddressPointer);
 
-  printf("%d\r\n", read_flash_ID());
+  printf("%lld\r\n", read_flash_ID());
 
   if (read_flash_ID() != 0){
     printf("Flash Working Correctly\r\n");
@@ -1076,7 +1076,7 @@ static inline void read_all_frame(){
     } else {
       // rpint out as a frame
       _output = recall_frame(i);
-        printf("FN:%i\r\n", i);
+        printf("FN:%li\r\n", i);
       print_frame_array(_output);
     } 
   }

@@ -26,6 +26,12 @@ int cmpfunc(const void * a, const void * b) {
    return ( *(int*)a - *(int*)b );
 }
 
+/**
+  @brief Return median of array of integers
+  @param data Array of integers
+  @param size Size of array
+  @return True when ready
+*/
 int get_median(int data[], int size) {
   qsort(data, sizeof(data), sizeof(int), cmpfunc);
   if (sizeof(data) % 2 != 0)

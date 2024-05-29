@@ -1,0 +1,11 @@
+using "renode/STM32L4R5.repl"
+
+// SPI with multiplexer
+
+spi_mux: SPI.SPIMultiplexer @ spi2 { init: { SetActiveLow 0; SetActiveLow 0; SetActiveLow 0; SetActiveLow 1} }
+gpioPortC: {13 -> spi_mux@1; 14 -> spi_mux@2; 15 -> spi_mux@3  }
+gpioPortE: {6 -> spi_mux@0}
+
+
+dummy0spi: Mocks.DummySPISlave @ spi_mux 0x0
+

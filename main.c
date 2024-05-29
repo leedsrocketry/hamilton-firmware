@@ -61,7 +61,7 @@ void update_sensors(M5611_data* _M5611_data,
   Lsm6ds3GyroRead(SPI1, _LSM6DS3_data);
   Lsm6ds3AccRead(SPI1, _LSM6DS3_data);
 
-  printf("Barometer: %d, Temp: %d, Accel: %d, %d, %d, Gyro: %d, %d, %d\r\n", 
+  printf("Barometer: %ld, Temp: %ld, Accel: %d, %d, %d, Gyro: %ld, %ld, %ld\r\n", 
           _M5611_data->pressure, _M5611_data->temp, 
           _LSM6DS3_data->x_accel, _LSM6DS3_data->y_accel, _LSM6DS3_data->z_accel, 
           _LSM6DS3_data->x_rate, _LSM6DS3_data->y_rate, _LSM6DS3_data->z_rate);

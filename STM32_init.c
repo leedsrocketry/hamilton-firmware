@@ -7,7 +7,7 @@
 
 #include "STM32_init.h"
 
-FREQ = (int) 4000000;
+uint32_t FREQ = (uint32_t) 4000000;
 
 void STM32_init()
 {
@@ -50,7 +50,7 @@ void init_delay_timer() {
   RCC->APB1RSTR1 &= ~RCC_APB1RSTR1_TIM2RST;
 
   // Prescaler must make clock period = 1ns from system clock of (16MHz)
-  uint32_t prescaler = FREQ/1000000 - 1; //should be 15
+  // uint32_t prescaler = FREQ/1000000 - 1; //should be 15
   TIM2->PSC = 15; 
 
   // Send an update event to reset the timer and apply settings.
