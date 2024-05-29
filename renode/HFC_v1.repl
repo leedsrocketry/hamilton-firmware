@@ -2,7 +2,7 @@ using "renode/STM32L4R5.repl"
 
 // SPI with multiplexer
 
-spi_mux: SPI.SPIMultiplexer @ spi1
+spi_mux: SPI.CustomSPIMultiplexer @ spi1
 gpioPortC: {13 -> spi_mux@1; 14 -> spi_mux@2; 15 -> spi_mux@3}
 gpioPortE: {6 -> spi_mux@0}
 
