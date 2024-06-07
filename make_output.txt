@@ -1,14 +1,15 @@
-arm-none-eabi-gcc main.c startup.c syscalls.c STM32_init.c drivers/MS5611_driver.c filters.c drivers/ADXL375_driver.c test_routines.c data_buffer.c drivers/LSM6DS3_driver.c -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas -g3 -O0 -ffunction-sections -fdata-sections -I. -Iinclude -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16  -lm -Tlink.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=firmware.elf.map -o firmware.elf
+rm -rf firmware.*
+arm-none-eabi-gcc main.c startup.c syscalls.c STM32_init.c drivers/MS5611_driver.c filters.c drivers/ADXL375_driver.c test_routines.c data_buffer.c drivers/LSM6DS3_driver.c -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas -g3 -O0 -ffunction-sections -fdata-sections -I. -Iinclude -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16  -lm -DFLIGHT_COMPUTER -Tlink.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=firmware.elf.map -o firmware.elf
 In file included from main.c:9:
 mcu.h: In function 'spi_transmit_receive':
-mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 In file included from drivers/LSM6DS3_driver.h:11,
                  from frame_array.h:13,
@@ -352,14 +353,14 @@ NAND_flash_driver.h:219:14: note: 'unzippedData' declared here
       |              ^~~~~~~~~~~~
 In file included from syscalls.c:1:
 mcu.h: In function 'spi_transmit_receive':
-mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 mcu.h: At top level:
 mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
@@ -368,14 +369,14 @@ mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
 In file included from STM32_init.h:10,
                  from STM32_init.c:8:
 mcu.h: In function 'spi_transmit_receive':
-mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 mcu.h: At top level:
 mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
@@ -384,14 +385,14 @@ mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
 In file included from drivers/MS5611_driver.h:13,
                  from drivers/MS5611_driver.c:8:
 ./mcu.h: In function 'spi_transmit_receive':
-./mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+./mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-./mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+./mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-./mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+./mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 drivers/MS5611_driver.c: At top level:
 drivers/MS5611_driver.c:25:1: warning: no semicolon at end of struct or union
@@ -419,9 +420,17 @@ drivers/MS5611_driver.c:58:42: warning: passing argument 2 of 'spi_transmit_rece
       |                                          ^~~~
       |                                          |
       |                                          int *
-./mcu.h:532:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
-  532 |                                           uint8_t *send_byte,
+./mcu.h:541:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
+  541 |                                           uint8_t *send_byte,
       |                                           ~~~~~~~~~^~~~~~~~~
+drivers/MS5611_driver.c:58:54: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
+   58 |         spi_transmit_receive(MS5611_SPI, &cmd, 1, 2, &result);
+      |                                                      ^~~~~~~
+      |                                                      |
+      |                                                      uint16_t * {aka short unsigned int *}
+./mcu.h:544:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint16_t *' {aka 'short unsigned int *'}
+  544 |                                           uint8_t* result_ptr)
+      |                                           ~~~~~~~~~^~~~~~~~~~
 drivers/MS5611_driver.c:62:27: warning: conversion to 'int16_t' {aka 'short int'} from 'uint16_t' {aka 'short unsigned int'} may change the sign of the result [-Wsign-conversion]
    62 |         *(prom_ptr + i) = result;
       |                           ^~~~~~
@@ -431,17 +440,25 @@ drivers/MS5611_driver.c:73:38: warning: passing argument 2 of 'spi_transmit_rece
       |                                      ^~~~
       |                                      |
       |                                      int *
-./mcu.h:532:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
-  532 |                                           uint8_t *send_byte,
+./mcu.h:541:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
+  541 |                                           uint8_t *send_byte,
       |                                           ~~~~~~~~~^~~~~~~~~
 drivers/MS5611_driver.c:81:38: warning: passing argument 2 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    81 |     spi_transmit_receive(MS5611_SPI, &cmd, 1, 3, &D2);
       |                                      ^~~~
       |                                      |
       |                                      int *
-./mcu.h:532:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
-  532 |                                           uint8_t *send_byte,
+./mcu.h:541:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
+  541 |                                           uint8_t *send_byte,
       |                                           ~~~~~~~~~^~~~~~~~~
+drivers/MS5611_driver.c:81:50: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
+   81 |     spi_transmit_receive(MS5611_SPI, &cmd, 1, 3, &D2);
+      |                                                  ^~~
+      |                                                  |
+      |                                                  uint32_t * {aka long unsigned int *}
+./mcu.h:544:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint32_t *' {aka 'long unsigned int *'}
+  544 |                                           uint8_t* result_ptr)
+      |                                           ~~~~~~~~~^~~~~~~~~~
 drivers/MS5611_driver.c:84:18: warning: conversion to 'int32_t' {aka 'long int'} from 'long unsigned int' may change the sign of the result [-Wsign-conversion]
    84 |     int32_t dT = (D2) - ((int32_t)ms5611_prom_data.T_REF << 8);
       |                  ^
@@ -450,17 +467,25 @@ drivers/MS5611_driver.c:89:38: warning: passing argument 2 of 'spi_transmit_rece
       |                                      ^~~~
       |                                      |
       |                                      int *
-./mcu.h:532:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
-  532 |                                           uint8_t *send_byte,
+./mcu.h:541:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
+  541 |                                           uint8_t *send_byte,
       |                                           ~~~~~~~~~^~~~~~~~~
 drivers/MS5611_driver.c:97:38: warning: passing argument 2 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    97 |     spi_transmit_receive(MS5611_SPI, &cmd, 1, 3, &D1);
       |                                      ^~~~
       |                                      |
       |                                      int *
-./mcu.h:532:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
-  532 |                                           uint8_t *send_byte,
+./mcu.h:541:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'int *'
+  541 |                                           uint8_t *send_byte,
       |                                           ~~~~~~~~~^~~~~~~~~
+drivers/MS5611_driver.c:97:50: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
+   97 |     spi_transmit_receive(MS5611_SPI, &cmd, 1, 3, &D1);
+      |                                                  ^~~
+      |                                                  |
+      |                                                  uint32_t * {aka long unsigned int *}
+./mcu.h:544:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint32_t *' {aka 'long unsigned int *'}
+  544 |                                           uint8_t* result_ptr)
+      |                                           ~~~~~~~~~^~~~~~~~~~
 drivers/MS5611_driver.c:100:19: warning: conversion from 'double' to 'int64_t' {aka 'long long int'} may change value [-Wfloat-conversion]
   100 |     int64_t OFF = (ms5611_prom_data.OFF * pow(2,16)) + (ms5611_prom_data.TCO*dT)/pow(2,7);
       |                   ^
@@ -483,14 +508,14 @@ drivers/MS5611_driver.c:102:24: warning: conversion from 'double' to 'int32_t' {
 In file included from filters.h:13,
                  from filters.c:8:
 mcu.h: In function 'spi_transmit_receive':
-mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 filters.h: At top level:
 filters.h:15: warning: "M_PI" redefined
@@ -506,15 +531,24 @@ mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
 In file included from drivers/ADXL375_driver.h:10,
                  from drivers/ADXL375_driver.c:8:
 ./mcu.h: In function 'spi_transmit_receive':
-./mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+./mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-./mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+./mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-./mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+./mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
+drivers/ADXL375_driver.c: In function 'ADXL375_reg_write':
+drivers/ADXL375_driver.c:115:48: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
+  115 |     spi_transmit_receive(ADXL375_SPI, d, 2, 1, &r);
+      |                                                ^~
+      |                                                |
+      |                                                uint32_t * {aka long unsigned int *}
+./mcu.h:544:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint32_t *' {aka 'long unsigned int *'}
+  544 |                                           uint8_t* result_ptr)
+      |                                           ~~~~~~~~~^~~~~~~~~~
 ./mcu.h: At top level:
 ./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
    56 | static void printf_float(char* name, float value, bool print_text) {
@@ -522,14 +556,14 @@ In file included from drivers/ADXL375_driver.h:10,
 In file included from test_routines.h:9,
                  from test_routines.c:8:
 mcu.h: In function 'spi_transmit_receive':
-mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 In file included from drivers/LSM6DS3_driver.h:11,
                  from test_routines.h:13:
@@ -596,14 +630,14 @@ In file included from drivers/ADXL375_driver.h:10,
                  from data_buffer.h:11,
                  from data_buffer.c:8:
 ./mcu.h: In function 'spi_transmit_receive':
-./mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+./mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-./mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+./mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-./mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+./mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 In file included from drivers/LSM6DS3_driver.h:11,
                  from frame_array.h:13,
@@ -616,40 +650,6 @@ In file included from ./mcu.h:14:
 /opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
   613 | #define M_PI            3.14159265358979323846
       | 
-data_buffer.c: In function 'get_median':
-data_buffer.c:30:21: warning: 'sizeof' on array function parameter 'data' will return size of 'int *' [-Wsizeof-array-argument]
-   30 |   qsort(data, sizeof(data), sizeof(int), cmpfunc);
-      |                     ^
-data_buffer.c:29:20: note: declared here
-   29 | int get_median(int data[], int size) {
-      |                ~~~~^~~~~~
-data_buffer.c:31:13: warning: 'sizeof' on array function parameter 'data' will return size of 'int *' [-Wsizeof-array-argument]
-   31 |   if (sizeof(data) % 2 != 0)
-      |             ^
-data_buffer.c:29:20: note: declared here
-   29 | int get_median(int data[], int size) {
-      |                ~~~~^~~~~~
-data_buffer.c: In function 'get_vertical_velocity':
-data_buffer.c:76:23: warning: conversion from 'double' to 'float' may change value [-Wfloat-conversion]
-   76 |   previous_altitude = 44330.7692 * (1.0 - pow(((float)data[0] / 100.0f) / sea_level_pressure, 0.1902));
-      |                       ^~~~~~~~~~
-data_buffer.c:77:22: warning: conversion from 'double' to 'float' may change value [-Wfloat-conversion]
-   77 |   current_altitude = 44330.7692 * (1.0 - pow(((float)data[19] / 100.0f) / sea_level_pressure, 0.1902));
-      |                      ^~~~~~~~~~
-data_buffer.c:81:39: warning: conversion from 'int' to 'float' may change value [-Wconversion]
-   81 |   float total_time = dt * WINDOW_SIZE * 1e-6f;
-      |                                       ^
-data_buffer.c:74:9: warning: unused variable 'test' [-Wunused-variable]
-   74 |   float test = 0.0;
-      |         ^~~~
-data_buffer.c:70:45: warning: unused parameter 'size' [-Wunused-parameter]
-   70 | float get_vertical_velocity(int data[], int size, int dt) {
-      |                                         ~~~~^~~~
-data_buffer.c: In function 'is_stationary':
-data_buffer.c:97:17: warning: conversion from 'double' to 'int' may change value [-Wfloat-conversion]
-   97 |     variance += pow((data[i] - mean), 2);
-      |                 ^~~
-drivers/LSM6DS3_driver.h: At top level:
 drivers/LSM6DS3_driver.h:120:13: warning: 'Lsm6ds3WriteRegister' declared 'static' but never defined [-Wunused-function]
   120 | static void Lsm6ds3WriteRegister(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
       |             ^~~~~~~~~~~~~~~~~~~~
@@ -666,14 +666,14 @@ drivers/BME280_driver.h:274:13: warning: 'parse_sensor_data' declared 'static' b
 In file included from drivers/LSM6DS3_driver.h:9,
                  from drivers/LSM6DS3_driver.c:11:
 ./mcu.h: In function 'spi_transmit_receive':
-./mcu.h:545:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
-  545 |   int8_t rs = receive_size;
+./mcu.h:554:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
+  554 |   int8_t rs = receive_size;
       |               ^~~~~~~~~~~~
-./mcu.h:556:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-  556 |     *((uint8_t*)result_ptr) = result;
+./mcu.h:567:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
+  567 |     *((uint8_t*)result_ptr) = result;
       |                               ^~~~~~
-./mcu.h:558:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-  558 |     *((uint16_t*)result_ptr) = result;
+./mcu.h:569:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
+  569 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 In file included from drivers/LSM6DS3_driver.h:11:
 ./filters.h: At top level:
@@ -690,9 +690,26 @@ drivers/LSM6DS3_driver.c:21:31: warning: passing argument 2 of 'spi_transmit_rec
       |                               ^~~~~~~~~~
       |                               |
       |                               uint8_t (*)[1] {aka unsigned char (*)[1]}
-./mcu.h:532:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[1]' {aka 'unsigned char (*)[1]'}
-  532 |                                           uint8_t *send_byte,
+./mcu.h:541:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[1]' {aka 'unsigned char (*)[1]'}
+  541 |                                           uint8_t *send_byte,
       |                                           ~~~~~~~~~^~~~~~~~~
+drivers/LSM6DS3_driver.c: In function 'Lsm6ds3WriteRegister':
+drivers/LSM6DS3_driver.c:54:54: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
+   54 |     spi_transmit_receive(spi, &(send_data[0]), 1, 0, &send_data);
+      |                                                      ^~~~~~~~~~
+      |                                                      |
+      |                                                      uint8_t (*)[2] {aka unsigned char (*)[2]}
+./mcu.h:544:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[2]' {aka 'unsigned char (*)[2]'}
+  544 |                                           uint8_t* result_ptr)
+      |                                           ~~~~~~~~~^~~~~~~~~~
+drivers/LSM6DS3_driver.c:55:54: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
+   55 |     spi_transmit_receive(spi, &(send_data[1]), 1, 0, &send_data);
+      |                                                      ^~~~~~~~~~
+      |                                                      |
+      |                                                      uint8_t (*)[2] {aka unsigned char (*)[2]}
+./mcu.h:544:52: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[2]' {aka 'unsigned char (*)[2]'}
+  544 |                                           uint8_t* result_ptr)
+      |                                           ~~~~~~~~~^~~~~~~~~~
 drivers/LSM6DS3_driver.c: In function 'Lsm6ds3AccRead':
 drivers/LSM6DS3_driver.h:94:36: warning: conversion from 'long int' to 'int16_t' {aka 'short int'} may change value [-Wconversion]
    94 | #define LMS6DS6_ACCEL_SENSITIVITY  488 //for +-16G, sensitivity is 0.488 mg/LSB

@@ -56,18 +56,19 @@ int get_median(int data[], int size);
 void update_buffer(FrameArray* frame, dataBuffer* buffer);
 
 /**
-  @brief Get the velocity from the buffer based on barometer readings
-  @param barometer_data - array of barometer data in mbar
-  @param size - size of the array
-  @param dt - time interval between readings in microseconds
-  @return float vertical velocity value in m/s
+  @brief Calculate vertical velocity using JUST barometer pressure data
+  @param data The array of barometer data
+  @param dt Delta-time between each reading
 */
-float get_vertical_velocity(int barometer_data[], int size, int dt);
+float get_vertical_velocity(int barometer_data[], int dt);
 
 /**
-  @brief Check if the rocket is stationary
-  @param data - array of data
+  @brief Check if rocket is stationary using JUST barometer pressure data
+  @param data The array of barometer data
   @return true if the rocket is stationary
+  @note This is not a particularly good solution, was only written because accelerometer was not working for launch 1
 */
+
 bool is_stationary(int data[]);
+
 #endif /* BUFFER_H */
