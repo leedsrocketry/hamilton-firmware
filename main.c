@@ -158,9 +158,6 @@ int main(void)
           update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
           get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, \
                           _BME280_data, _GNSS_data);
-
-          // Log data
-          //log_frame(frame);
           
           // Update buffer and window  
           update_buffer(&frame, &frame_buffer);

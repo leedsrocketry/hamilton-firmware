@@ -5,7 +5,8 @@ CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
 			-lm
 LDFLAGS ?= -Tlink.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=$@.map
 SOURCES ?=	main.c startup.c syscalls.c STM32_init.c drivers/MS5611_driver.c filters.c\
-			drivers/ADXL375_driver.c test_routines.c data_buffer.c drivers/LSM6DS3_driver.c
+			drivers/ADXL375_driver.c test_routines.c data_buffer.c drivers/LSM6DS3_driver.c\
+			drivers/BME280_driver.c
 
 # Ensure make clean is cross platform
 ifeq ($(OS), Windows_NT)

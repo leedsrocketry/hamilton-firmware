@@ -31,7 +31,6 @@
 /*! @name API warning codes */
 #define BME280_W_INVALID_OSR_MACRO                0x1
 
-
 /** @name BME280 chip identifier */
 #define BME280_CHIP_ID                            0x60
 
@@ -173,10 +172,13 @@ typedef struct BME280_dev
     BME280_write_fptr_t write;
 
     // Trim data 
-    BME280_calib_data calib;
+    BME280_calib_data calib_data;
 
     //SPI
-    SPI_TypeDef* BME280_SPI;
+    SPI_TypeDef* SPI;
+
+    // Chip select pin
+    uint8_t CS;
 } BME280_dev;
 
 #pragma endregion Structs/Emun
@@ -187,9 +189,11 @@ typedef struct BME280_dev
   @brief Reads the chip-id of the sensor which is the first step to
  * verify the sensor and also calibrates the sensor
   @param dev Structure instance of BME280_dev
+  @param spi SPI instance
+  @param cs Chip select pin
   @return Result of execution status
 */
-int8_t BME280_init(BME280_dev *dev, SPI_TypeDef *spi);
+int8_t BME280_init(BME280_dev *dev, SPI_TypeDef *spi, uint8_t cs);
 
 
 /**
@@ -251,63 +255,54 @@ int8_t BME280_get_data(uint8_t sensor_comp, BME280_data *comp_data, BME280_dev *
   @return Result of execution status.
 */
 int8_t BME280_compensate_data(uint8_t sensor_comp, const BME280_uncomp_data *uncomp_data,
-                              BME280_data *compData, BME280_calib_data *calib_data);
+                              BME280_data *comp_data, BME280_calib_data *calib_data);
 /**
  @brief This private function is used to validate the device structure pointer for
  null conditions.
 */
-int8_t null_ptr_check(BME280_dev *dev);
+static int8_t null_ptr_check(BME280_dev *dev);
 
 /**
  @brief This private function reads the calibration data from the sensor, parse
  it and store in the device structure.
 */
-int8_t get_calib_data(BME280_dev *dev);
-
-/*!
- * @brief This API is used to parse the pressure, temperature and
- * humidity data and store it in the bme280_uncomp_data structure instance.
- *
- * @param[in] reg_data     : Contains register data which needs to be parsed
- * @param[out] uncomp_data : Contains the uncompensated pressure, temperature and humidity data
- */
-static void parse_sensor_data(const uint8_t *reg_data, struct BME280_uncomp_data *uncomp_data);
+static int8_t get_calib_data(BME280_dev *dev);
 
 /**
  @brief This private function is used to parse the temperature and
  pressure calibration data and store it in device structure.
 */
-void parse_temp_press_calib_data(const uint8_t *reg_data, BME280_dev *dev);
+static void parse_temp_press_calib_data(const uint8_t *reg_data, BME280_dev *dev);
 
 /**
  @brief This private function is used to parse the humidity calibration data
  and store it in device structure.
 */
-void parse_humidity_calib_data(const uint8_t *reg_data, BME280_dev *dev);
+static void parse_humidity_calib_data(const uint8_t *reg_data, BME280_dev *dev);
 
 /**
     @brief This private function interleaves the register address between the
     register data buffer for burst write operation.
 */
-void interleave_reg_addr(const uint8_t *reg_addr, uint8_t *tempBuff, const uint8_t *reg_data, uint16_t len);
+static void interleave_reg_addr(const uint8_t *reg_addr, uint8_t *temp_buff, const uint8_t *reg_data, uint32_t len);
 
 /**
     @brief This private function is used to compensate the raw temperature data and
     return the compensated temperature data in integer data type.
 */
-int16_t compensate_temperature(const BME280_uncomp_data *uncomp_data, BME280_calib_data *calib_data);
+static int32_t compensate_temperature(const BME280_uncomp_data *uncomp_data, BME280_calib_data *calib_data);
 
 /**
     @brief This private function is used to compensate the raw pressure data and
     return the compensated pressure data in integer data type with high accuracy.
 */
-uint32_t compensate_pressure(const BME280_uncomp_data *uncomp_data, const BME280_calib_data *calib_data);
+static uint32_t compensate_pressure(const BME280_uncomp_data *uncomp_data, const BME280_calib_data *calib_data);
 
 /**
     @brief This internal API is used to compensate the raw humidity data and
     return the compensated humidity data in integer data type.
 */
-uint32_t compensate_humidity(const BME280_uncomp_data *uncomp_data, const BME280_calib_data *calib_data);
+static uint32_t compensate_humidity(const BME280_uncomp_data *uncomp_data, const BME280_calib_data *calib_data);
 
 /*!
  *  @brief Prints the execution status of the APIs.

@@ -77,12 +77,34 @@ void run_LSM6DS3_routine()
 {
   printf("================ LSM6DS3_routine ================\r\n");
   LSM6DS3_data gyro_data;
-  delay_ms(50);
-  lsm6ds6_init(SPI1, &gyro_data);
+  delay_microseconds(50);
+  Lsm6ds3Init(SPI1, &gyro_data);
   
   for (;;) {
     lsm6ds6GyroReadAngle(SPI1, &gyro_data);
     printf("Gyro: %ld, %ld, %ld, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
+    delay_microseconds(1000); // 1 second
+  }
+}
+
+/**
+  @brief Routine to test the BME280.
+*/
+void run_BME280_routine()
+{
+  printf("================ BME280_routine ================\r\n");
+  BME280_data data;
+  BME280_dev dev;
+
+  delay_microseconds(50);
+  BME280_init(&dev, SPI1, CS11);
+  
+  for (;;) {
+    BME280_get_data(BME280_PRESS, &data, &dev);
+    BME280_get_data(BME280_TEMP, &data, &dev);
+    BME280_get_data(BME280_HUM, &data, &dev);
+    printf("Pressure: %ld, Temp: %ld, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
+    delay_microseconds(1000 * 1000); // 1 second
   }
 }
 

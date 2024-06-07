@@ -12,6 +12,7 @@
 #include "drivers/ADXL375_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/SI446_driver.h"
+#include "drivers/BME280_driver.h"
 
 /**
   @brief Initial Routine to run on hardware. Should trigger RGB blink sequence.
@@ -37,6 +38,11 @@ void SI446_Test_routine();
   @brief Routine to test the LSM6DS3 IMU.
 */
 void LSM6DS3_test_routine();
+
+/**
+  @brief Routine to test the BME280 sensor.
+*/
+void BME280_test_routine();
 
 /**
   @brief Routine to test the SPI communication.

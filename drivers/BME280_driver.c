@@ -10,7 +10,7 @@
 #include "mcu.h"
 
 #pragma region Public
-int8_t BME280_init(BME280_dev *dev, SPI_TypeDef spi,uint8_t cs) {
+int8_t BME280_init(BME280_dev *dev, SPI_TypeDef *spi, uint8_t cs) {
     int8_t ret_val;
     uint8_t chip_ID = 0;
 
@@ -21,18 +21,23 @@ int8_t BME280_init(BME280_dev *dev, SPI_TypeDef spi,uint8_t cs) {
     ret_val = BME280_get_regs(BME280_REG_CHIP_ID, &chip_ID, 1, dev);
 
     // Check for chip id validity
-    if (ret_val == 1)
+    if (chip_ID == BME280_CHIP_ID)
     {
-        if (chip_ID == BME280_CHIP_ID)
+        printf("BME280 chip ID: %d\r\n", chip_ID);
+        dev->chip_ID = chip_ID;
+        ret_val = BME280_soft_reset(dev);       // Reset the sensor
+        if (ret_val == 1)
         {
-            dev->chip_ID = chip_ID;
-            ret_val = BME280_soft_reset(dev);      // Reset the sensor
-            if (ret_val == 1)
-            {
-                ret_val = get_calib_data(dev);     // Get calibration data
-            }
+            ret_val = get_calib_data(dev);      // Get calibration data
         }
     }
+    else
+    {
+        printf("BME280 wrong device ID: %d\r\n", chip_ID);
+        ret_val = BME280_E_DEV_NOT_FOUND;
+    }
+
+    return ret_val;
 };
 
 
@@ -62,21 +67,24 @@ int8_t BME280_soft_reset(BME280_dev *dev)
             ret_val = BME280_E_NVM_COPY_FAILED;
         }
     }
+
+    return ret_val;
 }
 
 
-int8_t BME280_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, BME280_dev *dev)
+int8_t BME280_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint16_t len, BME280_dev *dev)
 {
     int8_t ret_val;
     ret_val = null_ptr_check(dev); // Check for null pointer in the device structure
 
     if ((ret_val == 1) && (reg_data != NULL))
     {        
-        reg_addr = reg_addr | 0x80;                           // SPI
-        reg_data = spi_transmit_receive(BME280_SPI, BME280_CS, reg_addr, 1, len); //SPI READ
-        dev->intf_rslt = reg_data
-        //dev->intf_rslt = dev->read(reg_addr, reg_data, len);   // Read the data ****Replace this line with spi_transmit_receive()
-
+        reg_addr = reg_addr | 0x80;                                 
+        spi_enable_cs(dev->SPI, dev->CS);                               
+        spi_transmit_receive(dev->SPI, &reg_addr, len, 1, reg_data); 
+        dev->intf_rslt = reg_data;
+        spi_disable_cs(dev->SPI, dev->CS);
+    
         // Check for communication error
         if (dev->intf_rslt != BME280_INTF_RET_SUCCESS)
         {
@@ -87,7 +95,7 @@ int8_t BME280_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, BME280
 }
 
 
-int8_t BME280_set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint32_t len, BME280_dev *dev)
+int8_t BME280_set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint16_t len, BME280_dev *dev)
 {
     int8_t ret_val;
     uint8_t temp_buff[20]; // Typically not to write more than 10 registers
@@ -95,9 +103,7 @@ int8_t BME280_set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint32_t len,
     uint32_t reg_addrCnt;
 
     if (len > 10) // max allowed length is 10
-    {
         len = 10;
-    }
 
     // Check for null pointer in the device structure 
     ret_val = null_ptr_check(dev);
@@ -125,16 +131,16 @@ int8_t BME280_set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint32_t len,
                 temp_len = len;
             }
             
-            //figure out what data needs to be sent
-            dev->intf_rslt = spi_transmit_receive(BME280_SPI, BME280_CS, temp_buff, temp_len, 1);
-            //dev->intf_rslt = dev->write(reg_addr[0], temp_buff, temp_len, dev->intf_rslt); //****Replace this line with spi_transmit_receive()
+            spi_enable_cs(dev->SPI, dev->CS);
+            spi_transmit_receive(dev->SPI, temp_buff, temp_len, 0, NULL);
+            spi_disable_cs(dev->SPI, dev->CS);
         }
     }
     return ret_val;
 }
 
 
-int8_t BME280_get_data(uint8_t sensor_comp, BME280_data *compData, BME280_dev *dev)
+int8_t BME280_get_data(uint8_t sensor_comp, BME280_data *comp_data, BME280_dev *dev)
 {
     int8_t ret_val;
 
@@ -149,9 +155,6 @@ int8_t BME280_get_data(uint8_t sensor_comp, BME280_data *compData, BME280_dev *d
 
         if (ret_val == 1)
         {
-            // Parse the read data from the sensor 
-            parse_sensor_data(reg_data, &uncomp_data);
-
             // Compensate the pressure and/or temperature and/or humidity data from the sensor
             ret_val = BME280_compensate_data(sensor_comp, &uncomp_data, comp_data, &dev->calib_data);
         }
@@ -161,34 +164,34 @@ int8_t BME280_get_data(uint8_t sensor_comp, BME280_data *compData, BME280_dev *d
 
 
 int8_t BME280_compensate_data(uint8_t sensor_comp, const BME280_uncomp_data *uncomp_data,
-                              BME280_data *compData, BME280_calib_data *calib_data)
+                              BME280_data *comp_data, BME280_calib_data *calib_data)
 {
     int8_t ret_val = 1;
 
-    if ((uncomp_data != NULL) && (compData != NULL) && (compData != NULL))
+    if ((uncomp_data != NULL) && (comp_data != NULL) && (comp_data != NULL))
     {
         // Initialize to zero
-        compData->temperature = 0;
-        compData->pressure = 0;
-        compData->humidity = 0;
+        comp_data->temperature = 0;
+        comp_data->pressure = 0;
+        comp_data->humidity = 0;
 
         // If pressure or temperature component is selected 
         if (sensor_comp & (BME280_PRESS | BME280_TEMP | BME280_HUM))
         {
             // Compensate the temperature data 
-            compData->temperature = compensate_temperature(uncomp_data, calib_data);
+            comp_data->temperature = compensate_temperature(uncomp_data, calib_data);
         }
 
         if (sensor_comp & BME280_PRESS)
         {
             // Compensate the pressure data
-            compData->pressure = compensate_pressure(uncomp_data, calib_data);
+            comp_data->pressure = compensate_pressure(uncomp_data, calib_data);
         }
 
         if (sensor_comp & BME280_HUM)
         {
             // Compensate the humidity data
-            compData->humidity = compensate_humidity(uncomp_data, calib_data);
+            comp_data->humidity = compensate_humidity(uncomp_data, calib_data);
         }
     }
     else
@@ -290,7 +293,7 @@ static void parse_temp_press_calib_data(const uint8_t *reg_data, BME280_dev *dev
 */
 static void parse_humidity_calib_data(const uint8_t *reg_data, BME280_dev *dev)
 {
-    struct bme280_calib_data *calib_data = &dev->calib_data;
+    BME280_calib_data *calib_data = &dev->calib_data;
     int16_t dig_h4_lsb;
     int16_t dig_h4_msb;
     int16_t dig_h5_lsb;
@@ -312,14 +315,14 @@ static void parse_humidity_calib_data(const uint8_t *reg_data, BME280_dev *dev)
     @brief This private function interleaves the register address between the
     register data buffer for burst write operation.
 */
-static void interleave_reg_addr(const uint8_t *reg_addr, uint8_t *tempBuff, const uint8_t *reg_data, uint32_t len)
+static void interleave_reg_addr(const uint8_t *reg_addr, uint8_t *temp_buff, const uint8_t *reg_data, uint32_t len)
 {
     uint32_t index;
 
     for (index = 1; index < len; index++)
     {
-        tempBuff[(index * 2) - 1] = reg_addr[index];
-        tempBuff[index * 2] = reg_data[index];
+        temp_buff[(index * 2) - 1] = reg_addr[index];
+        temp_buff[index * 2] = reg_data[index];
     }
 }
 
