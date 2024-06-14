@@ -103,7 +103,7 @@ void run_BME280_routine()
     BME280_get_data(BME280_PRESS, &data, &dev);
     BME280_get_data(BME280_TEMP, &data, &dev);
     BME280_get_data(BME280_HUM, &data, &dev);
-    printf("Pressure: %ld, Temp: %ld, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
+    printf("Pressure: %ld, Temp: %d, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
     delay_microseconds(1000 * 1000); // 1 second
   }
 }
