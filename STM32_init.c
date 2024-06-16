@@ -69,7 +69,7 @@ void STM32_init_internals()
   SCB->CPACR |= ((3UL << 10*2) | (3UL << 11*2));  // set CP10 and CP11 Full Access
 
   // UART
-  //uart_init(LUART1, 9600);  // Initialise Low Power UART;
+  uart_init(LUART1, 9600);  // Initialise Low Power UART;
   uart_init(USART1, 115200);  // Initialise UART1;
   //uart_init(USART2, 115200);  // Initialise UART2;
   //uart_init(USART3, 115200);  // Initialise UART3;
