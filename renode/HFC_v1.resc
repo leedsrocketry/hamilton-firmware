@@ -5,19 +5,20 @@ using sysbus
 $name?="HFC_v1"
 mach create $name
 i @renode/STM32L4R5_RCC.cs
+i @renode/SPI_Multiplexer.cs
+i @renode/ADXL375.cs
 
 machine LoadPlatformDescription @renode/HFC_v1.repl
 
 cpu PerformanceInMips 125
-cpu LogFunctionNames true true
 
 showAnalyzer sysbus.usart1
+logLevel -1 sysbus.spi1.spi_mux.accelerometer
+machine StartGdbServer 3333
 
 macro reset
 """
     sysbus LoadELF @firmware.elf
-
-
 """
 
 runMacro $reset

@@ -43,7 +43,6 @@ namespace Antmicro.Renode.Peripherals.SPI
                 this.Log(LogLevel.Warning, "Tried to transmit byte 0x{0:X} to device 0x{1:X}, but it's not connected - ignoring transfer and returning a dummy byte", data, deviceAddress);
                 return 0xFF;
             }
-
             return device.Transmit(data);
         }
 
@@ -71,7 +70,7 @@ namespace Antmicro.Renode.Peripherals.SPI
                 return;
             }
 
-            this.Log(LogLevel.Noisy, "Finisihing transmission on device 0x{0:X}", deviceAddress);
+            this.Log(LogLevel.Noisy, "Finishing transmission on device 0x{0:X}", deviceAddress);
             device.FinishTransmission();
         }
 
@@ -88,7 +87,11 @@ namespace Antmicro.Renode.Peripherals.SPI
                     continue;
                 }
             }
-            this.Log(LogLevel.Noisy, "Updated chip select to 0x{0:X}", newChipSelectValue)
+            this.Log(LogLevel.Noisy, "Updated chip select to 0x{0:X}", newChipSelectValue);
+            if(TryGetByAddress(this.chipSelectValue, out var device)) {
+                device.FinishTransmission();
+            };
+
             this.chipSelectValue = newChipSelectValue;
         }
 
@@ -97,3 +100,4 @@ namespace Antmicro.Renode.Peripherals.SPI
         private readonly bool suppressExplicitFinishTransmission;
     }
 }
+

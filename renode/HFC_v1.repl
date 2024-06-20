@@ -7,12 +7,17 @@ gpioPortC: {13 -> spi_mux@1; 14 -> spi_mux@2; 15 -> spi_mux@3}
 gpioPortE: {6 -> spi_mux@0}
 
 
-accelerometer: Mocks.DummySPISlave @ spi_mux 0x06
+accelerometer: Sensors.ADXL375 @ spi_mux 0x06
 imu: Mocks.DummySPISlave @ spi_mux 0x7
 magnetometer:  Mocks.DummySPISlave @ spi_mux 0x08
 pad_radio:  Mocks.DummySPISlave @ spi_mux 0x09
-barometer:  Mocks.DummySPISlave @ spi_mux 0x10
-humidity:  Mocks.DummySPISlave @ spi_mux 0x11
+barometer:  Mocks.DummySPISlave @ spi_mux 0x0A
+humidity:  Mocks.DummySPISlave @ spi_mux 0x0B
 
-// 0110
-// C15,C14,C13,E6
+//flightRecorder: SPI.NANDFlash
+//    dataMemory:
+//    spareMemory:
+//    pageSize:
+//    spareSize:
+//   pagesPerBlock: 64
+//    blocksPerLun:
