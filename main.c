@@ -130,9 +130,11 @@ int main(void)
 
   // Additional variables
   int _data[WINDOW_SIZE];
-  int previous_value = 999999999;
-  int current_value = 999999999;
+  int previous_pressure = 999999999;
+  int current_pressure = 999999999;
+  int current_velocity = 0;
   int apogee_incr = 3;
+  float accel_vector[4] = {0,0,0,0};
   bool toggle_LED = true;
 
   printf("============== ADD TESTS HERE ==============\r\n");
@@ -159,9 +161,6 @@ int main(void)
           update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
           get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, \
                           _BME280_data, _GNSS_data);
-
-          // Log data
-          log_frame(frame);
           
           // Update buffer and window  
           update_buffer(&frame, &frame_buffer);
@@ -170,15 +169,18 @@ int main(void)
             for (int i = 0; i < WINDOW_SIZE; i++) {
               _data[i] = frame_buffer.window[i].barometer.pressure;
             }
-            current_value = get_median(_data, WINDOW_SIZE); // get pressure median
+            current_pressure = get_median(_data, WINDOW_SIZE); // get pressure median
+
+            // Check if rocket is stationary based on acceleration
+            LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector);
 
             // Check for launch given pressure decrease
-            if ((frame_buffer.ground_ref - current_value) > LAUNCH_THRESHOLD) {
+            if ((frame_buffer.ground_ref - current_pressure) > LAUNCH_THRESHOLD && accel_vector[3] > 1.4) {
               flightStage = ASCENT;
               printf("FLIGHT STAGE = ASCENT\r\n");
 
-              // Log all data from the buffer
-              for (int i = 0; i < WINDOW_SIZE; i++) {
+              // Log data from the the last window
+              for (int i = 0; i < 10; i++) {
                 log_frame(frame_buffer.frames[i]);
               }
             }
@@ -206,14 +208,14 @@ int main(void)
           for (int i = 0; i < WINDOW_SIZE; i++) {
             _data[i] = frame_buffer.window[i].barometer.pressure;
           }
-          current_value = get_median(_data, WINDOW_SIZE); // get pressure median
+          current_pressure = get_median(_data, WINDOW_SIZE); // get pressure median
 
           // Check for apogee given pressure increase
-          if (current_value - previous_value > APOGEE_THRESHOLD){
+          if (current_pressure - previous_pressure > APOGEE_THRESHOLD){
             flightStage = APOGEE;
             printf("FLIGHT STAGE = APOGEE\r\n");
-          } else if (previous_value > current_value){  // Storing the minimum, (median), pressure value during ascent
-            previous_value = current_value;
+          } else if (previous_pressure > current_pressure){  // Storing the minimum, (median), pressure value during ascent
+            previous_pressure = current_pressure;
           }
         }
         break;
@@ -260,14 +262,18 @@ int main(void)
 
           // Get window median readings
           int _data[WINDOW_SIZE];
+          LSM6DS3_data _data_imu[WINDOW_SIZE];
+
           for (int i = 0; i < WINDOW_SIZE; i++) {
+            _data_imu[i] = frame_buffer.window[i].imu;
             _data[i] = frame_buffer.window[i].barometer.pressure;
           }
+          current_pressure = get_median(_data, WINDOW_SIZE); // get pressure median
 
           // Check for landing
-          if (is_stationary(_data)) {
+          if (LSM6DS3_gyro_standard_dev(_data_imu, WINDOW_SIZE, 1500) && (frame_buffer.ground_ref - current_pressure) < GROUND_THRESHOLD) {
             flightStage = LANDING;
-            printf("FLIGHT STAGE = LANDING\r\n");
+             printf("FLIGHT STAGE = LANDING\r\n");
           }
         }
         break;

@@ -6,8 +6,9 @@
 */
 #ifndef LSM6DS3_DRIVER_H
 #define LSM6DS3_DRIVER_H
+
+#include <math.h>
 #include "mcu.h"
-#include "math.h"
 #include "filters.h"
 
 #pragma once
@@ -151,16 +152,24 @@ bool LSM6DS3_gyro_read_angle(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 bool LSM6DS3_gyro_offsets(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
 /**
-	@brief Calculates if standard divation of readings is within a threshold limit
-	@note Used to work out if the board is stationary enough to use offsets
-  @returns true if within limits
-*/
-bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t limit);
-
-/**
 	@brief Stops angle from overflowing.
 	@note keeps angle between +-180,000 mDeg
 */
 int32_t LSM6DS3_angle_overflow(int32_t mDeg);
+
+/**
+  @brief Check if rocket is moving based on acceleration vector
+  @param _LSM6DS3_data Gyroscope data
+  @param vector Acceleration vector
+  @return True if the vector is valid
+*/
+bool LSM6DS3_get_acc_vector(LSM6DS3_data* _LSM6DS3_data, float vector[]);
+
+/**
+  @brief Calculates if standard divation of readings is within a threshold limit
+  @note Used to work out if the board is stationary enough to use offsets
+  @returns true if within limits
+*/
+bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16_t limit);
 
 #endif /* LSM6DS3_DRIVER_H */

@@ -196,56 +196,18 @@ bool LSM6DS3_gyro_offsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
             avg[0] += buff[i].x_rate;
             avg[1] += buff[i].y_rate;
             avg[2] += buff[i].z_rate;
-            //printf("Offset Sums: %i, %i, %i\r\n", avg[0], avg[1], avg[2]);
-            delay_microseconds(1000000/100);//delay to read at 50Hz
+            delay_microseconds(1000000/100); //delay to read at 50Hz
         }
-    }while(!LSM6DS3_gyro_standard_dev(buff, 500));   //if standard deviation of readings is not within limit then its not steady enough & try again
+    }while(!LSM6DS3_gyro_standard_dev(buff, LSM6DSO_OFFSET_BUFF_LEN, 1000));   //if standard deviation of readings is not within limit then its not steady enough & try again
     
     gyro->x_offset = (avg[0] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->y_offset = (avg[1] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->z_offset = (avg[2] / LSM6DSO_OFFSET_BUFF_LEN);
     printf("Gyro Offsets: %li, %li, %li\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
-
     return 1;
 }
 
-bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t limit){
-    //calculate mean
-    int means[3] = {0,0,0};
-    for (int i = 0; i < LSM6DSO_OFFSET_BUFF_LEN; i ++){
-        means[0] += buff[i].x_rate;
-        means[1] += buff[i].y_rate;
-        means[2] += buff[i].z_rate;
-    }
-    means[0] /= LSM6DSO_OFFSET_BUFF_LEN;
-    means[1] /= LSM6DSO_OFFSET_BUFF_LEN;
-    means[2] /= LSM6DSO_OFFSET_BUFF_LEN;
-    //printf("Means: %i, %i, %i\r\n", means[0], means[1], means[2]);
-
-    //calculate variance through (sum of (squares of deviations))/num_samples
-    long variance[3] = {0,0,0};
-    for (int i = 0; i < LSM6DSO_OFFSET_BUFF_LEN; i ++){
-        variance[0] += powl(buff[i].x_rate - means[0],2);
-        variance[1] += powl(buff[i].y_rate - means[1],2);
-        variance[2] += powl(buff[i].z_rate - means[2],2);
-    }
-    //divide by samples to get variance
-    variance[0] /= LSM6DSO_OFFSET_BUFF_LEN;
-    variance[1] /= LSM6DSO_OFFSET_BUFF_LEN;
-    variance[2] /= LSM6DSO_OFFSET_BUFF_LEN;
-    //printf("Variance: %i, %i, %i\r\n", variance[0], variance[1], variance[2]);
-
-    //sqrt to get standard deviation
-    int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
-    if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit){
-        printf("Standard deviation okay: %i, %i, %i\r\n", std_dev[0], std_dev[1], std_dev[2]);
-        return true;
-    }
-    printf("Standard deviation too large: %i, %i, %i\r\n", std_dev[0], std_dev[1], std_dev[2]);
-    return false;
-}
-
-//keeps angle between +-180,000 mDeg
+// keeps angle between +-180,000 mDeg
 int32_t LSM6DS3_angle_overflow(int32_t mDeg){
     if (mDeg > 180000){
         return mDeg - 360000;
@@ -253,4 +215,57 @@ int32_t LSM6DS3_angle_overflow(int32_t mDeg){
         return mDeg + 360000;
     }
     return mDeg;
+}
+
+bool LSM6DS3_get_acc_vector(LSM6DS3_data* _LSM6DS3_data, float vector[]){
+    // Convert from milli g to g
+    vector[0] = _LSM6DS3_data->x_accel/1000.0;
+    vector[1] = _LSM6DS3_data->y_accel/1000.0;
+    vector[2] = _LSM6DS3_data->z_accel/1000.0;
+
+    // Check magnitude (in g)
+    float magnitude = sqrtf(vector[0]*vector[0] + vector[1]*vector[1] + vector[2]*vector[2]);
+    
+    // Normalise the vector
+    vector[0] /= magnitude;
+    vector[1] /= magnitude;
+    vector[2] /= magnitude;
+    vector[3] = magnitude;
+
+    if (magnitude < 0.9 || magnitude > 1.1){   // If not close to 1G
+        return false;
+    }
+    return true;
+}
+
+bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16_t limit) {
+    // Calculate mean
+    int means[3] = {0,0,0};
+    for (int i = 0; i < buffer_limit; i ++){
+        means[0] += buff[i].x_rate;
+        means[1] += buff[i].y_rate;
+        means[2] += buff[i].z_rate;
+    }
+    means[0] /= buffer_limit;
+    means[1] /= buffer_limit;
+    means[2] /= buffer_limit;
+
+    // Calculate variance through (sum of (squares of deviations))/num_samples
+    long variance[3] = {0,0,0};
+    for (int i = 0; i < buffer_limit; i ++){
+        variance[0] += powl(buff[i].x_rate - means[0], 2);
+        variance[1] += powl(buff[i].y_rate - means[1], 2);
+        variance[2] += powl(buff[i].z_rate - means[2], 2);
+    }
+    // Divide by samples to get variance
+    variance[0] /= buffer_limit;
+    variance[1] /= buffer_limit;
+    variance[2] /= buffer_limit;
+
+    // Sqrt to get standard deviation
+    int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
+    if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit) {
+        return true;
+    }
+    return false;
 }
