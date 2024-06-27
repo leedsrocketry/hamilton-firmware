@@ -37,7 +37,7 @@ void run_MS5611_routine()
     gpio_write(GREEN_LED, on);
     on = !on;
     MS5611_get_data(&_data);
-    printf("p: %d, t: %ld, \r\n", _data.pressure, _data.temp);
+    printf("p: %ld, t: %ld, \r\n", _data.pressure, _data.temp);
   }
 }
 
@@ -78,10 +78,10 @@ void run_LSM6DS3_routine()
   printf("================ LSM6DS3_routine ================\r\n");
   LSM6DS3_data gyro_data;
   delay_microseconds(50);
-  Lsm6ds3Init(SPI1, &gyro_data);
+  LSM6DS3_init(SPI1, &gyro_data);
   
   for (;;) {
-    lsm6ds6GyroReadAngle(SPI1, &gyro_data);
+    LSM6DS3_gyro_read_angle(SPI1, &gyro_data);
     printf("Gyro: %ld, %ld, %ld, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
     delay_microseconds(1000); // 1 second
   }

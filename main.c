@@ -58,8 +58,8 @@ void update_sensors(M5611_data* _M5611_data,
   
   MS5611_get_data(_M5611_data);
   ADXL375_get_data(_ADXL375_data);
-  Lsm6ds3GyroRead(SPI1, _LSM6DS3_data);
-  Lsm6ds3AccRead(SPI1, _LSM6DS3_data);
+  LSM6DS3_gyro_read(SPI1, _LSM6DS3_data);
+  LSM6DS3_acc_read(SPI1, _LSM6DS3_data);
 
   printf("Barometer: %ld, Temp: %ld, Accel: %d, %d, %d, Gyro: %ld, %ld, %ld\r\n", 
           _M5611_data->pressure, _M5611_data->temp, 
@@ -118,7 +118,7 @@ int main(void)
   // Sensor initialisation
   MS5611_init(SPI1);                    // Barometer
   ADXL375_init(SPI1);                   // Accelerometer
-  Lsm6ds3Init(SPI1, &_LSM6DS3_data);    // IMU
+  LSM6DS3_init(SPI1, &_LSM6DS3_data);    // IMU
 
   // Buffer
   FrameArray frame;                         // initialise the frameArray that keeps updating
@@ -137,7 +137,8 @@ int main(void)
 
   printf("============== ADD TESTS HERE ==============\r\n");
   //NAND_flash_read();
-  //NAND_flash_erase();
+  NAND_flash_erase();
+  //run_BME280_routine();
 
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
   uint32_t newTime = get_time_us();
@@ -158,6 +159,9 @@ int main(void)
           update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
           get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, \
                           _BME280_data, _GNSS_data);
+
+          // Log data
+          log_frame(frame);
           
           // Update buffer and window  
           update_buffer(&frame, &frame_buffer);

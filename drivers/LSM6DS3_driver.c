@@ -10,7 +10,7 @@
 
 #include "LSM6DS3_driver.h"
 
-uint8_t Lsm6ds3Init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
+uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
 {   
     //check the chip replies with correct ID
     uint8_t chip_id = 0;
@@ -26,7 +26,7 @@ uint8_t Lsm6ds3Init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     if (chip_id == LSM6DS3_WHO_AM_I_EXP) {
         printf("LSM6DS3 wrong chip ID, %d\r\n", chip_id);
         delay_microseconds(10); 
-        Lsm6ds3Config(spi);     //configure settings
+        LSM6DS3_config(spi);     //configure settings
         delay_microseconds(10); //give delay after setting the settings
 
         //initialise variables to 0
@@ -35,8 +35,8 @@ uint8_t Lsm6ds3Init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         gyro->z_offset = 0;
 
         // calculate gyro offsets
-        Lsm6ds3GyroOffsets(spi, gyro);
-        Lsm6ds3AccRead(spi, gyro);
+        LSM6DS3_gyro_offsets(spi, gyro);
+        LSM6DS3_acc_read(spi, gyro);
         
         return 1;
     } else {
@@ -46,7 +46,7 @@ uint8_t Lsm6ds3Init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     return 0;
 }
 
-static void Lsm6ds3WriteRegister(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs)
+static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs)
 {
     uint8_t send_data[2] =  {register_id, value};
     spi_enable_cs(spi, LSM6DS3_CS);
@@ -60,7 +60,7 @@ static void Lsm6ds3WriteRegister(SPI_TypeDef *spi, uint8_t register_id, uint8_t 
     }
 }
 
-static void Lsm6ds3WriteRegisterBits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs)
+static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs)
 {
     uint8_t new_value = 0;
     spi_enable_cs(spi, LSM6DS3_CS);
@@ -72,47 +72,47 @@ static void Lsm6ds3WriteRegisterBits(SPI_TypeDef *spi, uint8_t register_id, uint
     
     delay_microseconds(delayMs);
     new_value = (new_value & ~mask) | value;
-    Lsm6ds3WriteRegister(spi, register_id, new_value, delayMs);
+    LSM6DS3_write_register(spi, register_id, new_value, delayMs);
     delay_microseconds(delayMs);
 }
 
-void Lsm6ds3Config(SPI_TypeDef *spi){
+void LSM6DS3_config(SPI_TypeDef *spi){
     // Reset the device (wait 100ms before continuing config)
-    Lsm6ds3WriteRegisterBits(spi, LSM6DSO_REG_CTRL3_C, LSM6DSO_MASK_CTRL3_C_RESET, BIT(0), 100);
+    LSM6DS3_write_register_bits(spi, LSM6DSO_REG_CTRL3_C, LSM6DSO_MASK_CTRL3_C_RESET, BIT(0), 100);
     delay_ms(100);
     // Configure interrupt pin 1 for gyro data ready only
-    //Lsm6ds3WriteRegister(spi, LSM6DSO_REG_INT1_CTRL, LSM6DSO_VAL_INT1_CTRL, 1);
+    //LSM6DS3_write_register(spi, LSM6DSO_REG_INT1_CTRL, LSM6DSO_VAL_INT1_CTRL, 1);
 
     // Disable interrupt pin 2
-    //Lsm6ds3WriteRegister(spi, LSM6DSO_REG_INT2_CTRL, LSM6DSO_VAL_INT2_CTRL, 1);
+    //LSM6DS3_write_register(spi, LSM6DSO_REG_INT2_CTRL, LSM6DSO_VAL_INT2_CTRL, 1);
 
     // Configure the accelerometer
     // 833hz ODR, 16G scale, use LPF1 output
-    Lsm6ds3WriteRegister(spi, LSM6DSO_REG_CTRL1_XL, (LSM6DSO_VAL_CTRL1_XL_ODR833 << 4) | (LSM6DSO_VAL_CTRL1_XL_16G << 2) | (LSM6DSO_VAL_CTRL1_XL_LPF1 << 1), 1);
+    LSM6DS3_write_register(spi, LSM6DSO_REG_CTRL1_XL, (LSM6DSO_VAL_CTRL1_XL_ODR833 << 4) | (LSM6DSO_VAL_CTRL1_XL_16G << 2) | (LSM6DSO_VAL_CTRL1_XL_LPF1 << 1), 1);
 
     // Configure the gyro
     // 6664hz ODR, 2000dps scale
-    Lsm6ds3WriteRegister(spi, LSM6DSO_REG_CTRL2_G, (LSM6DSO_VAL_CTRL2_G_ODR6664 << 4) | (LSM6DSO_VAL_CTRL2_G_2000DPS << 2), 1);
+    LSM6DS3_write_register(spi, LSM6DSO_REG_CTRL2_G, (LSM6DSO_VAL_CTRL2_G_ODR6664 << 4) | (LSM6DSO_VAL_CTRL2_G_2000DPS << 2), 1);
 
     // Configure control register 3
     // latch LSB/MSB during reads; set interrupt pins active high; set interrupt pins push/pull; set 4-wire SPI; enable auto-increment burst reads
-    Lsm6ds3WriteRegisterBits(spi, LSM6DSO_REG_CTRL3_C, LSM6DSO_MASK_CTRL3_C, (LSM6DSO_VAL_CTRL3_C_BDU | LSM6DSO_VAL_CTRL3_C_H_LACTIVE | LSM6DSO_VAL_CTRL3_C_PP_OD | LSM6DSO_VAL_CTRL3_C_SIM | LSM6DSO_VAL_CTRL3_C_IF_INC), 1);
+    LSM6DS3_write_register_bits(spi, LSM6DSO_REG_CTRL3_C, LSM6DSO_MASK_CTRL3_C, (LSM6DSO_VAL_CTRL3_C_BDU | LSM6DSO_VAL_CTRL3_C_H_LACTIVE | LSM6DSO_VAL_CTRL3_C_PP_OD | LSM6DSO_VAL_CTRL3_C_SIM | LSM6DSO_VAL_CTRL3_C_IF_INC), 1);
 
     // Configure control register 4
     // enable accelerometer high performane mode; set gyro LPF1 cutoff to 335.5hz
-    Lsm6ds3WriteRegisterBits(spi, LSM6DSO_REG_CTRL4_C, LSM6DSO_MASK_CTRL4_C, (LSM6DSO_VAL_CTRL4_C_I2C_DISABLE | LSM6DSO_VAL_CTRL4_C_LPF1_SEL_G), 1);
+    LSM6DS3_write_register_bits(spi, LSM6DSO_REG_CTRL4_C, LSM6DSO_MASK_CTRL4_C, (LSM6DSO_VAL_CTRL4_C_I2C_DISABLE | LSM6DSO_VAL_CTRL4_C_LPF1_SEL_G), 1);
 
     // Configure control register 6
     // disable I2C interface; enable gyro LPF1
-    Lsm6ds3WriteRegisterBits(spi, LSM6DSO_REG_CTRL6_C, LSM6DSO_MASK_CTRL6_C, (LSM6DSO_VAL_CTRL6_C_XL_HM_MODE | LSM6DSO_VAL_CTRL6_C_FTYPE_335HZ), 1);
+    LSM6DS3_write_register_bits(spi, LSM6DSO_REG_CTRL6_C, LSM6DSO_MASK_CTRL6_C, (LSM6DSO_VAL_CTRL6_C_XL_HM_MODE | LSM6DSO_VAL_CTRL6_C_FTYPE_335HZ), 1);
 
     // Configure control register 9
     // disable I3C interface
-    Lsm6ds3WriteRegisterBits(spi, LSM6DSO_REG_CTRL9_XL, LSM6DSO_MASK_CTRL9_XL, LSM6DSO_VAL_CTRL9_XL_I3C_DISABLE, 1);
+    LSM6DS3_write_register_bits(spi, LSM6DSO_REG_CTRL9_XL, LSM6DSO_MASK_CTRL9_XL, LSM6DSO_VAL_CTRL9_XL_I3C_DISABLE, 1);
     return;
 }
 
-bool Lsm6ds3AccRead(SPI_TypeDef *spi, LSM6DS3_data* gyro)
+bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
 {
     enum {
         IDX_ACCEL_XOUT_L,
@@ -146,7 +146,7 @@ bool Lsm6ds3AccRead(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     return true;
 }
 
-bool Lsm6ds3GyroRead(SPI_TypeDef *spi, LSM6DS3_data* gyro)
+bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
 {
     enum {
         IDX_GYRO_XOUT_L,
@@ -182,16 +182,16 @@ bool Lsm6ds3GyroRead(SPI_TypeDef *spi, LSM6DS3_data* gyro)
 
 
 //calculates the gyro offset values
-bool Lsm6ds3GyroOffsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
+bool LSM6DS3_gyro_offsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
 {
     LSM6DS3_data buff[LSM6DSO_OFFSET_BUFF_LEN];
     int32_t avg[3] = {0,0,0};
-    Lsm6ds3GyroRead(spi, gyro);
+    LSM6DS3_gyro_read(spi, gyro);
     delay_ms(300);
     do{
         avg[0] = 0, avg[1] = 0, avg[2] = 0; //reset averages
         for (uint16_t i = 0; i < LSM6DSO_OFFSET_BUFF_LEN; i++){
-            Lsm6ds3GyroRead(spi, gyro);
+            LSM6DS3_gyro_read(spi, gyro);
             buff[i] = *gyro;
             avg[0] += buff[i].x_rate;
             avg[1] += buff[i].y_rate;
@@ -199,7 +199,7 @@ bool Lsm6ds3GyroOffsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
             //printf("Offset Sums: %i, %i, %i\r\n", avg[0], avg[1], avg[2]);
             delay_microseconds(1000000/100);//delay to read at 50Hz
         }
-    }while(!Lsmds3GyroStandardDev(buff, 500));   //if standard deviation of readings is not within limit then its not steady enough & try again
+    }while(!LSM6DS3_gyro_standard_dev(buff, 500));   //if standard deviation of readings is not within limit then its not steady enough & try again
     
     gyro->x_offset = (avg[0] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->y_offset = (avg[1] / LSM6DSO_OFFSET_BUFF_LEN);
@@ -209,7 +209,7 @@ bool Lsm6ds3GyroOffsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     return 1;
 }
 
-bool Lsmds3GyroStandardDev(LSM6DS3_data buff[], uint16_t limit){
+bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t limit){
     //calculate mean
     int means[3] = {0,0,0};
     for (int i = 0; i < LSM6DSO_OFFSET_BUFF_LEN; i ++){
@@ -246,7 +246,7 @@ bool Lsmds3GyroStandardDev(LSM6DS3_data buff[], uint16_t limit){
 }
 
 //keeps angle between +-180,000 mDeg
-int32_t Lsm6ds3AngleOverflow(int32_t mDeg){
+int32_t LSM6DS3_angle_overflow(int32_t mDeg){
     if (mDeg > 180000){
         return mDeg - 360000;
     }else if (mDeg < -180000){

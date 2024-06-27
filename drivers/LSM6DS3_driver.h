@@ -115,52 +115,52 @@ typedef struct LSM6DS3_data
 	@note sets registers and runs gyro offset calc
 	@return 1 for success, 0 for wrong chip id
 */
-uint8_t Lsm6ds3Init(SPI_TypeDef *spi, LSM6DS3_data* gyro);
+uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
-static void Lsm6ds3WriteRegister(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
-static void Lsm6ds3WriteRegisterBits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
+static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
+static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
 
 /**
 	@brief Configures the settings registers for the IMU
 	@note Sets things like frequency and range
 */
-void Lsm6ds3Config(SPI_TypeDef *spi);
+void LSM6DS3_config(SPI_TypeDef *spi);
 
 /**
 	@brief Reads the raw Accel data
 	@note results are stored in the gyro pointer
 */
-bool Lsm6ds3AccRead(SPI_TypeDef *spi, LSM6DS3_data* gyro);
+bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
 /**
 	@brief Reads the raw Gyro data
 	@note results are stored in the gyro pointer
 */
-bool Lsm6ds3GyroRead(SPI_TypeDef *spi, LSM6DS3_data* gyro);
+bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
 /**
 	@brief Calculates the angles by integrating the raw gyro readings
 	@note results are stored in the gyro pointer
 */
-bool Lsm6ds3GyroReadAngle(SPI_TypeDef *spi, LSM6DS3_data* gyro);
+bool LSM6DS3_gyro_read_angle(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
 /**
 	@brief Calculates offsets to zero the gyro
 	@note must be stationary while this is performed
 */
-bool Lsm6ds3GyroOffsets(SPI_TypeDef *spi, LSM6DS3_data* gyro);
+bool LSM6DS3_gyro_offsets(SPI_TypeDef *spi, LSM6DS3_data* gyro);
 
 /**
 	@brief Calculates if standard divation of readings is within a threshold limit
 	@note Used to work out if the board is stationary enough to use offsets
   @returns true if within limits
 */
-bool Lsmds3GyroStandardDev(LSM6DS3_data buff[], uint16_t limit);
+bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t limit);
 
 /**
 	@brief Stops angle from overflowing.
 	@note keeps angle between +-180,000 mDeg
 */
-int32_t Lsm6ds3AngleOverflow(int32_t mDeg);
+int32_t LSM6DS3_angle_overflow(int32_t mDeg);
 
 #endif /* LSM6DS3_DRIVER_H */
