@@ -242,8 +242,13 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
   gpio_set_mode(rx, GPIO_MODE_AF);
   gpio_set_af(rx, af);
   uart->CR1 = 0;                              // Disable this UART                              
-  uart->BRR = FREQ / baud;                    // FREQ is a CPU frequency
-  //uart->BRR = 256*FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
+
+  #ifdef FLIGHT_COMPUTER
+    uart->BRR = FREQ / baud;                    // FREQ is a CPU frequency
+  #else
+    uart->BRR = 256*FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
+  #endif
+
   uart->CR1 |= BIT(0) | BIT(2) | BIT(3);      // Set UE, RE, TE Datasheet 50.8.1 
 }
 
@@ -541,7 +546,7 @@ static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
                                           uint8_t *send_byte,
                                           uint8_t transmit_size,
                                           uint8_t receive_size,
-                                          uint8_t* result_ptr)
+                                          uint32_t* result_ptr)
 {
   uint8_t ret_value = 0;
   spi_ready_write(spi);
