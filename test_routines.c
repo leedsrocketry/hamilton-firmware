@@ -48,7 +48,6 @@ void run_ADXL375_routine()
 {
   printf("================ ADXL375_routine ================\r\n");
   ADXL375_data _data;
-  uint8_t devid;
   bool on = true;
   for (;;) {
     delay_ms(1000);
@@ -114,7 +113,6 @@ void run_BME280_routine()
 void spi_test_routine(SPI_TypeDef* spi)
 {
   printf("================ SPI_routine ================\r\n");
-  uint32_t timer = 0;
   uint8_t ret_val = 0;
   static bool on = true; 
 
