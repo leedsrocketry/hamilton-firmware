@@ -46,7 +46,7 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     return 0;
 }
 
-static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs)
+void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs)
 {
     uint8_t send_data[2] =  {register_id, value};
     spi_enable_cs(spi, LSM6DS3_CS);
@@ -60,7 +60,7 @@ static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_
     }
 }
 
-static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs)
+void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs)
 {
     uint8_t new_value = 0;
     spi_enable_cs(spi, LSM6DS3_CS);

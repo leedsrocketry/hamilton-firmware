@@ -125,7 +125,7 @@ NAND_flash_driver.h:218:41: note: expected 'uint8_t *' {aka 'unsigned char *'} b
   218 | static inline FrameArray unzip(uint8_t *zippedData) {
       |                                ~~~~~~~~~^~~~~~~~~~
 main.c:175:30: warning: passing argument 1 of 'LSM6DS3_acc_read' from incompatible pointer type [-Wincompatible-pointer-types]
-  175 |             LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector);
+  175 |             LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector); // This is clearly wrong
       |                              ^~~~~~~~~~~~~~
       |                              |
       |                              LSM6DS3_data *
@@ -135,7 +135,7 @@ drivers/LSM6DS3_driver.h:134:36: note: expected 'SPI_TypeDef *' but argument is 
   134 | bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro);
       |                       ~~~~~~~~~~~~~^~~
 main.c:175:46: warning: passing argument 2 of 'LSM6DS3_acc_read' from incompatible pointer type [-Wincompatible-pointer-types]
-  175 |             LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector);
+  175 |             LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector); // This is clearly wrong
       |                                              ^~~~~~~~~~~~~
       |                                              |
       |                                              float (*)[4]
@@ -157,14 +157,8 @@ main.c:148:12: warning: unused variable 'dt' [-Wunused-variable]
 main.c:135:7: warning: unused variable 'current_velocity' [-Wunused-variable]
   135 |   int current_velocity = 0;
       |       ^~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h: At top level:
-drivers/LSM6DS3_driver.h:121:13: warning: 'LSM6DS3_write_register' declared 'static' but never defined [-Wunused-function]
-  121 | static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h:122:13: warning: 'LSM6DS3_write_register_bits' declared 'static' but never defined [-Wunused-function]
-  122 | static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 In file included from main.c:18:
+data_buffer.h: At top level:
 data_buffer.h:26:14: warning: 'sea_level_pressure' defined but not used [-Wunused-variable]
    26 | static float sea_level_pressure = 1013.25;    // Sea level presser in micro bar
       |              ^~~~~~~~~~~~~~~~~~
@@ -309,24 +303,7 @@ test_routines.c:117:23: warning: unused variable 'period' [-Wunused-variable]
 test_routines.c:117:12: warning: unused variable 'timer' [-Wunused-variable]
   117 |   uint32_t timer = 0, period = 500;
       |            ^~~~~
-In file included from test_routines.h:13:
-drivers/LSM6DS3_driver.h: At top level:
-drivers/LSM6DS3_driver.h:121:13: warning: 'LSM6DS3_write_register' declared 'static' but never defined [-Wunused-function]
-  121 | static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h:122:13: warning: 'LSM6DS3_write_register_bits' declared 'static' but never defined [-Wunused-function]
-  122 | static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from test_routines.h:14:
-drivers/SI446_driver.h:137:15: warning: 'SI446_get_response' declared 'static' but never defined [-Wunused-function]
-  137 | static int8_t SI446_get_response(int byteCount, uint8_t *data);
-      |               ^~~~~~~~~~~~~~~~~~
-drivers/SI446_driver.h:147:15: warning: 'SI446_check_CTS' declared 'static' but never defined [-Wunused-function]
-  147 | static int8_t SI446_check_CTS(int desired);
-      |               ^~~~~~~~~~~~~~~
-drivers/SI446_driver.h:153:15: warning: 'SI446_power_up' declared 'static' but never defined [-Wunused-function]
-  153 | static int8_t SI446_power_up();
-      |               ^~~~~~~~~~~~~~
+mcu.h: At top level:
 mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
    56 | static void printf_float(char* name, float value, bool print_text) {
       |             ^~~~~~~~~~~~
@@ -343,15 +320,7 @@ In file included from drivers/ADXL375_driver.h:10,
 ./mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from frame_array.h:13,
-                 from data_buffer.h:16:
-drivers/LSM6DS3_driver.h: At top level:
-drivers/LSM6DS3_driver.h:121:13: warning: 'LSM6DS3_write_register' declared 'static' but never defined [-Wunused-function]
-  121 | static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h:122:13: warning: 'LSM6DS3_write_register_bits' declared 'static' but never defined [-Wunused-function]
-  122 | static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+./mcu.h: At top level:
 ./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
    56 | static void printf_float(char* name, float value, bool print_text) {
       |             ^~~~~~~~~~~~

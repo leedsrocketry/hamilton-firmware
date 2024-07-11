@@ -134,7 +134,7 @@ int8_t SI446_transmit();
   @param data ptr to the data storage location
   @return Success/Failure
 */
-static int8_t SI446_get_response(int byteCount, uint8_t *data);
+int8_t SI446_get_response(int byteCount, uint8_t *data);
 
 /**
   @brief checks if CTS bit is set
@@ -144,13 +144,13 @@ static int8_t SI446_get_response(int byteCount, uint8_t *data);
                  >0: custom time (in ms) to wait for CTS response.
   @return Success/Failure
 */
-static int8_t SI446_check_CTS(int desired);
+int8_t SI446_check_CTS(int desired);
 
 /**
   @brief SI446_command: power up the sensor with specified function
   @return Success/Failure
 */
-static int8_t SI446_power_up();
+int8_t SI446_power_up();
 
 #pragma endregion Private
 

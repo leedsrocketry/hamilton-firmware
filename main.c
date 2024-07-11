@@ -98,7 +98,7 @@ int main(void)
   STM32_indicate_on();  
 
   printf("============ INITIALISE NAND FLASH ============\r\n");
-  init_flash();
+  //init_flash();
 
   printf("============== INITIALISE DRIVERS =============\r\n");
   // Buffer data
@@ -139,7 +139,7 @@ int main(void)
 
   printf("============== ADD TESTS HERE ==============\r\n");
   //NAND_flash_read();
-  NAND_flash_erase();
+  //NAND_flash_erase();
   //run_BME280_routine();
 
   printf("============= ENTER MAIN PROCEDURE ============\r\n");
@@ -172,7 +172,7 @@ int main(void)
             current_pressure = get_median(_data, WINDOW_SIZE); // get pressure median
 
             // Check if rocket is stationary based on acceleration
-            LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector);
+            LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector); // This is clearly wrong
 
             // Check for launch given pressure decrease
             if ((frame_buffer.ground_ref - current_pressure) > LAUNCH_THRESHOLD && accel_vector[3] > 1.4) {

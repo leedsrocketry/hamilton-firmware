@@ -75,7 +75,7 @@ int8_t SI446_read_data(uint8_t *data, size_t byteCount){
 //_________________________________ Private ____________________
 
 
-static int8_t SI446_get_response(int byteCount, uint8_t *data){
+int8_t SI446_get_response(int byteCount, uint8_t *data){
     int8_t SI446_retVal;
     // wait till CTS is correct
     SI446_retVal = SI446_check_CTS(0);
@@ -89,7 +89,7 @@ static int8_t SI446_get_response(int byteCount, uint8_t *data){
     return SI446_retVal;
 };
 
-static int8_t SI446_check_CTS(int desired){
+int8_t SI446_check_CTS(int desired){
     int SI446_time_out = SI446_CTS_TIME_OUT;
     if(desired > 0){ // use user defined  
     SI446_time_out = desired;
@@ -122,7 +122,7 @@ static int8_t SI446_check_CTS(int desired){
     return SI446_E_CTS_TIME_OUT;
 };
 
-static int8_t SI446_power_up(){
+int8_t SI446_power_up(){
     int8_t SI446_retVal;
     uint8_t packet[7];
     uint32_t xo_freq = 30000000; // default
