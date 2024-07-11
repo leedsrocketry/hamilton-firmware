@@ -535,47 +535,42 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 
 /**
   @brief Transmit multiples bytes to and recieve multiple bytes from SPI peripheral
-  @param spi Selected SPI
+  @param spi Selected SPI (1, 2 or 3)
   @param send_byte Byte to be sent via SPI
-  @param transmit_size Int specifying number of bytes being sent over SPI
-  @param receive_size Int specifying number of bytes being receiving over SPI
-  @param result_ptr ptr to array of results
-  @return Byte from SPI
+  @param transmit_size Number of bytes being sent over SPI
+  @param receive_size Number of bytes being receiving over SPI
+  @param result_ptr ptr to store the result
+  @return not used
 */
-static inline uint8_t spi_transmit_receive(SPI_TypeDef *spi,
-                                          uint8_t *send_byte,
-                                          uint8_t transmit_size,
-                                          uint8_t receive_size,
-                                          uint32_t* result_ptr)
+static inline void spi_transmit_receive(SPI_TypeDef *spi,
+                                        uint8_t *send_byte,
+                                        uint8_t transmit_size,
+                                        uint8_t receive_size,
+                                        void *result_ptr)
 {
-  uint8_t ret_value = 0;
   spi_ready_write(spi);
 
-  for (int i = 0; i<transmit_size; i++) {
+  // Transmit data
+  for (int i = 0; i < transmit_size; i++) {
     spi_transmit(spi, send_byte[i]);
   }
 
+  // Receive data
   uint32_t result = 0;
-  int8_t rs = receive_size;
-  while (rs > 0)
-  {
+  for (uint8_t rs = receive_size; rs > 0; rs--) {
     uint8_t received = spi_transmit(spi, 0x00);
-    result = (result << 8);
-    result = result | received;
-    rs--;
+    result = (result << 8) | received;
     spi_ready_write(spi);
   }
 
-  //(*result_ptr++) = result;
-
-  if(receive_size == 1) {
-    *((uint8_t*)result_ptr) = result;
+  // Store result based on receive_size
+  if (receive_size == 1) {
+    *(uint8_t *)result_ptr = (uint8_t)result;
   } else if (receive_size == 2) {
-    *((uint16_t*)result_ptr) = result;
-  } else if (receive_size > 2) {
-    *((uint32_t*)result_ptr) = result;
+    *(uint16_t *)result_ptr = (uint16_t)result;
+  } else if (receive_size >= 3) {
+    *(uint32_t *)result_ptr = result;
   }
-  return ret_value;
 }
 
 /**
