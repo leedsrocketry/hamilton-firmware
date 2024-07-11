@@ -297,11 +297,8 @@ test_routines.c:50:16: warning: unused variable '_data' [-Wunused-variable]
    50 |   ADXL375_data _data;
       |                ^~~~~
 test_routines.c: In function 'spi_test_routine':
-test_routines.c:117:23: warning: unused variable 'period' [-Wunused-variable]
-  117 |   uint32_t timer = 0, period = 500;
-      |                       ^~~~~~
 test_routines.c:117:12: warning: unused variable 'timer' [-Wunused-variable]
-  117 |   uint32_t timer = 0, period = 500;
+  117 |   uint32_t timer = 0;
       |            ^~~~~
 mcu.h: At top level:
 mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]

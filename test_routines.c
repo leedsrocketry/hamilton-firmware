@@ -114,7 +114,7 @@ void run_BME280_routine()
 void spi_test_routine(SPI_TypeDef* spi)
 {
   printf("================ SPI_routine ================\r\n");
-  uint32_t timer = 0, period = 500;
+  uint32_t timer = 0;
   uint8_t ret_val = 0;
   static bool on = true; 
 
