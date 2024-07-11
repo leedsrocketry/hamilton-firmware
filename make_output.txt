@@ -11,17 +11,6 @@ mcu.h:572:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to '
 mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from drivers/LSM6DS3_driver.h:12,
-                 from frame_array.h:13,
-                 from main.c:10:
-./filters.h: At top level:
-./filters.h:15: warning: "M_PI" redefined
-   15 | #define M_PI 205887 //3.14159 << 16   // Value of pi in fixed point
-      | 
-In file included from mcu.h:14:
-/opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
-  613 | #define M_PI            3.14159265358979323846
-      | 
 In file included from main.c:13:
 NAND_flash_driver.h: In function 'print_frame_array':
 NAND_flash_driver.h:397:10: warning: format '%ld' expects argument of type 'long int', but argument 8 has type 'int' [-Wformat=]
@@ -140,6 +129,8 @@ main.c:175:30: warning: passing argument 1 of 'LSM6DS3_acc_read' from incompatib
       |                              ^~~~~~~~~~~~~~
       |                              |
       |                              LSM6DS3_data *
+In file included from frame_array.h:13,
+                 from main.c:10:
 drivers/LSM6DS3_driver.h:134:36: note: expected 'SPI_TypeDef *' but argument is of type 'LSM6DS3_data *'
   134 | bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro);
       |                       ~~~~~~~~~~~~~^~~
@@ -258,14 +249,7 @@ mcu.h:572:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to '
 mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-filters.h: At top level:
-filters.h:15: warning: "M_PI" redefined
-   15 | #define M_PI 205887 //3.14159 << 16   // Value of pi in fixed point
-      | 
-In file included from mcu.h:14:
-/opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
-  613 | #define M_PI            3.14159265358979323846
-      | 
+mcu.h: At top level:
 mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
    56 | static void printf_float(char* name, float value, bool print_text) {
       |             ^~~~~~~~~~~~
@@ -306,16 +290,6 @@ mcu.h:572:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to '
 mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from drivers/LSM6DS3_driver.h:12,
-                 from test_routines.h:13:
-./filters.h: At top level:
-./filters.h:15: warning: "M_PI" redefined
-   15 | #define M_PI 205887 //3.14159 << 16   // Value of pi in fixed point
-      | 
-In file included from mcu.h:14:
-/opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
-  613 | #define M_PI            3.14159265358979323846
-      | 
 test_routines.c: In function 'run_ADXL375_routine':
 test_routines.c:56:53: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    56 |     spi_transmit_receive(SPI1, ADXL375_DEVID, 2, 1, &devid);
@@ -335,6 +309,7 @@ test_routines.c:117:23: warning: unused variable 'period' [-Wunused-variable]
 test_routines.c:117:12: warning: unused variable 'timer' [-Wunused-variable]
   117 |   uint32_t timer = 0, period = 500;
       |            ^~~~~
+In file included from test_routines.h:13:
 drivers/LSM6DS3_driver.h: At top level:
 drivers/LSM6DS3_driver.h:121:13: warning: 'LSM6DS3_write_register' declared 'static' but never defined [-Wunused-function]
   121 | static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
@@ -368,17 +343,9 @@ In file included from drivers/ADXL375_driver.h:10,
 ./mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from drivers/LSM6DS3_driver.h:12,
-                 from frame_array.h:13,
+In file included from frame_array.h:13,
                  from data_buffer.h:16:
-./filters.h: At top level:
-./filters.h:15: warning: "M_PI" redefined
-   15 | #define M_PI 205887 //3.14159 << 16   // Value of pi in fixed point
-      | 
-In file included from ./mcu.h:14:
-/opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
-  613 | #define M_PI            3.14159265358979323846
-      | 
+drivers/LSM6DS3_driver.h: At top level:
 drivers/LSM6DS3_driver.h:121:13: warning: 'LSM6DS3_write_register' declared 'static' but never defined [-Wunused-function]
   121 | static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
       |             ^~~~~~~~~~~~~~~~~~~~~~
@@ -400,15 +367,6 @@ In file included from drivers/LSM6DS3_driver.h:11,
 ./mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from drivers/LSM6DS3_driver.h:12:
-./filters.h: At top level:
-./filters.h:15: warning: "M_PI" redefined
-   15 | #define M_PI 205887 //3.14159 << 16   // Value of pi in fixed point
-      | 
-In file included from drivers/LSM6DS3_driver.h:10:
-/opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
-  613 | #define M_PI            3.14159265358979323846
-      | 
 drivers/LSM6DS3_driver.c: In function 'LSM6DS3_init':
 drivers/LSM6DS3_driver.c:21:31: warning: passing argument 2 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    21 |     spi_transmit_receive(spi, &send_data, 1, 1, &chip_id);
