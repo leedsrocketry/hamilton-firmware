@@ -45,3 +45,6 @@ hfc: CFLAGS += -DFLIGHT_COMPUTER
 hfc: build
 
 hfc-flash: hfc flash
+
+warnings:
+	@(make clean && make hfc > make_output.txt 2>&1) && grep "warning:" make_output.txt | wc -l

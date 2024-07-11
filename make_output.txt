@@ -1,4 +1,4 @@
-rm -rf firmware.*
+make[1]: Entering directory '/home/evanm/LURA/hamilton-firmware'
 arm-none-eabi-gcc main.c startup.c syscalls.c STM32_init.c drivers/MS5611_driver.c filters.c drivers/ADXL375_driver.c test_routines.c data_buffer.c drivers/LSM6DS3_driver.c drivers/BME280_driver.c -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas -g3 -O0 -ffunction-sections -fdata-sections -I. -Iinclude -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16  -lm -DFLIGHT_COMPUTER -Tlink.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=firmware.elf.map -o firmware.elf
 In file included from main.c:9:
 mcu.h: In function 'spi_transmit_receive':
@@ -11,7 +11,7 @@ mcu.h:572:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to '
 mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from drivers/LSM6DS3_driver.h:11,
+In file included from drivers/LSM6DS3_driver.h:12,
                  from frame_array.h:13,
                  from main.c:10:
 ./filters.h: At top level:
@@ -135,22 +135,44 @@ main.c:127:17: warning: passing argument 1 of 'unzip' from incompatible pointer 
 NAND_flash_driver.h:218:41: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[128]' {aka 'unsigned char (*)[128]'}
   218 | static inline FrameArray unzip(uint8_t *zippedData) {
       |                                ~~~~~~~~~^~~~~~~~~~
-main.c:258:15: warning: declaration of '_data' shadows a previous local [-Wshadow]
-  258 |           int _data[WINDOW_SIZE];
+main.c:175:30: warning: passing argument 1 of 'LSM6DS3_acc_read' from incompatible pointer type [-Wincompatible-pointer-types]
+  175 |             LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector);
+      |                              ^~~~~~~~~~~~~~
+      |                              |
+      |                              LSM6DS3_data *
+drivers/LSM6DS3_driver.h:134:36: note: expected 'SPI_TypeDef *' but argument is of type 'LSM6DS3_data *'
+  134 | bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro);
+      |                       ~~~~~~~~~~~~~^~~
+main.c:175:46: warning: passing argument 2 of 'LSM6DS3_acc_read' from incompatible pointer type [-Wincompatible-pointer-types]
+  175 |             LSM6DS3_acc_read(&_LSM6DS3_data, &accel_vector);
+      |                                              ^~~~~~~~~~~~~
+      |                                              |
+      |                                              float (*)[4]
+drivers/LSM6DS3_driver.h:134:55: note: expected 'LSM6DS3_data *' but argument is of type 'float (*)[4]'
+  134 | bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro);
+      |                                         ~~~~~~~~~~~~~~^~~~
+main.c:178:100: warning: implicit conversion from 'float' to 'double' to match other operand of binary expression [-Wdouble-promotion]
+  178 |             if ((frame_buffer.ground_ref - current_pressure) > LAUNCH_THRESHOLD && accel_vector[3] > 1.4) {
+      |                                                                                                    ^
+main.c:264:15: warning: declaration of '_data' shadows a previous local [-Wshadow]
+  264 |           int _data[WINDOW_SIZE];
       |               ^~~~~
 main.c:132:7: note: shadowed declaration is here
   132 |   int _data[WINDOW_SIZE];
       |       ^~~~~
-main.c:145:12: warning: unused variable 'dt' [-Wunused-variable]
-  145 |   uint32_t dt = 0;
+main.c:148:12: warning: unused variable 'dt' [-Wunused-variable]
+  148 |   uint32_t dt = 0;
       |            ^~
+main.c:135:7: warning: unused variable 'current_velocity' [-Wunused-variable]
+  135 |   int current_velocity = 0;
+      |       ^~~~~~~~~~~~~~~~
 drivers/LSM6DS3_driver.h: At top level:
-drivers/LSM6DS3_driver.h:120:13: warning: 'Lsm6ds3WriteRegister' declared 'static' but never defined [-Wunused-function]
-  120 | static void Lsm6ds3WriteRegister(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h:121:13: warning: 'Lsm6ds3WriteRegisterBits' declared 'static' but never defined [-Wunused-function]
-  121 | static void Lsm6ds3WriteRegisterBits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+drivers/LSM6DS3_driver.h:121:13: warning: 'LSM6DS3_write_register' declared 'static' but never defined [-Wunused-function]
+  121 | static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+drivers/LSM6DS3_driver.h:122:13: warning: 'LSM6DS3_write_register_bits' declared 'static' but never defined [-Wunused-function]
+  122 | static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 In file included from main.c:18:
 data_buffer.h:26:14: warning: 'sea_level_pressure' defined but not used [-Wunused-variable]
    26 | static float sea_level_pressure = 1013.25;    // Sea level presser in micro bar
@@ -284,7 +306,7 @@ mcu.h:572:31: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to '
 mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from drivers/LSM6DS3_driver.h:11,
+In file included from drivers/LSM6DS3_driver.h:12,
                  from test_routines.h:13:
 ./filters.h: At top level:
 ./filters.h:15: warning: "M_PI" redefined
@@ -294,13 +316,6 @@ In file included from mcu.h:14:
 /opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
   613 | #define M_PI            3.14159265358979323846
       | 
-test_routines.c: In function 'run_MS5611_routine':
-test_routines.c:40:17: warning: format '%d' expects argument of type 'int', but argument 2 has type 'int32_t' {aka 'long int'} [-Wformat=]
-   40 |     printf("p: %d, t: %ld, \r\n", _data.pressure, _data.temp);
-      |                ~^                 ~~~~~~~~~~~~~~
-      |                 |                      |
-      |                 int                    int32_t {aka long int}
-      |                %ld
 test_routines.c: In function 'run_ADXL375_routine':
 test_routines.c:56:53: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    56 |     spi_transmit_receive(SPI1, ADXL375_DEVID, 2, 1, &devid);
@@ -313,11 +328,6 @@ mcu.h:549:53: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argume
 test_routines.c:50:16: warning: unused variable '_data' [-Wunused-variable]
    50 |   ADXL375_data _data;
       |                ^~~~~
-test_routines.c: In function 'run_LSM6DS3_routine':
-test_routines.c:84:5: warning: implicit declaration of function 'lsm6ds6GyroReadAngle'; did you mean 'Lsm6ds3GyroReadAngle'? [-Wimplicit-function-declaration]
-   84 |     lsm6ds6GyroReadAngle(SPI1, &gyro_data);
-      |     ^~~~~~~~~~~~~~~~~~~~
-      |     Lsm6ds3GyroReadAngle
 test_routines.c: In function 'spi_test_routine':
 test_routines.c:117:23: warning: unused variable 'period' [-Wunused-variable]
   117 |   uint32_t timer = 0, period = 500;
@@ -326,12 +336,12 @@ test_routines.c:117:12: warning: unused variable 'timer' [-Wunused-variable]
   117 |   uint32_t timer = 0, period = 500;
       |            ^~~~~
 drivers/LSM6DS3_driver.h: At top level:
-drivers/LSM6DS3_driver.h:120:13: warning: 'Lsm6ds3WriteRegister' declared 'static' but never defined [-Wunused-function]
-  120 | static void Lsm6ds3WriteRegister(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h:121:13: warning: 'Lsm6ds3WriteRegisterBits' declared 'static' but never defined [-Wunused-function]
-  121 | static void Lsm6ds3WriteRegisterBits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+drivers/LSM6DS3_driver.h:121:13: warning: 'LSM6DS3_write_register' declared 'static' but never defined [-Wunused-function]
+  121 | static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+drivers/LSM6DS3_driver.h:122:13: warning: 'LSM6DS3_write_register_bits' declared 'static' but never defined [-Wunused-function]
+  122 | static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 In file included from test_routines.h:14:
 drivers/SI446_driver.h:137:15: warning: 'SI446_get_response' declared 'static' but never defined [-Wunused-function]
   137 | static int8_t SI446_get_response(int byteCount, uint8_t *data);
@@ -358,7 +368,7 @@ In file included from drivers/ADXL375_driver.h:10,
 ./mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from drivers/LSM6DS3_driver.h:11,
+In file included from drivers/LSM6DS3_driver.h:12,
                  from frame_array.h:13,
                  from data_buffer.h:16:
 ./filters.h: At top level:
@@ -369,16 +379,16 @@ In file included from ./mcu.h:14:
 /opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
   613 | #define M_PI            3.14159265358979323846
       | 
-drivers/LSM6DS3_driver.h:120:13: warning: 'Lsm6ds3WriteRegister' declared 'static' but never defined [-Wunused-function]
-  120 | static void Lsm6ds3WriteRegister(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h:121:13: warning: 'Lsm6ds3WriteRegisterBits' declared 'static' but never defined [-Wunused-function]
-  121 | static void Lsm6ds3WriteRegisterBits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+drivers/LSM6DS3_driver.h:121:13: warning: 'LSM6DS3_write_register' declared 'static' but never defined [-Wunused-function]
+  121 | static void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs);
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+drivers/LSM6DS3_driver.h:122:13: warning: 'LSM6DS3_write_register_bits' declared 'static' but never defined [-Wunused-function]
+  122 | static void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 ./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
    56 | static void printf_float(char* name, float value, bool print_text) {
       |             ^~~~~~~~~~~~
-In file included from drivers/LSM6DS3_driver.h:9,
+In file included from drivers/LSM6DS3_driver.h:11,
                  from drivers/LSM6DS3_driver.c:11:
 ./mcu.h: In function 'spi_transmit_receive':
 ./mcu.h:559:15: warning: conversion to 'int8_t' {aka 'signed char'} from 'uint8_t' {aka 'unsigned char'} may change the sign of the result [-Wsign-conversion]
@@ -390,16 +400,16 @@ In file included from drivers/LSM6DS3_driver.h:9,
 ./mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
-In file included from drivers/LSM6DS3_driver.h:11:
+In file included from drivers/LSM6DS3_driver.h:12:
 ./filters.h: At top level:
 ./filters.h:15: warning: "M_PI" redefined
    15 | #define M_PI 205887 //3.14159 << 16   // Value of pi in fixed point
       | 
-In file included from ./mcu.h:14:
+In file included from drivers/LSM6DS3_driver.h:10:
 /opt/arm-none-eabi/arm-none-eabi/include/math.h:613: note: this is the location of the previous definition
   613 | #define M_PI            3.14159265358979323846
       | 
-drivers/LSM6DS3_driver.c: In function 'Lsm6ds3Init':
+drivers/LSM6DS3_driver.c: In function 'LSM6DS3_init':
 drivers/LSM6DS3_driver.c:21:31: warning: passing argument 2 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    21 |     spi_transmit_receive(spi, &send_data, 1, 1, &chip_id);
       |                               ^~~~~~~~~~
@@ -416,7 +426,7 @@ drivers/LSM6DS3_driver.c:21:49: warning: passing argument 5 of 'spi_transmit_rec
 ./mcu.h:549:53: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argument is of type 'uint8_t *' {aka 'unsigned char *'}
   549 |                                           uint32_t* result_ptr)
       |                                           ~~~~~~~~~~^~~~~~~~~~
-drivers/LSM6DS3_driver.c: In function 'Lsm6ds3WriteRegister':
+drivers/LSM6DS3_driver.c: In function 'LSM6DS3_write_register':
 drivers/LSM6DS3_driver.c:54:54: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    54 |     spi_transmit_receive(spi, &(send_data[0]), 1, 0, &send_data);
       |                                                      ^~~~~~~~~~
@@ -433,7 +443,7 @@ drivers/LSM6DS3_driver.c:55:54: warning: passing argument 5 of 'spi_transmit_rec
 ./mcu.h:549:53: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argument is of type 'uint8_t (*)[2]' {aka 'unsigned char (*)[2]'}
   549 |                                           uint32_t* result_ptr)
       |                                           ~~~~~~~~~~^~~~~~~~~~
-drivers/LSM6DS3_driver.c: In function 'Lsm6ds3WriteRegisterBits':
+drivers/LSM6DS3_driver.c: In function 'LSM6DS3_write_register_bits':
 drivers/LSM6DS3_driver.c:69:49: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    69 |     spi_transmit_receive(spi, &send_data, 1, 1, &new_value); //get current data
       |                                                 ^~~~~~~~~~
@@ -442,7 +452,7 @@ drivers/LSM6DS3_driver.c:69:49: warning: passing argument 5 of 'spi_transmit_rec
 ./mcu.h:549:53: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argument is of type 'uint8_t *' {aka 'unsigned char *'}
   549 |                                           uint32_t* result_ptr)
       |                                           ~~~~~~~~~~^~~~~~~~~~
-drivers/LSM6DS3_driver.c: In function 'Lsm6ds3AccRead':
+drivers/LSM6DS3_driver.c: In function 'LSM6DS3_acc_read':
 drivers/LSM6DS3_driver.c:132:51: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
   132 |     spi_transmit_receive(spi, &(send_data), 1, 1, &(lsm6ds3_rx_buf[0]));  //send read command and get first result
       |                                                   ^~~~~~~~~~~~~~~~~~~~
@@ -459,25 +469,25 @@ drivers/LSM6DS3_driver.c:135:55: warning: passing argument 5 of 'spi_transmit_re
 ./mcu.h:549:53: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argument is of type 'uint8_t *' {aka 'unsigned char *'}
   549 |                                           uint32_t* result_ptr)
       |                                           ~~~~~~~~~~^~~~~~~~~~
-drivers/LSM6DS3_driver.h:94:36: warning: conversion from 'long int' to 'int16_t' {aka 'short int'} may change value [-Wconversion]
-   94 | #define LMS6DS6_ACCEL_SENSITIVITY  488 //for +-16G, sensitivity is 0.488 mg/LSB
+drivers/LSM6DS3_driver.h:95:36: warning: conversion from 'long int' to 'int16_t' {aka 'short int'} may change value [-Wconversion]
+   95 | #define LMS6DS6_ACCEL_SENSITIVITY  488 //for +-16G, sensitivity is 0.488 mg/LSB
       |                                    ^~~
 drivers/LSM6DS3_driver.c:141:21: note: in expansion of macro 'LMS6DS6_ACCEL_SENSITIVITY'
   141 |     gyro->x_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_XOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_XOUT_L]))/1000;
       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h:94:36: warning: conversion from 'long int' to 'int16_t' {aka 'short int'} may change value [-Wconversion]
-   94 | #define LMS6DS6_ACCEL_SENSITIVITY  488 //for +-16G, sensitivity is 0.488 mg/LSB
+drivers/LSM6DS3_driver.h:95:36: warning: conversion from 'long int' to 'int16_t' {aka 'short int'} may change value [-Wconversion]
+   95 | #define LMS6DS6_ACCEL_SENSITIVITY  488 //for +-16G, sensitivity is 0.488 mg/LSB
       |                                    ^~~
 drivers/LSM6DS3_driver.c:142:21: note: in expansion of macro 'LMS6DS6_ACCEL_SENSITIVITY'
   142 |     gyro->y_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_YOUT_L]))/1000;
       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.h:94:36: warning: conversion from 'long int' to 'int16_t' {aka 'short int'} may change value [-Wconversion]
-   94 | #define LMS6DS6_ACCEL_SENSITIVITY  488 //for +-16G, sensitivity is 0.488 mg/LSB
+drivers/LSM6DS3_driver.h:95:36: warning: conversion from 'long int' to 'int16_t' {aka 'short int'} may change value [-Wconversion]
+   95 | #define LMS6DS6_ACCEL_SENSITIVITY  488 //for +-16G, sensitivity is 0.488 mg/LSB
       |                                    ^~~
 drivers/LSM6DS3_driver.c:143:21: note: in expansion of macro 'LMS6DS6_ACCEL_SENSITIVITY'
   143 |     gyro->z_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_L]))/1000;
       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/LSM6DS3_driver.c: In function 'Lsm6ds3GyroRead':
+drivers/LSM6DS3_driver.c: In function 'LSM6DS3_gyro_read':
 drivers/LSM6DS3_driver.c:166:51: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
   166 |     spi_transmit_receive(spi, &(send_data), 1, 1, &(lsm6ds3_rx_buf[0])); //send read command and get first result
       |                                                   ^~~~~~~~~~~~~~~~~~~~
@@ -494,24 +504,40 @@ drivers/LSM6DS3_driver.c:168:55: warning: passing argument 5 of 'spi_transmit_re
 ./mcu.h:549:53: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argument is of type 'uint8_t *' {aka 'unsigned char *'}
   549 |                                           uint32_t* result_ptr)
       |                                           ~~~~~~~~~~^~~~~~~~~~
-drivers/LSM6DS3_driver.c: In function 'Lsmds3GyroStandardDev':
-drivers/LSM6DS3_driver.c:228:24: warning: conversion from 'long double' to 'long int' may change value [-Wfloat-conversion]
-  228 |         variance[0] += powl(buff[i].x_rate - means[0],2);
+drivers/LSM6DS3_driver.c: In function 'LSM6DS3_get_acc_vector':
+drivers/LSM6DS3_driver.c:222:17: warning: conversion from 'double' to 'float' may change value [-Wfloat-conversion]
+  222 |     vector[0] = _LSM6DS3_data->x_accel/1000.0;
+      |                 ^~~~~~~~~~~~~
+drivers/LSM6DS3_driver.c:223:17: warning: conversion from 'double' to 'float' may change value [-Wfloat-conversion]
+  223 |     vector[1] = _LSM6DS3_data->y_accel/1000.0;
+      |                 ^~~~~~~~~~~~~
+drivers/LSM6DS3_driver.c:224:17: warning: conversion from 'double' to 'float' may change value [-Wfloat-conversion]
+  224 |     vector[2] = _LSM6DS3_data->z_accel/1000.0;
+      |                 ^~~~~~~~~~~~~
+drivers/LSM6DS3_driver.c:235:19: warning: implicit conversion from 'float' to 'double' to match other operand of binary expression [-Wdouble-promotion]
+  235 |     if (magnitude < 0.9 || magnitude > 1.1){   // If not close to 1G
+      |                   ^
+drivers/LSM6DS3_driver.c:235:38: warning: implicit conversion from 'float' to 'double' to match other operand of binary expression [-Wdouble-promotion]
+  235 |     if (magnitude < 0.9 || magnitude > 1.1){   // If not close to 1G
+      |                                      ^
+drivers/LSM6DS3_driver.c: In function 'LSM6DS3_gyro_standard_dev':
+drivers/LSM6DS3_driver.c:256:24: warning: conversion from 'long double' to 'long int' may change value [-Wfloat-conversion]
+  256 |         variance[0] += powl(buff[i].x_rate - means[0], 2);
       |                        ^~~~
-drivers/LSM6DS3_driver.c:229:24: warning: conversion from 'long double' to 'long int' may change value [-Wfloat-conversion]
-  229 |         variance[1] += powl(buff[i].y_rate - means[1],2);
+drivers/LSM6DS3_driver.c:257:24: warning: conversion from 'long double' to 'long int' may change value [-Wfloat-conversion]
+  257 |         variance[1] += powl(buff[i].y_rate - means[1], 2);
       |                        ^~~~
-drivers/LSM6DS3_driver.c:230:24: warning: conversion from 'long double' to 'long int' may change value [-Wfloat-conversion]
-  230 |         variance[2] += powl(buff[i].z_rate - means[2],2);
+drivers/LSM6DS3_driver.c:258:24: warning: conversion from 'long double' to 'long int' may change value [-Wfloat-conversion]
+  258 |         variance[2] += powl(buff[i].z_rate - means[2], 2);
       |                        ^~~~
-drivers/LSM6DS3_driver.c:239:23: warning: conversion from 'double' to 'int' may change value [-Wfloat-conversion]
-  239 |     int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
+drivers/LSM6DS3_driver.c:266:23: warning: conversion from 'double' to 'int' may change value [-Wfloat-conversion]
+  266 |     int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
       |                       ^~~~
-drivers/LSM6DS3_driver.c:239:42: warning: conversion from 'double' to 'int' may change value [-Wfloat-conversion]
-  239 |     int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
+drivers/LSM6DS3_driver.c:266:42: warning: conversion from 'double' to 'int' may change value [-Wfloat-conversion]
+  266 |     int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
       |                                          ^~~~
-drivers/LSM6DS3_driver.c:239:61: warning: conversion from 'double' to 'int' may change value [-Wfloat-conversion]
-  239 |     int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
+drivers/LSM6DS3_driver.c:266:61: warning: conversion from 'double' to 'int' may change value [-Wfloat-conversion]
+  266 |     int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
       |                                                             ^~~~
 ./mcu.h: At top level:
 ./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
@@ -554,3 +580,4 @@ drivers/BME280_driver.c:322:24: warning: assignment to 'int8_t' {aka 'signed cha
       |             ^~~~~~~~~~~~
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/bin/ld: warning: firmware.elf has a LOAD segment with RWX permissions
 arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
+make[1]: Leaving directory '/home/evanm/LURA/hamilton-firmware'
