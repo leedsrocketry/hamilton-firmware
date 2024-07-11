@@ -87,24 +87,7 @@ NAND_flash_driver.h:641:60: note: expected 'uint8_t *' {aka 'unsigned char *'} b
 NAND_flash_driver.h:1123:14: warning: variable '_output' set but not used [-Wunused-but-set-variable]
  1123 |   FrameArray _output;
       |              ^~~~~~~
-main.c: In function 'get_frame_array':
-main.c:41:30: warning: conversion from 'long unsigned int' to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-   41 |   _frameArray->date.minute = (time/(1000000*60))%60; //minuts
-      |                              ^
-main.c:42:30: warning: conversion from 'long unsigned int' to 'uint8_t' {aka 'unsigned char'} may change value [-Wconversion]
-   42 |   _frameArray->date.second = (time/1000000)%60; //seconds
-      |                              ^
-main.c:43:35: warning: conversion from 'long unsigned int' to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-   43 |   _frameArray->date.millisecond = (time/1000)%1000; //milli seconds
-      |                                   ^
-main.c:44:35: warning: conversion from 'long unsigned int' to 'uint16_t' {aka 'short unsigned int'} may change value [-Wconversion]
-   44 |   _frameArray->date.microsecond = time%1000; //Mirco seconds
-      |                                   ^~~~
 main.c: In function 'main':
-main.c:98:3: warning: implicit declaration of function 'STM32_indicate_on'; did you mean 'STM32_indicate_on_led'? [-Wimplicit-function-declaration]
-   98 |   STM32_indicate_on();
-      |   ^~~~~~~~~~~~~~~~~
-      |   STM32_indicate_on_led
 main.c:127:17: warning: passing argument 1 of 'unzip' from incompatible pointer type [-Wincompatible-pointer-types]
   127 |   frame = unzip(&dataArray);                // convert from normal array into FrameArray
       |                 ^~~~~~~~~~

@@ -66,8 +66,6 @@ void STM32_init_peripherals(void);
 
 void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t noOfBeeps);
 
-void STM32_indicate_on_led();
-
-void STM32_indicate_on_buzzer();
+void STM32_indicate_on();
 
 #endif /* STM32_DRIVER_H */

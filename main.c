@@ -38,10 +38,10 @@ void get_frame_array(FrameArray* _frameArray,
                     GNSS_Data _GNSS_data) {
   // Add time stamp
   uint32_t time = get_time_us();
-  _frameArray->date.minute = (time/(1000000*60))%60; //minuts
-  _frameArray->date.second = (time/1000000)%60; //seconds
-  _frameArray->date.millisecond = (time/1000)%1000; //milli seconds
-  _frameArray->date.microsecond = time%1000; //Mirco seconds
+  _frameArray->date.minute = (uint8_t)(time/(1000000*60))%60; //minuts
+  _frameArray->date.second = (uint8_t)(time/1000000)%60; //seconds
+  _frameArray->date.millisecond = (uint16_t)(time/1000)%1000; //milli seconds
+  _frameArray->date.microsecond = (uint16_t)time%1000; //Mirco seconds
   
   // Add data to the frame
   _frameArray->changeFlag = flightStage;
