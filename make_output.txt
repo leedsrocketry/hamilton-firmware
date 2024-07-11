@@ -151,10 +151,6 @@ data_buffer.h: At top level:
 data_buffer.h:26:14: warning: 'sea_level_pressure' defined but not used [-Wunused-variable]
    26 | static float sea_level_pressure = 1013.25;    // Sea level presser in micro bar
       |              ^~~~~~~~~~~~~~~~~~
-In file included from main.c:9:
-mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
 NAND_flash_driver.h: In function 'unzip':
 NAND_flash_driver.h:298:21: warning: '_unzippedData.GNSS.altitude' is used uninitialized [-Wuninitialized]
   298 |   _unzippedData.GNSS.altitude |= (zippedData[i++] << 8) & (0xFF << 8);
@@ -174,41 +170,6 @@ NAND_flash_driver.h:308:20: warning: '_unzippedData.bme.temperature' is used uni
 NAND_flash_driver.h:219:14: note: '_unzippedData' declared here
   219 |   FrameArray _unzippedData;
       |              ^~~~~~~~~~~~~
-In file included from syscalls.c:1:
-mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
-In file included from STM32_init.h:10,
-                 from STM32_init.c:8:
-mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
-In file included from drivers/MS5611_driver.h:13,
-                 from drivers/MS5611_driver.c:8:
-./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
-In file included from filters.h:13,
-                 from filters.c:8:
-mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
-In file included from drivers/ADXL375_driver.h:10,
-                 from drivers/ADXL375_driver.c:8:
-./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
-In file included from test_routines.h:9,
-                 from test_routines.c:8:
-mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
-In file included from drivers/ADXL375_driver.h:10,
-                 from data_buffer.h:11,
-                 from data_buffer.c:8:
-./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
 drivers/LSM6DS3_driver.c: In function 'LSM6DS3_init':
 drivers/LSM6DS3_driver.c:21:31: warning: passing argument 2 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
    21 |     spi_transmit_receive(spi, &send_data, 1, 1, &chip_id);
@@ -217,8 +178,8 @@ drivers/LSM6DS3_driver.c:21:31: warning: passing argument 2 of 'spi_transmit_rec
       |                               uint8_t (*)[1] {aka unsigned char (*)[1]}
 In file included from drivers/LSM6DS3_driver.h:11,
                  from drivers/LSM6DS3_driver.c:11:
-./mcu.h:546:50: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[1]' {aka 'unsigned char (*)[1]'}
-  546 |                                         uint8_t *send_byte,
+./mcu.h:549:50: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'uint8_t (*)[1]' {aka 'unsigned char (*)[1]'}
+  549 |                                         uint8_t *send_byte,
       |                                         ~~~~~~~~~^~~~~~~~~
 drivers/LSM6DS3_driver.c: In function 'LSM6DS3_acc_read':
 drivers/LSM6DS3_driver.h:95:36: warning: conversion from 'long int' to 'int16_t' {aka 'short int'} may change value [-Wconversion]
@@ -274,10 +235,6 @@ drivers/LSM6DS3_driver.c:266:42: warning: conversion from 'double' to 'int' may 
 drivers/LSM6DS3_driver.c:266:61: warning: conversion from 'double' to 'int' may change value [-Wfloat-conversion]
   266 |     int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
       |                                                             ^~~~
-./mcu.h: At top level:
-./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
 drivers/BME280_driver.c: In function 'BME280_compensate_temperature':
 drivers/BME280_driver.c:144:53: warning: conversion to 'long unsigned int' from 'int' may change the sign of the result [-Wsign-conversion]
   144 |     var1 = (int16_t)((uncomp_data->temperature / 8) - ((int16_t)calib_data->dig_t1 * 2));
@@ -289,12 +246,6 @@ drivers/BME280_driver.c: In function 'BME280_get_regs':
 drivers/BME280_driver.c:322:24: warning: assignment to 'int8_t' {aka 'signed char'} from 'uint8_t *' {aka 'unsigned char *'} makes integer from pointer without a cast [-Wint-conversion]
   322 |         dev->intf_rslt = reg_data;
       |                        ^
-In file included from drivers/BME280_driver.h:10,
-                 from drivers/BME280_driver.c:8:
-./mcu.h: At top level:
-./mcu.h:56:13: warning: 'printf_float' defined but not used [-Wunused-function]
-   56 | static void printf_float(char* name, float value, bool print_text) {
-      |             ^~~~~~~~~~~~
 /opt/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/13.2.1/../../../../arm-none-eabi/bin/ld: warning: firmware.elf has a LOAD segment with RWX permissions
 arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
 make[1]: Leaving directory '/home/evanm/LURA/hamilton-firmware'

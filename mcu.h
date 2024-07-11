@@ -52,8 +52,11 @@ typedef struct GNSS_Data{
   @param name Name of the float
   @param value Value of the float
   @param print_text Print text or not
+  @note marked as unused because it may not be used in any given runtime
 */
-static void printf_float(char* name, float value, bool print_text) {
+static void printf_float(char* name, float value, bool print_text) __attribute__((unused));
+static void printf_float(char* name, float value, bool print_text)
+{
   char str[30];
 
   char *tmpSign = (value < 0) ? "-" : "";
