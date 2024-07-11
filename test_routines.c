@@ -49,13 +49,13 @@ void run_ADXL375_routine()
   printf("================ ADXL375_routine ================\r\n");
   ADXL375_data _data;
   uint8_t devid;
-  
+  bool on = true;
   for (;;) {
     delay_ms(1000);
-    spi_enable_cs(SPI1, ADXL375_CS);
-    spi_transmit_receive(SPI1, ADXL375_DEVID, 2, 1, &devid);
-    spi_disable_cs(SPI1, ADXL375_CS);
-    printf("ADXL375 Device ID: %d\r\n", devid);
+    gpio_write(GREEN_LED, on);
+    on = !on;
+    ADXL375_get_data(&_data);
+    printf("x: %d, y: %d, z: %d \r\n", _data.x, _data.y, _data.z);
   }
 }
 

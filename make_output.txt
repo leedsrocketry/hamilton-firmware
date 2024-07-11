@@ -285,17 +285,9 @@ mcu.h:574:32: warning: conversion from 'uint32_t' {aka 'long unsigned int'} to '
   574 |     *((uint16_t*)result_ptr) = result;
       |                                ^~~~~~
 test_routines.c: In function 'run_ADXL375_routine':
-test_routines.c:56:53: warning: passing argument 5 of 'spi_transmit_receive' from incompatible pointer type [-Wincompatible-pointer-types]
-   56 |     spi_transmit_receive(SPI1, ADXL375_DEVID, 2, 1, &devid);
-      |                                                     ^~~~~~
-      |                                                     |
-      |                                                     uint8_t * {aka unsigned char *}
-mcu.h:549:53: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argument is of type 'uint8_t *' {aka 'unsigned char *'}
-  549 |                                           uint32_t* result_ptr)
-      |                                           ~~~~~~~~~~^~~~~~~~~~
-test_routines.c:50:16: warning: unused variable '_data' [-Wunused-variable]
-   50 |   ADXL375_data _data;
-      |                ^~~~~
+test_routines.c:51:11: warning: unused variable 'devid' [-Wunused-variable]
+   51 |   uint8_t devid;
+      |           ^~~~~
 test_routines.c: In function 'spi_test_routine':
 test_routines.c:117:12: warning: unused variable 'timer' [-Wunused-variable]
   117 |   uint32_t timer = 0;
