@@ -18,6 +18,12 @@ PROM_data ms5611_prom_data;
 // TODO: Determine if this is actually set anywhere...?
 SPI_TypeDef* MS5611_SPI;
 
+/**
+  @brief Init MS5611 Barometer driver
+  @param spi Selected SPI
+  @warning Return code not implemented
+  @return Error code
+*/
 uint8_t MS5611_init(SPI_TypeDef* spi)
 {
     MS5611_SPI = spi;
@@ -35,6 +41,11 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
 
 uint16_t PROM_values[8];
 
+/**
+  @brief Read PROM data from Barometer into ms5611_prom_data structure
+  @warning Error code not implemented
+  @return Error code
+*/
 uint8_t MS5611_read_PROM()
 {
     // Take ptr to the PROM data struct
@@ -53,7 +64,13 @@ uint8_t MS5611_read_PROM()
     return 0;
 }
 
-int MS5611_get_data(M5611_data* data)
+/**
+  @brief Get pressure and temperature data off MS5611 sensor and place into MS5611_data struct
+  @param data Structure for Barometer data to be placed in
+  @warning Error code not implemented
+  @return Error code
+*/
+uint8_t MS5611_get_data(M5611_data* data)
 {
     uint8_t cmd;
     // check if the device has a register that checks if the conversion is complete?

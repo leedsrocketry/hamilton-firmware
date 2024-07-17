@@ -378,7 +378,7 @@ static inline void multiplexer_init()
 #pragma region SPI
 /**
   @brief Initialisation of the SPI
-  @param spi
+  @param spi Selected SPI
 */
 static inline void spi_init(SPI_TypeDef *spi) {
   //  STM32L4R5 Reference manual SPI Documentation:

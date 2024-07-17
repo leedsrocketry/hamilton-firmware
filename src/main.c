@@ -69,6 +69,10 @@ void update_sensors(M5611_data* _M5611_data,
 #pragma endregion Updates
 
 #pragma region NAND
+/**
+  @brief Routine to erase entire NAND flag
+  @note WARNING: Deletes all data, permanently, be certain you want to use this.
+*/
 void NAND_flash_erase(){
   watchdog_pat();
   erase_all();
