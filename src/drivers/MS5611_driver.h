@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "mcu.h"
+#include "HAL/mcu.h"
 
 #pragma region Macros
 /** @name Commands */

@@ -8,7 +8,7 @@
 #ifndef FRAME_ARRAY_H
 #define FRAME_ARRAY_H
 
-#include "mcu.h"
+#include "HAL/mcu.h"
 #include "drivers/MS5611_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/ADXL375_driver.h"

@@ -7,7 +7,7 @@
 #ifndef STM32_DRIVER_H
 #define STM32_INIT_H
 
-#include "mcu.h"
+#include "HAL/mcu.h"
 
 // System parameters
 #define SEA_LEVEL_PRESSURE_AT_SITE 1013.25 // change on the day

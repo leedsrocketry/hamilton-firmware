@@ -8,7 +8,7 @@
 #define LSM6DS3_DRIVER_H
 
 #include <math.h>
-#include "mcu.h"
+#include "HAL/mcu.h"
 #include "filters.h"
 
 #pragma once

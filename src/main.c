@@ -6,11 +6,11 @@
 */
 
 #include <stdio.h>
-#include "mcu.h"
+#include "HAL/mcu.h"
 #include "frame_array.h"
-#include "STM32_init.h"
+#include "HAL/STM32_init.h"
 #include "stm32l4r5xx.h"
-#include "NAND_flash_driver.h"
+#include "HAL/NAND_flash_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "drivers/ADXL375_driver.h"
 #include "drivers/LSM6DS3_driver.h"

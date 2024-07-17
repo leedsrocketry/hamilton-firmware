@@ -5,7 +5,7 @@
   Description: STM32L4R5 class
 */
 
-#include "STM32_init.h"
+#include "HAL/STM32_init.h"
 
 uint32_t FREQ = (uint32_t) 4000000;
 

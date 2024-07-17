@@ -10,7 +10,7 @@
 #ifndef NAND_DRIVER_H
 #define NAND_DRIVER_H
 
-#include "mcu.h"
+#include "HAL/mcu.h"
 #include "frame_array.h"
 
 // Defines which are used when returning the status of a write to flash
