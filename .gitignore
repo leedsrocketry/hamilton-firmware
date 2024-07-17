@@ -1,0 +1,7 @@
+# Ignore binary files
+*.elf
+*.bin
+*.map
+
+# Ignore logs
+*.log
