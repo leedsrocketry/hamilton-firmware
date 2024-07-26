@@ -12,6 +12,7 @@
 
 #include "mcu.h"
 #include "frame_array.h"
+#include "debug.h"
 
 // Defines which are used when returning the status of a write to flash
 #define NONE 0
@@ -332,11 +333,11 @@ static inline FrameArray unzip(uint8_t *zippedData) {
   @param myByte: byte to be printed
 */
 static inline void print_byte(uint8_t myByte) {
-  printf("0b");
+  LOG("0b");
   for (int i = 7; i >= 0; i--) {
-    printf("%i", (myByte >> i) & 0b1);
+    LOG("%i", (myByte >> i) & 0b1);
   }
-  printf("\r\n");
+  LOG("\r\n");
 }
 
 /**
@@ -344,11 +345,11 @@ static inline void print_byte(uint8_t myByte) {
   @param dataArray: frame to be printed
 */
 static inline void print_frame(uint8_t dataArray[]) {
-  printf("u");
+  LOG("u");
   for (int i = 0; i < 128; i++) {
-    printf("%X,", dataArray[i]); // %02X adds a paddings of 0
+    LOG("%X,", dataArray[i]); // %02X adds a paddings of 0
   }
-  printf("\r\n");
+  LOG("\r\n");
 }
 
 /**
@@ -358,12 +359,12 @@ static inline void print_frame(uint8_t dataArray[]) {
 static inline void print_frameHex(uint8_t dataArray[]) {
   for (int i = 0; i < 128; i++) {
     if (dataArray[i] < 16) {
-      printf("0");
+      LOG("0");
     }
-    printf("%i", dataArray[i]);
-    printf(", ");
+    LOG("%i", dataArray[i]);
+    LOG(", ");
   }
-  printf("\r\n");
+  LOG("\r\n");
 }
 
 
@@ -386,15 +387,15 @@ static inline void _memset(uint8_t *arr, uint8_t val, int num){
   @param frameFormat
 */
 static inline void print_frame_array(FrameArray frameFormat) {
-  printf("Date: %i, %i:%i:%i:%i:\r\n", frameFormat.date.year, frameFormat.date.minute,
+  LOG("Date: %i, %i:%i:%i:%i:\r\n", frameFormat.date.year, frameFormat.date.minute,
                                                frameFormat.date.second, frameFormat.date.millisecond, 
                                                frameFormat.date.microsecond );
 
-  printf("ChangeFlag: %u\r\n", frameFormat.changeFlag);
+  LOG("ChangeFlag: %u\r\n", frameFormat.changeFlag);
 
-  printf("Accel HG: \tX: %i,\tY: %i,\tZ: %i\t\r\n", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
+  LOG("Accel HG: \tX: %i,\tY: %i,\tZ: %i\t\r\n", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
 
-  printf("IMU: \tX Rate: %ld,\tY Rate: %ld,\tZ Rate: %ld,\tX Offset: %ld,\tY Offset: %ld, \
+  LOG("IMU: \tX Rate: %ld,\tY Rate: %ld,\tZ Rate: %ld,\tX Offset: %ld,\tY Offset: %ld, \
         \tZ Offset: %ld,\tX Accel: %ld,\tY Accel: %ld,\tZ Accel: %ld,\r\n", frameFormat.imu.x_rate, 
                                                                         frameFormat.imu.y_rate, 
                                                                         frameFormat.imu.z_rate, 
@@ -405,13 +406,13 @@ static inline void print_frame_array(FrameArray frameFormat) {
                                                                         frameFormat.imu.y_accel, 
                                                                         frameFormat.imu.z_accel);
 
-  printf("Barometer: \ttemp: %ld, \tpressure: %ld\r\n", frameFormat.barometer.temp, frameFormat.barometer.pressure);
-  printf("GNSS: \tLat: %i,\tLong: %i,\tAlt: %i,\tVel: %i\r\n", frameFormat.GNSS.latitude, 
+  LOG("Barometer: \ttemp: %ld, \tpressure: %ld\r\n", frameFormat.barometer.temp, frameFormat.barometer.pressure);
+  LOG("GNSS: \tLat: %i,\tLong: %i,\tAlt: %i,\tVel: %i\r\n", frameFormat.GNSS.latitude, 
                                                                frameFormat.GNSS.longitude, 
                                                                frameFormat.GNSS.altitude, 
                                                                frameFormat.GNSS.velocity);
                                                                
-  printf("BME280: \tPressure: %li,\tTemperature: %i,\tHumidity: %li\r\n", frameFormat.bme.pressure, 
+  LOG("BME280: \tPressure: %li,\tTemperature: %i,\tHumidity: %li\r\n", frameFormat.bme.pressure, 
                                                                       frameFormat.bme.temperature, 
                                                                       frameFormat.bme.humidity);
 }
@@ -421,33 +422,33 @@ static inline void print_frame_array(FrameArray frameFormat) {
   @param frameFormat
 */
 static inline void print_csv_header() {
-  printf("Date,");
-  printf("Time,");
-  printf("ChangeFlag,");
-  printf("ACC X,ACC Y,ACC Z,");
-  printf("IMU X_RATE,IMU Y_RATE,IMU Z_RATE,\
+  LOG("Date,");
+  LOG("Time,");
+  LOG("ChangeFlag,");
+  LOG("ACC X,ACC Y,ACC Z,");
+  LOG("IMU X_RATE,IMU Y_RATE,IMU Z_RATE,\
           IMU X_OFFSET,IMU Y_OFFSET,IMU Z_OFFSET,IMU ACC_X,IMU ACC_Y,IMU ACC_Z,");
-  printf("MS5611 Temperature,MS5611 Pressure,");
-  printf("GNSS Lat,GNSS Long,GNSS Alt,GNSS velocity,");
-  printf("BME280 Pressure,BME280 Temperature,BME280 Humidity,");
-  printf("\r\n");
+  LOG("MS5611 Temperature,MS5611 Pressure,");
+  LOG("GNSS Lat,GNSS Long,GNSS Alt,GNSS velocity,");
+  LOG("BME280 Pressure,BME280 Temperature,BME280 Humidity,");
+  LOG("\r\n");
 }
 /**
   @brief Prints to serial in a readable way
   @param frameFormat
 */
 static inline void print_frame_csv(FrameArray frameFormat) {
-  printf("%i,", frameFormat.date.year); 
-  printf("%i:%i:%i:%i,", frameFormat.date.minute,
+  LOG("%i,", frameFormat.date.year); 
+  LOG("%i:%i:%i:%i,", frameFormat.date.minute,
                          frameFormat.date.second,
                          frameFormat.date.millisecond,
                          frameFormat.date.microsecond);
 
-  printf("%i,", frameFormat.changeFlag);
+  LOG("%i,", frameFormat.changeFlag);
 
-  printf("%i,%i,%i,", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
+  LOG("%i,%i,%i,", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
 
-  printf("%li,%li,%li,%li,%li,%li,%i,%i,%i,", frameFormat.imu.x_rate, 
+  LOG("%li,%li,%li,%li,%li,%li,%i,%i,%i,", frameFormat.imu.x_rate, 
                                         frameFormat.imu.y_rate, 
                                         frameFormat.imu.z_rate, 
                                         frameFormat.imu.x_offset, 
@@ -457,10 +458,10 @@ static inline void print_frame_csv(FrameArray frameFormat) {
                                         frameFormat.imu.y_accel, 
                                         frameFormat.imu.z_accel);
 
-  printf("%li,%li,", frameFormat.barometer.temp, frameFormat.barometer.pressure);
-  printf("%i,%i,%i,%i,", frameFormat.GNSS.latitude, frameFormat.GNSS.longitude, frameFormat.GNSS.altitude, frameFormat.GNSS.velocity);
-  printf("%li,%i,%li,", frameFormat.bme.pressure, frameFormat.bme.temperature, frameFormat.bme.humidity);
-  printf("\r\n");
+  LOG("%li,%li,", frameFormat.barometer.temp, frameFormat.barometer.pressure);
+  LOG("%i,%i,%i,%i,", frameFormat.GNSS.latitude, frameFormat.GNSS.longitude, frameFormat.GNSS.altitude, frameFormat.GNSS.velocity);
+  LOG("%li,%i,%li,", frameFormat.bme.pressure, frameFormat.bme.temperature, frameFormat.bme.humidity);
+  LOG("\r\n");
 }
 
 /**
@@ -473,7 +474,7 @@ static inline void wait_for_ready_flag() {
     count--;
   }
   if (count < 1) {
-    printf("waitForReadyFlag: TIMEOUT\r\n");
+    LOG("waitForReadyFlag: TIMEOUT\r\n");
   } 
 }
 
@@ -613,9 +614,9 @@ static inline uint64_t read_flash_ID() {
   send_byte_to_flash(0x00, ADDRESS_INPUT);
 
   for (int i = 0; i < 5; i++) {
-    printf("ID ");
-    printf("%i", i);
-    printf(": ");
+    LOG("ID ");
+    LOG("%i", i);
+    LOG(": ");
     uint8_t byte = receive_byte_from_flash();
     id |= byte << (4-i);
     print_byte(byte);
@@ -685,34 +686,34 @@ static inline void erase_block(uint32_t blockAddr) {
   @brief A blocking function which will erase the entire flash (all 4096 blocks)
 */
 static inline void erase_all(){
-  printf("WARNING: ERASING ALL DATA (UNPLUG NAND FLASH TO ABORT)\r\n");
+  LOG("WARNING: ERASING ALL DATA (UNPLUG NAND FLASH TO ABORT)\r\n");
 
   // you have 10 seconds to unplug the nand flash
   for (int countDown = 10; countDown > 0; countDown--) {
-    printf("ERASING DATA IN: ");
-    printf("%i", countDown);
-    printf(" Seconds\r\n");
+    LOG("ERASING DATA IN: ");
+    LOG("%i", countDown);
+    LOG(" Seconds\r\n");
     delay_ms(1000);
   }
 
   for (uint32_t block = 0; block < 64*4096; block++) {
     erase_block(block);
     if (block%5000 == 0) {
-      printf("ERASING [");
+      LOG("ERASING [");
       for (int i = 0; i < 50; i++) {
         if(i < block/(64*4096*0.01*2)){
-          printf("#");
+          LOG("#");
         } else {
-          printf(" ");
+          LOG(" ");
         }
       }
-      printf("] - ");
+      LOG("] - ");
       int percentage = (int)(block/(64*4096*0.01));
-      printf("%d", percentage);
-      printf("%%\r\n");
+      LOG("%d", percentage);
+      LOG("%%\r\n");
     }
   }
-  printf("ERASING COMPLETE \r\n");
+  LOG("ERASING COMPLETE \r\n");
 }
 
 /**
@@ -802,23 +803,23 @@ void test_routine() {
   }
   
   //unsigned long duration = timeEnd - timeBegin;
-  printf("ms delay: ");
-  printf(DELAY + "\n");
-  printf("Incorrect Bytes: ");
-  printf(wrong + "\n");
-  printf("Total Bytes: ");
-  printf(total + "\n");
-  printf("Percent Incorrect: ");
-  printf("%f", ((float)wrong * 100) / (float)total);
-  printf(" %%\n");
-  printf("Time took to write: ");
-  printf(duration / 1000);
-  printf(" ms\n");
-  printf("Time waiting while nand flash was busy: ");
- // printf(count / 1000);
-  printf(" ms\n");
-  printf("Next available frame addr: ");
-  printf(getNextAvailableFrameAddr() + "\n");
+  LOG("ms delay: ");
+  LOG(DELAY + "\n");
+  LOG("Incorrect Bytes: ");
+  LOG(wrong + "\n");
+  LOG("Total Bytes: ");
+  LOG(total + "\n");
+  LOG("Percent Incorrect: ");
+  LOG("%f", ((float)wrong * 100) / (float)total);
+  LOG(" %%\n");
+  LOG("Time took to write: ");
+  LOG(duration / 1000);
+  LOG(" ms\n");
+  LOG("Time waiting while nand flash was busy: ");
+ // LOG(count / 1000);
+  LOG(" ms\n");
+  LOG("Next available frame addr: ");
+  LOG(getNextAvailableFrameAddr() + "\n");
 }
 */
 
@@ -846,12 +847,12 @@ static inline void init_flash() {
   gpio_set_mode(RB,  GPIO_MODE_INPUT);
   
   frameAddressPointer = get_next_available_frame_addr();
-  printf("FRAME ADDRESS POINTER %li.\r\n", frameAddressPointer);
+  LOG("FRAME ADDRESS POINTER %li.\r\n", frameAddressPointer);
 
-  printf("%lld\r\n", read_flash_ID());
+  LOG("%lld\r\n", read_flash_ID());
 
   if (read_flash_ID() != 0){
-    printf("Flash Working Correctly\r\n");
+    LOG("Flash Working Correctly\r\n");
   }
 }
 
@@ -967,25 +968,25 @@ static inline void encode_parity(FrameArray dataFrame, uint8_t *bytes) {
 */
 static inline void print_capacity_info() {
   uint32_t lastFrameUsed = get_next_available_frame_addr();
-  printf("Used: ");
+  LOG("Used: ");
   uint32_t usedInMB = (lastFrameUsed*128)/1000000;
-  printf("%i", (int)usedInMB);
-  printf(" MB (");
-  printf("%f", lastFrameUsed/(4096*64*32*0.01));
-  printf("%%) | ");
-  printf("Estimated Time Remaining (hh:mm:ss): ");
+  LOG("%i", (int)usedInMB);
+  LOG(" MB (");
+  LOG("%f", lastFrameUsed/(4096*64*32*0.01));
+  LOG("%%) | ");
+  LOG("Estimated Time Remaining (hh:mm:ss): ");
   uint32_t hours = ((4096*64*32) - lastFrameUsed)/(1000*60*60)%24;
   uint32_t minutes = ((4096*64*32) - lastFrameUsed)/(1000*60)%60;
   uint32_t seconds = (((4096*64*32) - lastFrameUsed)/(1000))%60;
-  if (hours<10) printf("0");
-  printf("%i", (int)hours);
-  printf(":");
-  if (minutes<10) printf("0");
-  printf("%i", (int)minutes);
-  printf(":");
-  if (seconds<10) printf("0");
-  printf("%i", (int)seconds);
-  printf("\r\n");
+  if (hours<10) LOG("0");
+  LOG("%i", (int)hours);
+  LOG(":");
+  if (minutes<10) LOG("0");
+  LOG("%i", (int)minutes);
+  LOG(":");
+  if (seconds<10) LOG("0");
+  LOG("%i", (int)seconds);
+  LOG("\r\n");
 }
 
 /**
@@ -1000,7 +1001,7 @@ static inline int log_frame(FrameArray _input) {
     write_frame(frameAddressPointer, encoded);
     frameAddressPointer++;
   } else {
-    printf("Overflow Error\r\n");  // ERROR
+    LOG("Overflow Error\r\n");  // ERROR
     return STORAGE_FULL_ERROR;
   }
   // If the pointer is near the capacity of the storage
@@ -1039,7 +1040,7 @@ static inline void read_all_raw(){
     // check if frame has no data written to it
     read_frame(i, &_check, 1);
     if (_check == 0xFF && skipBlank){
-      printf("End of data in block.\r\n");
+      LOG("End of data in block.\r\n");
       i += 2048; //move to the next block
       i = i - (i%2048) - 1;
 
@@ -1070,14 +1071,14 @@ static inline void read_all_frame(){
     // check if frame has no data written to it
     read_frame(i, &_check, 1);
     if (_check == 0xFF && skipBlank){
-      printf("End of data in block.\r\n");
+      LOG("End of data in block.\r\n");
       i += 2048; // move to the next block
       i = i - (i%2048) - 1;
 
     } else {
       // rpint out as a frame
       _output = recall_frame(i);
-        printf("FN:%li\r\n", i);
+        LOG("FN:%li\r\n", i);
       print_frame_array(_output);
     } 
   }
@@ -1103,14 +1104,14 @@ static inline void read_all_csv(){
     // check if frame has no data written to it
     read_frame(i, &_check, 1);
     if (_check == 0xFF && skipBlank){
-      printf("End of data in block.\r\n");
+      LOG("End of data in block.\r\n");
       i += 2048; // move to the next block
       i = i - (i%2048) - 1;
 
     }else{
       // rpint out as a frame
       _output = recall_frame(i);
-      // printf("FN:%i\r\n", i);
+      // LOG("FN:%i\r\n", i);
       print_frame_csv(_output);
     } 
   }
@@ -1135,7 +1136,7 @@ static inline void read_all(){
   for(uint32_t i = 0; i < lastFrameToRead; i++) {
     read_frame(i, &_check, 1);
     if (_check == 0xFF && false){
-      printf("End of data in block.\r\n");
+      LOG("End of data in block.\r\n");
       i += 2048; //move to the next block
       i = i - (i%2048) - 1;
     } else {
@@ -1145,19 +1146,19 @@ static inline void read_all(){
     }
   }
   
-  printf("----------------------------------------------\r\n");
+  LOG("----------------------------------------------\r\n");
   print_capacity_info();
-  printf("data_empty: ");
-  printf(data_empty + "\r\n");
-  printf("data_intact: ");
-  printf(data_intact + "\r\n");
-  printf("data_fixed: ");
-  printf(data_fixed + "\r\n");
-  printf("data_error: ");
-  printf(data_error + "\r\n");
-  printf("Percent Correct Data : ");
-  printf("%i", (data_intact + data_fixed)/(4096*64*(4096/128)));
-  printf("%%\r\n");
+  LOG("data_empty: ");
+  LOG(data_empty + "\r\n");
+  LOG("data_intact: ");
+  LOG(data_intact + "\r\n");
+  LOG("data_fixed: ");
+  LOG(data_fixed + "\r\n");
+  LOG("data_error: ");
+  LOG(data_error + "\r\n");
+  LOG("Percent Correct Data : ");
+  LOG("%i", (data_intact + data_fixed)/(4096*64*(4096/128)));
+  LOG("%%\r\n");
 }
 
 /**
@@ -1175,7 +1176,7 @@ static inline void NAND_flash_erase(){
 */
 static inline void NAND_flash_read()
 {
-  printf("==================== Reading NAND FLASH ====================\r\n");
+  LOG("==================== Reading NAND FLASH ====================\r\n");
   read_all_csv();
   print_capacity_info();
 }

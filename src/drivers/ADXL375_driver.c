@@ -29,7 +29,7 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     
     if (devid != ADXL375_DEVID_ID)
-        printf("ADXL375 wrong device ID: %d\r\n", devid);
+        LOG("ADXL375 wrong device ID: %d\r\n", devid);
 
     // Set the data rate
     ADXL375_reg_write(ADXL375_BW_RATE,

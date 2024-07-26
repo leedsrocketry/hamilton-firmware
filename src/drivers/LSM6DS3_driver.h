@@ -10,6 +10,7 @@
 #include <math.h>
 #include "HAL/mcu.h"
 #include "filters.h"
+#include "debug.h"
 
 #pragma once
 

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <math.h>
+#include "debug.h"
 
 // https://github.com/STMicroelectronics/cmsis_device_l4/blob/master/Include/system_stm32l4xx.h
 #include "stm32l4r5xx.h"
@@ -74,7 +75,7 @@ static void printf_float(char* name, float value, bool print_text)
     sprintf(str, "%s%ld.%03ld", tmpSign, tmpInt1, tmpInt2);
 
   // Print the string
-  printf("%s", str);
+  LOG("%s", str);
 }
 
 #pragma region System Clk
@@ -618,7 +619,7 @@ static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uin
   {
     *(recieve_bytes + i) = spi_read_byte(spi); // dereference to get element
     i++;
-    // printf("Received Value: %u  %u  %u \r\n", received, receive_size, result);
+    // LOG("Received Value: %u  %u  %u \r\n", received, receive_size, result);
   }
   return retval; // TODO error checking
 }

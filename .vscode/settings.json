@@ -14,7 +14,9 @@
         "data_buffer.h": "c",
         "compare": "c",
         "flight_manager.h": "c",
-        "frame_array.h": "c"
+        "frame_array.h": "c",
+        "stdio.h": "c",
+        "debug.h": "c"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "disabled"

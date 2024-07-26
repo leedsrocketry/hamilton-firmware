@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include "HAL/mcu.h"
 #include "frame_array.h"
+#include "debug.h"
 
 // Define Constants and Thresholds
 #define BUFFER_SIZE       50

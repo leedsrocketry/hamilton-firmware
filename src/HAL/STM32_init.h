@@ -8,6 +8,7 @@
 #define STM32_INIT_H
 
 #include "HAL/mcu.h"
+#include "debug.h"
 
 // System parameters
 #define SEA_LEVEL_PRESSURE_AT_SITE 1013.25 // change on the day

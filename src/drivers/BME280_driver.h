@@ -8,6 +8,7 @@
 #define BME280_DRIVER_H
 #include "stdint.h"
 #include "HAL/mcu.h"
+#include "debug.h"
 
 #pragma region Macros
 /*!

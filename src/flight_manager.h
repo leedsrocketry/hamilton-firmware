@@ -13,6 +13,7 @@
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/BME280_driver.h"
 #include "data_buffer.h"
+#include "debug.h"
 
 #define PADREADFREQ 100 //frequency to read data during ascent
 #define ASCENTREADFREQ 1000 //frequency to read data during ascent

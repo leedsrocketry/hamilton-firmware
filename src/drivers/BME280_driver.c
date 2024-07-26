@@ -260,7 +260,7 @@ int8_t BME280_init(BME280_dev *dev, SPI_TypeDef *spi, uint8_t cs) {
     // Check for chip id validity
     if (chip_ID == BME280_CHIP_ID)
     {
-        printf("BME280 chip ID: %d\r\n", chip_ID);
+        LOG("BME280 chip ID: %d\r\n", chip_ID);
         dev->chip_ID = chip_ID;
         ret_val = BME280_soft_reset(dev);       // Reset the sensor
         if (ret_val == 1)
@@ -270,7 +270,7 @@ int8_t BME280_init(BME280_dev *dev, SPI_TypeDef *spi, uint8_t cs) {
     }
     else
     {
-        printf("BME280 wrong device ID: %d\r\n", chip_ID);
+        LOG("BME280 wrong device ID: %d\r\n", chip_ID);
         ret_val = BME280_E_DEV_NOT_FOUND;
     }
 

@@ -8,7 +8,7 @@
 #define MAX31855_DRIVER_H
 
 #include "HAL/mcu.h"
-
+#include "debug.h"
 
 
 /**

@@ -103,7 +103,7 @@ int8_t SI446_check_CTS(int desired){
     // check for time out
     while(SI446_time_out > 0){
         if((SI446_SPI->SR & BIT(1)) && (SI446_SPI->SR & BIT(0))){ // there is data
-            printf("Got data!");
+            LOG("Got data!");
             if(spi_read_byte(SI446_SPI) == 0xFF){
                 return 1;
             }
@@ -114,7 +114,7 @@ int8_t SI446_check_CTS(int desired){
             }
         }
         else{
-            printf("No data!");
+            LOG("No data!");
             delay_ms(1);   // wait 1ms
             SI446_time_out --;
         }
@@ -126,7 +126,7 @@ int8_t SI446_power_up(){
     int8_t SI446_retVal;
     uint8_t packet[7];
     uint32_t xo_freq = 30000000; // default
-    printf("SI446_power_up()...\r\n");
+    LOG("SI446_power_up()...\r\n");
     packet[0] = SI446_POWER_UP_CMD;
     packet[1] = 1;
     packet[2] = 0;
@@ -134,13 +134,13 @@ int8_t SI446_power_up(){
     packet[4] = (uint8_t)(xo_freq >> 16);
     packet[5] = (uint8_t)(xo_freq >> 8);
     packet[6] = (uint8_t)(xo_freq);
-    printf("sending cmd...");
+    LOG("sending cmd...");
     spi_enable_cs(SI446_SPI, SI446_CS);// send_CTS_HIGH
     spi_write_buf(SI446_SPI, packet, 7);
-    printf("checking CTS...");
+    LOG("checking CTS...");
     SI446_retVal = SI446_check_CTS(50); // ensure it has been processed correctly..takes longer
     spi_disable_cs(SI446_SPI, SI446_CS);// send_CTS_LOW
-    printf("completed!  val: %d", SI446_retVal);
+    LOG("completed!  val: %d", SI446_retVal);
     return SI446_retVal;
 }
 

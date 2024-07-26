@@ -8,6 +8,7 @@
 #define ADXL375_DRIVER_H
 
 #include "HAL/mcu.h"
+#include "debug.h"
 
 #pragma region Macros
 #define ADXL375_DEVID			                0x00  // Device ID command

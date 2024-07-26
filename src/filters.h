@@ -11,6 +11,7 @@
 #define FILTERS_H
 
 #include "HAL/mcu.h"
+#include "debug.h"
 
 #undef M_PI // Undefine definition of M_PI from arm-none-eabi math.h
 #define M_PI 205887 //3.14159 << 16   // Value of pi in fixed point 

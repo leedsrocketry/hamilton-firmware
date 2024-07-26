@@ -19,6 +19,7 @@
 #define SI446_DRIVER_H
 
 #include "HAL/mcu.h"
+#include "debug.h"
 
 #pragma region Macros //_______________ MACROS _______________________
 

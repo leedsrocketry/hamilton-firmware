@@ -13,6 +13,7 @@
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/ADXL375_driver.h"
 #include "drivers/BME280_driver.h"
+#include "debug.h"
 
 // Max 128 bytes
 typedef struct FrameArray {

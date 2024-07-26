@@ -8,6 +8,7 @@
 #define MAXM10S_DRIVER_H
 
 #include <stdint.h>
+#include "debug.h"
 
 // A default of 250ms for maxWait seems fine for I2C but is not enough for SerialUSB.
 // If you know you are only going to be using I2C / Qwiic communication, you can

@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "HAL/mcu.h"
+#include "debug.h"
 
 #pragma region Macros
 /** @name Commands */

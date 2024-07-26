@@ -24,7 +24,7 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     //end of spi comm
 
     if (chip_id == LSM6DS3_WHO_AM_I_EXP) {
-        printf("LSM6DS3 wrong chip ID, %d\r\n", chip_id);
+        LOG("LSM6DS3 wrong chip ID, %d\r\n", chip_id);
         delay_microseconds(10); 
         LSM6DS3_config(spi);     //configure settings
         delay_microseconds(10); //give delay after setting the settings
@@ -40,7 +40,7 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         
         return 1;
     } else {
-        printf("LSM6DS3 wrong chip ID: %d\r\n", chip_id);
+        LOG("LSM6DS3 wrong chip ID: %d\r\n", chip_id);
     }
     
     return 0;
@@ -141,7 +141,7 @@ bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->x_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_XOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_XOUT_L]))/1000;
     gyro->y_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_YOUT_L]))/1000;
     gyro->z_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_L]))/1000;
-    //printf("Accel: X:%6i, \tY:%6i,\tZ:%6i\r\n", gyro->x_accel, gyro->y_accel, gyro->z_accel);
+    //LOG("Accel: X:%6i, \tY:%6i,\tZ:%6i\r\n", gyro->x_accel, gyro->y_accel, gyro->z_accel);
 
     return true;
 }
@@ -175,7 +175,7 @@ bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->y_rate = LMS6DS6_ANGULAR_RATE_SENSITIVITY * (int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_GYRO_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_GYRO_YOUT_L])) - gyro->y_offset;
     gyro->z_rate = LMS6DS6_ANGULAR_RATE_SENSITIVITY * (int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_GYRO_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_GYRO_ZOUT_L])) - gyro->z_offset;
     
-    //printf("GryoR: X:%i, \tY:%i,\tZ:%i\r\n", gyro->x_rate, gyro->y_rate, gyro->z_rate);
+    //LOG("GryoR: X:%i, \tY:%i,\tZ:%i\r\n", gyro->x_rate, gyro->y_rate, gyro->z_rate);
 
     return true;
 }
@@ -203,7 +203,7 @@ bool LSM6DS3_gyro_offsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->x_offset = (avg[0] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->y_offset = (avg[1] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->z_offset = (avg[2] / LSM6DSO_OFFSET_BUFF_LEN);
-    printf("Gyro Offsets: %li, %li, %li\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
+    LOG("Gyro Offsets: %li, %li, %li\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
     return 1;
 }
 

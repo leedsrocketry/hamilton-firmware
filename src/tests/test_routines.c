@@ -13,14 +13,14 @@
 */
 void run_test_routine()
 {
-  printf("================ Main_test_routine ================\r\n");
+  LOG("================ Main_test_routine ================\r\n");
   bool on = true;
   for (;;) {
     delay_ms(1000);
     on = true;                                  // This block is executed
     gpio_write(GREEN_LED, on);                  // Every `period` milliseconds
     on = !on;                                   // Toggle LED state
-    printf("LED: %d, tick: %u\r\n", on, 1000); // Write message
+    LOG("LED: %d, tick: %u\r\n", on, 1000); // Write message
   }
 }
 
@@ -29,7 +29,7 @@ void run_test_routine()
 */
 void run_MS5611_routine()
 {
-  printf("================ MS5611_routine ================\r\n");
+  LOG("================ MS5611_routine ================\r\n");
   M5611_data _data;
   bool on = true;
   for (;;) {
@@ -37,7 +37,7 @@ void run_MS5611_routine()
     gpio_write(GREEN_LED, on);
     on = !on;
     MS5611_get_data(&_data);
-    printf("p: %ld, t: %ld, \r\n", _data.pressure, _data.temp);
+    LOG("p: %ld, t: %ld, \r\n", _data.pressure, _data.temp);
   }
 }
 
@@ -46,7 +46,7 @@ void run_MS5611_routine()
 */
 void run_ADXL375_routine()
 {
-  printf("================ ADXL375_routine ================\r\n");
+  LOG("================ ADXL375_routine ================\r\n");
   ADXL375_data _data;
   bool on = true;
   for (;;) {
@@ -54,7 +54,7 @@ void run_ADXL375_routine()
     gpio_write(GREEN_LED, on);
     on = !on;
     ADXL375_get_data(&_data);
-    printf("x: %d, y: %d, z: %d \r\n", _data.x, _data.y, _data.z);
+    LOG("x: %d, y: %d, z: %d \r\n", _data.x, _data.y, _data.z);
   }
 }
 
@@ -63,10 +63,10 @@ void run_ADXL375_routine()
 */
 void run_SI446_routine()
 {
-  printf("================ SI446_routine ================\r\n");
+  LOG("================ SI446_routine ================\r\n");
   int8_t ret_val = 123;
   ret_val = SI446_init(SPI1);
-  printf("completed: %d \r\n ", ret_val);
+  LOG("completed: %d \r\n ", ret_val);
 }
 
 /**
@@ -74,14 +74,14 @@ void run_SI446_routine()
 */
 void run_LSM6DS3_routine()
 {
-  printf("================ LSM6DS3_routine ================\r\n");
+  LOG("================ LSM6DS3_routine ================\r\n");
   LSM6DS3_data gyro_data;
   delay_microseconds(50);
   LSM6DS3_init(SPI1, &gyro_data);
   
   for (;;) {
     LSM6DS3_gyro_read_angle(SPI1, &gyro_data);
-    printf("Gyro: %ld, %ld, %ld, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
+    LOG("Gyro: %ld, %ld, %ld, \r\n", gyro_data.x_rate, gyro_data.y_rate, gyro_data.z_rate);
     delay_microseconds(1000); // 1 second
   }
 }
@@ -91,7 +91,7 @@ void run_LSM6DS3_routine()
 */
 void run_BME280_routine()
 {
-  printf("================ BME280_routine ================\r\n");
+  LOG("================ BME280_routine ================\r\n");
   BME280_data data;
   BME280_dev dev;
 
@@ -102,7 +102,7 @@ void run_BME280_routine()
     BME280_get_data(BME280_PRESS, &data, &dev);
     BME280_get_data(BME280_TEMP, &data, &dev);
     BME280_get_data(BME280_HUM, &data, &dev);
-    printf("Pressure: %ld, Temp: %d, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
+    LOG("Pressure: %ld, Temp: %d, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
     delay_microseconds(1000 * 1000); // 1 second
   }
 }
@@ -112,7 +112,7 @@ void run_BME280_routine()
 */
 void spi_test_routine(SPI_TypeDef* spi)
 {
-  printf("================ SPI_routine ================\r\n");
+  LOG("================ SPI_routine ================\r\n");
   uint8_t ret_val = 0;
   static bool on = true; 
 
@@ -122,7 +122,7 @@ void spi_test_routine(SPI_TypeDef* spi)
     on = !on;                         // Toggle LED state
     spi_transmit(spi, 2);
     ret_val = spi_read_byte(spi);
-    printf("SPI: %d\r\n", ret_val);   // Write message
+    LOG("SPI: %d\r\n", ret_val);   // Write message
     delay_ms(1000);
   }
 }
@@ -160,7 +160,7 @@ static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) 
   }
 
   // Print the received integer
-  printf("Received Value: %hu\r\n", receivedValue);
+  LOG("Received Value: %hu\r\n", receivedValue);
 
   return 0;
 }*/
@@ -171,7 +171,7 @@ static inline uint16_t spi_test_routine(SPI_TypeDef *spi, uint16_t valueToSend) 
 /*
 void NAND_flash_test_routine()
 {
-  printf("==================== START WRITING ====================\r\n");
+  LOG("==================== START WRITING ====================\r\n");
   uint8_t dataArray[128];
   _memset(dataArray, 0x0, 128);
 
@@ -192,9 +192,9 @@ void NAND_flash_test_routine()
 
     _input = unzip(dataArray);
     log_frame(_input);
-    printf("======================== DONE ========================\r\n");
+    LOG("======================== DONE ========================\r\n");
   }
-  printf("==================== DONE WRITING ====================\r\n");
+  LOG("==================== DONE WRITING ====================\r\n");
   
   read_all();
   print_capacity_info();

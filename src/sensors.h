@@ -14,6 +14,7 @@
 #include "drivers/BME280_driver.h"
 #include "data_buffer.h"
 //#include "flight_manager.h"
+#include "debug.h"
 
 void update_sensors(M5611_data* _M5611_data, 
                     ADXL375_data* _ADXL375_data,
