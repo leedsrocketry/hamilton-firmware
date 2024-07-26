@@ -5,14 +5,6 @@
   Description: System for managing flight
 */
 
-//#define DEBUG
-
-#ifdef DEBUG
-    #define LOG(fmt, ...) printf("" fmt, ##__VA_ARGS__)
-#else
-    #define LOG(fmt, ...)
-#endif
-
 #include "flight_manager.h"
 
 M5611_data _M5611_data;
