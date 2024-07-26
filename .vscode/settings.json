@@ -12,7 +12,10 @@
         "ms5611_driver.h": "c",
         "stm32l4r5xx.h": "c",
         "data_buffer.h": "c",
-        "compare": "c"
+        "compare": "c",
+        "flight_manager.h": "c",
+        "frame_array.h": "c"
     },
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "C_Cpp.errorSquiggles": "disabled"
 }

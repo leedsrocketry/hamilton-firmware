@@ -4,7 +4,7 @@
   Created on: 10 June 2023
   Description: Header file for the STM32L4R5 firmware
 */
-#ifndef STM32_DRIVER_H
+#ifndef STM32_INIT_H
 #define STM32_INIT_H
 
 #include "HAL/mcu.h"
@@ -16,10 +16,6 @@
 // Pins
 #define BUZZER PIN('B', 9)
 #define GREEN_LED PIN('B', 8)
-
-// Required structures
-typedef enum FlightStages {LAUNCHPAD, ASCENT, APOGEE, DESCENT, LANDING} FlightStages;
-
 
 typedef struct Date 
 {
@@ -68,4 +64,4 @@ void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t n
 
 void STM32_indicate_on();
 
-#endif /* STM32_DRIVER_H */
+#endif /* STM32_INIT_H */

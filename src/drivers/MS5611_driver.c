@@ -70,7 +70,7 @@ uint8_t MS5611_read_PROM()
   @warning Error code not implemented
   @return Error code
 */
-uint8_t MS5611_get_data(M5611_data* data)
+uint32_t MS5611_get_data(M5611_data* data)
 {
     uint8_t cmd;
     // check if the device has a register that checks if the conversion is complete?

@@ -8,7 +8,7 @@ CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
 LDFLAGS ?= -Tbuild/link.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/firmware.map
 SOURCES ?=	src/main.c src/startup.c src/syscalls.c src/HAL/STM32_init.c src/drivers/MS5611_driver.c src/filters.c\
 			src/drivers/ADXL375_driver.c src/tests/test_routines.c src/data_buffer.c src/drivers/LSM6DS3_driver.c\
-			src/drivers/BME280_driver.c
+			src/drivers/BME280_driver.c src/flight_manager.c src/sensors.c
 
 # Ensure make clean is cross platform
 ifeq ($(OS), Windows_NT)

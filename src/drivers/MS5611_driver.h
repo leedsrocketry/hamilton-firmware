@@ -84,9 +84,9 @@ uint8_t MS5611_init(SPI_TypeDef* spi);
 /**
   @brief TEST
 */
-int32_t MS5611_get_data_test();
+uint32_t MS5611_get_data_test();
 
-int MS5611_get_data(M5611_data* data);
+uint32_t MS5611_get_data(M5611_data* data);
 
 /**
   @brief Set the OSR (Oversampling rate). Setting another value from the enumeration will put the min OSR

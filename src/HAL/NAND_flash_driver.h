@@ -50,31 +50,31 @@ typedef struct Address {
 } Address;
 
 // Data Pins - pins used in data/control/address transmission (8 bit parrallel bus)
-uint16_t data0 = PIN('D', 0); // 2;
-uint16_t data1 = PIN('D', 1); // 3;
-uint16_t data2 = PIN('D', 2); // 4;
-uint16_t data3 = PIN('D', 3); // 5;
-uint16_t data4 = PIN('D', 4); // 11;
-uint16_t data5 = PIN('D', 5); // 12;
-uint16_t data6 = PIN('D', 6); // 8;
-uint16_t data7 = PIN('D', 7); // 9;
+static uint16_t data0 = PIN('D', 0); // 2;
+static uint16_t data1 = PIN('D', 1); // 3;
+static uint16_t data2 = PIN('D', 2); // 4;
+static uint16_t data3 = PIN('D', 3); // 5;
+static uint16_t data4 = PIN('D', 4); // 11;
+static uint16_t data5 = PIN('D', 5); // 12;
+static uint16_t data6 = PIN('D', 6); // 8;
+static uint16_t data7 = PIN('D', 7); // 9;
 
 // Control Pins - pins used to control the state of the flash chip
-uint16_t WP  = PIN('D', 15); // 13, Write Protection;
-uint16_t WE  = PIN('D', 14); // 14, Write Enable;
-uint16_t ALE = PIN('D', 13); // 15, Address latch enable (where in the memory to store);
-uint16_t CLE = PIN('D', 12); // 16, Command latch enable (When on, you can sent command);
-uint16_t CE  = PIN('D', 9);  // 17, Check Enable (in case we want to test separatly);
-uint16_t RE  = PIN('D', 11); // 18, Read Enable;
-uint16_t RB  = PIN('A', 8);  // 19, Ready/Busy;
+static uint16_t WP  = PIN('D', 15); // 13, Write Protection;
+static uint16_t WE  = PIN('D', 14); // 14, Write Enable;
+static uint16_t ALE = PIN('D', 13); // 15, Address latch enable (where in the memory to store);
+static uint16_t CLE = PIN('D', 12); // 16, Command latch enable (When on, you can sent command);
+static uint16_t CE  = PIN('D', 9);  // 17, Check Enable (in case we want to test separatly);
+static uint16_t RE  = PIN('D', 11); // 18, Read Enable;
+static uint16_t RB  = PIN('A', 8);  // 19, Ready/Busy;
 
 
 // Stores the address of the next available frame (set of 128 bytes) (assumes all frames prior to this are full of valuable data)
 // This variable is set by the get_next_available_frame_addr() function
-uint32_t frameAddressPointer = 0;
+static uint32_t frameAddressPointer = 0;
 
 // Set all pins as gpio outputs by default
-uint8_t globalPinMode = GPIO_MODE_OUTPUT;
+static uint8_t globalPinMode = GPIO_MODE_OUTPUT;
 
 /**
   @brief: This function returns only the specified bit from an array of bytes
@@ -1158,6 +1158,26 @@ static inline void read_all(){
   printf("Percent Correct Data : ");
   printf("%i", (data_intact + data_fixed)/(4096*64*(4096/128)));
   printf("%%\r\n");
+}
+
+/**
+  @brief Routine to erase entire NAND flag
+  @note WARNING: Deletes all data, permanently, be certain you want to use this.
+*/
+static inline void NAND_flash_erase(){
+  watchdog_pat();
+  erase_all();
+  while(1);
+}
+
+/**
+  @brief Routine to test NAND Flash reading and writing.
+*/
+static inline void NAND_flash_read()
+{
+  printf("==================== Reading NAND FLASH ====================\r\n");
+  read_all_csv();
+  print_capacity_info();
 }
 
 #endif /* NAND_DRIVER_H */
