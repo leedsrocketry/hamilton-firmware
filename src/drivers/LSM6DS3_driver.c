@@ -73,7 +73,7 @@ void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value
     }
 }
 
-void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, unsigned delayMs)
+void LSM6DS3_write_register_bits(SPI_TypeDef *spi, uint8_t register_id, uint8_t mask, uint8_t value, uint32_t delayMs)
 {
     uint8_t new_value = 0;
     spi_enable_cs(spi, LSM6DS3_CS);

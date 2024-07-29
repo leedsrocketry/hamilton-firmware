@@ -1,7 +1,8 @@
-#include "HAL/mcu.h"
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdlib.h>
+
+#include "HAL/mcu.h"
 
 int _fstat(int fd, struct stat *st) {
   if (fd < 0) return -1;
@@ -13,76 +14,72 @@ void *_sbrk(int incr) {
   extern char _end;
   static unsigned char *heap = NULL;
   unsigned char *prev_heap;
-  if (heap == NULL) heap = (unsigned char *) &_end;
+  if (heap == NULL) heap = (unsigned char *)&_end;
   prev_heap = heap;
   heap += incr;
   return prev_heap;
 }
 
 int _open(const char *path) {
-  (void) path;
+  (void)path;
   return -1;
 }
 
 int _close(int fd) {
-  (void) fd;
+  (void)fd;
   return -1;
 }
 
 int _isatty(int fd) {
-  (void) fd;
+  (void)fd;
   return 1;
 }
 
 int _lseek(int fd, int ptr, int dir) {
-  (void) fd, (void) ptr, (void) dir;
+  (void)fd, (void)ptr, (void)dir;
   return 0;
 }
 
 void _exit(int status) {
-  (void) status;
+  (void)status;
   for (;;) asm volatile("BKPT #0");
 }
 
-void _kill(int pid, int sig) {
-  (void) pid, (void) sig;
-}
+void _kill(int pid, int sig) { (void)pid, (void)sig; }
 
-int _getpid(void) {
-  return -1;
-}
+int _getpid(void) { return -1; }
 
 int _read(int fd, char *ptr, int len) {
-  (void) fd, (void) ptr, (void) len;
+  (void)fd, (void)ptr, (void)len;
   return -1;
 }
 
 int _link(const char *a, const char *b) {
-  (void) a, (void) b;
+  (void)a, (void)b;
   return -1;
 }
 
 int _unlink(const char *a) {
-  (void) a;
+  (void)a;
   return -1;
 }
 
 int _stat(const char *path, struct stat *st) {
-  (void) path, (void) st;
+  (void)path, (void)st;
   return -1;
 }
 
 int mkdir(const char *path, mode_t mode) {
-  (void) path, (void) mode;
+  (void)path, (void)mode;
   return -1;
 }
 
 int _write(int fd, char *data, int len) {
-  (void) fd, (void) data, (void) len;
-  if (fd == 1){
-    uart_write_buf(LUART1, data, (size_t) len); // PAD RADIO
-    uart_write_buf(USART1, data, (size_t) len);  // EXTERN USART
-    //uart_write_buf(USART3, data, (size_t) len); // GNNS RX/TX
+  (void)fd, (void)data, (void)len;
+  if (fd == 1) {
+    uart_write_buf(LUART1, data, (size_t)len);  // PAD RADIO
+    uart_write_buf(USART1, data, (size_t)len);  // EXTERN USART
+    // uart_write_buf(USART3, data, (size_t) len); // GNNS RX/TX
   }
-  return -1; 
+  return -1;
 }

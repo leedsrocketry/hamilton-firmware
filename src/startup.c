@@ -1,8 +1,8 @@
 /*
-	Leeds University Rocketry Organisation - LURA
+        Leeds University Rocketry Organisation - LURA
     Author Name: Alexandra Posta
     Created on: 27 Feb 2023
-	  Last modified on: 27 Feb 2023
+          Last modified on: 27 Feb 2023
     Description: Startup file for the HFC firmware; suitable for STM32L4R5
 */
 
@@ -16,7 +16,7 @@ __attribute__((naked, noreturn)) void _reset(void) {
   // Call main()
   extern void main(void);
   main();
-  for (;;) (void) 0;  // Infinite loop
+  for (;;) (void)0;  // Infinite loop
 }
 
 extern void SysTick_Handler(void);  // Defined in main.c

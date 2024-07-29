@@ -7,7 +7,6 @@
 
 #include "data_buffer.h"
 
-
 /**
   @brief Initalise buffer
   @param buffer The buffer to be initalised
@@ -27,9 +26,7 @@ void init_buffer(dataBuffer* buffer) {
   @param b - second element
   @return comparison value
 */
-int cmpfunc(const void * a, const void * b) {
-   return ( *(int*)a - *(int*)b );
-}
+int cmpfunc(const void* a, const void* b) { return (*(int*)a - *(int*)b); }
 
 /**
   @brief Return median of array of integers
@@ -39,9 +36,8 @@ int cmpfunc(const void * a, const void * b) {
 */
 int get_median(int data[], int size) {
   qsort(data, (size_t)size, sizeof(int), cmpfunc);
-  if (size % 2 != 0)
-    return data[(size / 2) + 1];
-  return (data[size / 2] + data[(size / 2)+ 1]) / 2;
+  if (size % 2 != 0) return data[(size / 2) + 1];
+  return (data[size / 2] + data[(size / 2) + 1]) / 2;
 }
 
 /**
@@ -71,17 +67,15 @@ void update_buffer(FrameArray* frame, dataBuffer* buffer) {
 
   // Increase count and set ground reference
   if (buffer->count < BUFFER_SIZE) {
-    if (buffer->count == WINDOW_SIZE) 
-      set_ground_reference(buffer);
+    if (buffer->count == WINDOW_SIZE) set_ground_reference(buffer);
     buffer->count++;
   }
 
   // Update window
-  if (buffer->count > WINDOW_SIZE*2) {
+  if (buffer->count > WINDOW_SIZE * 2) {
     for (int i = 0; i < WINDOW_SIZE; i++) {
       int frame_number = (buffer->index - WINDOW_SIZE + i);
-      if (frame_number < 0)
-        frame_number = BUFFER_SIZE + frame_number;
+      if (frame_number < 0) frame_number = BUFFER_SIZE + frame_number;
       buffer->window[i] = buffer->frames[i];
     }
   }
@@ -97,14 +91,20 @@ float get_vertical_velocity(int data[], int dt) {
   float altitude_change = 0.0;
   float previous_altitude, current_altitude;
 
-  previous_altitude = (float)(44330.7692 * (1.0 - pow(((float)data[0] / 100.0f) / sea_level_pressure, 0.1902)));
-  current_altitude = (float)(44330.7692 * (1.0 - pow(((float)data[WINDOW_SIZE-1] / 100.0f) / sea_level_pressure, 0.1902)));
+  previous_altitude =
+      (float)(44330.7692 *
+              (1.0 -
+               pow(((float)data[0] / 100.0f) / sea_level_pressure, 0.1902)));
+  current_altitude =
+      (float)(44330.7692 * (1.0 - pow(((float)data[WINDOW_SIZE - 1] / 100.0f) /
+                                          sea_level_pressure,
+                                      0.1902)));
   altitude_change = previous_altitude - current_altitude;
 
   // Calculate the total time covered by the readings (microseconds)
   float total_time = ((float)dt * (float)WINDOW_SIZE * 1e-6f);
   float velocity = altitude_change / total_time;
-  
+
   // Return vertical velocity in m/s
   return velocity;
 }
@@ -113,7 +113,8 @@ float get_vertical_velocity(int data[], int dt) {
   @brief Check if rocket is stationary using JUST barometer pressure data
   @param data The array of barometer data
   @return true if the rocket is stationary
-  @note This is not a particularly good solution, was only written because accelerometer was not working for launch 1
+  @note This is not a particularly good solution, was only written because
+  accelerometer was not working for launch 1
   @note Deprecated
 */
 bool is_stationary(int data[]) {
