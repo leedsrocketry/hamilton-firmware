@@ -13,8 +13,8 @@
 #include "HAL/mcu.h"
 #include "debug.h"
 
-#undef M_PI // Undefine definition of M_PI from arm-none-eabi math.h
-#define M_PI 205887 //3.14159 << 16   // Value of pi in fixed point 
+#undef M_PI          // Undefine definition of M_PI from arm-none-eabi math.h
+#define M_PI 205887  // 3.14159 << 16   // Value of pi in fixed point
 
 #pragma region simple low pass filters
 
@@ -24,7 +24,8 @@
   @param output_prev the previous output of this function
   @param alpha value between 0-100 which determines the cut-off frequency
   @return int32_t of the low pass output
-  @note alpha can be calculated by a = (2pi*Fc)/(Fs+2pi*Fc), where Fc is cut-off frequency, Fs is sample frequency
+  @note alpha can be calculated by a = (2pi*Fc)/(Fs+2pi*Fc), where Fc is cut-off
+  frequency, Fs is sample frequency
 */
 int32_t LPF1(int32_t input, int32_t output_prev, uint8_t alpha);
 #pragma endregion

@@ -13,10 +13,10 @@
 #define DEBUG
 
 #ifdef DEBUG
-    #include <stdio.h>
-    #define LOG(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#include <stdio.h>
+#define LOG(fmt, ...) printf(fmt, ##__VA_ARGS__)
 #else
-    #define LOG(fmt, ...)
+#define LOG(fmt, ...)
 #endif
 
 #endif /* DEBUG_H */

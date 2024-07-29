@@ -50,3 +50,11 @@ hfc-flash: hfc flash
 
 warnings:
 	@(make clean && make hfc > $(BUILD_DIR)/make.log 2>&1) && grep "warning:" $(BUILD_DIR)/make.log | wc -l
+
+analyse:
+	cppcheck src/*
+
+format:
+	clang-format --style="Google" -i src/*.c src/*.h
+
+check: analyse format

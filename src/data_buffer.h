@@ -8,31 +8,32 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include "drivers/ADXL375_driver.h"
-#include "drivers/MS5611_driver.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "HAL/mcu.h"
-#include "frame_array.h"
 #include "debug.h"
+#include "drivers/ADXL375_driver.h"
+#include "drivers/MS5611_driver.h"
+#include "frame_array.h"
 
 // Define Constants and Thresholds
-#define BUFFER_SIZE       50
-#define LAUNCH_THRESHOLD  50      // micro bar for detecting a decrease
-#define APOGEE_THRESHOLD  50      // micro bar for detecting apogee
-#define DESCENT_THRESHOLD 50      // micro bar for detecting an increase
-#define GROUND_THRESHOLD  100     // micro bar for detecting ground
-#define WINDOW_SIZE       20      // Number of readings to compute
+#define BUFFER_SIZE 50
+#define LAUNCH_THRESHOLD 50   // micro bar for detecting a decrease
+#define APOGEE_THRESHOLD 50   // micro bar for detecting apogee
+#define DESCENT_THRESHOLD 50  // micro bar for detecting an increase
+#define GROUND_THRESHOLD 100  // micro bar for detecting ground
+#define WINDOW_SIZE 20        // Number of readings to compute
 
-static float sea_level_pressure = 1013.25;    // Sea level presser in micro bar
+static float sea_level_pressure = 1013.25;  // Sea level presser in micro bar
 
 // Circular Buffer for data storing
 typedef struct dataBuffer {
-  FrameArray frames[BUFFER_SIZE]; // Circular buffer
-  FrameArray window[WINDOW_SIZE]; // Last window readings
-  int ground_ref;                 // Set of reference values for launch
-  int index;                      // End index (value is inserted)
-  int count;                      // Number of elements currently in buffer
+  FrameArray frames[BUFFER_SIZE];  // Circular buffer
+  FrameArray window[WINDOW_SIZE];  // Last window readings
+  int ground_ref;                  // Set of reference values for launch
+  int index;                       // End index (value is inserted)
+  int count;                       // Number of elements currently in buffer
 } dataBuffer;
 
 /**
@@ -67,7 +68,8 @@ float get_vertical_velocity(int barometer_data[], int dt);
   @brief Check if rocket is stationary using JUST barometer pressure data
   @param data The array of barometer data
   @return true if the rocket is stationary
-  @note This is not a particularly good solution, was only written because accelerometer was not working for launch 1
+  @note This is not a particularly good solution, was only written because
+  accelerometer was not working for launch 1
 */
 
 bool is_stationary(int data[]);
