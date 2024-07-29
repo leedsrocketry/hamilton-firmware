@@ -179,7 +179,7 @@ void NAND_flash_test_routine()
     dataArray[i] = i;
   }
   
-  FrameArray _input = unzip(dataArray);
+  Frame _input = unzip(dataArray);
 
   int numOfFramesToTest = 100;
   for (int i = 0; i < numOfFramesToTest; i++) {

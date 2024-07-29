@@ -28,19 +28,21 @@
 static float sea_level_pressure = 1013.25;  // Sea level presser in micro bar
 
 // Circular Buffer for data storing
-typedef struct dataBuffer {
-  FrameArray frames[BUFFER_SIZE];  // Circular buffer
-  FrameArray window[WINDOW_SIZE];  // Last window readings
+typedef struct FrameBuffer {
+  Frame frames[BUFFER_SIZE];  // Circular buffer
+  Frame window[WINDOW_SIZE];  // Last window readings
   int ground_ref;                  // Set of reference values for launch
   int index;                       // End index (value is inserted)
   int count;                       // Number of elements currently in buffer
-} dataBuffer;
+} FrameBuffer;
 
 /**
   @brief Initialize the buffer
   @param buffer - data buffer
 */
-void init_buffer(dataBuffer* buffer);
+void init_buffer(FrameBuffer* buffer);
+
+uint32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading sensor);
 
 /**
   @brief Get the median of the data
@@ -55,7 +57,7 @@ int get_median(int data[], int size);
   @param frame - one reading data frame to add
   @param buffer - data buffer
 */
-void update_buffer(FrameArray* frame, dataBuffer* buffer);
+void update_frame_buffer(Frame* frame, FrameBuffer* buffer);
 
 /**
   @brief Calculate vertical velocity using JUST barometer pressure data

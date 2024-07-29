@@ -98,12 +98,12 @@ static inline bool get_bit(uint8_t byte, int pos) {
 }
 
 /**
-  @brief Converts a FrameArray struct to an array of bytes
+  @brief Converts a Frame struct to an array of bytes
   @param unzippedData: the frame array object to zip
   @param zippedData: a pass by reference to the byte array where the output is stored
   @return: None
 */
-static inline void zip(FrameArray unzippedData, uint8_t *zippedData) {
+static inline void zip(Frame unzippedData, uint8_t *zippedData) {
   int i = -1;
 
   // Date and time
@@ -212,12 +212,12 @@ static inline void zip(FrameArray unzippedData, uint8_t *zippedData) {
 }
 
 /**
-  @brief Converts a byte array to a FrameArray struct
+  @brief Converts a byte array to a Frame struct
   @param zippedData: a pass by reference to the byte array to be converted
-  @return: the FrameArray
+  @return: the Frame
 */
-static inline FrameArray unzip(uint8_t *zippedData) {
-  FrameArray _unzippedData;
+static inline Frame unzip(uint8_t *zippedData) {
+  Frame _unzippedData;
   _unzippedData.changeFlag = 1;
   int i = -1;
 
@@ -386,7 +386,7 @@ static inline void _memset(uint8_t *arr, uint8_t val, int num){
   @brief Prints to serial in a readable way
   @param frameFormat
 */
-static inline void print_frame_array(FrameArray frameFormat) {
+static inline void print_frame_array(Frame frameFormat) {
   LOG("Date: %i, %i:%i:%i:%i:\r\n", frameFormat.date.year, frameFormat.date.minute,
                                                frameFormat.date.second, frameFormat.date.millisecond, 
                                                frameFormat.date.microsecond );
@@ -437,7 +437,7 @@ static inline void print_csv_header() {
   @brief Prints to serial in a readable way
   @param frameFormat
 */
-static inline void print_frame_csv(FrameArray frameFormat) {
+static inline void print_frame_csv(Frame frameFormat) {
   LOG("%i,", frameFormat.date.year); 
   LOG("%i:%i:%i:%i,", frameFormat.date.minute,
                          frameFormat.date.second,
@@ -949,7 +949,7 @@ static inline void calculate_parity_bits(uint8_t *_input, uint8_t *_output) {
   @brief Hamming and CRC Encoding
   @return bytes
 */
-static inline void encode_parity(FrameArray dataFrame, uint8_t *bytes) {
+static inline void encode_parity(Frame dataFrame, uint8_t *bytes) {
   zip(dataFrame, bytes);
   /*
   uint8_t parities[8];
@@ -990,10 +990,10 @@ static inline void print_capacity_info() {
 }
 
 /**
-  @brief Writes a single FrameArray to the next available space on the flash
+  @brief Writes a single Frame to the next available space on the flash
 */
-static inline int log_frame(FrameArray _input) {
-  // frameArray to array of bytes; 8388607 is 8Gb end
+static inline int log_frame(Frame _input) {
+  // Frame to array of bytes; 8388607 is 8Gb end
   if (frameAddressPointer <= 8388607) {
     uint8_t encoded[128];
     _memset(encoded, 0, 128);
@@ -1015,10 +1015,10 @@ static inline int log_frame(FrameArray _input) {
 /**
   @brief Outputs the frame array at the address frameAddr
 */
-static inline FrameArray recall_frame(uint32_t frameAddr) {
+static inline Frame recall_frame(uint32_t frameAddr) {
   uint8_t encoded[128];
   _memset(encoded, 0, 128);
-  FrameArray _output;
+  Frame _output;
   read_frame(frameAddr, encoded, 128);
   _output = unzip(encoded);  // Don't bother decoding parity bits
   return _output;
@@ -1056,7 +1056,7 @@ static inline void read_all_raw(){
   @brief Outputs all data in frame format
 */
 static inline void read_all_frame(){
-  FrameArray _output;
+  Frame _output;
   _output.successFlag = NONE;
 
   uint32_t lastFrameToRead = get_next_available_frame_addr();
@@ -1088,7 +1088,7 @@ static inline void read_all_frame(){
   @brief Outputs all data in frame format
 */
 static inline void read_all_csv(){
-  FrameArray _output;
+  Frame _output;
   _output.successFlag = NONE;
 
   uint32_t lastFrameToRead = get_next_available_frame_addr();
@@ -1121,7 +1121,7 @@ static inline void read_all_csv(){
   @brief Reads the entire flash and returns the info on the capacity of the flash and the amount of corruption (checks CRC and Hamming codes)
 */
 static inline void read_all(){
-  FrameArray _output;
+  Frame _output;
   _output.successFlag = NONE;
   uint32_t lastFrameToRead = get_next_available_frame_addr();
   uint8_t _check = 0;

@@ -17,10 +17,10 @@
 // #include "flight_manager.h"
 #include "debug.h"
 
-void update_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
+void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
                     LSM6DS3_data* _LSM6DS3_data);
 
-void get_frame_array(FrameArray* _frameArray, M5611_data _M5611_data,
+void build_frame(Frame* _frameArray, M5611_data _M5611_data,
                      ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
                      BME280_data _BME280_data, GNSS_Data _GNSS_data);
 

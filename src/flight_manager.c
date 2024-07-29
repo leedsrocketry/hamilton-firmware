@@ -42,6 +42,21 @@ void initalise_drivers() {
   LSM6DS3_init(SPI1, &_LSM6DS3_data);  // IMU
 }
 
+void handle_LAUNCHPAD(Frame frame, FrameBuffer* fb, uint32_t size)
+{
+  // READ
+  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+
+  // BUILD
+  build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
+  update_frame_buffer(&frame, &fb);
+  
+  // ANALYSE
+  current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_TEMP);
+
+  // STORE
+}
+
 void run_flight() {
   // STM32 setup
   STM32_init();
@@ -56,12 +71,12 @@ void run_flight() {
   initalise_drivers();
 
   // Buffer
-  FrameArray frame;        // initialise the frameArray that keeps updating
+  Frame frame;        // initialise the Frame that keeps updating
   uint8_t dataArray[128];  // dummy array to store the frame data
   _memset(dataArray, 0,
           sizeof(dataArray));  // set the necessary memory and set values to 0
-  frame = unzip(&dataArray);   // convert from normal array into FrameArray
-  dataBuffer frame_buffer;     // contains FrameArrays
+  frame = unzip(&dataArray);   // convert from normal array into Frame
+  FrameBuffer frame_buffer;     // contains FrameArrays
   init_buffer(&frame_buffer);  // initialise the buffer
 
   // Additional variables
@@ -96,12 +111,12 @@ void run_flight() {
           toggle_LED = !toggle_LED;
 
           // Get the sensor readings
-          update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
+          read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+          build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
                           _BME280_data, _GNSS_data);
 
           // Update buffer and window
-          update_buffer(&frame, &frame_buffer);
+          update_frame_buffer(&frame, &frame_buffer);
           if (frame_buffer.count > WINDOW_SIZE * 2) {
             // Get the window barometer median
             for (int i = 0; i < WINDOW_SIZE; i++) {
@@ -136,15 +151,15 @@ void run_flight() {
           oldTime = newTime;  // Old time = new time
 
           // Get the sensor readings
-          update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
+          read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+          build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
                           _BME280_data, _GNSS_data);
 
           // Log data
           log_frame(frame);
 
           // Update buffer and window
-          update_buffer(&frame, &frame_buffer);
+          update_frame_buffer(&frame, &frame_buffer);
 
           // Get window median readings
           for (int i = 0; i < WINDOW_SIZE; i++) {
@@ -171,15 +186,15 @@ void run_flight() {
           oldTime = newTime;  // Old time = new time
 
           // Get the sensor readings
-          update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
+          read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+          build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
                           _BME280_data, _GNSS_data);
 
           // Log data
           log_frame(frame);
 
           // Update buffer and window
-          update_buffer(&frame, &frame_buffer);
+          update_frame_buffer(&frame, &frame_buffer);
 
           // Run for a few cycles to record apogee when switch to descent
           if (apogee_incr == 0)
@@ -195,15 +210,15 @@ void run_flight() {
           oldTime = newTime;  // Old time = new time
 
           // Get the sensor readings
-          update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
+          read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+          build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
                           _BME280_data, _GNSS_data);
 
           // Log data
           log_frame(frame);
 
           // Update buffer and window
-          update_buffer(&frame, &frame_buffer);
+          update_frame_buffer(&frame, &frame_buffer);
 
           // Get window median readings
           int _data[WINDOW_SIZE];

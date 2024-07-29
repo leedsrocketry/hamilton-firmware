@@ -11,13 +11,33 @@
   @brief Initalise buffer
   @param buffer The buffer to be initalised
 */
-void init_buffer(dataBuffer* buffer) {
+void init_buffer(FrameBuffer* buffer) {
   buffer->ground_ref = 0;
   buffer->index = 0;
   buffer->count = 0;
 
   // TODO: Allocate memory for the buffer array
   // TODO: Allocate memory for the window array
+}
+
+uint32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading reading)
+{
+  switch(reading)
+  {
+    case MS5611_PRESSURE:
+      // Calculate median of pressure in fb
+    break;
+    
+    case MS5611_TEMP:
+      // Calculate median of temp in fb
+      uint32_t _data[WINDOW_SIZE];
+      for(uint32_t i = 0; i < BUFFER_SIZE; i++)
+      {
+        _data[i] = fb->frames[i].barometer.temp;
+      }
+      get_median(_data, BUFFER_SIZE);
+    break;
+  }
 }
 
 /**
@@ -45,7 +65,7 @@ int get_median(int data[], int size) {
   @param frame - one reading data frame to add
   @param buffer - data buffer
 */
-void set_ground_reference(dataBuffer* buffer) {
+void set_ground_reference(FrameBuffer* buffer) {
   // Create copy of buffer data to sort
   int _data[WINDOW_SIZE];
   for (int i = 0; i < WINDOW_SIZE; i++) {
@@ -61,7 +81,7 @@ void set_ground_reference(dataBuffer* buffer) {
   @param frame - one reading data frame to add
   @param buffer - data buffer
 */
-void update_buffer(FrameArray* frame, dataBuffer* buffer) {
+void update_frame_buffer(Frame* frame, FrameBuffer* buffer) {
   buffer->frames[buffer->index] = *frame;
   buffer->index = (buffer->index + 1) % BUFFER_SIZE;
 
