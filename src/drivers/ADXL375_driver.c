@@ -12,6 +12,12 @@
 #pragma region Public
 SPI_TypeDef* ADXL375_SPI;
 
+/**
+  @brief Init ADXL375 Barometer driver
+  @param spi Selected SPI
+  @warning Return code not implemented
+  @return Error code (0)
+*/
 uint8_t ADXL375_init(SPI_TypeDef* spi) {
     // Set up SPI
     ADXL375_SPI = spi;
@@ -67,7 +73,7 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
   @param data struct for returning x, y, z data by reference
   @note currently returns raw data, needs to be offset and calibrated in future
   @note if floating points were available, all data would be multiplied by 0.049
-  @return 0
+  @return Error code (0)
 */
 uint8_t ADXL375_get_data(ADXL375_data* data){
 
@@ -106,6 +112,11 @@ uint8_t ADXL375_get_data(ADXL375_data* data){
 // Implement private functions
 #pragma region Private
 
+/**
+  @brief Writes to ADXL375's registers
+  @param addr register to write to
+  @param value value to write into register
+*/
 void ADXL375_reg_write(uint8_t addr, uint8_t value) {
     uint8_t	d[2];
     d[0] = addr;
@@ -116,6 +127,12 @@ void ADXL375_reg_write(uint8_t addr, uint8_t value) {
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 }
 
+/**
+  @brief Reads from ADXL375's registers
+  @param addr register to write to
+  @param values buffer to put returned values into by reference
+  @param num_val number of values read
+*/
 void ADXL375_reg_read(uint8_t addr, uint8_t *values, int num_val)
 {
     uint8_t address = addr | 0x80;
@@ -128,23 +145,4 @@ void ADXL375_reg_read(uint8_t addr, uint8_t *values, int num_val)
     }
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 }
-
-/*
-static void ADXL375_get_test_value(struct ADXL375_data *data, int samples)
-{	
-	for (int i = 0; i < samples; i++) {
-		spi_write_byte(ADXL375_SPI, ADXL375_Z_REG_DATAX0);
-        spi_write_byte(ADXL375_SPI, ADXL375_Z_REG_DATAX1);
-        spi_ready_read(ADXL375_SPI);
-
-        z_0 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-        z_1 = spi_read_byte(ADXL375_SPI, ADXL375_MEASURE);
-   
-		data->x += 0;
-		data->y += 0;
-		data->z += (z_1 << 8) | z_0;
-		delay_ms(10);
-	}
-}
-*/
 #pragma endregion Private

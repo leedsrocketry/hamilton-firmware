@@ -10,8 +10,13 @@
 
 SPI_TypeDef *SI446_SPI;
 SI446_settings chip_settings;
-// __________________________________ Public _________________
 
+#pragma region Public
+/**
+  @brief Init SI446 sensor
+  @param spi Selected SPI
+  @return Return code from sensor
+*/
 int8_t SI446_init(SPI_TypeDef *spi){
     int8_t SI446_retVal;
     SI446_SPI = spi;
@@ -71,9 +76,9 @@ int8_t SI446_read_data(uint8_t *data, size_t byteCount){
     spi_disable_cs(SI446_SPI, SI446_CS);// send_CTS_LOW
     return 0;
 };
+#pragma endregion
 
-//_________________________________ Private ____________________
-
+#pragma region Private
 
 int8_t SI446_get_response(int byteCount, uint8_t *data){
     int8_t SI446_retVal;
@@ -144,3 +149,4 @@ int8_t SI446_power_up(){
     return SI446_retVal;
 }
 
+#pragma endregion

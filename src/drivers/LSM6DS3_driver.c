@@ -10,6 +10,12 @@
 
 #include "LSM6DS3_driver.h"
 
+/**
+  @brief Init LSM6DS3 IMU driver
+  @param spi Selected SPI
+  @param gyro LSM6DS3_data structure for returning data by reference
+  @return Error code
+*/
 uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
 {   
     //check the chip replies with correct ID
@@ -46,7 +52,14 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     return 0;
 }
 
-void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, unsigned delayMs)
+/**
+  @brief Write to LSM6DS3 registers
+  @param register_id register to write into
+  @param value value to written to register
+  @param delay Delay in ms
+  @return Error code
+*/
+void LSM6DS3_write_register(SPI_TypeDef *spi, uint8_t register_id, uint8_t value, uint32_t delayMs)
 {
     uint8_t send_data[2] =  {register_id, value};
     spi_enable_cs(spi, LSM6DS3_CS);

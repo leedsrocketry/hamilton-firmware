@@ -114,6 +114,7 @@ float get_vertical_velocity(int data[], int dt) {
   @param data The array of barometer data
   @return true if the rocket is stationary
   @note This is not a particularly good solution, was only written because accelerometer was not working for launch 1
+  @note Deprecated
 */
 bool is_stationary(int data[]) {
   int sum = 0;

@@ -2,7 +2,8 @@
 	Leeds University Rocketry Organisation - LURA
     Author Name: Alexandra Posta
     Created on: 10 June 2023
-    Description: Driver file for the Pressure/Temp/humidity module BME280 
+    Description: Driver file for the Pressure/Temp/humidity module BME280
+    Note: The current state of this driver (2024-07-29) has never been tested.
 */
 
 #include "BME280_driver.h"
@@ -10,8 +11,8 @@
 #pragma region Private
 /* ---------------------------------- Private Functions ---------------------------------- */
 /**
- @brief This private function is used to validate the device structure pointer for
- null conditions.
+ @brief Used to validate the device structure pointer for null conditions.
+ @param dev Device struct 
 */
 static int8_t BME280_null_ptr_check(BME280_dev *dev)
 {
@@ -32,8 +33,7 @@ static int8_t BME280_null_ptr_check(BME280_dev *dev)
 }
 
 /**
- @brief This private function is used to parse the temperature and
- pressure calibration data and store it in device structure.
+ @brief This private function is used to parse the temperature and pressure calibration data and store it in device structure.
 */
 static void BME280_parse_temp_press_calib_data(const uint8_t *reg_data, BME280_dev *dev)
 {
@@ -56,8 +56,7 @@ static void BME280_parse_temp_press_calib_data(const uint8_t *reg_data, BME280_d
 
 
 /**
- @brief This private function is used to parse the humidity calibration data
- and store it in device structure.
+ @brief This private function is used to parse the humidity calibration data and store it in device structure.
 */
 static void BME280_parse_humidity_calib_data(const uint8_t *reg_data, BME280_dev *dev)
 {
@@ -79,8 +78,7 @@ static void BME280_parse_humidity_calib_data(const uint8_t *reg_data, BME280_dev
 }
 
 /**
- @brief This private function reads the calibration data from the sensor, parse
- it and store in the device structure.
+ @brief This private function reads the calibration data from the sensor, parse it and store in the device structure.
 */
 static int8_t BME280_get_calib_data(BME280_dev *dev)
 {
@@ -114,8 +112,7 @@ static int8_t BME280_get_calib_data(BME280_dev *dev)
 
 
 /**
-    @brief This private function interleaves the register address between the
-    register data buffer for burst write operation.
+    @brief This private function interleaves the register address between the register data buffer for burst write operation.
 */
 static void BME280_interleave_reg_addr(const uint8_t *reg_addr, uint8_t *temp_buff, const uint8_t *reg_data, uint32_t len)
 {
@@ -130,8 +127,7 @@ static void BME280_interleave_reg_addr(const uint8_t *reg_addr, uint8_t *temp_bu
 
 
 /**
-    @brief This private function is used to compensate the raw temperature data and
-    return the compensated temperature data in integer data type.
+    @brief This private function is used to compensate the raw temperature data and return the compensated temperature data in integer data type.
 */
 static int16_t BME280_compensate_temperature(const BME280_uncomp_data *uncomp_data, BME280_calib_data *calib_data)
 {
@@ -161,8 +157,7 @@ static int16_t BME280_compensate_temperature(const BME280_uncomp_data *uncomp_da
 
 
 /**
-    @brief This private function is used to compensate the raw pressure data and
-    return the compensated pressure data in integer data type with high accuracy.
+    @brief This private function is used to compensate the raw pressure data and return the compensated pressure data in integer data type with high accuracy.
 */
 static uint32_t BME280_compensate_pressure(const BME280_uncomp_data *uncomp_data, const BME280_calib_data *calib_data)
 {
