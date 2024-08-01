@@ -52,7 +52,9 @@ void handle_LAUNCHPAD(Frame frame, FrameBuffer* fb, uint32_t size)
   update_frame_buffer(&frame, &fb);
   
   // ANALYSE
-  current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_TEMP);
+  //current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_TEMP);
+
+  // ACT
 
   // STORE
 }
@@ -80,11 +82,11 @@ void run_flight() {
   init_buffer(&frame_buffer);  // initialise the buffer
 
   // Additional variables
-  int _data[WINDOW_SIZE];
-  int previous_pressure = 999999999;
-  int current_pressure = 999999999;
-  int current_velocity = 0;
-  int apogee_incr = 3;
+  uint32_t _data[WINDOW_SIZE];
+  uint32_t previous_pressure = 999999999;
+  uint32_t current_pressure = 999999999;
+  uint32_t current_velocity = 0;
+  uint32_t apogee_incr = 3;
   float accel_vector[4] = {0, 0, 0, 0};
   bool toggle_LED = true;
 

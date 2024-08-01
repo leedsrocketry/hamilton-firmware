@@ -31,9 +31,9 @@ static float sea_level_pressure = 1013.25;  // Sea level presser in micro bar
 typedef struct FrameBuffer {
   Frame frames[BUFFER_SIZE];  // Circular buffer
   Frame window[WINDOW_SIZE];  // Last window readings
-  int ground_ref;                  // Set of reference values for launch
-  int index;                       // End index (value is inserted)
-  int count;                       // Number of elements currently in buffer
+  uint32_t ground_ref;                  // Set of reference values for launch
+  uint32_t index;                       // End index (value is inserted)
+  uint32_t count;                       // Number of elements currently in buffer
 } FrameBuffer;
 
 /**
@@ -50,7 +50,7 @@ uint32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading se
   @param size - size of the array
   @return median value
 */
-int get_median(int data[], int size);
+uint32_t get_median(int32_t data[], uint32_t size);
 
 /**
   @brief Set the ground reference for the buffer
@@ -74,6 +74,6 @@ float get_vertical_velocity(int barometer_data[], int dt);
   accelerometer was not working for launch 1
 */
 
-bool is_stationary(int data[]);
+bool is_stationary(int32_t data[]);
 
 #endif /* BUFFER_H */
