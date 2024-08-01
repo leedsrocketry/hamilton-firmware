@@ -20,6 +20,14 @@ void init_buffer(FrameBuffer* buffer) {
   // TODO: Allocate memory for the window array
 }
 
+void write_framebuffer(FrameBuffer* fb)
+{
+  for(int32_t i = 0; i < fb->count; i++ )
+  {
+    log_frame(fb->frames[i]);
+  }
+}
+
 uint32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading reading)
 {
   int32_t _data[BUFFER_SIZE];

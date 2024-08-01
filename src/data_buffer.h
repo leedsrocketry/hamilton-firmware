@@ -16,6 +16,7 @@
 #include "drivers/ADXL375_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "frame_array.h"
+#include "HAL/NAND_flash_driver.h"
 
 // Define Constants and Thresholds
 #define BUFFER_SIZE 50
@@ -43,6 +44,8 @@ typedef struct FrameBuffer {
 void init_buffer(FrameBuffer* buffer);
 
 uint32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading sensor);
+
+void write_framebuffer(FrameBuffer* fb);
 
 /**
   @brief Get the median of the data

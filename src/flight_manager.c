@@ -42,35 +42,31 @@ void initalise_drivers() {
   LSM6DS3_init(SPI1, &_LSM6DS3_data);  // IMU
 }
 
-void handle_LAUNCHPAD(Frame frame, FrameBuffer* fb, uint32_t size)
+void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
 {
   // READ
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+  LOG("build\r\n");
 
   // BUILD
-  build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
-  update_frame_buffer(&frame, &fb);
-  
+  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
+  update_frame_buffer(frame, fb);
+  LOG("ANALYSE\r\n");
   // ANALYSE
-  //current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_TEMP);
+  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_TEMP);
+  // TODO: calculate launch based on pressure+accel+gyro(?)
 
   // ACT
+  // if(launched)
+  // {
+  //   set_flight_stage(ASCENT);
+  // }
 
   // STORE
+  write_framebuffer(fb);
 }
 
 void run_flight() {
-  // STM32 setup
-  STM32_init();
-
-  LOG("================ PROGRAM START ================\r\n");
-  STM32_indicate_on();
-
-  LOG("============ INITIALISE NAND FLASH ============\r\n");
-  // init_flash();
-
-  LOG("============== INITIALISE DRIVERS =============\r\n");
-  initalise_drivers();
 
   // Buffer
   Frame frame;        // initialise the Frame that keeps updating
@@ -90,11 +86,6 @@ void run_flight() {
   float accel_vector[4] = {0, 0, 0, 0};
   bool toggle_LED = true;
 
-  LOG("============== ADD TESTS HERE ==============\r\n");
-  // NAND_flash_read();
-  // NAND_flash_erase();
-  // run_BME280_routine();
-
   LOG("============= ENTER MAIN PROCEDURE ============\r\n");
   uint32_t newTime = get_time_us();
   uint32_t oldTime = get_time_us();
@@ -107,43 +98,11 @@ void run_flight() {
     switch (flightStage) {
       case LAUNCHPAD:
         newTime = get_time_us();  // Get current time
+
         if ((newTime - oldTime) > (1000000 / PADREADFREQ)) {
-          oldTime = newTime;                  // old time = new time
-          gpio_write(GREEN_LED, toggle_LED);  // Flick LED
-          toggle_LED = !toggle_LED;
+          oldTime = newTime;
 
-          // Get the sensor readings
-          read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
-                          _BME280_data, _GNSS_data);
-
-          // Update buffer and window
-          update_frame_buffer(&frame, &frame_buffer);
-          if (frame_buffer.count > WINDOW_SIZE * 2) {
-            // Get the window barometer median
-            for (int i = 0; i < WINDOW_SIZE; i++) {
-              _data[i] = frame_buffer.window[i].barometer.pressure;
-            }
-            current_pressure =
-                get_median(_data, WINDOW_SIZE);  // get pressure median
-
-            // Check if rocket is stationary based on acceleration
-            LSM6DS3_acc_read(&_LSM6DS3_data,
-                             &accel_vector);  // This is clearly wrong
-
-            // Check for launch given pressure decrease
-            if ((frame_buffer.ground_ref - current_pressure) >
-                    LAUNCH_THRESHOLD &&
-                accel_vector[3] > 1.4) {
-              set_flight_stage(ASCENT);
-              LOG("FLIGHT STAGE = ASCENT\r\n");
-
-              // Log data from the the last window
-              for (int i = 0; i < 10; i++) {
-                log_frame(frame_buffer.frames[i]);
-              }
-            }
-          }
+          handle_LAUNCHPAD(&frame, &frame_buffer);
         }
         break;
 

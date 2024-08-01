@@ -21,6 +21,19 @@ void SysTick_Handler(void) { s_ticks++; }
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
 int main(void) {
+
+  // STM32 setup
+  STM32_init();
+
+  LOG("================ PROGRAM START ================\r\n");
+  STM32_indicate_on();
+
+  LOG("============ INITIALISE NAND FLASH ============\r\n");
+  // init_flash();
+
+  LOG("============== INITIALISE DRIVERS =============\r\n");
+  initalise_drivers();
+
   run_flight();
   return 0;
 }

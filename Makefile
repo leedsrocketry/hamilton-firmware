@@ -32,11 +32,11 @@ clean:
 	$(RM) $(BUILD_DIR)/firmware.*
 
 debug-hardware:
-	openocd -f "src/debug/OpenOCD/openocd/scripts/board/st_nucleo_l4.cfg"
+	openocd -f "debug/OpenOCD/openocd/scripts/board/st_nucleo_l4.cfg"
 
 unblock-write-protected:
-	openocd -f "src/debug/OpenOCD/openocd/scripts/interface/stlink.cfg" \
-          -f "src/debug/OpenOCD/openocd/scripts/target/stm32l4x.cfg" \
+	openocd -f "debug/OpenOCD/openocd/scripts/interface/stlink.cfg" \
+          -f "debug/OpenOCD/openocd/scripts/target/stm32l4x.cfg" \
           -c "init; reset halt; stm32l4x unlock 0; stm32l4x mass_erase 0; program $(BUILD_DIR)/firmware.bin 0x08000000 verify reset; exit"
 
 # Different targets for HFC/Nucleo
