@@ -99,19 +99,19 @@ void update_frame_buffer(Frame* frame, FrameBuffer* buffer) {
   buffer->index = (buffer->index + 1) % BUFFER_SIZE;
 
   // Increase count and set ground reference
-  if (buffer->count < BUFFER_SIZE) {
-    if (buffer->count == WINDOW_SIZE) set_ground_reference(buffer);
-    buffer->count++;
-  }
+  // if (buffer->count < BUFFER_SIZE) {
+  //   if (buffer->count == WINDOW_SIZE) set_ground_reference(buffer);
+  //   buffer->count++;
+  // }
 
-  // Update window
-  if (buffer->count > WINDOW_SIZE * 2) {
-    for (int i = 0; i < WINDOW_SIZE; i++) {
-      int frame_number = (buffer->index - WINDOW_SIZE + i);
-      if (frame_number < 0) frame_number = BUFFER_SIZE + frame_number;
-      buffer->window[i] = buffer->frames[i];
-    }
-  }
+  // // Update window
+  // if (buffer->count > WINDOW_SIZE * 2) {
+  //   for (int i = 0; i < WINDOW_SIZE; i++) {
+  //     int frame_number = (buffer->index - WINDOW_SIZE + i);
+  //     if (frame_number < 0) frame_number = BUFFER_SIZE + frame_number;
+  //     buffer->window[i] = buffer->frames[i];
+  //   }
+  // }
 }
 
 /**

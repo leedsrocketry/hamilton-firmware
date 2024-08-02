@@ -162,41 +162,33 @@ void run_flight() {
 
   for (;;) {
     flightStage = get_flight_stage();
+
+    newTime = get_time_us();
+    dt = newTime-oldTime;
+    LOG("dt: %d\r\n", dt);
     switch (flightStage) {
-
       case LAUNCHPAD:
-        newTime = get_time_us();  // Get current time
-
-        if ((newTime - oldTime) > (1000000 / PADREADFREQ)) {
-          oldTime = newTime;
-
-          handle_LAUNCHPAD(&frame, &frame_buffer);
-        }
+        handle_LAUNCHPAD(&frame, &frame_buffer);
+        // if ((dt) > (1000000 / PADREADFREQ)) {
+        //   handle_LAUNCHPAD(&frame, &frame_buffer);
+        // } 
+        oldTime=newTime;
         break;
 
       case ASCENT:
-        newTime = get_time_us();  // Get current time
-        if ((newTime - oldTime) > (1000000 / ASCENTREADFREQ)) {
-          oldTime = newTime;  // Old time = new time
-
+        if ((dt) > (1000000 / ASCENTREADFREQ)) {
           handle_ASCENT(&frame, &frame_buffer);
         }
         break;
 
       case APOGEE:
-        newTime = get_time_us();  // Get current time
-        if ((newTime - oldTime) > (1000000 / APOGEEREADFREQ)) {
-          oldTime = newTime;  // Old time = new time
-
-          handle_APOGEE(&frame, &frame_buffer)
+        if ((dt) > (1000000 / APOGEEREADFREQ)) {
+          handle_APOGEE(&frame, &frame_buffer);
         }
         break;
 
       case DESCENT:
-        newTime = get_time_us();  // Get current time
-        if ((newTime - oldTime) > (1000000 / DESCENTREADFREQ)) {
-          oldTime = newTime;  // Old time = new time
-
+        if ((dt) > (1000000 / DESCENTREADFREQ)) {
           handle_DESCENT(&frame, &frame_buffer);
         }
         break;

@@ -4,7 +4,7 @@ CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
             -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas \
             -g3 -O0 -ffunction-sections -fdata-sections -Isrc -Isrc/include \
             -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(EXTRA_CFLAGS) \
-			-lm
+			-lm 
 LDFLAGS ?= -Tbuild/link.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/firmware.map
 SOURCES ?=	src/main.c src/startup.c src/syscalls.c src/HAL/STM32_init.c src/drivers/MS5611_driver.c src/filters.c\
 			src/drivers/ADXL375_driver.c src/tests/test_routines.c src/data_buffer.c src/drivers/LSM6DS3_driver.c\
