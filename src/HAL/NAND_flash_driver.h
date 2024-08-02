@@ -474,7 +474,7 @@ static inline void wait_for_ready_flag() {
     count--;
   }
   if (count < 1) {
-    LOG("waitForReadyFlag: TIMEOUT\r\n");
+    //LOG("waitForReadyFlag: TIMEOUT\r\n");
   } 
 }
 

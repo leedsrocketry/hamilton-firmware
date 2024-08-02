@@ -28,7 +28,7 @@ void write_framebuffer(FrameBuffer* fb)
   }
 }
 
-uint32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading reading)
+int32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading reading)
 {
   int32_t _data[BUFFER_SIZE];
   switch(reading)

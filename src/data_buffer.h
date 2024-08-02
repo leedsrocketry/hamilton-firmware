@@ -43,7 +43,7 @@ typedef struct FrameBuffer {
 */
 void init_buffer(FrameBuffer* buffer);
 
-uint32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading sensor);
+int32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading sensor);
 
 void write_framebuffer(FrameBuffer* fb);
 
