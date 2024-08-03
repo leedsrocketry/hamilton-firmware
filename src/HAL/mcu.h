@@ -237,7 +237,7 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
   // Nucleo pins
     if (uart == UART1)  af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
     if (uart == UART2)  af = 7, tx = PIN('A', 2), rx = PIN('A', 3);
-    if (uart == UART3)  af = 7, tx = PIN('D', 8), rx = PIN('D', 9);
+    if (uart == UART3)  af = 7, tx = PIN('B', 10), rx = PIN('B', 11);
     if (uart == LUART1) af = 8, tx = PIN('G', 7), rx = PIN('G', 8);
   #endif
 
@@ -250,7 +250,12 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
   #ifdef FLIGHT_COMPUTER
     uart->BRR = FREQ / baud;                    // FREQ is a CPU frequency
   #else
-    uart->BRR = 256*FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
+    if(uart == LUART1 || uart == USART1)
+    {
+      uart->BRR = 256*FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
+    } else if (uart == USART3){
+      uart->BRR = baud;
+    }
   #endif
 
   uart->CR1 |= BIT(0) | BIT(2) | BIT(3);      // Set UE, RE, TE Datasheet 50.8.1 
@@ -297,6 +302,10 @@ static inline int uart_read_ready(USART_TypeDef *uart)
 */
 static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 {
+  while (!uart_read_ready(uart))
+  {
+    spin(1); // Ref manual STM32L4 50.8.10 USART status register (USART_ISR)
+  }
   return (uint8_t)(uart->RDR & 255);
 }
 #pragma endregion UART

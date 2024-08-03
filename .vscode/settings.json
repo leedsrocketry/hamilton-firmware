@@ -16,7 +16,10 @@
         "flight_manager.h": "c",
         "frame_array.h": "c",
         "stdio.h": "c",
-        "debug.h": "c"
+        "debug.h": "c",
+        "types.h": "c",
+        "unistd.h": "c",
+        "stdint.h": "c"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "disabled"

@@ -13,6 +13,7 @@
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
+#include "drivers/MAXM10S_driver.h"
 #include "frame_array.h"
 #include "stm32l4r5xx.h"
 

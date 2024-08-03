@@ -40,6 +40,8 @@ void initalise_drivers() {
   MS5611_init(SPI1);                   // Barometer
   ADXL375_init(SPI1);                  // Accelerometer
   LSM6DS3_init(SPI1, &_LSM6DS3_data);  // IMU
+
+  MAXM10S_init(USART3);
 }
 
 void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
