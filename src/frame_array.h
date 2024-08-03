@@ -16,7 +16,12 @@
 #include "drivers/MS5611_driver.h"
 
 // Max 128 bytes
-typedef struct FrameArray {
+
+typedef enum SensorReading {
+  MS5611_PRESSURE,
+  MS5611_TEMP,
+} SensorReading;
+typedef struct Frame {
   DateTime date;         // 56 bits
   uint8_t changeFlag;    // 8 bits
   ADXL375_data accel;    // 48 bits
@@ -27,6 +32,6 @@ typedef struct FrameArray {
   uint8_t hammingCode[8];
   uint16_t CRC_Check;
   int successFlag;  // Not used in zip
-} FrameArray;
+} Frame;
 
 #endif /* FRAME_ARRAY_H */

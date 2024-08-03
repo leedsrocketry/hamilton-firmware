@@ -16,6 +16,7 @@
 #include "drivers/ADXL375_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "frame_array.h"
+#include "HAL/NAND_flash_driver.h"
 
 // Define Constants and Thresholds
 #define BUFFER_SIZE 50
@@ -28,19 +29,23 @@
 static float sea_level_pressure = 1013.25;  // Sea level presser in micro bar
 
 // Circular Buffer for data storing
-typedef struct dataBuffer {
-  FrameArray frames[BUFFER_SIZE];  // Circular buffer
-  FrameArray window[WINDOW_SIZE];  // Last window readings
-  int ground_ref;                  // Set of reference values for launch
-  int index;                       // End index (value is inserted)
-  int count;                       // Number of elements currently in buffer
-} dataBuffer;
+typedef struct FrameBuffer {
+  Frame frames[BUFFER_SIZE];  // Circular buffer
+  Frame window[WINDOW_SIZE];  // Last window readings
+  uint32_t ground_ref;                  // Set of reference values for launch
+  uint32_t index;                       // End index (value is inserted)
+  uint32_t count;                       // Number of elements currently in buffer
+} FrameBuffer;
 
 /**
   @brief Initialize the buffer
   @param buffer - data buffer
 */
-void init_buffer(dataBuffer* buffer);
+void init_buffer(FrameBuffer* buffer);
+
+int32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading sensor);
+
+void write_framebuffer(FrameBuffer* fb);
 
 /**
   @brief Get the median of the data
@@ -48,14 +53,14 @@ void init_buffer(dataBuffer* buffer);
   @param size - size of the array
   @return median value
 */
-int get_median(int data[], int size);
+uint32_t get_median(int32_t data[], uint32_t size);
 
 /**
   @brief Set the ground reference for the buffer
   @param frame - one reading data frame to add
   @param buffer - data buffer
 */
-void update_buffer(FrameArray* frame, dataBuffer* buffer);
+void update_frame_buffer(Frame* frame, FrameBuffer* buffer);
 
 /**
   @brief Calculate vertical velocity using JUST barometer pressure data
@@ -72,6 +77,6 @@ float get_vertical_velocity(int barometer_data[], int dt);
   accelerometer was not working for launch 1
 */
 
-bool is_stationary(int data[]);
+bool is_stationary(int32_t data[]);
 
 #endif /* BUFFER_H */

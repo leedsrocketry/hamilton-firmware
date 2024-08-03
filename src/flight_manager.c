@@ -42,41 +42,116 @@ void initalise_drivers() {
   LSM6DS3_init(SPI1, &_LSM6DS3_data);  // IMU
 }
 
+void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
+{
+  // READ
+  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+
+  // BUILD
+  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
+  update_frame_buffer(frame, fb);
+
+  // ANALYSE
+  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
+  // TODO: calculate launch based on pressure+accel+gyro(?)
+
+  // ACT
+  // if(launched)
+  // {
+  //   set_flight_stage(ASCENT);
+  // }
+
+  // STORE
+  write_framebuffer(fb);
+}
+
+void handle_ASCENT(Frame* frame, FrameBuffer* fb)
+{
+  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+
+  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
+  update_frame_buffer(frame, fb);
+
+  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
+  // TODO: calculate apogee based on sensor data
+
+  // ACT
+  // if(launched)
+  // {
+  //   set_flight_stage(DESCENT);
+  // }
+
+  // STORE
+  write_framebuffer(fb);
+}
+
+void handle_APOGEE(Frame* frame, FrameBuffer* fb)
+{
+  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+
+  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
+  update_frame_buffer(frame, fb);
+
+  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
+  // TODO: calculate apogee based on sensor data
+  // Gather lots of additional data at this phase, determining apogee is important
+
+  // ACT
+  // if(launched)
+  // {
+  //   set_flight_stage(DESCENT);
+  // }
+
+  // STORE
+  write_framebuffer(fb);
+}
+
+void handle_DESCENT(Frame* frame, FrameBuffer* fb)
+{
+  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+
+  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
+  update_frame_buffer(frame, fb);
+
+  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
+  // TODO: calculate landing based on sensor data
+
+  // ACT
+  // if(landed)
+  // {
+  //   set_flight_stage(LANDED);
+  // }
+
+  // STORE
+  write_framebuffer(fb);
+}
+
+void handle_LANDING(Frame* frame, FrameBuffer* fb)
+{
+  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+
+  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
+  update_frame_buffer(frame, fb);
+
+  // ACT
+  // Beep? Signal? radio? idk
+
+  // STORE
+  write_framebuffer(fb);
+}
+
 void run_flight() {
-  // STM32 setup
-  STM32_init();
 
-  LOG("================ PROGRAM START ================\r\n");
-  STM32_indicate_on();
-
-  LOG("============ INITIALISE NAND FLASH ============\r\n");
-  // init_flash();
-
-  LOG("============== INITIALISE DRIVERS =============\r\n");
-  initalise_drivers();
-
-  // Buffer
-  FrameArray frame;        // initialise the frameArray that keeps updating
+  // Setup FrameBuffer (contains last 50 frames of data)
+  Frame frame;        // initialise the Frame that keeps updating
   uint8_t dataArray[128];  // dummy array to store the frame data
   _memset(dataArray, 0,
           sizeof(dataArray));  // set the necessary memory and set values to 0
-  frame = unzip(&dataArray);   // convert from normal array into FrameArray
-  dataBuffer frame_buffer;     // contains FrameArrays
+  frame = unzip(&dataArray);   // convert from normal array into Frame
+  FrameBuffer frame_buffer;     // contains FrameArrays
   init_buffer(&frame_buffer);  // initialise the buffer
 
   // Additional variables
-  int _data[WINDOW_SIZE];
-  int previous_pressure = 999999999;
-  int current_pressure = 999999999;
-  int current_velocity = 0;
-  int apogee_incr = 3;
-  float accel_vector[4] = {0, 0, 0, 0};
-  bool toggle_LED = true;
-
-  LOG("============== ADD TESTS HERE ==============\r\n");
-  // NAND_flash_read();
-  // NAND_flash_erase();
-  // run_BME280_routine();
 
   LOG("============= ENTER MAIN PROCEDURE ============\r\n");
   uint32_t newTime = get_time_us();
@@ -87,141 +162,34 @@ void run_flight() {
 
   for (;;) {
     flightStage = get_flight_stage();
+
+    newTime = get_time_us();
+    dt = newTime-oldTime;
+    LOG("dt: %d\r\n", dt);
     switch (flightStage) {
       case LAUNCHPAD:
-        newTime = get_time_us();  // Get current time
-        if ((newTime - oldTime) > (1000000 / PADREADFREQ)) {
-          oldTime = newTime;                  // old time = new time
-          gpio_write(GREEN_LED, toggle_LED);  // Flick LED
-          toggle_LED = !toggle_LED;
-
-          // Get the sensor readings
-          update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
-                          _BME280_data, _GNSS_data);
-
-          // Update buffer and window
-          update_buffer(&frame, &frame_buffer);
-          if (frame_buffer.count > WINDOW_SIZE * 2) {
-            // Get the window barometer median
-            for (int i = 0; i < WINDOW_SIZE; i++) {
-              _data[i] = frame_buffer.window[i].barometer.pressure;
-            }
-            current_pressure =
-                get_median(_data, WINDOW_SIZE);  // get pressure median
-
-            // Check if rocket is stationary based on acceleration
-            LSM6DS3_acc_read(&_LSM6DS3_data,
-                             &accel_vector);  // This is clearly wrong
-
-            // Check for launch given pressure decrease
-            if ((frame_buffer.ground_ref - current_pressure) >
-                    LAUNCH_THRESHOLD &&
-                accel_vector[3] > 1.4) {
-              set_flight_stage(ASCENT);
-              LOG("FLIGHT STAGE = ASCENT\r\n");
-
-              // Log data from the the last window
-              for (int i = 0; i < 10; i++) {
-                log_frame(frame_buffer.frames[i]);
-              }
-            }
-          }
-        }
+        handle_LAUNCHPAD(&frame, &frame_buffer);
+        // if ((dt) > (1000000 / PADREADFREQ)) {
+        //   handle_LAUNCHPAD(&frame, &frame_buffer);
+        // } 
+        oldTime=newTime;
         break;
 
       case ASCENT:
-        newTime = get_time_us();  // Get current time
-        if ((newTime - oldTime) > (1000000 / ASCENTREADFREQ)) {
-          oldTime = newTime;  // Old time = new time
-
-          // Get the sensor readings
-          update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
-                          _BME280_data, _GNSS_data);
-
-          // Log data
-          log_frame(frame);
-
-          // Update buffer and window
-          update_buffer(&frame, &frame_buffer);
-
-          // Get window median readings
-          for (int i = 0; i < WINDOW_SIZE; i++) {
-            _data[i] = frame_buffer.window[i].barometer.pressure;
-          }
-          current_pressure =
-              get_median(_data, WINDOW_SIZE);  // get pressure median
-
-          // Check for apogee given pressure increase
-          if (current_pressure - previous_pressure > APOGEE_THRESHOLD) {
-            set_flight_stage(APOGEE);
-            LOG("FLIGHT STAGE = APOGEE\r\n");
-          } else if (previous_pressure >
-                     current_pressure) {  // Storing the minimum, (median),
-                                          // pressure value during ascent
-            previous_pressure = current_pressure;
-          }
+        if ((dt) > (1000000 / ASCENTREADFREQ)) {
+          handle_ASCENT(&frame, &frame_buffer);
         }
         break;
 
       case APOGEE:
-        newTime = get_time_us();  // Get current time
-        if ((newTime - oldTime) > (1000000 / APOGEEREADFREQ)) {
-          oldTime = newTime;  // Old time = new time
-
-          // Get the sensor readings
-          update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
-                          _BME280_data, _GNSS_data);
-
-          // Log data
-          log_frame(frame);
-
-          // Update buffer and window
-          update_buffer(&frame, &frame_buffer);
-
-          // Run for a few cycles to record apogee when switch to descent
-          if (apogee_incr == 0)
-            set_flight_stage(DESCENT);
-          else
-            apogee_incr--;
+        if ((dt) > (1000000 / APOGEEREADFREQ)) {
+          handle_APOGEE(&frame, &frame_buffer);
         }
         break;
 
       case DESCENT:
-        newTime = get_time_us();  // Get current time
-        if ((newTime - oldTime) > (1000000 / DESCENTREADFREQ)) {
-          oldTime = newTime;  // Old time = new time
-
-          // Get the sensor readings
-          update_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-          get_frame_array(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data,
-                          _BME280_data, _GNSS_data);
-
-          // Log data
-          log_frame(frame);
-
-          // Update buffer and window
-          update_buffer(&frame, &frame_buffer);
-
-          // Get window median readings
-          int _data[WINDOW_SIZE];
-          LSM6DS3_data _data_imu[WINDOW_SIZE];
-
-          for (int i = 0; i < WINDOW_SIZE; i++) {
-            _data_imu[i] = frame_buffer.window[i].imu;
-            _data[i] = frame_buffer.window[i].barometer.pressure;
-          }
-          current_pressure =
-              get_median(_data, WINDOW_SIZE);  // get pressure median
-
-          // Check for landing
-          if (LSM6DS3_gyro_standard_dev(_data_imu, WINDOW_SIZE, 1500) &&
-              (frame_buffer.ground_ref - current_pressure) < GROUND_THRESHOLD) {
-            set_flight_stage(LANDING);
-            LOG("FLIGHT STAGE = LANDING\r\n");
-          }
+        if ((dt) > (1000000 / DESCENTREADFREQ)) {
+          handle_DESCENT(&frame, &frame_buffer);
         }
         break;
 

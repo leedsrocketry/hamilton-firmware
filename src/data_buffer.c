@@ -11,13 +11,46 @@
   @brief Initalise buffer
   @param buffer The buffer to be initalised
 */
-void init_buffer(dataBuffer* buffer) {
+void init_buffer(FrameBuffer* buffer) {
   buffer->ground_ref = 0;
   buffer->index = 0;
   buffer->count = 0;
 
   // TODO: Allocate memory for the buffer array
   // TODO: Allocate memory for the window array
+}
+
+void write_framebuffer(FrameBuffer* fb)
+{
+  for(int32_t i = 0; i < fb->count; i++ )
+  {
+    log_frame(fb->frames[i]);
+  }
+}
+
+int32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading reading)
+{
+  int32_t _data[BUFFER_SIZE];
+  switch(reading)
+  {
+    case MS5611_PRESSURE:
+      // Calculate median of pressure in fb
+      for(uint32_t i = 0; i < BUFFER_SIZE; i++)
+      {
+        _data[i] = fb->frames[i].barometer.pressure;
+      }
+      get_median(_data, BUFFER_SIZE);
+    break;
+    
+    case MS5611_TEMP:
+      // Calculate median of temp in fb
+      for(uint32_t i = 0; i < BUFFER_SIZE; i++)
+      {
+        _data[i] = fb->frames[i].barometer.temp;
+      }
+      get_median(_data, BUFFER_SIZE);
+    break;
+  }
 }
 
 /**
@@ -34,7 +67,7 @@ int cmpfunc(const void* a, const void* b) { return (*(int*)a - *(int*)b); }
   @param size Size of array
   @return True when ready
 */
-int get_median(int data[], int size) {
+uint32_t get_median(int32_t data[], uint32_t size) {
   qsort(data, (size_t)size, sizeof(int), cmpfunc);
   if (size % 2 != 0) return data[(size / 2) + 1];
   return (data[size / 2] + data[(size / 2) + 1]) / 2;
@@ -45,10 +78,10 @@ int get_median(int data[], int size) {
   @param frame - one reading data frame to add
   @param buffer - data buffer
 */
-void set_ground_reference(dataBuffer* buffer) {
+void set_ground_reference(FrameBuffer* buffer) {
   // Create copy of buffer data to sort
-  int _data[WINDOW_SIZE];
-  for (int i = 0; i < WINDOW_SIZE; i++) {
+  int32_t _data[WINDOW_SIZE];
+  for (uint32_t i = 0; i < WINDOW_SIZE; i++) {
     _data[i] = buffer->frames[i].barometer.pressure;
   }
 
@@ -61,24 +94,24 @@ void set_ground_reference(dataBuffer* buffer) {
   @param frame - one reading data frame to add
   @param buffer - data buffer
 */
-void update_buffer(FrameArray* frame, dataBuffer* buffer) {
+void update_frame_buffer(Frame* frame, FrameBuffer* buffer) {
   buffer->frames[buffer->index] = *frame;
   buffer->index = (buffer->index + 1) % BUFFER_SIZE;
 
   // Increase count and set ground reference
-  if (buffer->count < BUFFER_SIZE) {
-    if (buffer->count == WINDOW_SIZE) set_ground_reference(buffer);
-    buffer->count++;
-  }
+  // if (buffer->count < BUFFER_SIZE) {
+  //   if (buffer->count == WINDOW_SIZE) set_ground_reference(buffer);
+  //   buffer->count++;
+  // }
 
-  // Update window
-  if (buffer->count > WINDOW_SIZE * 2) {
-    for (int i = 0; i < WINDOW_SIZE; i++) {
-      int frame_number = (buffer->index - WINDOW_SIZE + i);
-      if (frame_number < 0) frame_number = BUFFER_SIZE + frame_number;
-      buffer->window[i] = buffer->frames[i];
-    }
-  }
+  // // Update window
+  // if (buffer->count > WINDOW_SIZE * 2) {
+  //   for (int i = 0; i < WINDOW_SIZE; i++) {
+  //     int frame_number = (buffer->index - WINDOW_SIZE + i);
+  //     if (frame_number < 0) frame_number = BUFFER_SIZE + frame_number;
+  //     buffer->window[i] = buffer->frames[i];
+  //   }
+  // }
 }
 
 /**
@@ -117,15 +150,15 @@ float get_vertical_velocity(int data[], int dt) {
   accelerometer was not working for launch 1
   @note Deprecated
 */
-bool is_stationary(int data[]) {
-  int sum = 0;
-  for (int i = 0; i < WINDOW_SIZE; i++) {
+bool is_stationary(int32_t data[]) {
+  int32_t sum = 0;
+  for (int32_t i = 0; i < WINDOW_SIZE; i++) {
     sum += data[i];
   }
-  int mean = sum / WINDOW_SIZE;
-  int variance = 0;
-  for (int i = 0; i < WINDOW_SIZE; i++) {
-    variance += (int)pow((data[i] - mean), 2);
+  int32_t mean = sum / WINDOW_SIZE;
+  int32_t variance = 0;
+  for (int32_t i = 0; i < WINDOW_SIZE; i++) {
+    variance += (int32_t)pow((data[i] - mean), 2);
   }
   return sqrt(variance / WINDOW_SIZE) < GROUND_THRESHOLD;
 }
