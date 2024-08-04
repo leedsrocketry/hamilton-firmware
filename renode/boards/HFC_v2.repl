@@ -1,0 +1,30 @@
+using "renode/chips/STM32L4R5.repl"
+
+// SPI with multiplexer
+
+spi_mux: SPI.CustomSPIMultiplexer @ spi1
+gpioPortD: {1 -> spi_mux@0; 2 -> spi_mux@1; 3 -> spi_mux@2; 4 -> spi_mux@3}
+
+accelerometer: Sensors.ADXL375 @ spi_mux 0x00
+imu: Mocks.DummySPISlave @ spi_mux 0x01
+magnetometer:  Mocks.DummySPISlave @ spi_mux 0x02
+barometer:  Mocks.DummySPISlave @ spi_mux 0x03
+humidity:  Mocks.DummySPISlave @ spi_mux 0x04
+sdCard: SD.SDCard @ spi_mux 0x05
+    capacity: 4096
+    spiMode: true
+//    persistent: true
+
+// HC12: Mocks.Uart @ UART2
+// GNSS: mocks.Uarts @ UART3
+
+
+
+
+//flightRecorder: SPI.NANDFlash
+//    dataMemory:
+//    spareMemory:
+//    pageSize:
+//    spareSize:
+//    pagesPerBlock: 64
+//    blocksPerLun:

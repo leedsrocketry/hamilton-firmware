@@ -67,9 +67,6 @@ namespace Antmicro.Renode.Peripherals.Sensors
             state = State.Idle;
             address = 0;
 
-            AccelerationX = 0;
-            AccelerationY = 0;
-            AccelerationZ = 0;
         }
 
 
@@ -124,7 +121,7 @@ namespace Antmicro.Renode.Peripherals.Sensors
                 .WithValueField(0, 7, FieldMode.Read, name: "HUM_MSB");
 
             Registers.HumLSB.Define(this)
-                .WithValueField(0, 7, FieldMode.Read, name: "HUM_LSB")
+                .WithValueField(0, 7, FieldMode.Read, name: "HUM_LSB");
         }
 
         private byte Convert(double value, bool upperByte)
