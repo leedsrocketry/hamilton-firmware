@@ -11,9 +11,9 @@ using Antmicro.Renode.Peripherals.Timers;
 namespace Antmicro.Renode.Peripherals.Miscellaneous
 {
     [AllowedTranslations(AllowedTranslation.ByteToDoubleWord | AllowedTranslation.WordToDoubleWord)]
-    public sealed class STM32L4_RCC : IDoubleWordPeripheral, IKnownSize, IProvidesRegisterCollection<DoubleWordRegisterCollection>
+    public sealed class STM32L4R5_RCC : IDoubleWordPeripheral, IKnownSize, IProvidesRegisterCollection<DoubleWordRegisterCollection>
     {
-        public STM32L4_RCC(IMachine machine)
+        public STM32L4R5_RCC(IMachine machine)
         {
             var registersMap = new Dictionary<long, DoubleWordRegister>
             {
