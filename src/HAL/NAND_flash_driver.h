@@ -51,23 +51,23 @@ typedef struct Address {
 } Address;
 
 // Data Pins - pins used in data/control/address transmission (8 bit parrallel bus)
-static uint16_t data0 = PIN('D', 0); // 2;
-static uint16_t data1 = PIN('D', 1); // 3;
-static uint16_t data2 = PIN('D', 2); // 4;
-static uint16_t data3 = PIN('D', 3); // 5;
-static uint16_t data4 = PIN('D', 4); // 11;
-static uint16_t data5 = PIN('D', 5); // 12;
-static uint16_t data6 = PIN('D', 6); // 8;
-static uint16_t data7 = PIN('D', 7); // 9;
+static uint16_t data0 = PIN('B', 1); // 2;
+static uint16_t data1 = PIN('B', 2); // 3;
+static uint16_t data2 = PIN('E', 7); // 4;
+static uint16_t data3 = PIN('E', 8); // 5;
+static uint16_t data4 = PIN('E', 9); // 11;
+static uint16_t data5 = PIN('E', 10); // 12;
+static uint16_t data6 = PIN('E', 11); // 8;
+static uint16_t data7 = PIN('E', 12); // 9;
 
 // Control Pins - pins used to control the state of the flash chip
-static uint16_t WP  = PIN('D', 15); // 13, Write Protection;
-static uint16_t WE  = PIN('D', 14); // 14, Write Enable;
-static uint16_t ALE = PIN('D', 13); // 15, Address latch enable (where in the memory to store);
-static uint16_t CLE = PIN('D', 12); // 16, Command latch enable (When on, you can sent command);
-static uint16_t CE  = PIN('D', 9);  // 17, Check Enable (in case we want to test separatly);
-static uint16_t RE  = PIN('D', 11); // 18, Read Enable;
-static uint16_t RB  = PIN('A', 8);  // 19, Ready/Busy;
+static uint16_t WP  = PIN('B', 0); // 13, Write Protection;
+static uint16_t WE  = PIN('C', 5); // 14, Write Enable;
+static uint16_t ALE = PIN('C', 4); // 15, Address latch enable (where in the memory to store);
+static uint16_t CLE = PIN('A', 7); // 16, Command latch enable (When on, you can sent command);
+static uint16_t CE  = PIN('A', 6);  // 17, Check Enable (in case we want to test separatly);
+static uint16_t RE  = PIN('A', 5); // 18, Read Enable;
+static uint16_t RB  = PIN('A', 4);  // 19, Ready/Busy;
 
 
 // Stores the address of the next available frame (set of 128 bytes) (assumes all frames prior to this are full of valuable data)

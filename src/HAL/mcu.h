@@ -230,9 +230,9 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
   #ifdef FLIGHT_COMPUTER
   // Flight Computer pins
     if (uart == UART1)  af = 7, tx = PIN('A', 9),  rx = PIN('A', 10); // EXTERN USART
-    if (uart == UART2)  af = 7, tx = PIN('A', 2),  rx = PIN('A', 3);
-    if (uart == UART3)  af = 7, tx = PIN('D', 8),  rx = PIN('D', 9);  // GNSS RX/TX
-    if (uart == LUART1) af = 8, tx = PIN('B', 11), rx = PIN('B', 10); // PAD RADIO
+    if (uart == UART2)  af = 7, tx = PIN('D', 5),  rx = PIN('D', 6);
+    if (uart == UART3)  af = 7, tx = PIN('C', 10),  rx = PIN('C', 11);  // GNSS RX/TX
+    if (uart == UART4)  af = 7, tx = PIN('D', 8),  rx = PIN('D', 9);  // GNSS RX/TX
   #else
   // Nucleo pins
     if (uart == UART1)  af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
@@ -303,10 +303,10 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 
 #pragma region Multiplexer IC201
 // Define Select pins on the multiplexer
-#define A0 PIN('E', 6)
-#define A1 PIN('C', 13)
-#define A2 PIN('C', 14)
-#define A3 PIN('C', 15)
+#define A0 PIN('D', 1)
+#define A1 PIN('D', 2)
+#define A2 PIN('D', 3)
+#define A3 PIN('D', 4)
 
 // Map cs pins to sensors
 #define CS0  0   // EEPROM 1
@@ -395,12 +395,11 @@ static inline void spi_init(SPI_TypeDef *spi) {
 
   #ifdef FLIGHT_COMPUTER
   // Flight Computer pins maybe A4 or B0 or E12 or G5 or A15
+  // Note: SS not needed?
   if (spi == SPI1)
-    RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('E', 13), miso = PIN('E', 14), mosi = PIN('E', 15);
+    RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('B', 3), miso = PIN('B', 4), mosi = PIN('B', 5);
   if (spi == SPI2)
     RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
-  if (spi == SPI3)
-    RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
 
   #else
   // Nucleo pins

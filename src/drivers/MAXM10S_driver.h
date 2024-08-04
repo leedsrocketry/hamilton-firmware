@@ -10,6 +10,10 @@
 #include <stdint.h>
 #include "debug.h"
 
+#define GNSS_RESTART PIN('C', 12)
+#define GNSS_INTERRUPT PIN('D', 0)
+#define GNSS_CLOCK PIN('H', 0)
+
 // A default of 250ms for maxWait seems fine for I2C but is not enough for SerialUSB.
 // If you know you are only going to be using I2C / Qwiic communication, you can
 // safely reduce kUBLOXGNSSDefaultMaxWait to 250.
