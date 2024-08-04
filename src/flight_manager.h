@@ -21,6 +21,12 @@
 #define APOGEEREADFREQ 1000  // frequency to read data during ascent
 #define DESCENTREADFREQ 100  // frequency to read data during descent
 
+#define EVENT_TRIG_1 PIN('C', 2)
+#define EVENT_TRIG_1 PIN('C', 1)
+
+// Not used as of 04/08/2024, should be moved later
+#define BATTERY_ADC PIN('C', 3)
+
 typedef enum FlightStage {
   LAUNCHPAD,
   ASCENT,

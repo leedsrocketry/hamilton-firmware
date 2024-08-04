@@ -17,6 +17,8 @@
 #define LSM6DS3_CS      			7
 #define LSM6DSO_CHIP_ID 			0x6C
 
+#define LSM6DSO_INT_PIN PIN('B', 9)
+
 // equivalent to 70 mdps/LSB, as specified in LSM6DSO datasheet section 4.1, symbol G_So
 #define LSM6DSO_GYRO_SCALE_2000DPS 	0.070f
 
