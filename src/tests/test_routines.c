@@ -18,7 +18,7 @@ void run_test_routine()
   for (;;) {
     delay_ms(1000);
     on = true;                                  // This block is executed
-    gpio_write(GREEN_LED, on);                  // Every `period` milliseconds
+    gpio_write(BLUE_LED_0, on);                  // Every `period` milliseconds
     on = !on;                                   // Toggle LED state
     LOG("LED: %d, tick: %u\r\n", on, 1000); // Write message
   }
@@ -34,7 +34,7 @@ void run_MS5611_routine()
   bool on = true;
   for (;;) {
     delay_ms(1000);
-    gpio_write(GREEN_LED, on);
+    gpio_write(BLUE_LED_0, on);
     on = !on;
     MS5611_get_data(&_data);
     LOG("p: %ld, t: %ld, \r\n", _data.pressure, _data.temp);
@@ -51,7 +51,7 @@ void run_ADXL375_routine()
   bool on = true;
   for (;;) {
     delay_ms(1000);
-    gpio_write(GREEN_LED, on);
+    gpio_write(BLUE_LED_0, on);
     on = !on;
     ADXL375_get_data(&_data);
     LOG("x: %d, y: %d, z: %d \r\n", _data.x, _data.y, _data.z);
@@ -118,7 +118,7 @@ void spi_test_routine(SPI_TypeDef* spi)
 
   for (;;)
   {
-    gpio_write(GREEN_LED, on);        // Every `period` milliseconds
+    gpio_write(BLUE_LED_0, on);        // Every `period` milliseconds
     on = !on;                         // Toggle LED state
     spi_transmit(spi, 2);
     ret_val = spi_read_byte(spi);
