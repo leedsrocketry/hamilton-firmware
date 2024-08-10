@@ -14,7 +14,7 @@
 
 #pragma once
 
-#define LSM6DS3_CS      			7
+#define LSM6DS3_CS      			1
 #define LSM6DSO_CHIP_ID 			0x6C
 
 #define LSM6DSO_INT_PIN PIN('B', 9)

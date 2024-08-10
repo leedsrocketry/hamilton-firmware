@@ -87,25 +87,25 @@ void run_LSM6DS3_routine()
 }
 
 /**
-  @brief Routine to test the BME280.
-*/
-void run_BME280_routine()
-{
-  LOG("================ BME280_routine ================\r\n");
-  BME280_data data;
-  BME280_dev dev;
+//   @brief Routine to test the BME280.
+// */
+// void run_BME280_routine()
+// {
+//   LOG("================ BME280_routine ================\r\n");
+//   BME280_data data;
+//   BME280_dev dev;
 
-  delay_microseconds(50);
-  BME280_init(&dev, SPI1, CS11);
+//   delay_microseconds(50);
+//   BME280_init(&dev, SPI1, CS11);
   
-  for (;;) {
-    BME280_get_data(BME280_PRESS, &data, &dev);
-    BME280_get_data(BME280_TEMP, &data, &dev);
-    BME280_get_data(BME280_HUM, &data, &dev);
-    LOG("Pressure: %ld, Temp: %d, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
-    delay_microseconds(1000 * 1000); // 1 second
-  }
-}
+//   for (;;) {
+//     BME280_get_data(BME280_PRESS, &data, &dev);
+//     BME280_get_data(BME280_TEMP, &data, &dev);
+//     BME280_get_data(BME280_HUM, &data, &dev);
+//     LOG("Pressure: %ld, Temp: %d, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
+//     delay_microseconds(1000 * 1000); // 1 second
+//   }
+// }
 
 /**
   @brief Routine to test the SPI communication.

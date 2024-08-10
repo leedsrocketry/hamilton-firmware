@@ -42,6 +42,6 @@ int main(void) {
   LOG("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
 
-  run_flight();
+  //run_flight();
   return 0;
 }

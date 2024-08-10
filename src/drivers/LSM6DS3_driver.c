@@ -30,7 +30,6 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     //end of spi comm
 
     if (chip_id == LSM6DS3_WHO_AM_I_EXP) {
-        LOG("LSM6DS3 wrong chip ID, %d\r\n", chip_id);
         delay_microseconds(10); 
         LSM6DS3_config(spi);     //configure settings
         delay_microseconds(10); //give delay after setting the settings
@@ -216,7 +215,7 @@ bool LSM6DS3_gyro_offsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->x_offset = (avg[0] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->y_offset = (avg[1] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->z_offset = (avg[2] / LSM6DSO_OFFSET_BUFF_LEN);
-    LOG("Gyro Offsets: %li, %li, %li\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
+    //LOG("Gyro Offsets: %li, %li, %li\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
     return 1;
 }
 
