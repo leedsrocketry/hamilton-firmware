@@ -41,6 +41,10 @@ void initalise_drivers() {
   MS5611_init(SPI1);                   // Barometer
   ADXL375_init(SPI1);                  // Accelerometer
   LSM6DS3_init(SPI1, &_LSM6DS3_data);  // IMU
+
+  M5611_data data;
+  MS5611_get_data(&data);
+  LOG("%d\r\n", data.temp);
 }
 
 void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)

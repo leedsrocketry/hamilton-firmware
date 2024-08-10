@@ -114,7 +114,6 @@ void STM32_flash_LED(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t
 
 void STM32_indicate_on() {
   for (int i = 0; i < 3; i++) {
-    
     gpio_write(BUZZER, HIGH);    // Turn on buzzer
     gpio_write(BLUE_LED_0, HIGH);  // Turn off LED
     delay_ms(200);

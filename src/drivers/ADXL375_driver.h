@@ -80,7 +80,7 @@
 #define ADXL375_Z_REG_DATAZ1              0x37
 
 #define ADXL375_MEASURE                   0x08
-#define ADXL375_CS								        6
+#define ADXL375_CS								        0
 
 // Self test
 #define ADXL375_SELF_TEST_SAMPLES	        10

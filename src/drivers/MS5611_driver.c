@@ -32,8 +32,9 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
     spi_transmit(MS5611_SPI, cmd);
     spi_disable_cs(MS5611_SPI, MS5611_CS);
     MS5611_read_PROM(MS5611_SPI);
-    M5611_data data;
-    MS5611_get_data(&data);
+    //M5611_data data;
+    // MS5611_get_data(&data);
+    // LOG("%d\r\n", data.temp);
 	return 0;
 }
 
@@ -60,6 +61,8 @@ uint8_t MS5611_read_PROM()
         
         // Fill struct using ptr arithmatic
         *(prom_ptr + i) = (int16_t)result;
+        //LOG("PROM: %d\r\n", result);
+        delay_ms(10);
     }
     return 0;
 }
@@ -103,9 +106,9 @@ uint32_t MS5611_get_data(M5611_data* data)
     spi_transmit_receive(MS5611_SPI, &cmd, 1, 3, &D1);
     spi_disable_cs(MS5611_SPI, MS5611_CS);
 
-  int64_t OFF = ((int64_t)ms5611_prom_data.OFF << 16) + ((int64_t)ms5611_prom_data.TCO * dT >> 7);
-  int64_t SENS = ((int64_t)ms5611_prom_data.SENS << 15) + ((int64_t)ms5611_prom_data.TCS * dT >> 8);
-  int32_t PRESSURE = (((int64_t)D1 * SENS >> 21) - OFF) >> 15;    data->temp = TEMP;
+    int64_t OFF = ((int64_t)ms5611_prom_data.OFF << 16) + ((int64_t)ms5611_prom_data.TCO * dT >> 7);
+    int64_t SENS = ((int64_t)ms5611_prom_data.SENS << 15) + ((int64_t)ms5611_prom_data.TCS * dT >> 8);
+    int32_t PRESSURE = (((int64_t)D1 * SENS >> 21) - OFF) >> 15;    data->temp = TEMP;
     data->pressure = PRESSURE;
 
     return 0;

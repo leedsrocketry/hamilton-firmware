@@ -309,51 +309,52 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 #define A3 PIN('D', 4)
 
 // Map cs pins to sensors
-#define CS0  0   // EEPROM 1
-#define CS1  1   // EEPROM 2
-#define CS2  2   // Thermocoupler 4
-#define CS3  3   // Thermocoupler 3
-#define CS4  4   // Thermocoupler 2
-#define CS5  5   // Thermocoupler 1
-#define CS6  6   // Accelerometer
-#define CS7  7   // IMU
-#define CS8  8   // Magnetometer
-#define CS9  9   // Pad Radio
-#define CS10 10  // Barometer
-#define CS11 11  // Humidity 
-#define CS12 12  // External DAC 1
-#define CS13 13  // External DAC 2
-#define CS14 14  // NONE
-#define CS15 15  // External ADC 1 
-
+#define CS0 0 // Accelerometer
+#define CS1 1 // IMU
+#define CS2 2 // Magnetometer
+#define CS3 3 // Barometer
+#define CS4 4 // Humidity
+#define CS5 5 // SD_CARD
 
 // Generate all switch cases for the multiplexer
 static inline void set_cs(int16_t cs)
 {
   switch(cs) {
-    case CS6:   // Accelerometer
+    case CS0:   // Accelerometer
       gpio_write(A0, LOW);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, HIGH);
+      gpio_write(A1, LOW);
+      gpio_write(A2, LOW);
       gpio_write(A3, LOW);
       break;
-    case CS7:   // IMU
-      gpio_write(A0, HIGH);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, HIGH);
-      gpio_write(A3, LOW);
-      break;
-    case CS9:   // Pad Radio
+    case CS1:   // IMU
       gpio_write(A0, HIGH);
       gpio_write(A1, LOW);
       gpio_write(A2, LOW);
-      gpio_write(A3, HIGH);
+      gpio_write(A3, LOW);
       break;
-    case CS10: // Barometer
+    case CS2: // Magnetometer
       gpio_write(A0, LOW);
       gpio_write(A1, HIGH);
       gpio_write(A2, LOW);
-      gpio_write(A3, HIGH);
+      gpio_write(A3, LOW);
+      break;
+    case CS3: // Barometer
+      gpio_write(A0, HIGH);
+      gpio_write(A1, HIGH);
+      gpio_write(A2, LOW);
+      gpio_write(A3, LOW);
+      break;
+    case CS4: // Humidity
+      gpio_write(A0, LOW);
+      gpio_write(A1, LOW);
+      gpio_write(A2, HIGH);
+      gpio_write(A3, LOW);
+      break;
+    case CS5: // SD_Card
+      gpio_write(A0, HIGH);
+      gpio_write(A1, LOW);
+      gpio_write(A2, HIGH);
+      gpio_write(A3, LOW);
       break;
   }
 }

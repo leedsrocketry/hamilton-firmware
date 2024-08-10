@@ -40,7 +40,7 @@
 #define MS5611_CONVERSION_OSR_2048 				5
 #define MS5611_CONVERSION_OSR_4096 				10
 
-#define MS5611_CS								10
+#define MS5611_CS								3
 #pragma endregion Macros
 
 #pragma region Structs/Emun
