@@ -230,9 +230,9 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
   #ifdef FLIGHT_COMPUTER
   // Flight Computer pins
     if (uart == UART1)  af = 7, tx = PIN('A', 9),  rx = PIN('A', 10); // EXTERN USART
-    if (uart == UART2)  af = 7, tx = PIN('A', 2),  rx = PIN('A', 3);
-    if (uart == UART3)  af = 7, tx = PIN('D', 8),  rx = PIN('D', 9);  // GNSS RX/TX
-    if (uart == LUART1) af = 8, tx = PIN('B', 11), rx = PIN('B', 10); // PAD RADIO
+    if (uart == UART2)  af = 7, tx = PIN('D', 5),  rx = PIN('D', 6);
+    if (uart == UART3)  af = 7, tx = PIN('C', 10),  rx = PIN('C', 11);  // GNSS RX/TX
+    if (uart == UART4)  af = 7, tx = PIN('D', 8),  rx = PIN('D', 9);  // GNSS RX/TX
   #else
   // Nucleo pins
     if (uart == UART1)  af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
@@ -312,57 +312,58 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 
 #pragma region Multiplexer IC201
 // Define Select pins on the multiplexer
-#define A0 PIN('E', 6)
-#define A1 PIN('C', 13)
-#define A2 PIN('C', 14)
-#define A3 PIN('C', 15)
+#define A0 PIN('D', 1)
+#define A1 PIN('D', 2)
+#define A2 PIN('D', 3)
+#define A3 PIN('D', 4)
 
 // Map cs pins to sensors
-#define CS0  0   // EEPROM 1
-#define CS1  1   // EEPROM 2
-#define CS2  2   // Thermocoupler 4
-#define CS3  3   // Thermocoupler 3
-#define CS4  4   // Thermocoupler 2
-#define CS5  5   // Thermocoupler 1
-#define CS6  6   // Accelerometer
-#define CS7  7   // IMU
-#define CS8  8   // Magnetometer
-#define CS9  9   // Pad Radio
-#define CS10 10  // Barometer
-#define CS11 11  // Humidity 
-#define CS12 12  // External DAC 1
-#define CS13 13  // External DAC 2
-#define CS14 14  // NONE
-#define CS15 15  // External ADC 1 
-
+#define CS0 0 // Accelerometer
+#define CS1 1 // IMU
+#define CS2 2 // Magnetometer
+#define CS3 3 // Barometer
+#define CS4 4 // Humidity
+#define CS5 5 // SD_CARD
 
 // Generate all switch cases for the multiplexer
 static inline void set_cs(int16_t cs)
 {
   switch(cs) {
-    case CS6:   // Accelerometer
+    case CS0:   // Accelerometer
       gpio_write(A0, LOW);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, HIGH);
+      gpio_write(A1, LOW);
+      gpio_write(A2, LOW);
       gpio_write(A3, LOW);
       break;
-    case CS7:   // IMU
-      gpio_write(A0, HIGH);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, HIGH);
-      gpio_write(A3, LOW);
-      break;
-    case CS9:   // Pad Radio
+    case CS1:   // IMU
       gpio_write(A0, HIGH);
       gpio_write(A1, LOW);
       gpio_write(A2, LOW);
-      gpio_write(A3, HIGH);
+      gpio_write(A3, LOW);
       break;
-    case CS10: // Barometer
+    case CS2: // Magnetometer
       gpio_write(A0, LOW);
       gpio_write(A1, HIGH);
       gpio_write(A2, LOW);
-      gpio_write(A3, HIGH);
+      gpio_write(A3, LOW);
+      break;
+    case CS3: // Barometer
+      gpio_write(A0, HIGH);
+      gpio_write(A1, HIGH);
+      gpio_write(A2, LOW);
+      gpio_write(A3, LOW);
+      break;
+    case CS4: // Humidity
+      gpio_write(A0, LOW);
+      gpio_write(A1, LOW);
+      gpio_write(A2, HIGH);
+      gpio_write(A3, LOW);
+      break;
+    case CS5: // SD_Card
+      gpio_write(A0, HIGH);
+      gpio_write(A1, LOW);
+      gpio_write(A2, HIGH);
+      gpio_write(A3, LOW);
       break;
   }
 }
@@ -404,12 +405,11 @@ static inline void spi_init(SPI_TypeDef *spi) {
 
   #ifdef FLIGHT_COMPUTER
   // Flight Computer pins maybe A4 or B0 or E12 or G5 or A15
+  // Note: SS not needed?
   if (spi == SPI1)
-    RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('E', 13), miso = PIN('E', 14), mosi = PIN('E', 15);
+    RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('B', 3), miso = PIN('B', 4), mosi = PIN('B', 5);
   if (spi == SPI2)
     RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
-  if (spi == SPI3)
-    RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
 
   #else
   // Nucleo pins

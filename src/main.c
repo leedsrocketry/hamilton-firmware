@@ -25,6 +25,14 @@ int main(void) {
   // STM32 setup
   STM32_init();
 
+  // gpio_write(RBG_LED_RED, HIGH);
+  // gpio_write(RGB_LED_GREEN, HIGH);
+  // gpio_write(RGB_LED_BLUE, HIGH);
+
+  // gpio_write(BLUE_LED_0, HIGH);
+  // gpio_write(BLUE_LED_1, HIGH);
+  // gpio_write(BLUE_LED_2, HIGH);
+
   LOG("================ PROGRAM START ================\r\n");
   STM32_indicate_on();
 
@@ -34,6 +42,6 @@ int main(void) {
   LOG("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
 
-  run_flight();
+  //run_flight();
   return 0;
 }

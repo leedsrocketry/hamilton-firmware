@@ -80,7 +80,7 @@
 #define ADXL375_Z_REG_DATAZ1              0x37
 
 #define ADXL375_MEASURE                   0x08
-#define ADXL375_CS								        6
+#define ADXL375_CS								        0
 
 // Self test
 #define ADXL375_SELF_TEST_SAMPLES	        10
@@ -90,6 +90,8 @@
 #define ADXL375_SELF_TEST_MIN_G	          5.0
 #define ADXL375_SELF_TEST_MAX_G	          6.8
 #define ADXL375_MIN_SELF_TEST	((int32_t) (ADXL375_MIN_LSB_G * ADXL375_SELF_TEST_MIN_G * ADXL375_SELF_TEST_SAMPLES + 0.5))
+
+#define ADXL365_INT_PIN PIN('E', 1)
 
 #define ADXL375_DATA_FORMAT_SETTINGS(self_test) (			\
 		ADXL375_DATA_FORMAT_FIXED |				\

@@ -18,7 +18,7 @@ void run_test_routine()
   for (;;) {
     delay_ms(1000);
     on = true;                                  // This block is executed
-    gpio_write(GREEN_LED, on);                  // Every `period` milliseconds
+    gpio_write(BLUE_LED_0, on);                  // Every `period` milliseconds
     on = !on;                                   // Toggle LED state
     LOG("LED: %d, tick: %u\r\n", on, 1000); // Write message
   }
@@ -34,7 +34,7 @@ void run_MS5611_routine()
   bool on = true;
   for (;;) {
     delay_ms(1000);
-    gpio_write(GREEN_LED, on);
+    gpio_write(BLUE_LED_0, on);
     on = !on;
     MS5611_get_data(&_data);
     LOG("p: %ld, t: %ld, \r\n", _data.pressure, _data.temp);
@@ -51,7 +51,7 @@ void run_ADXL375_routine()
   bool on = true;
   for (;;) {
     delay_ms(1000);
-    gpio_write(GREEN_LED, on);
+    gpio_write(BLUE_LED_0, on);
     on = !on;
     ADXL375_get_data(&_data);
     LOG("x: %d, y: %d, z: %d \r\n", _data.x, _data.y, _data.z);
@@ -87,25 +87,25 @@ void run_LSM6DS3_routine()
 }
 
 /**
-  @brief Routine to test the BME280.
-*/
-void run_BME280_routine()
-{
-  LOG("================ BME280_routine ================\r\n");
-  BME280_data data;
-  BME280_dev dev;
+//   @brief Routine to test the BME280.
+// */
+// void run_BME280_routine()
+// {
+//   LOG("================ BME280_routine ================\r\n");
+//   BME280_data data;
+//   BME280_dev dev;
 
-  delay_microseconds(50);
-  BME280_init(&dev, SPI1, CS11);
+//   delay_microseconds(50);
+//   BME280_init(&dev, SPI1, CS11);
   
-  for (;;) {
-    BME280_get_data(BME280_PRESS, &data, &dev);
-    BME280_get_data(BME280_TEMP, &data, &dev);
-    BME280_get_data(BME280_HUM, &data, &dev);
-    LOG("Pressure: %ld, Temp: %d, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
-    delay_microseconds(1000 * 1000); // 1 second
-  }
-}
+//   for (;;) {
+//     BME280_get_data(BME280_PRESS, &data, &dev);
+//     BME280_get_data(BME280_TEMP, &data, &dev);
+//     BME280_get_data(BME280_HUM, &data, &dev);
+//     LOG("Pressure: %ld, Temp: %d, Humidity: %ld, \r\n", data.pressure, data.temperature, data.humidity);
+//     delay_microseconds(1000 * 1000); // 1 second
+//   }
+// }
 
 /**
   @brief Routine to test the SPI communication.
@@ -118,7 +118,7 @@ void spi_test_routine(SPI_TypeDef* spi)
 
   for (;;)
   {
-    gpio_write(GREEN_LED, on);        // Every `period` milliseconds
+    gpio_write(BLUE_LED_0, on);        // Every `period` milliseconds
     on = !on;                         // Toggle LED state
     spi_transmit(spi, 2);
     ret_val = spi_read_byte(spi);

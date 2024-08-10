@@ -19,6 +19,15 @@
 uint8_t MAXM10S_init();
 uint8_t MAXM10S_get_data();
 
+#define GNSS_RESTART PIN('C', 12)
+#define GNSS_INT PIN('D', 0)
+#define GNSS_CLOCK PIN('H', 0)
+
+// A default of 250ms for maxWait seems fine for I2C but is not enough for SerialUSB.
+// If you know you are only going to be using I2C / Qwiic communication, you can
+// safely reduce kUBLOXGNSSDefaultMaxWait to 250.
+#define kUBLOXGNSSDefaultMaxWait 1100 // Let's allow the user to define their own value if they want to
+
 // // A default of 250ms for maxWait seems fine for I2C but is not enough for SerialUSB.
 // // If you know you are only going to be using I2C / Qwiic communication, you can
 // // safely reduce kUBLOXGNSSDefaultMaxWait to 250.

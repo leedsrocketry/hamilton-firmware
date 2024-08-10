@@ -15,9 +15,15 @@
 #define MSL_ALT_TIMER_THRESHOLD_MS 60000 // 1 minute
 
 // Pins
-#define BUZZER PIN('B', 9)
-#define GREEN_LED PIN('B', 8)
+#define BUZZER PIN('E', 6)
 
+#define BLUE_LED_0 PIN('C', 13)
+#define BLUE_LED_1 PIN('C', 14)
+#define BLUE_LED_2 PIN('C', 15)
+
+#define RBG_LED_RED PIN('E', 2)
+#define RGB_LED_GREEN PIN('E', 3)
+#define RGB_LED_BLUE PIN('E', 4)
 typedef struct Date 
 {
   unsigned int year;

@@ -89,7 +89,7 @@ void STM32_init_peripherals()
 
     // LED/BUZZER
     gpio_set_mode(BUZZER, GPIO_MODE_OUTPUT);
-    gpio_set_mode(GREEN_LED, GPIO_MODE_OUTPUT);
+    gpio_set_mode(BLUE_LED_0, GPIO_MODE_OUTPUT);
   #endif
 }
 
@@ -104,9 +104,9 @@ void STM32_beep_buzzer(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16
 
 void STM32_flash_LED(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_flash) {
   for (int i = 0; i < nom_flash; i++) {
-    gpio_write(GREEN_LED, !HIGH);
+    gpio_write(BLUE_LED_0, !HIGH);
     delay_ms(on_duration_ms);
-    gpio_write(GREEN_LED, !LOW); 
+    gpio_write(BLUE_LED_0, !LOW); 
     delay_ms(off_duration_ms);
     
   }
@@ -114,11 +114,11 @@ void STM32_flash_LED(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t
 
 void STM32_indicate_on() {
   for (int i = 0; i < 3; i++) {
-    gpio_write(BUZZER, !HIGH);    // Turn on buzzer
-    gpio_write(GREEN_LED, !LOW);  // Turn off LED
+    gpio_write(BUZZER, HIGH);    // Turn on buzzer
+    gpio_write(BLUE_LED_0, HIGH);  // Turn off LED
     delay_ms(200);
-    gpio_write(BUZZER, !LOW);     // Turn off buzzer
-    gpio_write(GREEN_LED, !HIGH); // Turn on LED
+    gpio_write(BUZZER, LOW);     // Turn off buzzer
+    gpio_write(BLUE_LED_0, LOW); // Turn on LED
     delay_ms(200);
   }
 }

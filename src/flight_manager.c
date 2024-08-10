@@ -28,6 +28,7 @@ void set_flight_stage(FlightStage fs) { flightStage = fs; }
 // }
 
 void initalise_drivers() {
+
   _BME280_data.temperature = 0;
   _BME280_data.pressure = 0;
   _BME280_data.humidity = 0;
@@ -196,7 +197,7 @@ void run_flight() {
         break;
 
       case LANDING:
-        STM32_beep_buzzer(200, 200, 1);
+        //STM32_beep_buzzer(200, 200, 1);
         break;
     }
   }

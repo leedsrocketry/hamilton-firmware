@@ -58,3 +58,6 @@ format:
 	clang-format --style="Google" -i src/*.c src/*.h
 
 check: analyse format
+
+emulate: hfc
+	./renode/run-emulator.sh renode/HFC_v1.resc
