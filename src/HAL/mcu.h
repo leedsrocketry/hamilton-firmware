@@ -247,16 +247,22 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
   gpio_set_af(rx, af);
   uart->CR1 = 0;                              // Disable this UART                              
 
-  #ifdef FLIGHT_COMPUTER
-    uart->BRR = FREQ / baud;                    // FREQ is a CPU frequency
-  #else
-    if(uart == LUART1 || uart == USART1)
-    {
-      uart->BRR = 256*FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
-    } else if (uart == USART3){
-      uart->BRR = baud;
-    }
-  #endif
+  if(uart == LUART1 || uart == USART1)
+  {
+    uart->BRR = FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
+  } else if (uart == USART3){
+    //uart->BRR = baud;
+
+    uart->BRR = 0x682;
+
+    uart->CR1 |= BIT(29);
+
+    uart->CR2 = 0;
+
+    uart->CR3 = 0;
+    uart->CR3 |= USART_CR3_OVRDIS;
+    uart->CR3 |= USART_CR3_ONEBIT;
+  }
 
   uart->CR1 |= BIT(0) | BIT(2) | BIT(3);      // Set UE, RE, TE Datasheet 50.8.1 
 }
@@ -308,6 +314,24 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
   }
   return (uint8_t)(uart->RDR & 255);
 }
+
+static inline void uart_read_buf(USART_TypeDef *uart, uint8_t *results, uint8_t size)
+{
+  // while (!uart_read_ready(uart))
+  // {
+  //   spin(1); // Ref manual STM32L4 50.8.10 USART status register (USART_ISR)
+  // }
+
+  uint8_t size_r = size;
+  uint8_t i = 0;
+  while(size_r > 0)
+  {
+    results[i] = (uint8_t)(uart->RDR & 255);
+    size_r--;
+    i++;
+  }
+}
+
 #pragma endregion UART
 
 #pragma region Multiplexer IC201

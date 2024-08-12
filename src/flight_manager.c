@@ -42,6 +42,7 @@ void initalise_drivers() {
   ADXL375_init(SPI1);                  // Accelerometer
   LSM6DS3_init(SPI1, &_LSM6DS3_data);  // IMU
 
+  LOG("MAX\r\n");
   MAXM10S_init(USART3);
 }
 

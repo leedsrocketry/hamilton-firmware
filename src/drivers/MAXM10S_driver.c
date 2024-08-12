@@ -29,18 +29,41 @@ uint8_t MAXM10S_init(USART_TypeDef *uart)
   // delay_ms(1000);
   // uart_write_buf(uart, getDeviceID, sizeof(getDeviceID) / sizeof(uint8_t));
 
-  uint8_t response[8]; // Assuming an 8-byte response, adjust if necessary
-  for (int i = 0; i < 8; i++) {
-      response[i] = uart_read_byte(uart);
-      delay(250);
-  }
+  // uint8_t response[8]; // Assuming an 8-byte response, adjust if necessary
+  // for (int i = 0; i < 8; i++) {
+  //     response[i] = uart_read_byte(uart);
+  // }
 
-  // Print the received bytes for debugging
-  printf("Device ID Response: ");
-  for (int i = 0; i < 8; i++) {
-      printf("%02X ", response[i]);
+  // // Print the received bytes for debugging
+  // printf("Device ID Response: ");
+  // for (int i = 0; i < 8; i++) {
+  //     printf("%02X ", response[i]);
+  // }
+  // printf("\r\n");
+
+  for(;;)
+  {
+    //uint8_t t = uart_read_byte(uart);
+    // uint8_t t = (uint8_t)(uart->RDR & 255);
+    // LOG("%02X\r\n", t);
+
+    // uint8_t* results;
+    // uart_read_buf(uart, results, 8);
+
+    //LOG("%d\r\n", uart_read_ready(uart));
+
+
+    char c = uart_read_byte(uart);
+    while(c != '$')
+    {
+      LOG("%c", c);
+      c = uart_read_byte(uart);
+    }
+    
+    LOG("\r\n");
+
+    // LOG("%d\r\n", results[0]);
   }
-  printf("\r\n");
 
 }
 
