@@ -262,6 +262,9 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
     uart->CR3 = 0;
     uart->CR3 |= USART_CR3_OVRDIS;
     uart->CR3 |= USART_CR3_ONEBIT;
+
+    uart->CR1 |= USART_CR1_RXNEIE_RXFNEIE;
+    NVIC_EnableIRQ(USART3_IRQn);
   }
 
   uart->CR1 |= BIT(0) | BIT(2) | BIT(3);      // Set UE, RE, TE Datasheet 50.8.1 
