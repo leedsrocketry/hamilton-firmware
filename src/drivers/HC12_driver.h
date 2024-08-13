@@ -28,10 +28,13 @@
 
 /**
 	@brief Configures the settings for the HC12, and returns its params to the ground station
+  @param uart UART which HC-12 is connected to
 */
-void HC12_init();
+void HC12_init(uart);
 
 /**
 	@brief Transmits the passed data to the groundstation
+  @param uart UART which HC-12 is connected to
+  @param data data to send across the HC-12
 */
-void HC12_transmit();
+void HC12_transmit(uart, data);

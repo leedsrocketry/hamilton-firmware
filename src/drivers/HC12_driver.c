@@ -11,22 +11,25 @@
 #include "mcu.h"
 #include <string.h>
 
-void HC12_init() {
-    uart_read_ready(UART2); // Ready to receive
-    int len = 0; // CHANGEME!!!!!!!!!!!
+void HC12_init(USART_TypeDef *uart) {
+    LOG("Initialising Pad Radio...\r\n");
+    uart_read_ready(uart); // Ready to receive
 
     gpio_write(SET_PIN, LOW); // Set pin low to enter command mode
-    uart_write_buf(UART2, RETURN_ALL_PARAM, len); // Get all settings
+    uart_write_buf(uart, RETURN_ALL_PARAM, sizeof(RETURN_ALL_PARAM)/sizeof(uint8_t)); // Send command to return parameters
+    LOG("HC-12 Parameters received...\r\n");
+    char params = uart_read_byte(uart); // Read result and save to var
     gpio_write(SET_PIN, HIGH); // Set pin high to exit command mode
 
-    char params = uart_read_byte(UART2); // Read result and save to var
-
-    printf(params); // print var
     LOG("===== PAD RADIO SETTINGS =====\r\n");
-    // SEND SOMETHING SAYING PAD RADIO SETTINGS:!!!!!!!!!!!!!!!
-    uart_write_buf(UART2, params, len); // Send params to ground
+    LOG(params); // Send params to log
+    char txt = "Pad Radio Settings:";
+    uart_write_buf(uart, txt, sizeof(txt)/sizeof(uint8_t)); // Send text to ground
+    uart_write_buf(uart, params, sizeof(params)/sizeof(uint8_t)); // Send params to ground
 }
 
-void HC12_transmit() {
-    return 0;
+void HC12_transmit(USART_TypeDef *uart, char *data) {
+    uart_write_buf(uart, data, strlen(data)); // Send the actual length of the string
 }
+
+// Write function for receiving from Ground Station Here
