@@ -24,6 +24,7 @@ void USART3_IRQHandler(void) {
     if (USART3->ISR & BIT(5)) {
         // Read the received byte from the data register
         uint8_t b = uart_read_byte(USART3);
+        LOG("%#X\r\n", b);
     }
     // Check for overrun error
     if (USART3->ISR & USART_ISR_ORE) {
