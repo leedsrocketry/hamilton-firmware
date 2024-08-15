@@ -10,9 +10,9 @@ imu: Mocks.DummySPISlave @ spi_mux 0x01
 magnetometer:  Mocks.DummySPISlave @ spi_mux 0x02
 barometer:  Mocks.DummySPISlave @ spi_mux 0x03
 humidity:  Mocks.DummySPISlave @ spi_mux 0x04
-sdCard: SD.SDCard @ spi_mux 0x05
-    capacity: 4096
-    spiMode: true
+//sdCard: SD.SDCard @ spi_mux 0x05
+//    capacity: 9192
+//    spiMode: true
 //    persistent: true
 
 // HC12: Mocks.Uart @ UART2
