@@ -317,46 +317,17 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 #define CS5 5 // SD_CARD
 
 // Generate all switch cases for the multiplexer
-static inline void set_cs(int16_t cs)
+static inline int set_cs(int16_t cs)
 {
-  switch(cs) {
-    case CS0:   // Accelerometer
-      gpio_write(A0, LOW);
-      gpio_write(A1, LOW);
-      gpio_write(A2, LOW);
-      gpio_write(A3, LOW);
-      break;
-    case CS1:   // IMU
-      gpio_write(A0, HIGH);
-      gpio_write(A1, LOW);
-      gpio_write(A2, LOW);
-      gpio_write(A3, LOW);
-      break;
-    case CS2: // Magnetometer
-      gpio_write(A0, LOW);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, LOW);
-      gpio_write(A3, LOW);
-      break;
-    case CS3: // Barometer
-      gpio_write(A0, HIGH);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, LOW);
-      gpio_write(A3, LOW);
-      break;
-    case CS4: // Humidity
-      gpio_write(A0, LOW);
-      gpio_write(A1, LOW);
-      gpio_write(A2, HIGH);
-      gpio_write(A3, LOW);
-      break;
-    case CS5: // SD_Card
-      gpio_write(A0, HIGH);
-      gpio_write(A1, LOW);
-      gpio_write(A2, HIGH);
-      gpio_write(A3, LOW);
-      break;
-  }
+    if (cs > 15) {
+        return 1;
+    } else {
+        gpio_write(A0, (cs & 0x1));
+        gpio_write(A1, (cs & 0x2) >> 1);
+        gpio_write(A2, (cs & 0x4) >> 2);
+        gpio_write(A3, (cs & 0x8) >> 3);
+        return 0;
+    }
 }
 
 static inline void unset_cs()
