@@ -18,6 +18,8 @@ void build_frame(Frame* _frameArray, M5611_data _M5611_data,
   _frameArray->barometer = _M5611_data;
   _frameArray->GNSS = _GNSS_data;
   _frameArray->bme = _BME280_data;
+
+  _frameArray->time = get_time_us();
 }
 
 void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,

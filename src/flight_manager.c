@@ -49,6 +49,7 @@ void initalise_drivers() {
 
 void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
 {
+  LOG("PAD\r\n");
   // READ
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
 
@@ -57,12 +58,15 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   update_frame_buffer(frame, fb);
 
   // ANALYSE
-  double current_pressure = (double)get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
-  double current_temperature = (double)get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_TEMP);
+  double current_pressure = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
+  double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP);
   // TODO: calculate launch based on pressure+accel+gyro(?)
   double altitude = barometric_equation(current_pressure, current_temperature);
+  double velo = get_vertical_velocity(fb);
   // printf_float("altitide", altitude, true);
+
   // ACT
+
   // if(launched)
   // {
   //   set_flight_stage(ASCENT);

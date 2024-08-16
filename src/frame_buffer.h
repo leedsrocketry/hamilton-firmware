@@ -24,7 +24,7 @@
 #define APOGEE_THRESHOLD 50   // micro bar for detecting apogee
 #define DESCENT_THRESHOLD 50  // micro bar for detecting an increase
 #define GROUND_THRESHOLD 100  // micro bar for detecting ground
-#define WINDOW_SIZE BUFFER_SIZE/2  // Number of readings to compute
+#define WINDOW_SIZE BUFFER_SIZE/2  // Number of readings to calculate computations
 
 static float sea_level_pressure = 1013.25;  // Sea level presser in micro bar
 
@@ -68,7 +68,7 @@ void update_frame_buffer(Frame* frame, FrameBuffer* buffer);
   @param fb frame
   @param dt Delta-time between each reading
 */
-float get_vertical_velocity(FrameBuffer fb, int dt);
+float get_vertical_velocity(FrameBuffer *fb);
 
 /**
   @brief Check if rocket is stationary using JUST barometer pressure data

@@ -119,15 +119,20 @@ void update_frame_buffer(Frame* frame, FrameBuffer* fb) {
   // }
 }
 
-float get_vertical_velocity(FrameBuffer fb, int dt) {
+/**
+  @brief Calculate vertical velocity using JUST barometer pressure data
+  @param data The array of barometer data
+  @param dt Delta-time between each reading
+*/
+float get_vertical_velocity(FrameBuffer *fb) {
     float data[WINDOW_SIZE];
     float data_prev[WINDOW_SIZE];
 
     // fill data arrays from windows
     for(uint32_t i = 0; i < WINDOW_SIZE; i++)
     {
-        data[i] = fb.window_1[i].altitude;
-        data_prev[i] = fb.window_0[i].altitude;
+        data[i] = fb->window_1[i].altitude;
+        data_prev[i] = fb->window_0[i].altitude;
     }
 
     // calc average altitudes
@@ -141,39 +146,14 @@ float get_vertical_velocity(FrameBuffer fb, int dt) {
     avg_current /= WINDOW_SIZE;
     avg_previous /= WINDOW_SIZE;
 
+    float dt = fb->window_0->time - fb->window_1->time;
+
     // calc vertical velocity
     float velocity = (avg_current - avg_previous) / dt;
 
     return velocity;
 }
 
-// /**
-//   @brief Calculate vertical velocity using JUST barometer pressure data
-//   @param data The array of barometer data
-//   @param dt Delta-time between each reading
-// */
-// float get_vertical_velocity(int data[], int dt) {
-//   qsort(data, WINDOW_SIZE, sizeof(int), cmpfunc);
-//   float altitude_change = 0.0;
-//   float previous_altitude, current_altitude;
-
-//   previous_altitude =
-//       (float)(44330.7692 *
-//               (1.0 -
-//                pow(((float)data[0] / 100.0f) / sea_level_pressure, 0.1902)));
-//   current_altitude =
-//       (float)(44330.7692 * (1.0 - pow(((float)data[WINDOW_SIZE - 1] / 100.0f) /
-//                                           sea_level_pressure,
-//                                       0.1902)));
-//   altitude_change = previous_altitude - current_altitude;
-
-//   // Calculate the total time covered by the readings (microseconds)
-//   float total_time = ((float)dt * (float)WINDOW_SIZE * 1e-6f);
-//   float velocity = altitude_change / total_time;
-
-//   // Return vertical velocity in m/s
-//   return velocity;
-// }
 
 // /**
 //   @brief Check if rocket is stationary using JUST barometer pressure data
