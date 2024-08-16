@@ -20,6 +20,7 @@
 typedef enum SensorReading {
   MS5611_PRESSURE,
   MS5611_TEMP,
+  ALTITUDE
 } SensorReading;
 typedef struct Frame {
   DateTime date;         // 56 bits
@@ -31,6 +32,9 @@ typedef struct Frame {
   BME280_data bme;       // 80 bits
   uint8_t hammingCode[8];
   uint16_t CRC_Check;
+
+  double altitude; // calculated value
+
   int successFlag;  // Not used in zip
 } Frame;
 

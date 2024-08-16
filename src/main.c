@@ -8,10 +8,10 @@
 #include <stdio.h>
 
 #include "HAL/mcu.h"
-#include "data_buffer.h"
+#include "frame_buffer.h"
 #include "debug.h"
 #include "flight_manager.h"
-#include "frame_array.h"
+#include "frame.h"
 #include "stm32l4r5xx.h"
 
 volatile uint32_t s_ticks;

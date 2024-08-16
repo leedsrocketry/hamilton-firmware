@@ -57,9 +57,11 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   update_frame_buffer(frame, fb);
 
   // ANALYSE
-  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
+  double current_pressure = (double)get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
+  double current_temperature = (double)get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_TEMP);
   // TODO: calculate launch based on pressure+accel+gyro(?)
-
+  double altitude = barometric_equation(current_pressure, current_temperature);
+  // printf_float("altitide", altitude, true);
   // ACT
   // if(launched)
   // {
