@@ -64,7 +64,7 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   double altitude = barometric_equation(current_pressure, current_temperature);
   double velo = get_vertical_velocity(fb);
   // printf_float("altitide", altitude, true);
-
+            
   // ACT
 
   // if(launched)

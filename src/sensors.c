@@ -1,25 +1,25 @@
 #include "sensors.h"
 
-void build_frame(Frame* _frameArray, M5611_data _M5611_data,
+void build_frame(Frame* frame, M5611_data _M5611_data,
                      ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
                      BME280_data _BME280_data, GNSS_Data _GNSS_data) {
   // Add time stamp
   uint32_t time = get_time_us();
-  _frameArray->date.minute = (uint8_t)(time / (1000000 * 60)) % 60;  // minutes
-  _frameArray->date.second = (uint8_t)(time / 1000000) % 60;         // seconds
-  _frameArray->date.millisecond =
+  frame->date.minute = (uint8_t)(time / (1000000 * 60)) % 60;  // minutes
+  frame->date.second = (uint8_t)(time / 1000000) % 60;         // seconds
+  frame->date.millisecond =
       (uint16_t)(time / 1000) % 1000;                     // milli seconds
-  _frameArray->date.microsecond = (uint16_t)time % 1000;  // Mirco seconds
+  frame->date.microsecond = (uint16_t)time % 1000;  // Mirco seconds
 
   // Add data to the frame
-  _frameArray->changeFlag = get_flight_stage();
-  _frameArray->accel = _ADXL375_data;
-  _frameArray->imu = _LSM6DS3_data;
-  _frameArray->barometer = _M5611_data;
-  _frameArray->GNSS = _GNSS_data;
-  _frameArray->bme = _BME280_data;
+  frame->changeFlag = get_flight_stage();
+  frame->accel = _ADXL375_data;
+  frame->imu = _LSM6DS3_data;
+  frame->barometer = _M5611_data;
+  frame->GNSS = _GNSS_data;
+  frame->bme = _BME280_data;
 
-  _frameArray->time = get_time_us();
+  frame->time = get_time_us();
 }
 
 void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
