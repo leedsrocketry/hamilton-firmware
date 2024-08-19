@@ -8,7 +8,7 @@
 */
 
 #include "HC12_driver.h"
-#include "mcu.h"
+#include "../HAL/mcu.h"
 #include <string.h>
 
 void HC12_init(USART_TypeDef *uart) {
@@ -31,5 +31,4 @@ void HC12_init(USART_TypeDef *uart) {
 void HC12_transmit(USART_TypeDef *uart, char *data) {
     uart_write_buf(uart, data, strlen(data)); // Send the actual length of the string
 }
-
 // Write function for receiving from Ground Station Here

@@ -8,6 +8,8 @@
 #ifndef HC12_DRIVER_H
 #define HC12_DRIVER_H
 
+#include "stm32l4r5xx.h"
+
 #define LOW false
 #define HIGH true
 
@@ -38,3 +40,5 @@ void HC12_init(USART_TypeDef *uart);
   @param data data to send across the HC-12
 */
 void HC12_transmit(USART_TypeDef *uart, char *data);
+
+#endif
