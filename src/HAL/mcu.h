@@ -247,11 +247,26 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
   gpio_set_af(rx, af);
   uart->CR1 = 0;                              // Disable this UART                              
 
-  #ifdef FLIGHT_COMPUTER
-    uart->BRR = FREQ / baud;                    // FREQ is a CPU frequency
-  #else
-    uart->BRR = 256*FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
-  #endif
+
+  if(uart == LUART1 || uart == USART1)
+  {
+    uart->BRR = FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
+  } else if (uart == USART2){
+    //uart->BRR = baud;
+
+    uart->BRR = 0x682;
+
+    uart->CR1 |= BIT(29);
+
+    uart->CR2 = 0;
+
+    uart->CR3 = 0;
+    uart->CR3 |= USART_CR3_OVRDIS;
+    uart->CR3 |= USART_CR3_ONEBIT;
+
+    // uart->CR1 |= USART_CR1_RXNEIE_RXFNEIE;
+    // NVIC_EnableIRQ(USART3_IRQn);
+  }
 
   uart->CR1 |= BIT(0) | BIT(2) | BIT(3);      // Set UE, RE, TE Datasheet 50.8.1 
 }

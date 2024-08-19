@@ -71,7 +71,7 @@ void STM32_init_internals()
   // UART
   uart_init(LUART1, 9600);  // Initialise Low Power UART;
   uart_init(USART1, 115200);  // Initialise UART1;
-  //uart_init(USART2, 115200);  // Initialise UART2;
+  uart_init(USART2, 9600);  // Initialise UART2;
   //uart_init(USART3, 115200);  // Initialise UART3;
 
   // SPI
