@@ -67,10 +67,10 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
             
   // ACT
 
-  // if(launched)
-  // {
-  //   set_flight_stage(ASCENT);
-  // }
+  if(velo > LAUNCH_THRESHOLD)
+  {
+    set_flight_stage(ASCENT);
+  }
 
   // STORE
   write_framebuffer(fb);

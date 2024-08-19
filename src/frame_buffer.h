@@ -20,10 +20,6 @@
 
 // Define Constants and Thresholds
 #define BUFFER_SIZE 60
-#define LAUNCH_THRESHOLD 50   // micro bar for detecting a decrease
-#define APOGEE_THRESHOLD 50   // micro bar for detecting apogee
-#define DESCENT_THRESHOLD 50  // micro bar for detecting an increase
-#define GROUND_THRESHOLD 100  // micro bar for detecting ground
 #define WINDOW_SIZE BUFFER_SIZE/2  // Number of readings to calculate computations
 
 static float sea_level_pressure = 1013.25;  // Sea level presser in micro bar
