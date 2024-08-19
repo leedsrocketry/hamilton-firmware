@@ -49,7 +49,7 @@ void initalise_drivers() {
 
 void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
 {
-  LOG("PAD\r\n");
+  //LOG("PAD\r\n");
   // READ
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
 
@@ -59,25 +59,30 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
 
   // ANALYSE
   double current_pressure = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
-  double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP);
+  double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
   // TODO: calculate launch based on pressure+accel+gyro(?)
-  double altitude = barometric_equation(current_pressure, current_temperature);
+  frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
   double velo = get_vertical_velocity(fb);
-  // printf_float("altitide", altitude, true);
+  // printf_float("temp ", current_temperature, true);
+  // printf_float(" altitide ", frame->altitude, true);
+  // printf_float(" velo", velo, true);
+  // printf("\r\n");
+  //printf("window_1 temp: %d\r\n", fb->window_0->time-fb->window_1->time);
             
   // ACT
 
-  if(velo > LAUNCH_THRESHOLD)
-  {
-    set_flight_stage(ASCENT);
-  }
+  // if(velo > LAUNCH_THRESHOLD)
+  // {
+  //   set_flight_stage(ASCENT);
+  // }
 
   // STORE
-  write_framebuffer(fb);
+  //write_framebuffer(fb);
 }
 
 void handle_ASCENT(Frame* frame, FrameBuffer* fb)
 {
+  LOG("ASCENT\r\n");
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
 
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
@@ -160,9 +165,17 @@ void run_flight() {
           sizeof(dataArray));  // set the necessary memory and set values to 0
   frame = unzip(&dataArray);   // convert from normal array into Frame
   FrameBuffer frame_buffer;     // contains FrameArrays
-  init_buffer(&frame_buffer);  // initialise the buffer
+  init_frame_buffer(&frame_buffer);  // initialise the buffer
 
   // Additional variables
+
+  LOG("============= GATHER INITIAL DATA ============\r\n");
+  for(uint32_t i = 0; i < 100; i++)
+  {
+    read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+    build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
+    update_frame_buffer(&frame, &frame_buffer);
+  }
 
   LOG("============= ENTER MAIN PROCEDURE ============\r\n");
   uint32_t newTime = get_time_us();
@@ -176,7 +189,7 @@ void run_flight() {
 
     newTime = get_time_us();
     dt = newTime-oldTime;
-    LOG("dt: %d\r\n", dt);
+    //LOG("dt: %d\r\n", dt);
     switch (flightStage) {
       case LAUNCHPAD:
         handle_LAUNCHPAD(&frame, &frame_buffer);

@@ -49,25 +49,25 @@ int main(void) {
 
   LOG("============= INITIALISE SD CARD =============\r\n");
 
-  SD_Card sd_card = init_sd_card(SPI1, CS5);
-  printf("Version: %d\r\n", sd_card.version);
-  printf("High capacity: %d\r\n", sd_card.high_capacity);
-  printf("Compatible: %d\r\n", sd_card.compatible);
-  printf("Initialised: %d\r\n", sd_card.initialised);
+  // SD_Card sd_card = init_sd_card(SPI1, CS5);
+  // printf("Version: %d\r\n", sd_card.version);
+  // printf("High capacity: %d\r\n", sd_card.high_capacity);
+  // printf("Compatible: %d\r\n", sd_card.compatible);
+  // printf("Initialised: %d\r\n", sd_card.initialised);
 
-  uint8_t data[512];
-  uint8_t err = sd_read_block(&sd_card, 0x00000020, data);
-  LOG("%d \r\n", err);
-  LOG("0x");
-  for (uint16_t i = 0; i < 512; i++) {
-      LOG("%02x", data[i]);
-  }
-  LOG("\r\n");
+  // uint8_t data[512];
+  // uint8_t err = sd_read_block(&sd_card, 0x00000020, data);
+  // LOG("%d \r\n", err);
+  // LOG("0x");
+  // for (uint16_t i = 0; i < 512; i++) {
+  //     LOG("%02x", data[i]);
+  // }
+  // LOG("\r\n");
 
-  for (;;){};
+  // for (;;){};
   LOG("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
 
-  //run_flight();
+  run_flight();
   return 0;
 }
