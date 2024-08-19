@@ -7,19 +7,22 @@
 #include "HAL/NAND_flash_driver.h"
 #include "HAL/STM32_init.h"
 #include "HAL/mcu.h"
-#include "data_buffer.h"
+#include "frame_buffer.h"
 #include "debug.h"
 #include "drivers/ADXL375_driver.h"
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
-#include "frame_array.h"
+#include "frame.h"
 #include "stm32l4r5xx.h"
+#include "sensors.h"
 
 #define PADREADFREQ 100      // frequency to read data during ascent
 #define ASCENTREADFREQ 1000  // frequency to read data during ascent
 #define APOGEEREADFREQ 1000  // frequency to read data during ascent
 #define DESCENTREADFREQ 100  // frequency to read data during descent
+
+#define LAUNCH_THRESHOLD 10 // in meters/s(?)
 
 #define EVENT_TRIG_1 PIN('C', 2)
 #define EVENT_TRIG_1 PIN('C', 1)

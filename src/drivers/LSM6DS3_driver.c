@@ -133,17 +133,17 @@ bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         IDX_ACCEL_YOUT_H,
         IDX_ACCEL_ZOUT_L,
         IDX_ACCEL_ZOUT_H,
-        BUFFER_SIZE, //6
+        FRAME_BUFFER_SIZE, //6
     };
 
-    uint8_t lsm6ds3_rx_buf[BUFFER_SIZE];
+    uint8_t lsm6ds3_rx_buf[FRAME_BUFFER_SIZE];
     uint8_t send_data =  LSM6DSO_REG_OUTX_L_A | 0x80;   //first reg address
 
     spi_enable_cs(spi, LSM6DS3_CS);
     delay_microseconds(1);
     spi_transmit_receive(spi, &(send_data), 1, 1, &(lsm6ds3_rx_buf[0]));  //send read command and get first result
     
-    for (int i = 1; i < BUFFER_SIZE; i ++){
+    for (int i = 1; i < FRAME_BUFFER_SIZE; i ++){
         spi_transmit_receive(spi, &(send_data), 0, 1, &(lsm6ds3_rx_buf[i]));
     } 
     delay_microseconds(1);
@@ -167,16 +167,16 @@ bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         IDX_GYRO_YOUT_H,
         IDX_GYRO_ZOUT_L,
         IDX_GYRO_ZOUT_H,
-        BUFFER_SIZE,
+        FRAME_BUFFER_SIZE,
     };
 
-    uint8_t lsm6ds3_rx_buf[BUFFER_SIZE] = {0};
+    uint8_t lsm6ds3_rx_buf[FRAME_BUFFER_SIZE] = {0};
     uint8_t send_data = (LSM6DSO_REG_OUTX_L_G) | 0x80;  //first reg address
 
     spi_enable_cs(spi, LSM6DS3_CS);
     delay_microseconds(1);
     spi_transmit_receive(spi, &(send_data), 1, 1, &(lsm6ds3_rx_buf[0])); //send read command and get first result
-    for (uint8_t i = 1; i < BUFFER_SIZE; i ++){
+    for (uint8_t i = 1; i < FRAME_BUFFER_SIZE; i ++){
         spi_transmit_receive(spi, &(send_data), 0, 1, &(lsm6ds3_rx_buf[i]));
     }
     delay_microseconds(1);

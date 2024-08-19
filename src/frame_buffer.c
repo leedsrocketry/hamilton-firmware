@@ -5,19 +5,19 @@
   Description: buffer that holds data under the main routine
 */
 
-#include "data_buffer.h"
+#include "frame_buffer.h"
 
 /**
   @brief Initalise buffer
   @param buffer The buffer to be initalised
 */
-void init_buffer(FrameBuffer* buffer) {
-  buffer->ground_ref = 0;
-  buffer->index = 0;
-  buffer->count = 0;
-
-  // TODO: Allocate memory for the buffer array
-  // TODO: Allocate memory for the window array
+void init_frame_buffer(FrameBuffer* fb) {
+  fb->ground_ref = 0;
+  fb->index = 0;
+  fb->count = 0;
+  
+  fb->window_0 = &(fb->frames[0]);
+  fb->window_1 = &(fb->frames[BUFFER_SIZE / 2]);
 }
 
 void write_framebuffer(FrameBuffer* fb)
@@ -50,6 +50,14 @@ int32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading rea
       }
       get_median(_data, BUFFER_SIZE);
     break;
+
+    case ALTITUDE:
+      for(uint32_t i = 0; i < BUFFER_SIZE; i++)
+      {
+        _data[i] = fb->frames[i].altitude;
+      }
+      get_median(_data, BUFFER_SIZE);
+    break;
   }
 }
 
@@ -78,31 +86,28 @@ uint32_t get_median(int32_t data[], uint32_t size) {
   @param frame - one reading data frame to add
   @param buffer - data buffer
 */
-void set_ground_reference(FrameBuffer* buffer) {
-  // Create copy of buffer data to sort
-  int32_t _data[WINDOW_SIZE];
-  for (uint32_t i = 0; i < WINDOW_SIZE; i++) {
-    _data[i] = buffer->frames[i].barometer.pressure;
-  }
-
+void set_ground_reference(FrameBuffer* fb) {
   // get the ground reference as median
-  buffer->ground_ref = get_median(_data, WINDOW_SIZE);
+  fb->ground_ref = get_framebuffer_median(fb, BUFFER_SIZE, ALTITUDE);
 }
 
 /**
-  @brief Set the ground reference for the buffer
+  @brief Fills the circular buffer
   @param frame - one reading data frame to add
   @param buffer - data buffer
 */
-void update_frame_buffer(Frame* frame, FrameBuffer* buffer) {
-  buffer->frames[buffer->index] = *frame;
-  buffer->index = (buffer->index + 1) % BUFFER_SIZE;
+void update_frame_buffer(Frame* frame, FrameBuffer* fb) {
+  fb->frames[fb->index] = *frame;
+  fb->index = (fb->index + 1) % BUFFER_SIZE;
 
   // Increase count and set ground reference
-  // if (buffer->count < BUFFER_SIZE) {
-  //   if (buffer->count == WINDOW_SIZE) set_ground_reference(buffer);
-  //   buffer->count++;
-  // }
+  if (fb->count < BUFFER_SIZE) {
+    if (fb->count == WINDOW_SIZE)
+    {
+      set_ground_reference(fb);
+    }
+    fb->count++;
+  }
 
   // // Update window
   // if (buffer->count > WINDOW_SIZE * 2) {
@@ -119,46 +124,54 @@ void update_frame_buffer(Frame* frame, FrameBuffer* buffer) {
   @param data The array of barometer data
   @param dt Delta-time between each reading
 */
-float get_vertical_velocity(int data[], int dt) {
-  qsort(data, WINDOW_SIZE, sizeof(int), cmpfunc);
-  float altitude_change = 0.0;
-  float previous_altitude, current_altitude;
+float get_vertical_velocity(FrameBuffer *fb) {
+    float data[WINDOW_SIZE];
+    float data_prev[WINDOW_SIZE];
 
-  previous_altitude =
-      (float)(44330.7692 *
-              (1.0 -
-               pow(((float)data[0] / 100.0f) / sea_level_pressure, 0.1902)));
-  current_altitude =
-      (float)(44330.7692 * (1.0 - pow(((float)data[WINDOW_SIZE - 1] / 100.0f) /
-                                          sea_level_pressure,
-                                      0.1902)));
-  altitude_change = previous_altitude - current_altitude;
+    // fill data arrays from windows
+    for(uint32_t i = 0; i < WINDOW_SIZE; i++)
+    {
+        data[i] = fb->window_1[i].altitude;
+        data_prev[i] = fb->window_0[i].altitude;
+    }
 
-  // Calculate the total time covered by the readings (microseconds)
-  float total_time = ((float)dt * (float)WINDOW_SIZE * 1e-6f);
-  float velocity = altitude_change / total_time;
+    // calc average altitudes
+    float avg_current = 0;
+    float avg_previous = 0;
+    for(uint32_t i = 0; i < WINDOW_SIZE; i++)
+    {
+        avg_current += data[i];
+        avg_previous += data_prev[i];
+    }
+    avg_current /= WINDOW_SIZE;
+    avg_previous /= WINDOW_SIZE;
 
-  // Return vertical velocity in m/s
-  return velocity;
+    float dt = fb->window_0->time - fb->window_1->time;
+
+    // calc vertical velocity
+    float velocity = (avg_current - avg_previous) / dt;
+
+    return velocity;
 }
 
-/**
-  @brief Check if rocket is stationary using JUST barometer pressure data
-  @param data The array of barometer data
-  @return true if the rocket is stationary
-  @note This is not a particularly good solution, was only written because
-  accelerometer was not working for launch 1
-  @note Deprecated
-*/
-bool is_stationary(int32_t data[]) {
-  int32_t sum = 0;
-  for (int32_t i = 0; i < WINDOW_SIZE; i++) {
-    sum += data[i];
-  }
-  int32_t mean = sum / WINDOW_SIZE;
-  int32_t variance = 0;
-  for (int32_t i = 0; i < WINDOW_SIZE; i++) {
-    variance += (int32_t)pow((data[i] - mean), 2);
-  }
-  return sqrt(variance / WINDOW_SIZE) < GROUND_THRESHOLD;
-}
+
+// /**
+//   @brief Check if rocket is stationary using JUST barometer pressure data
+//   @param data The array of barometer data
+//   @return true if the rocket is stationary
+//   @note This is not a particularly good solution, was only written because
+//   accelerometer was not working for launch 1
+//   @note Deprecated
+// */
+// bool is_stationary(int32_t data[]) {
+//   int32_t sum = 0;
+//   for (int32_t i = 0; i < WINDOW_SIZE; i++) {
+//     sum += data[i];
+//   }
+//   int32_t mean = sum / WINDOW_SIZE;
+//   int32_t variance = 0;
+//   for (int32_t i = 0; i < WINDOW_SIZE; i++) {
+//     variance += (int32_t)pow((data[i] - mean), 2);
+//   }
+//   return sqrt(variance / WINDOW_SIZE) < GROUND_THRESHOLD;
+// }
