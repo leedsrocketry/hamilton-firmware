@@ -312,7 +312,26 @@ static inline int uart_read_ready(USART_TypeDef *uart)
 */
 static inline uint8_t uart_read_byte(USART_TypeDef *uart)
 {
+  while (!uart_read_ready(uart))
+  {
+    spin(1); // Ref manual STM32L4 50.8.10 USART status register (USART_ISR)
+  }
   return (uint8_t)(uart->RDR & 255);
+}
+
+static inline void uart_read_buf(USART_TypeDef *uart, uint8_t *results, uint8_t size)
+{
+  uint8_t size_r = size;
+  uint8_t i = 0;
+  while(size_r > 0)
+  {
+    if(uart_read_ready(uart))
+    {
+      results[i] = (uint8_t)(uart->RDR & 255);
+      size_r--;
+      i++;
+    }
+  }
 }
 #pragma endregion UART
 

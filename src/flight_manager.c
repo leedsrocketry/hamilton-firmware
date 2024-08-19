@@ -67,6 +67,8 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   //   set_flight_stage(ASCENT);
   // }
 
+  delay_ms(10000);
+
   // STORE
   write_framebuffer(fb);
 }

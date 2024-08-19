@@ -15,17 +15,23 @@ void HC12_init(USART_TypeDef *uart) {
     LOG("Initialising Pad Radio...\r\n");
     uart_read_ready(uart); // Ready to receive
 
+    gpio_set_mode(SET_PIN, GPIO_MODE_OUTPUT);
     gpio_write(SET_PIN, LOW); // Set pin low to enter command mode
-    uart_write_buf(uart, RETURN_ALL_PARAM, sizeof(RETURN_ALL_PARAM)/sizeof(uint8_t)); // Send command to return parameters
-    LOG("HC-12 Parameters received...\r\n");
-    char params = uart_read_byte(uart); // Read result and save to var
+
+    delay_ms(500);
+    uart_write_buf(uart, RETURN_ALL_PARAM, sizeof(RETURN_ALL_PARAM)); // Send command to return parameters
+    char params[40];
+    uart_read_buf(uart, params, sizeof(params)); // Read result and save to var
+    delay_ms(500);
+
     gpio_write(SET_PIN, HIGH); // Set pin high to exit command mode
+    delay_ms(500);
 
     LOG("===== PAD RADIO SETTINGS =====\r\n");
-    LOG(params); // Send params to log
-    char txt = "Pad Radio Settings:";
-    uart_write_buf(uart, txt, sizeof(txt)/sizeof(uint8_t)); // Send text to ground
-    uart_write_buf(uart, params, sizeof(params)/sizeof(uint8_t)); // Send params to ground
+    LOG("%s\r\n", params); // Send params to log
+    char txt[] = "\r\nPad Radio Settings: \r\n";
+    uart_write_buf(uart, txt, sizeof(txt)); // Send text to ground
+    uart_write_buf(uart, params, sizeof(params)); // Send params to ground
 }
 
 void HC12_transmit(USART_TypeDef *uart, char *data) {
