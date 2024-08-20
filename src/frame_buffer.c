@@ -158,9 +158,9 @@ float get_vertical_velocity(FrameBuffer *fb)
   // Calculate the time difference between the two windows
   float dt = window_0[0].time - window_1[0].time;
   dt = dt / 1000000;
-  printf("cur: %d prev: %d  ", window_0[0].altitude, window_1[0].altitude);
-  printf_float("dt_window", dt, true);
-  printf("\r\n");
+  // printf("cur: %d prev: %d  ", window_0[0].altitude, window_1[0].altitude);
+  // printf_float("dt_window", dt, true);
+  // printf("\r\n");
 
   // Calculate vertical velocity
   float velocity = (avg_current - avg_previous) / dt;

@@ -22,7 +22,7 @@
 #define APOGEEREADFREQ 1000  // frequency to read data during ascent
 #define DESCENTREADFREQ 100  // frequency to read data during descent
 
-#define LAUNCH_THRESHOLD 10 // in meters/s(?)
+#define ACCEL_LAUNCH_THRESHOLD -100.0 // TBD
 
 #define EVENT_TRIG_1 PIN('C', 2)
 #define EVENT_TRIG_1 PIN('C', 1)

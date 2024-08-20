@@ -63,18 +63,31 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   // TODO: calculate launch based on pressure+accel+gyro(?)
   frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
   double velo = get_vertical_velocity(fb);
-  // printf_float("temp ", current_temperature, true);
-  // printf_float(" altitide ", frame->altitude, true);
-  // printf_float(" velo", velo, true);
-  // printf("\r\n");
-  //printf("window_1 temp: %d\r\n", fb->window_0->time-fb->window_1->time);
-            
+  
   // ACT
+  bool accel_launch_flag = false;
+  bool baro_launch_flag = false;
+  bool gyro_launch_flag = false;
 
-  // if(velo > LAUNCH_THRESHOLD)
+  // printf_float("t", frame->altitude, true);
+  // printf("\r\n");
+  // printf_float("t", fb->ground_ref, true);
+  // printf("\r\n");
+
+  if(_ADXL375_data.x < ACCEL_LAUNCH_THRESHOLD)
+  {
+    accel_launch_flag = true;
+  }
+
+  // if(frame->altitude > fb->ground_ref)
   // {
-  //   set_flight_stage(ASCENT);
+  //   baro_launch_flag = true;
   // }
+
+  if(baro_launch_flag == true)
+  {
+    set_flight_stage(ASCENT);
+  }
 
   // STORE
   //write_framebuffer(fb);
