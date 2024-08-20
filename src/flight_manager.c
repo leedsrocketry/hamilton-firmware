@@ -14,6 +14,7 @@ BME280_data _BME280_data;
 GNSS_Data _GNSS_data;
 
 FlightStage flightStage = LAUNCHPAD;
+uint32_t previous_ascent_altitude = 4294967294;
 
 FlightStage get_flight_stage() { return flightStage; }
 
@@ -79,7 +80,7 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   //   baro_launch_flag = true;
   // }
 
-  if(baro_launch_flag == true)
+  if(baro_launch_flag == true) // Test variations in emu
   {
     set_flight_stage(ASCENT);
   }
@@ -96,17 +97,35 @@ void handle_ASCENT(Frame* frame, FrameBuffer* fb)
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
   update_frame_buffer(frame, fb);
 
-  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
-  // TODO: calculate apogee based on sensor data
+  double current_pressure = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
+  double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
+  frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
+  double velo = get_vertical_velocity(fb);
 
   // ACT
-  // if(launched)
-  // {
-  //   set_flight_stage(DESCENT);
-  // }
+  bool velo_apogee_flag = false;
+  bool altitude_apogee_flag = false;
+
+
+  if(velo < BARO_APOGEE_THRESHOLD)
+  {
+    velo_apogee_flag = true;
+  }
+
+  if((frame->altitude - previous_ascent_altitude) > ALTITUDE_APOGEE_THRESHOLD)
+  {
+    altitude_apogee_flag = true;
+  }
+
+  if(altitude_apogee_flag == true) // Test variations in emu
+  {
+    set_flight_stage(true);
+  }
+
+  previous_ascent_altitude = frame->altitude;
 
   // STORE
-  write_framebuffer(fb);
+  //write_framebuffer(fb);
 }
 
 void handle_APOGEE(Frame* frame, FrameBuffer* fb)
