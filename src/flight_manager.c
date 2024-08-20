@@ -69,17 +69,12 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   bool baro_launch_flag = false;
   bool gyro_launch_flag = false;
 
-  // printf_float("t", frame->altitude, true);
-  // printf("\r\n");
-  // printf_float("t", fb->ground_ref, true);
-  // printf("\r\n");
-
   if(_ADXL375_data.x < ACCEL_LAUNCH_THRESHOLD)
   {
     accel_launch_flag = true;
   }
 
-  // if(frame->altitude > fb->ground_ref)
+  // if(velo > BARO_LAUNCH_THRESHOLD)
   // {
   //   baro_launch_flag = true;
   // }

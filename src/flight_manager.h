@@ -23,6 +23,7 @@
 #define DESCENTREADFREQ 100  // frequency to read data during descent
 
 #define ACCEL_LAUNCH_THRESHOLD -100.0 // TBD
+#define BARO_LAUNCH_THRESHOLD 400.0 // TBD
 
 #define EVENT_TRIG_1 PIN('C', 2)
 #define EVENT_TRIG_1 PIN('C', 1)

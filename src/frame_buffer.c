@@ -55,11 +55,23 @@ Frame *get_window_0(FrameBuffer *fb)
   return &(fb->frames[start_idx]);
 }
 
+uint32_t get_window_0_index(FrameBuffer *fb)
+{
+  uint32_t start_idx = (fb->index + BUFFER_SIZE - WINDOW_SIZE) % BUFFER_SIZE;
+  return start_idx;
+}
+
 Frame *get_window_1(FrameBuffer *fb)
 {
   // Window 1: the 20 readings before the last 20 readings
   uint32_t start_idx = (fb->index + BUFFER_SIZE - 2 * WINDOW_SIZE) % BUFFER_SIZE;
   return &(fb->frames[start_idx]);
+}
+
+uint32_t get_window_1_index(FrameBuffer *fb)
+{
+  uint32_t start_idx = (fb->index + BUFFER_SIZE - 2 * WINDOW_SIZE) % BUFFER_SIZE;
+  return start_idx;
 }
 
 void write_framebuffer(FrameBuffer *fb)
@@ -141,29 +153,35 @@ void set_ground_reference(FrameBuffer *fb)
 */
 float get_vertical_velocity(FrameBuffer *fb)
 {
-  Frame *window_0 = get_window_0(fb);
-  Frame *window_1 = get_window_1(fb);
+  uint32_t window_0_index = get_window_0_index(fb);
+  uint32_t window_1_index = get_window_1_index(fb);
+  Frame window_0 = fb->frames[window_0_index];
+  Frame window_1 = fb->frames[window_1_index];
 
   // Calculate average altitude for both windows
   float avg_current = 0;
   float avg_previous = 0;
   for (uint32_t i = 0; i < WINDOW_SIZE; i++)
   {
-    avg_current += window_0[i].altitude;
-    avg_previous += window_1[i].altitude;
+    uint32_t index_0 = (window_0_index + i) % BUFFER_SIZE;
+    uint32_t index_1 = (window_1_index + i) % BUFFER_SIZE;
+
+    avg_current += fb->frames[index_0].altitude;
+    avg_previous += fb->frames[index_1].altitude;
+
+    // avg_current += window_0[i].altitude;
+    // avg_previous += window_1[i].altitude;
   }
   avg_current /= WINDOW_SIZE;
   avg_previous /= WINDOW_SIZE;
-
   // Calculate the time difference between the two windows
-  float dt = window_0[0].time - window_1[0].time;
-  dt = dt / 1000000;
-  // printf("cur: %d prev: %d  ", window_0[0].altitude, window_1[0].altitude);
-  // printf_float("dt_window", dt, true);
-  // printf("\r\n");
+  float dt = abs(window_0.date.microsecond - window_1.date.microsecond);
+  dt = dt / 1000;
 
   // Calculate vertical velocity
   float velocity = (avg_current - avg_previous) / dt;
+  printf_float("velo", velocity, true);
+  printf("\r\n");
 
   return velocity;
 }
