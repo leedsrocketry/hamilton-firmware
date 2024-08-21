@@ -136,7 +136,9 @@ bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         BUFFER_SIZE, //6
     };
 
+    // Reset both accel and gyro. Do not ask why.
     LSM6DS3_write_register(SPI1, LSM6DSO_REG_CTRL1_XL, (LSM6DSO_VAL_CTRL1_XL_ODR833 << 4) | (LSM6DSO_VAL_CTRL1_XL_16G << 2) | (LSM6DSO_VAL_CTRL1_XL_LPF1 << 1), 1);
+    LSM6DS3_write_register(SPI1, LSM6DSO_REG_CTRL2_G, (LSM6DSO_VAL_CTRL2_G_ODR6664 << 4) | (LSM6DSO_VAL_CTRL2_G_2000DPS << 2), 1);
 
     uint8_t lsm6ds3_rx_buf[BUFFER_SIZE];
     uint8_t send_data =  LSM6DSO_REG_OUTX_L_A | 0x80;   //first reg address
@@ -173,7 +175,7 @@ bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         BUFFER_SIZE,
     };
 
-    LSM6DS3_write_register(SPI1, LSM6DSO_REG_CTRL2_G, (LSM6DSO_VAL_CTRL2_G_ODR6664 << 4) | (LSM6DSO_VAL_CTRL2_G_2000DPS << 2), 1);
+    //LSM6DS3_write_register(SPI1, LSM6DSO_REG_CTRL2_G, (LSM6DSO_VAL_CTRL2_G_ODR6664 << 4) | (LSM6DSO_VAL_CTRL2_G_2000DPS << 2), 1);
 
     uint8_t lsm6ds3_rx_buf[BUFFER_SIZE] = {0};
     uint8_t send_data = (LSM6DSO_REG_OUTX_L_G) | 0x80;  //first reg address
