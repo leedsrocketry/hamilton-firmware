@@ -1,3 +1,10 @@
+//
+// Copyright (c) 2010-2020 Antmicro
+//
+// This file is licensed under the MIT License.
+// Full license text is available in 'licenses/MIT.txt'.
+//
+
 using System;
 using Antmicro.Renode.Core;
 using Antmicro.Renode.Core.Structure.Registers;
@@ -14,7 +21,6 @@ namespace Antmicro.Renode.Peripherals.Sensors
         {
             RegistersCollection = new ByteRegisterCollection(this);
             DefineRegisters();
-            Reset();
         }
 
         public void OnGPIO(int number, bool value)
@@ -36,35 +42,34 @@ namespace Antmicro.Renode.Peripherals.Sensors
         public byte Transmit(byte b)
         {
             byte result = 0;
-
-            if(!chipSelected)
-            {
-                this.Log(LogLevel.Warning, "Received data while chip is not selected");
-                return result;
-            }
-
-            switch(b)
-            {
-                case 0x1E: // RESET command
-                    Reset();
+            this.NoisyLog("Reading register {0} (0x{0:X})", (Registers)address);
+            switch(b){
+                case 0x1E:
                     break;
-                case 0x40: // Start pressure conversion (OSR = 256)
-                    StartConversion(ConversionType.Pressure);
+                case 0x40:
                     break;
-                case 0x48: // Start temperature conversion (OSR = 256)
-                    StartConversion(ConversionType.Temperature);
+                case 0x42:
                     break;
-                case 0xA0: // Read PROM data (calibration coefficients)
-                    result = ReadCalibrationData();
+                case 0x44:
                     break;
-                case 0x00: // Read ADC result
-                    result = ReadAdcResult();
+                case 0x46:
+                    break;
+                case 0x48:
+                    break;
+                case 0x50:
+                    break;
+                case 0x52:
+                    break;
+                case 0x54:
+                    break;
+                case 0x56:
+                    break;
+                case 0x58:
                     break;
                 default:
-                    this.Log(LogLevel.Warning, "Unsupported command received: 0x{0:X}", b);
-                    break;
+                    result = RegistersCollection.Read(b);
             }
-
+            result = RegistersCollection.Read(address);
             this.Log(LogLevel.Noisy, "Transmitting - received 0x{0:X}, sending 0x{1:X} back", b, result);
             return result;
         }
@@ -81,59 +86,9 @@ namespace Antmicro.Renode.Peripherals.Sensors
             state = State.Idle;
             address = 0;
 
-            // Initialize calibration data (in real hardware these would be read from PROM)
-            calibrationData = new ushort[6] { 40127, 36924, 23317, 23282, 33464, 28312 };
-
-            pressure = 0;
-            temperature = 0;
-        }
-
-        private void StartConversion(ConversionType type)
-        {
-            state = State.Writing;
-            currentConversion = type;
-            conversionInProgress = true;
-
-            // In a real sensor, here we'd start an ADC conversion.
-            // For simplicity, we'll just simulate the results.
-            if(type == ConversionType.Pressure)
-            {
-                pressure = 9085466; // Simulate a pressure result
-            }
-            else if(type == ConversionType.Temperature)
-            {
-                temperature = 2000; // Simulate a temperature result
-            }
-        }
-
-        private byte ReadCalibrationData()
-        {
-            if(address < 6)
-            {
-                return (byte)(calibrationData[address] >> 8);
-            }
-            else
-            {
-                return (byte)(calibrationData[address - 6] & 0xFF);
-            }
-        }
-
-        private byte ReadAdcResult()
-        {
-            return (byte)69;
-            if(conversionInProgress)
-            {
-                conversionInProgress = false;
-                if(currentConversion == ConversionType.Pressure)
-                {
-                    return (byte)(pressure >> 16);
-                }
-                else if(currentConversion == ConversionType.Temperature)
-                {
-                    return (byte)(temperature >> 8);
-                }
-            }
-            return 0;
+            AccelerationX = 0;
+            AccelerationY = 0;
+            AccelerationZ = 0;
         }
 
         public double AccelerationX { get; set; }
@@ -159,17 +114,25 @@ namespace Antmicro.Renode.Peripherals.Sensors
                 .WithTag("USER_NVM_BUSY", 5, 1)
                 .WithTag("AWAKE", 6, 1)
                 .WithTag("ERR_USER_REGS", 7, 1);
+
+        }
+
+        private byte Convert(double value, bool upperByte)
+        {
+            var v = (uint)(value * 160);
+
+            // lower byte contains only 4 bits that are left-shifted
+            var result = upperByte
+                ? (byte)(v >> 8)
+                : (byte)(v >> 4);
+
+            return result;
         }
 
         private byte address;
         private bool chipSelected;
         private State state;
 
-        private ushort[] calibrationData;
-        private uint pressure;
-        private int temperature;
-        private bool conversionInProgress;
-        private ConversionType currentConversion;
 
         private enum State
         {
@@ -179,18 +142,14 @@ namespace Antmicro.Renode.Peripherals.Sensors
             Writing,
         }
 
-        private enum ConversionType
-        {
-            Pressure,
-            Temperature,
-        }
-
         private enum Registers
         {
             DeviceID = 0x00,
             PartID =   0x02,
             Status =   0x04,
-            PROM =     0xA0
+
+            PROM = 0xA0
+
         }
     }
 }

@@ -10,8 +10,11 @@ i @renode/chips/SPI_Multiplexer.cs
 i @renode/sensors/ADXL375.cs
 i @renode/sensors/BME280.cs
 
+$sd?=@renode/test_sd_data
+
 
 machine LoadPlatformDescription @renode/boards/HFC_v2.repl
+machine SdCardFromFile $sd sysbus.spi1.spi_mux 0x05 0x240000000 False "sd"
 
 cpu PerformanceInMips 125
 
