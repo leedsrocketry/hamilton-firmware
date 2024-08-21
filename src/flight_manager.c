@@ -65,6 +65,8 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
   double velo = get_vertical_velocity(fb);
   
+  //printf("%d %d %d\r\n", _LSM6DS3_data.x_offset, _LSM6DS3_data.y_rate, _LSM6DS3_data.z_rate);
+
   // ACT
   bool accel_launch_flag = false;
   bool baro_launch_flag = false;
@@ -146,31 +148,41 @@ void handle_APOGEE(Frame* frame, FrameBuffer* fb)
   // }
 
   // STORE
-  write_framebuffer(fb);
+  //write_framebuffer(fb);
 }
 
 void handle_DESCENT(Frame* frame, FrameBuffer* fb)
 {
+  LOG("DESCENT\r\n");
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
 
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
   update_frame_buffer(frame, fb);
-
+  LOG("1\r\n");
   int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
   // TODO: calculate landing based on sensor data
-
   // ACT
-  // if(landed)
-  // {
-  //   set_flight_stage(LANDED);
-  // }
+  bool gyro_landed_flag = false;
+  LOG("2\r\n");
+
+  if(is_stationary(fb))
+  {
+    gyro_landed_flag = true;
+  }
+
+  if(gyro_landed_flag == true)
+  {
+    LOG("5\r\n");
+    set_flight_stage(LANDING);
+  }
 
   // STORE
-  write_framebuffer(fb);
+  //write_framebuffer(fb);
 }
 
 void handle_LANDING(Frame* frame, FrameBuffer* fb)
 {
+  LOG("LAND\r\n");
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
 
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
@@ -180,7 +192,7 @@ void handle_LANDING(Frame* frame, FrameBuffer* fb)
   // Beep? Signal? radio? idk
 
   // STORE
-  write_framebuffer(fb);
+  //write_framebuffer(fb);
 }
 
 void run_flight() {
@@ -200,6 +212,7 @@ void run_flight() {
   for(uint32_t i = 0; i < 100; i++)
   {
     read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+    LOG("%d\r\n", _M5611_data.temp);
     build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
     update_frame_buffer(&frame, &frame_buffer);
   }

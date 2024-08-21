@@ -28,6 +28,8 @@
 #define BARO_APOGEE_THRESHOLD 0.0
 #define ALTITUDE_APOGEE_THRESHOLD 10.0 // meters
 
+#define GROUND_THRESHOLD 30
+
 #define EVENT_TRIG_1 PIN('C', 2)
 #define EVENT_TRIG_1 PIN('C', 1)
 
