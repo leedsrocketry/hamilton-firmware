@@ -285,6 +285,40 @@ bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint1
     if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit) {
         return true;
     }
+    //LOG("%d, %d, %d \r\n", std_dev[0], std_dev[1], std_dev[2]);
+    return false;
+}
+
+bool LSM6DS3_acc_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16_t limit) {
+    // Calculate mean
+    LOG("TEST\r\n");
+    int means[3] = {0,0,0};
+    for (int i = 0; i < buffer_limit; i ++){
+        means[0] += buff[i].x_accel;
+        means[1] += buff[i].y_accel;
+        means[2] += buff[i].z_accel;
+    }
+    means[0] /= buffer_limit;
+    means[1] /= buffer_limit;
+    means[2] /= buffer_limit;
+
+    // Calculate variance through (sum of (squares of deviations))/num_samples
+    long variance[3] = {0,0,0};
+    for (int i = 0; i < buffer_limit; i ++){
+        variance[0] += powl(buff[i].x_accel - means[0], 2);
+        variance[1] += powl(buff[i].y_accel - means[1], 2);
+        variance[2] += powl(buff[i].z_accel - means[2], 2);
+    }
+    // Divide by samples to get variance
+    variance[0] /= buffer_limit;
+    variance[1] /= buffer_limit;
+    variance[2] /= buffer_limit;
+
+    // Sqrt to get standard deviation
+    int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
     LOG("%d, %d, %d \r\n", std_dev[0], std_dev[1], std_dev[2]);
+    if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit) {
+        return true;
+    }
     return false;
 }

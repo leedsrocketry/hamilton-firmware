@@ -175,4 +175,6 @@ bool LSM6DS3_get_acc_vector(LSM6DS3_data* _LSM6DS3_data, float vector[]);
 */
 bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16_t limit);
 
+bool LSM6DS3_acc_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16_t limit);
+
 #endif /* LSM6DS3_DRIVER_H */

@@ -153,7 +153,7 @@ void handle_APOGEE(Frame* frame, FrameBuffer* fb)
 
 void handle_DESCENT(Frame* frame, FrameBuffer* fb)
 {
-  //LOG("DESCENT\r\n");
+  LOG("DESCENT\r\n");
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
 
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
