@@ -145,6 +145,7 @@ bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     
     for (int i = 1; i < FRAME_BUFFER_SIZE; i ++){
         spi_transmit_receive(spi, &(send_data), 0, 1, &(lsm6ds3_rx_buf[i]));
+        LOG("%d\r\n", lsm6ds3_rx_buf[i]);
     } 
     delay_microseconds(1);
     spi_disable_cs(spi, LSM6DS3_CS);
@@ -187,7 +188,7 @@ bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->y_rate = LMS6DS6_ANGULAR_RATE_SENSITIVITY * (int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_GYRO_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_GYRO_YOUT_L])) - gyro->y_offset;
     gyro->z_rate = LMS6DS6_ANGULAR_RATE_SENSITIVITY * (int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_GYRO_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_GYRO_ZOUT_L])) - gyro->z_offset;
     
-    //LOG("GryoR: X:%i, \tY:%i,\tZ:%i\r\n", gyro->x_rate, gyro->y_rate, gyro->z_rate);
+    LOG("GryoR: X:%i, \tY:%i,\tZ:%i\r\n", gyro->x_rate, gyro->y_rate, gyro->z_rate);
 
     return true;
 }

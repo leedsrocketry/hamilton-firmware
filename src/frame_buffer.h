@@ -74,6 +74,6 @@ float get_vertical_velocity(FrameBuffer *fb);
   accelerometer was not working for launch 1
 */
 
-bool is_stationary(int32_t data[]);
+bool is_stationary(FrameBuffer *fb);
 
 #endif /* BUFFER_H */
