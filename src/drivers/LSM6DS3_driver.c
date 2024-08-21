@@ -158,7 +158,7 @@ bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->x_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_XOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_XOUT_L]))/1000;
     gyro->y_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_YOUT_L]))/1000;
     gyro->z_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_L]))/1000;
-    LOG("Accel: X:%6i, \tY:%6i,\tZ:%6i\r\n", gyro->x_accel, gyro->y_accel, gyro->z_accel);
+    //LOG("Accel: X:%6i, \tY:%6i,\tZ:%6i\r\n", gyro->x_accel, gyro->y_accel, gyro->z_accel);
 
     return true;
 }
@@ -194,7 +194,7 @@ bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->y_rate = LMS6DS6_ANGULAR_RATE_SENSITIVITY * (int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_GYRO_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_GYRO_YOUT_L])) - gyro->y_offset;
     gyro->z_rate = LMS6DS6_ANGULAR_RATE_SENSITIVITY * (int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_GYRO_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_GYRO_ZOUT_L])) - gyro->z_offset;
     
-    printf("GryoR: X:%i, \tY:%i,\tZ:%i\r\n", gyro->x_rate, gyro->y_rate, gyro->z_rate);
+    //printf("GryoR: X:%i, \tY:%i,\tZ:%i\r\n", gyro->x_rate, gyro->y_rate, gyro->z_rate);
 
     return true;
 }
@@ -285,5 +285,6 @@ bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint1
     if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit) {
         return true;
     }
+    LOG("%d, %d, %d \r\n", std_dev[0], std_dev[1], std_dev[2]);
     return false;
 }

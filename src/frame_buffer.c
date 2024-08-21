@@ -188,13 +188,11 @@ float get_vertical_velocity(FrameBuffer *fb)
 
 bool is_stationary(FrameBuffer *fb) {
     LSM6DS3_data data[WINDOW_SIZE];
-    LOG("3\r\n");
     for (int i = 0; i < WINDOW_SIZE; i++) {
         data[i] = fb->frames[i].imu; 
     }
-    LOG("4\r\n");
 
-    if (LSM6DS3_gyro_standard_dev(data, WINDOW_SIZE, 1500)) {
+    if (LSM6DS3_gyro_standard_dev(data, WINDOW_SIZE, 2200)) {
         return true;  
     } else {
         return false;

@@ -153,17 +153,15 @@ void handle_APOGEE(Frame* frame, FrameBuffer* fb)
 
 void handle_DESCENT(Frame* frame, FrameBuffer* fb)
 {
-  LOG("DESCENT\r\n");
+  //LOG("DESCENT\r\n");
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
 
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
   update_frame_buffer(frame, fb);
-  LOG("1\r\n");
   int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
   // TODO: calculate landing based on sensor data
   // ACT
   bool gyro_landed_flag = false;
-  LOG("2\r\n");
 
   if(is_stationary(fb))
   {
@@ -172,7 +170,6 @@ void handle_DESCENT(Frame* frame, FrameBuffer* fb)
 
   if(gyro_landed_flag == true)
   {
-    LOG("5\r\n");
     set_flight_stage(LANDING);
   }
 
@@ -187,9 +184,9 @@ void handle_LANDING(Frame* frame, FrameBuffer* fb)
 
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
   update_frame_buffer(frame, fb);
-
   // ACT
   // Beep? Signal? radio? idk
+  STM32_indicate_on();
 
   // STORE
   //write_framebuffer(fb);
@@ -258,6 +255,7 @@ void run_flight() {
         break;
 
       case LANDING:
+        handle_LANDING(&frame, &frame_buffer);
         //STM32_beep_buzzer(200, 200, 1);
         break;
     }
