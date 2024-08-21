@@ -43,9 +43,10 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         LSM6DS3_gyro_offsets(spi, gyro);
         LSM6DS3_acc_read(spi, gyro);
         
-        return 1;
+        return 0;
     } else {
         LOG("LSM6DS3 wrong chip ID: %d\r\n", chip_id);
+        return 1;
     }
     
     return 0;

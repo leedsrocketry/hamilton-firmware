@@ -39,13 +39,18 @@ void initalise_drivers() {
   _GNSS_data.velocity = 0;
 
   // Sensor initialisation
-  MS5611_init(SPI1);                   // Barometer
-  ADXL375_init(SPI1);                  // Accelerometer
-  LSM6DS3_init(SPI1, &_LSM6DS3_data);  // IMU
-
-  M5611_data data;
-  MS5611_get_data(&data);
-  LOG("%d\r\n", data.temp);
+  if(MS5611_init(SPI1))
+  {
+    LOG("ERROR INITIALISING MS5611 BAROMETER\r\n");
+  }               
+  if(ADXL375_init(SPI1))
+  {
+    LOG("ERROR INITIALISING ADXL375 ACCEL\r\n");
+  }              
+  if(LSM6DS3_init(SPI1, &_LSM6DS3_data))
+  {
+    LOG("ERROR INITIALISING LSM6DS3 IMU\r\n");
+  }
 }
 
 void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
@@ -72,7 +77,8 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   bool baro_launch_flag = false;
   bool gyro_launch_flag = false;
 
-  if(_ADXL375_data.x < ACCEL_LAUNCH_THRESHOLD)
+  LOG("%d\r\n", _ADXL375_data.y);
+  if(_ADXL375_data.y < ACCEL_LAUNCH_THRESHOLD)
   {
     accel_launch_flag = true;
   }
@@ -82,7 +88,7 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   //   baro_launch_flag = true;
   // }
 
-  if(baro_launch_flag == true) // Test variations in emu
+  if(accel_launch_flag == true) // Test variations in emu
   {
     set_flight_stage(ASCENT);
   }
@@ -209,7 +215,6 @@ void run_flight() {
   for(uint32_t i = 0; i < 100; i++)
   {
     read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-    LOG("%d\r\n", _M5611_data.temp);
     build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
     update_frame_buffer(&frame, &frame_buffer);
   }

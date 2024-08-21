@@ -29,8 +29,12 @@ uint8_t MS5611_init(SPI_TypeDef* spi)
     MS5611_SPI = spi;
     spi_enable_cs(MS5611_SPI, MS5611_CS);
     uint8_t cmd = MS5611_CMD_RESET;
-    spi_transmit(MS5611_SPI, cmd);
+    uint8_t code = spi_transmit(MS5611_SPI, cmd);
     spi_disable_cs(MS5611_SPI, MS5611_CS);
+    if(code != 254)
+    {
+      return 1;
+    }
     MS5611_read_PROM(MS5611_SPI);
     //M5611_data data;
     // MS5611_get_data(&data);

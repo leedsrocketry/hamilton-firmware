@@ -41,10 +41,10 @@ int main(void) {
     int random = seed / m;
 
   LOG("================ PROGRAM START %d ================\r\n", random);
-//  STM32_indicate_on();
+  STM32_indicate_on();
 
   LOG("============ INITIALISE NAND FLASH ============\r\n");
-//  init_flash();
+  init_flash();
 
 
   LOG("============= INITIALISE SD CARD =============\r\n");
