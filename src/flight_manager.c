@@ -208,13 +208,6 @@ void run_flight() {
 
   // Additional variables
 
-  for(;;)
-  {
-    //MS5611_get_data(&_M5611_data);
-    LSM6DS3_acc_read(SPI1, &_LSM6DS3_data);
-    LOG("%d %d %d\r\n", _LSM6DS3_data.x_accel, _LSM6DS3_data.y_accel, _LSM6DS3_data.z_accel);
-  }
-
   LOG("============= GATHER INITIAL DATA ============\r\n");
   for(uint32_t i = 0; i < 100; i++)
   {
