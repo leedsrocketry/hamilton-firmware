@@ -165,7 +165,6 @@ void handle_DESCENT(Frame* frame, FrameBuffer* fb)
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
   update_frame_buffer(frame, fb);
   int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
-  // TODO: calculate landing based on sensor data
   // ACT
   bool gyro_landed_flag = false;
 
