@@ -17,6 +17,14 @@
 #include "flight_manager.h"
 #include "debug.h"
 
+static double Lb = -0.0065; // temperature lapse rate (K/m)
+static double hb = 0; // reference height (sea level)
+static double R = 8.3144598; // universal gas constant
+static double g = 9.80665; // gravitational acceleration
+static double M = 0.0289644; // molar mass of Earth's air
+static double Pb = 101325; // reference pressure at sea level (in Pa)
+
+
 void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
                     LSM6DS3_data* _LSM6DS3_data);
 

@@ -40,16 +40,9 @@ void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
 
 double barometric_equation(double pressure, double temp)
 {
-    // Move these to .h
-    double P = pressure; // pressure at the point of interest (in Pa)
-    double Pb = 101325; // reference pressure at sea level (in Pa)
-    double Tb = temp; // temperature at the point of interest (in K)
-    double Lb = -0.0065; // temperature lapse rate (K/m)
     double h; // height to be calculated
-    double hb = 0; // reference height (sea level)
-    double R = 8.3144598; // universal gas constant
-    double g = 9.80665; // gravitational acceleration
-    double M = 0.0289644; // molar mass of Earth's air
+    double P = pressure; // pressure at the point of interest (in Pa)
+    double Tb = temp; // temperature at the point of interest (in K)
 
     h = hb + (Tb / Lb) * (pow(P / Pb, (-R * Lb) / (g * M)) - 1);
 

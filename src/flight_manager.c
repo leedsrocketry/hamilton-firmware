@@ -15,6 +15,7 @@ GNSS_Data _GNSS_data;
 
 FlightStage flightStage = LAUNCHPAD;
 uint32_t previous_ascent_altitude = 4294967294;
+uint32_t apogee_index = 100; //amount of data recorded at apogee
 
 FlightStage get_flight_stage() { return flightStage; }
 
@@ -55,7 +56,7 @@ void initalise_drivers() {
 
 void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
 {
-  //LOG("PAD\r\n");
+  LOG("PAD\r\n");
   // READ
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
 
@@ -77,7 +78,6 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   bool baro_launch_flag = false;
   bool gyro_launch_flag = false;
 
-  LOG("%d\r\n", _ADXL375_data.y);
   if(_ADXL375_data.y < ACCEL_LAUNCH_THRESHOLD)
   {
     accel_launch_flag = true;
@@ -149,10 +149,11 @@ void handle_APOGEE(Frame* frame, FrameBuffer* fb)
   // Gather lots of additional data at this phase, determining apogee is important
 
   // ACT
-  // if(launched)
-  // {
-  //   set_flight_stage(DESCENT);
-  // }
+  apogee_index--;
+  if(apogee_index == 0)
+  {
+    set_flight_stage(DESCENT);
+  }
 
   // STORE
   log_frame(*frame);

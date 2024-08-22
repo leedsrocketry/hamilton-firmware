@@ -45,7 +45,9 @@ int main(void) {
 
   LOG("============ INITIALISE NAND FLASH ============\r\n");
   init_flash();
-
+  //erase_all();
+  //NAND_flash_read();
+  //delay_ms(10000000);
 
   LOG("============= INITIALISE SD CARD =============\r\n");
 
