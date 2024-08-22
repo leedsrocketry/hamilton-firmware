@@ -94,6 +94,7 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   }
 
   // STORE
+  log_frame(*frame);
   //write_framebuffer(fb);
 }
 
@@ -133,7 +134,7 @@ void handle_ASCENT(Frame* frame, FrameBuffer* fb)
   previous_ascent_altitude = frame->altitude;
 
   // STORE
-  //write_framebuffer(fb);
+  log_frame(*frame);
 }
 
 void handle_APOGEE(Frame* frame, FrameBuffer* fb)
@@ -154,7 +155,7 @@ void handle_APOGEE(Frame* frame, FrameBuffer* fb)
   // }
 
   // STORE
-  //write_framebuffer(fb);
+  log_frame(*frame);
 }
 
 void handle_DESCENT(Frame* frame, FrameBuffer* fb)
@@ -179,7 +180,7 @@ void handle_DESCENT(Frame* frame, FrameBuffer* fb)
   }
 
   // STORE
-  //write_framebuffer(fb);
+  log_frame(*frame);
 }
 
 void handle_LANDING(Frame* frame, FrameBuffer* fb)
@@ -194,7 +195,7 @@ void handle_LANDING(Frame* frame, FrameBuffer* fb)
   STM32_indicate_on();
 
   // STORE
-  //write_framebuffer(fb);
+  log_frame(*frame);
 }
 
 void run_flight() {
