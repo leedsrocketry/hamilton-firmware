@@ -12,7 +12,7 @@
 
 #pragma region Macros
 #define ADXL375_DEVID			                0x00  // Device ID command
-#define ADXL375_DEVID_ID			            0xe5  // Device ID (229)
+#define ADXL375_DEVID_ID			            0x90   //0xe5  // Device ID (229)
 
 #define ADXL375_INT_ENABLE		            0x2E  // Interrupt enable control
 #define ADXL375_INT_MAP		                0x2F  // Interrupt enable control
@@ -80,7 +80,7 @@
 #define ADXL375_Z_REG_DATAZ1              0x37
 
 #define ADXL375_MEASURE                   0x08
-#define ADXL375_CS								        6
+#define ADXL375_CS								        0
 
 // Self test
 #define ADXL375_SELF_TEST_SAMPLES	        10

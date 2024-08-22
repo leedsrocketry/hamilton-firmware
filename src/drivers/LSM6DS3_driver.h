@@ -14,7 +14,7 @@
 
 #pragma once
 
-#define LSM6DS3_CS      			7
+#define LSM6DS3_CS      			1
 #define LSM6DSO_CHIP_ID 			0x6C
 
 #define LSM6DSO_INT_PIN PIN('B', 9)
@@ -174,5 +174,7 @@ bool LSM6DS3_get_acc_vector(LSM6DS3_data* _LSM6DS3_data, float vector[]);
   @returns true if within limits
 */
 bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16_t limit);
+
+bool LSM6DS3_acc_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16_t limit);
 
 #endif /* LSM6DS3_DRIVER_H */

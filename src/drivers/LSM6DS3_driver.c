@@ -30,7 +30,6 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     //end of spi comm
 
     if (chip_id == LSM6DS3_WHO_AM_I_EXP) {
-        LOG("LSM6DS3 wrong chip ID, %d\r\n", chip_id);
         delay_microseconds(10); 
         LSM6DS3_config(spi);     //configure settings
         delay_microseconds(10); //give delay after setting the settings
@@ -44,9 +43,10 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         LSM6DS3_gyro_offsets(spi, gyro);
         LSM6DS3_acc_read(spi, gyro);
         
-        return 1;
+        return 0;
     } else {
         LOG("LSM6DS3 wrong chip ID: %d\r\n", chip_id);
+        return 1;
     }
     
     return 0;
@@ -137,6 +137,10 @@ bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         BUFFER_SIZE, //6
     };
 
+    // Reset both accel and gyro. Do not ask why.
+    LSM6DS3_write_register(SPI1, LSM6DSO_REG_CTRL1_XL, (LSM6DSO_VAL_CTRL1_XL_ODR833 << 4) | (LSM6DSO_VAL_CTRL1_XL_16G << 2) | (LSM6DSO_VAL_CTRL1_XL_LPF1 << 1), 1);
+    LSM6DS3_write_register(SPI1, LSM6DSO_REG_CTRL2_G, (LSM6DSO_VAL_CTRL2_G_ODR6664 << 4) | (LSM6DSO_VAL_CTRL2_G_2000DPS << 2), 1);
+
     uint8_t lsm6ds3_rx_buf[BUFFER_SIZE];
     uint8_t send_data =  LSM6DSO_REG_OUTX_L_A | 0x80;   //first reg address
 
@@ -146,6 +150,7 @@ bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     
     for (int i = 1; i < BUFFER_SIZE; i ++){
         spi_transmit_receive(spi, &(send_data), 0, 1, &(lsm6ds3_rx_buf[i]));
+        delay_microseconds(100);
     } 
     delay_microseconds(1);
     spi_disable_cs(spi, LSM6DS3_CS);
@@ -171,6 +176,8 @@ bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
         BUFFER_SIZE,
     };
 
+    //LSM6DS3_write_register(SPI1, LSM6DSO_REG_CTRL2_G, (LSM6DSO_VAL_CTRL2_G_ODR6664 << 4) | (LSM6DSO_VAL_CTRL2_G_2000DPS << 2), 1);
+
     uint8_t lsm6ds3_rx_buf[BUFFER_SIZE] = {0};
     uint8_t send_data = (LSM6DSO_REG_OUTX_L_G) | 0x80;  //first reg address
 
@@ -188,11 +195,10 @@ bool LSM6DS3_gyro_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->y_rate = LMS6DS6_ANGULAR_RATE_SENSITIVITY * (int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_GYRO_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_GYRO_YOUT_L])) - gyro->y_offset;
     gyro->z_rate = LMS6DS6_ANGULAR_RATE_SENSITIVITY * (int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_GYRO_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_GYRO_ZOUT_L])) - gyro->z_offset;
     
-    //LOG("GryoR: X:%i, \tY:%i,\tZ:%i\r\n", gyro->x_rate, gyro->y_rate, gyro->z_rate);
+    //printf("GryoR: X:%i, \tY:%i,\tZ:%i\r\n", gyro->x_rate, gyro->y_rate, gyro->z_rate);
 
     return true;
 }
-
 
 //calculates the gyro offset values
 bool LSM6DS3_gyro_offsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
@@ -216,7 +222,7 @@ bool LSM6DS3_gyro_offsets(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     gyro->x_offset = (avg[0] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->y_offset = (avg[1] / LSM6DSO_OFFSET_BUFF_LEN);
     gyro->z_offset = (avg[2] / LSM6DSO_OFFSET_BUFF_LEN);
-    LOG("Gyro Offsets: %li, %li, %li\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
+    //LOG("Gyro Offsets: %li, %li, %li\r\n", gyro->x_offset, gyro->y_offset, gyro->z_offset);
     return 1;
 }
 
@@ -277,6 +283,41 @@ bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint1
 
     // Sqrt to get standard deviation
     int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
+    if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit) {
+        return true;
+    }
+    //LOG("%d, %d, %d \r\n", std_dev[0], std_dev[1], std_dev[2]);
+    return false;
+}
+
+bool LSM6DS3_acc_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16_t limit) {
+    // Calculate mean
+    LOG("TEST\r\n");
+    int means[3] = {0,0,0};
+    for (int i = 0; i < buffer_limit; i ++){
+        means[0] += buff[i].x_accel;
+        means[1] += buff[i].y_accel;
+        means[2] += buff[i].z_accel;
+    }
+    means[0] /= buffer_limit;
+    means[1] /= buffer_limit;
+    means[2] /= buffer_limit;
+
+    // Calculate variance through (sum of (squares of deviations))/num_samples
+    long variance[3] = {0,0,0};
+    for (int i = 0; i < buffer_limit; i ++){
+        variance[0] += powl(buff[i].x_accel - means[0], 2);
+        variance[1] += powl(buff[i].y_accel - means[1], 2);
+        variance[2] += powl(buff[i].z_accel - means[2], 2);
+    }
+    // Divide by samples to get variance
+    variance[0] /= buffer_limit;
+    variance[1] /= buffer_limit;
+    variance[2] /= buffer_limit;
+
+    // Sqrt to get standard deviation
+    int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
+    LOG("%d, %d, %d \r\n", std_dev[0], std_dev[1], std_dev[2]);
     if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit) {
         return true;
     }

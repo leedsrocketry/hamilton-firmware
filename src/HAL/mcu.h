@@ -343,53 +343,25 @@ static inline void uart_read_buf(USART_TypeDef *uart, uint8_t *results, uint8_t 
 #define A3 PIN('D', 4)
 
 // Map cs pins to sensors
-#define CS0  0   // EEPROM 1
-#define CS1  1   // EEPROM 2
-#define CS2  2   // Thermocoupler 4
-#define CS3  3   // Thermocoupler 3
-#define CS4  4   // Thermocoupler 2
-#define CS5  5   // Thermocoupler 1
-#define CS6  6   // Accelerometer
-#define CS7  7   // IMU
-#define CS8  8   // Magnetometer
-#define CS9  9   // Pad Radio
-#define CS10 10  // Barometer
-#define CS11 11  // Humidity 
-#define CS12 12  // External DAC 1
-#define CS13 13  // External DAC 2
-#define CS14 14  // NONE
-#define CS15 15  // External ADC 1 
-
+#define CS0 0 // Accelerometer
+#define CS1 1 // IMU
+#define CS2 2 // Magnetometer
+#define CS3 3 // Barometer
+#define CS4 4 // Humidity
+#define CS5 5 // SD_CARD
 
 // Generate all switch cases for the multiplexer
-static inline void set_cs(int16_t cs)
+static inline int set_cs(int16_t cs)
 {
-  switch(cs) {
-    case CS6:   // Accelerometer
-      gpio_write(A0, LOW);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, HIGH);
-      gpio_write(A3, LOW);
-      break;
-    case CS7:   // IMU
-      gpio_write(A0, HIGH);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, HIGH);
-      gpio_write(A3, LOW);
-      break;
-    case CS9:   // Pad Radio
-      gpio_write(A0, HIGH);
-      gpio_write(A1, LOW);
-      gpio_write(A2, LOW);
-      gpio_write(A3, HIGH);
-      break;
-    case CS10: // Barometer
-      gpio_write(A0, LOW);
-      gpio_write(A1, HIGH);
-      gpio_write(A2, LOW);
-      gpio_write(A3, HIGH);
-      break;
-  }
+    if (cs > 15) {
+        return 1;
+    } else {
+        gpio_write(A0, (cs & 0x1));
+        gpio_write(A1, (cs & 0x2) >> 1);
+        gpio_write(A2, (cs & 0x4) >> 2);
+        gpio_write(A3, (cs & 0x8) >> 3);
+        return 0;
+    }
 }
 
 static inline void unset_cs()
