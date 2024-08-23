@@ -40,6 +40,7 @@ void initalise_drivers() {
   _GNSS_data.velocity = 0;
 
   // Sensor initialisation
+
   if(MS5611_init(SPI1))
   {
     LOG("ERROR INITIALISING MS5611 BAROMETER\r\n");
@@ -59,6 +60,11 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   LOG("PAD\r\n");
   // READ
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
+  
+  // FORMAT AND SEND DATA TO HC12
+  char sensors_data_buffer[150];
+  format_sensor_data(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data, sensors_data_buffer, sizeof(sensors_data_buffer)); // Format the data into a string
+  HC12_transmit(UART1, sensors_data_buffer); // Transmit the formatted string over UART
 
   // BUILD
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
