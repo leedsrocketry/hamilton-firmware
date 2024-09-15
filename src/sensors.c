@@ -1,5 +1,12 @@
 #include "sensors.h"
 
+double Lb = -0.0065; // temperature lapse rate (K/m)
+double hb = 0; // reference height (sea level)
+double R = 8.3144598; // universal gas constant
+double g = 9.80665; // gravitational acceleration
+double M = 0.0289644; // molar mass of Earth's air
+double Pb = 101325; // reference pressure at sea level (in Pa)
+
 void build_frame(Frame* frame, M5611_data _M5611_data,
                      ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
                      BME280_data _BME280_data, GNSS_Data _GNSS_data) {

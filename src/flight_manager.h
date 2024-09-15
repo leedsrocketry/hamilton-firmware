@@ -13,6 +13,7 @@
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
+#include "drivers/HC12_driver.h"
 #include "frame.h"
 #include "stm32l4r5xx.h"
 #include "sensors.h"
@@ -30,8 +31,9 @@
 
 #define GROUND_THRESHOLD 30
 
+// Unsure which of these is correct as of 15/09/2024
 #define EVENT_TRIG_1 PIN('C', 2)
-#define EVENT_TRIG_1 PIN('C', 1)
+// #define EVENT_TRIG_1 PIN('C', 1)
 
 // Not used as of 04/08/2024, should be moved later
 #define BATTERY_ADC PIN('C', 3)

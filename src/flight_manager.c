@@ -14,7 +14,7 @@ BME280_data _BME280_data;
 GNSS_Data _GNSS_data;
 
 FlightStage flightStage = LAUNCHPAD;
-uint32_t previous_ascent_altitude = 4294967294;
+double previous_ascent_altitude = 4294967294;
 uint32_t apogee_index = 100; //amount of data recorded at apogee
 
 FlightStage get_flight_stage() { return flightStage; }
@@ -75,14 +75,14 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
   // TODO: calculate launch based on pressure+accel+gyro(?)
   frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
-  double velo = get_vertical_velocity(fb);
+  // double velo = get_vertical_velocity(fb); unused TEMP
   
-  //printf("%d %d %d\r\n", _LSM6DS3_data.x_offset, _LSM6DS3_data.y_rate, _LSM6DS3_data.z_rate);
-
   // ACT
   bool accel_launch_flag = false;
-  bool baro_launch_flag = false;
-  bool gyro_launch_flag = false;
+
+  // Unused for now, will be later
+  //bool baro_launch_flag = false;
+  //bool gyro_launch_flag = false;
 
   if(_ADXL375_data.y < ACCEL_LAUNCH_THRESHOLD)
   {
@@ -115,17 +115,17 @@ void handle_ASCENT(Frame* frame, FrameBuffer* fb)
   double current_pressure = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
   double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
   frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
-  double velo = get_vertical_velocity(fb);
+  //double velo = get_vertical_velocity(fb);
 
   // ACT
-  bool velo_apogee_flag = false;
+  //bool velo_apogee_flag = false;
   bool altitude_apogee_flag = false;
 
 
-  if(velo < BARO_APOGEE_THRESHOLD)
-  {
-    velo_apogee_flag = true;
-  }
+  // if(velo < BARO_APOGEE_THRESHOLD)
+  // {
+  //   velo_apogee_flag = true;
+  // }
 
   if((frame->altitude - previous_ascent_altitude) > ALTITUDE_APOGEE_THRESHOLD)
   {
@@ -150,7 +150,6 @@ void handle_APOGEE(Frame* frame, FrameBuffer* fb)
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
   update_frame_buffer(frame, fb);
 
-  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
   // TODO: calculate apogee based on sensor data
   // Gather lots of additional data at this phase, determining apogee is important
 
@@ -172,7 +171,7 @@ void handle_DESCENT(Frame* frame, FrameBuffer* fb)
 
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
   update_frame_buffer(frame, fb);
-  int32_t current_pressure = get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE);
+  //int32_t current_pressure = get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
   // ACT
   bool gyro_landed_flag = false;
 
@@ -212,7 +211,7 @@ void run_flight() {
   uint8_t dataArray[128];  // dummy array to store the frame data
   _memset(dataArray, 0,
           sizeof(dataArray));  // set the necessary memory and set values to 0
-  frame = unzip(&dataArray);   // convert from normal array into Frame
+  frame = unzip(dataArray);   // convert from normal array into Frame
   FrameBuffer frame_buffer;     // contains FrameArrays
   init_frame_buffer(&frame_buffer);  // initialise the buffer
 
