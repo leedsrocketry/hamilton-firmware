@@ -55,6 +55,7 @@ void format_sensor_data(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
              _LSM6DS3_data->x_rate, 
              _LSM6DS3_data->y_rate, 
              _LSM6DS3_data->z_rate);
+                        }
 
 double barometric_equation(double pressure, double temp)
 {
