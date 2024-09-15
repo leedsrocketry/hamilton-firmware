@@ -24,7 +24,7 @@ uint8_t LSM6DS3_init(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     //start SPI comms
     spi_enable_cs(spi, LSM6DS3_CS);
     delay_microseconds(1);
-    spi_transmit_receive(spi, &send_data, 1, 1, &chip_id);
+    spi_transmit_receive(spi, send_data, 1, 1, &chip_id);
     delay_microseconds(1);
     spi_disable_cs(spi, LSM6DS3_CS);
     //end of spi comm
@@ -156,9 +156,10 @@ bool LSM6DS3_acc_read(SPI_TypeDef *spi, LSM6DS3_data* gyro)
     spi_disable_cs(spi, LSM6DS3_CS);
 
     //convert raw bytes into milli G
-    gyro->x_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_XOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_XOUT_L]))/1000;
-    gyro->y_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_YOUT_L]))/1000;
-    gyro->z_accel = LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_L]))/1000;
+    // NOTE: this is really ugly (evan, 15/09/2024)
+    gyro->x_accel = (int16_t)(LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_XOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_XOUT_L]))/1000);
+    gyro->y_accel = (int16_t)(LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_YOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_YOUT_L]))/1000);
+    gyro->z_accel = (int16_t)(LMS6DS6_ACCEL_SENSITIVITY*(int32_t)((int16_t)((lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_H] << 8) | lsm6ds3_rx_buf[IDX_ACCEL_ZOUT_L]))/1000);
     //LOG("Accel: X:%6i, \tY:%6i,\tZ:%6i\r\n", gyro->x_accel, gyro->y_accel, gyro->z_accel);
 
     return true;
@@ -238,9 +239,9 @@ int32_t LSM6DS3_angle_overflow(int32_t mDeg){
 
 bool LSM6DS3_get_acc_vector(LSM6DS3_data* _LSM6DS3_data, float vector[]){
     // Convert from milli g to g
-    vector[0] = _LSM6DS3_data->x_accel/1000.0;
-    vector[1] = _LSM6DS3_data->y_accel/1000.0;
-    vector[2] = _LSM6DS3_data->z_accel/1000.0;
+    vector[0] = (float)(_LSM6DS3_data->x_accel/1000.0);
+    vector[1] = (float)(_LSM6DS3_data->y_accel/1000.0);
+    vector[2] = (float)(_LSM6DS3_data->z_accel/1000.0);
 
     // Check magnitude (in g)
     float magnitude = sqrtf(vector[0]*vector[0] + vector[1]*vector[1] + vector[2]*vector[2]);
@@ -251,7 +252,7 @@ bool LSM6DS3_get_acc_vector(LSM6DS3_data* _LSM6DS3_data, float vector[]){
     vector[2] /= magnitude;
     vector[3] = magnitude;
 
-    if (magnitude < 0.9 || magnitude > 1.1){   // If not close to 1G
+    if (magnitude < (float)0.9 || magnitude > (float)1.1){   // If not close to 1G
         return false;
     }
     return true;
@@ -272,9 +273,9 @@ bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint1
     // Calculate variance through (sum of (squares of deviations))/num_samples
     long variance[3] = {0,0,0};
     for (int i = 0; i < buffer_limit; i ++){
-        variance[0] += powl(buff[i].x_rate - means[0], 2);
-        variance[1] += powl(buff[i].y_rate - means[1], 2);
-        variance[2] += powl(buff[i].z_rate - means[2], 2);
+        variance[0] += (long)powl(buff[i].x_rate - means[0], 2);
+        variance[1] += (long)powl(buff[i].y_rate - means[1], 2);
+        variance[2] += (long)powl(buff[i].z_rate - means[2], 2);
     }
     // Divide by samples to get variance
     variance[0] /= buffer_limit;
@@ -282,7 +283,7 @@ bool LSM6DS3_gyro_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint1
     variance[2] /= buffer_limit;
 
     // Sqrt to get standard deviation
-    int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
+    int32_t std_dev[3] = {(int32_t)sqrt(variance[0]), (int32_t)sqrt(variance[1]), (int32_t)sqrt(variance[2])};
     if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit) {
         return true;
     }
@@ -306,9 +307,9 @@ bool LSM6DS3_acc_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16
     // Calculate variance through (sum of (squares of deviations))/num_samples
     long variance[3] = {0,0,0};
     for (int i = 0; i < buffer_limit; i ++){
-        variance[0] += powl(buff[i].x_accel - means[0], 2);
-        variance[1] += powl(buff[i].y_accel - means[1], 2);
-        variance[2] += powl(buff[i].z_accel - means[2], 2);
+        variance[0] += (long)powl(buff[i].x_accel - means[0], 2);
+        variance[1] += (long)powl(buff[i].y_accel - means[1], 2);
+        variance[2] += (long)powl(buff[i].z_accel - means[2], 2);
     }
     // Divide by samples to get variance
     variance[0] /= buffer_limit;
@@ -316,10 +317,10 @@ bool LSM6DS3_acc_standard_dev(LSM6DS3_data buff[], uint16_t buffer_limit, uint16
     variance[2] /= buffer_limit;
 
     // Sqrt to get standard deviation
-    int std_dev[3] = {sqrt(variance[0]), sqrt(variance[1]), sqrt(variance[2])};
-    LOG("%d, %d, %d \r\n", std_dev[0], std_dev[1], std_dev[2]);
+    int32_t std_dev[3] = {(int32_t)sqrt(variance[0]), (int32_t)sqrt(variance[1]), (int32_t)sqrt(variance[2])};
+    //LOG("%d, %d, %d \r\n", std_dev[0], std_dev[1], std_dev[2]);
     if (std_dev[0] < limit && std_dev[1] < limit && std_dev[2] < limit) {
         return true;
     }
     return false;
-}
+} 
