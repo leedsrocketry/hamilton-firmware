@@ -29,7 +29,7 @@ typedef struct FrameBuffer {
   Frame frames[BUFFER_SIZE];  // Circular buffer
   Frame *window_0;
   Frame *window_1;
-  uint32_t ground_ref;                  // Set of reference values for launch
+  int32_t ground_ref;                  // Set of reference values for launch
   uint32_t index;                       // End index (value is inserted)
   uint32_t count;                       // Number of elements currently in buffer
 } FrameBuffer;

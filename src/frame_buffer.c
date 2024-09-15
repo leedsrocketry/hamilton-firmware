@@ -19,6 +19,17 @@ void init_frame_buffer(FrameBuffer *fb)
 }
 
 /**
+  @brief Set the ground reference for the buffer
+  @param frame - one reading data frame to add
+  @param buffer - data buffer
+*/
+void set_ground_reference(FrameBuffer *fb)
+{
+  // get the ground reference as median
+  fb->ground_ref = get_framebuffer_median(fb, BUFFER_SIZE, ALTITUDE);
+}
+
+/**
   @brief Fills the circular buffer
   @param frame - one reading data frame to add
   @param buffer - data buffer
@@ -76,7 +87,7 @@ uint32_t get_window_1_index(FrameBuffer *fb)
 
 void write_framebuffer(FrameBuffer *fb)
 {
-  for (int32_t i = 0; i < fb->count; i++)
+  for (uint32_t i = 0; i < fb->count; i++)
   {
     log_frame(fb->frames[i]);
   }
@@ -133,17 +144,6 @@ uint32_t get_median(int32_t data[], uint32_t size)
   if (size % 2 != 0)
     return data[(size / 2) + 1];
   return (data[size / 2] + data[(size / 2) + 1]) / 2;
-}
-
-/**
-  @brief Set the ground reference for the buffer
-  @param frame - one reading data frame to add
-  @param buffer - data buffer
-*/
-void set_ground_reference(FrameBuffer *fb)
-{
-  // get the ground reference as median
-  fb->ground_ref = get_framebuffer_median(fb, BUFFER_SIZE, ALTITUDE);
 }
 
 /**
