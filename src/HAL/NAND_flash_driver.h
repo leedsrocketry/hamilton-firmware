@@ -221,6 +221,11 @@ static inline Frame unzip(uint8_t *zippedData) {
   _unzippedData.changeFlag = 1;
   int i = -1;
 
+  // Resolve errors to do with uninitialised data, but this is obviously not correct.
+  _unzippedData.GNSS.altitude = 0;
+  _unzippedData.GNSS.velocity = 0;
+  _unzippedData.bme.temperature = 0;
+
   // Date and time
   _unzippedData.date.year = zippedData[i++];
   _unzippedData.date.minute = zippedData[i++];
@@ -396,7 +401,7 @@ static inline void print_frame_array(Frame frameFormat) {
   LOG("Accel HG: \tX: %i,\tY: %i,\tZ: %i\t\r\n", frameFormat.accel.x, frameFormat.accel.y, frameFormat.accel.z);
 
   LOG("IMU: \tX Rate: %ld,\tY Rate: %ld,\tZ Rate: %ld,\tX Offset: %ld,\tY Offset: %ld, \
-        \tZ Offset: %ld,\tX Accel: %ld,\tY Accel: %ld,\tZ Accel: %ld,\r\n", frameFormat.imu.x_rate, 
+        \tZ Offset: %ld,\tX Accel: %d,\tY Accel: %d,\tZ Accel: %d,\r\n", frameFormat.imu.x_rate, 
                                                                         frameFormat.imu.y_rate, 
                                                                         frameFormat.imu.z_rate, 
                                                                         frameFormat.imu.x_offset, 
@@ -407,12 +412,12 @@ static inline void print_frame_array(Frame frameFormat) {
                                                                         frameFormat.imu.z_accel);
 
   LOG("Barometer: \ttemp: %ld, \tpressure: %ld\r\n", frameFormat.barometer.temp, frameFormat.barometer.pressure);
-  LOG("GNSS: \tLat: %i,\tLong: %i,\tAlt: %i,\tVel: %i\r\n", frameFormat.GNSS.latitude, 
+  LOG("GNSS: \tLat: %d,\tLong: %d,\tAlt: %d,\tVel: %d\r\n", frameFormat.GNSS.latitude, 
                                                                frameFormat.GNSS.longitude, 
                                                                frameFormat.GNSS.altitude, 
                                                                frameFormat.GNSS.velocity);
                                                                
-  LOG("BME280: \tPressure: %li,\tTemperature: %i,\tHumidity: %li\r\n", frameFormat.bme.pressure, 
+  LOG("BME280: \tPressure: %ld,\tTemperature: %d,\tHumidity: %ld\r\n", frameFormat.bme.pressure, 
                                                                       frameFormat.bme.temperature, 
                                                                       frameFormat.bme.humidity);
 }
@@ -1032,7 +1037,7 @@ static inline void read_all_raw(){
   uint8_t _check = 0;
 
   uint8_t array[128];
-  _memset(&array, 0, 128);
+  _memset(array, 0, 128);
   
   bool skipBlank = true;
 
@@ -1046,7 +1051,7 @@ static inline void read_all_raw(){
 
     }else{
       //read as a uint8_t array
-      read_frame(i, &array, 128);
+      read_frame(i, array, 128);
       print_frame(array);
     } 
   }
@@ -1063,7 +1068,7 @@ static inline void read_all_frame(){
   uint8_t _check = 0;
 
   uint8_t array[128];
-  _memset(&array, 0, 128);
+  _memset(array, 0, 128);
   
   bool skipBlank = true;
 
@@ -1095,7 +1100,7 @@ static inline void read_all_csv(){
   uint8_t _check = 0;
 
   uint8_t array[128];
-  _memset(&array, 0, 128);
+  _memset(array, 0, 128);
   
   bool skipBlank = true;
   print_csv_header();
@@ -1121,8 +1126,6 @@ static inline void read_all_csv(){
   @brief Reads the entire flash and returns the info on the capacity of the flash and the amount of corruption (checks CRC and Hamming codes)
 */
 static inline void read_all(){
-  Frame _output;
-  _output.successFlag = NONE;
   uint32_t lastFrameToRead = get_next_available_frame_addr();
   uint8_t _check = 0;
   int data_intact = 0;
@@ -1131,7 +1134,7 @@ static inline void read_all(){
   int data_empty = 0;
 
   uint8_t array[128];
-  _memset(&array, 0, 128);
+  _memset(array, 0, 128);
 
   for(uint32_t i = 0; i < lastFrameToRead; i++) {
     read_frame(i, &_check, 1);
@@ -1141,7 +1144,7 @@ static inline void read_all(){
       i = i - (i%2048) - 1;
     } else {
       // Read as a uint8_t array
-      read_frame(i, &array, 128);
+      read_frame(i, array, 128);
       print_frame(array);
     }
   }
