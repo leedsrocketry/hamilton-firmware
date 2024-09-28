@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - CI/CD
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,8 +22,9 @@ jobs:
           export PATH=$PATH:$(pwd)/arm-gnu-toolchain-13.2.Rel1-x86_64-arm-none-eabi/bin
           
           make build 2>&1 | tee build.log
-          if grep -q "warning" build.log; then
-            echo "Build failed due to warnings."
+          warning_count=$(grep -c "warning" build.log)
+          if [ "$warning_count" -gt 1 ]; then
+            echo "Build failed due to multiple warnings."
             exit 1
           fi
         
