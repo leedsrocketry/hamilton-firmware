@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - CI/CD
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual triggering from the GitHub GUI
 
 jobs:
   build:
@@ -30,7 +30,7 @@ jobs:
         
       - name: Upload Firmware
         if: success()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: firmware
           path: firmware.bin
