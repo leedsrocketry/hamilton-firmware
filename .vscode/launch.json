@@ -5,13 +5,13 @@
         "name": "C: Hardware Debugging",
         "type": "gdb",
         "request": "launch",
-        "target": "${workspaceFolder}\\firmware.elf",
+        "target": "${workspaceFolder}/build/firmware.elf",
         "cwd":"${workspaceRoot}",
-        "gdbpath": "C:\\Program Files (x86)\\Arm GNU Toolchain arm-none-eabi\\12.2 rel1\\bin\\arm-none-eabi-gdb.exe",
+        "gdbpath": "/opt/arm-none-eabi/bin/arm-none-eabi-gdb",
         "valuesFormatting": "parseText",
         "autorun": [
             "target extended-remote localhost:3333",
-            "symbol-file ./firmware.elf",
+            "symbol-file ./build/firmware.elf",
             "break main"
         ]
       }
