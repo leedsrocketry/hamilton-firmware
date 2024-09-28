@@ -27,7 +27,7 @@ int main(void) {
   // STM32 setup
   STM32_init();
 
-  LOG("================ PROGRAM START %d ================\r\n", random);
+  LOG("================ PROGRAM START ================\r\n");
   STM32_indicate_on();
 
   LOG("============ INITIALISE NAND FLASH ============\r\n");
