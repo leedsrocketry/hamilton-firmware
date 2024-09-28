@@ -17,6 +17,8 @@ FlightStage flightStage = LAUNCHPAD;
 double previous_ascent_altitude = 4294967294;
 uint32_t apogee_index = 100; //amount of data recorded at apogee
 
+uint32_t apogee = 0;
+
 FlightStage get_flight_stage() { return flightStage; }
 
 void set_flight_stage(FlightStage fs) { flightStage = fs; }
@@ -75,7 +77,6 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
   // TODO: calculate launch based on pressure+accel+gyro(?)
   frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
-  // double velo = get_vertical_velocity(fb); unused TEMP
   
   // ACT
   bool accel_launch_flag = false;
@@ -115,26 +116,23 @@ void handle_ASCENT(Frame* frame, FrameBuffer* fb)
   double current_pressure = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
   double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
   frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
-  //double velo = get_vertical_velocity(fb);
 
-  // ACT
-  //bool velo_apogee_flag = false;
+  if(frame->altitude > apogee)
+  {
+    apogee = frame->altitude;
+  }
+
   bool altitude_apogee_flag = false;
 
-
-  // if(velo < BARO_APOGEE_THRESHOLD)
-  // {
-  //   velo_apogee_flag = true;
-  // }
-
-  if((frame->altitude - previous_ascent_altitude) > ALTITUDE_APOGEE_THRESHOLD)
+  if((apogee-frame->altitude) > ALTITUDE_APOGEE_THRESHOLD)
   {
     altitude_apogee_flag = true;
   }
 
-  if(altitude_apogee_flag == true) // Test variations in emu
+  // ACT
+  if(altitude_apogee_flag == true)
   {
-    set_flight_stage(true);
+    set_flight_stage(APOGEE);
   }
 
   previous_ascent_altitude = frame->altitude;

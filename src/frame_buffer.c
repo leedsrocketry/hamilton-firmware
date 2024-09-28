@@ -146,46 +146,6 @@ uint32_t get_median(int32_t data[], uint32_t size)
   return (data[size / 2] + data[(size / 2) + 1]) / 2;
 }
 
-/**
-  @brief Calculate vertical velocity using JUST barometer pressure data
-  @param data The array of barometer data
-  @param dt Delta-time between each reading
-*/
-float get_vertical_velocity(FrameBuffer *fb)
-{
-  uint32_t window_0_index = get_window_0_index(fb);
-  uint32_t window_1_index = get_window_1_index(fb);
-  Frame window_0 = fb->frames[window_0_index];
-  Frame window_1 = fb->frames[window_1_index];
-
-  // Calculate average altitude for both windows
-  float avg_current = 0;
-  float avg_previous = 0;
-  for (uint32_t i = 0; i < WINDOW_SIZE; i++)
-  {
-    uint32_t index_0 = (window_0_index + i) % BUFFER_SIZE;
-    uint32_t index_1 = (window_1_index + i) % BUFFER_SIZE;
-
-    avg_current += fb->frames[index_0].altitude;
-    avg_previous += fb->frames[index_1].altitude;
-
-    // avg_current += window_0[i].altitude;
-    // avg_previous += window_1[i].altitude;
-  }
-  avg_current /= WINDOW_SIZE;
-  avg_previous /= WINDOW_SIZE;
-  // Calculate the time difference between the two windows
-  float dt = abs(window_0.date.microsecond - window_1.date.microsecond);
-  dt = dt / 1000;
-
-  // Calculate vertical velocity
-  float velocity = (avg_current - avg_previous) / dt;
-  // printf_float("velo", velocity, true);
-  // printf("\r\n");
-
-  return velocity;
-}
-
 bool is_stationary(FrameBuffer *fb) {
     LSM6DS3_data data[WINDOW_SIZE];
     for (int i = 0; i < WINDOW_SIZE; i++) {
