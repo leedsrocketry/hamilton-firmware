@@ -29,7 +29,7 @@ typedef struct FrameBuffer {
   Frame frames[BUFFER_SIZE];  // Circular buffer
   Frame *window_0;
   Frame *window_1;
-  int32_t ground_ref;                  // Set of reference values for launch
+  double ground_ref;                  // Set of reference values for launch
   uint32_t index;                       // End index (value is inserted)
   uint32_t count;                       // Number of elements currently in buffer
 } FrameBuffer;
@@ -40,7 +40,7 @@ typedef struct FrameBuffer {
 */
 void init_frame_buffer(FrameBuffer* buffer);
 
-int32_t get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading sensor);
+double get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading sensor);
 
 void write_framebuffer(FrameBuffer* fb);
 
@@ -50,7 +50,7 @@ void write_framebuffer(FrameBuffer* fb);
   @param size - size of the array
   @return median value
 */
-uint32_t get_median(int32_t data[], uint32_t size);
+double get_median(int32_t data[], uint32_t size);
 
 /**
   @brief Set the ground reference for the buffer

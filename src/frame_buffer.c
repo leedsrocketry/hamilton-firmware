@@ -93,9 +93,9 @@ void write_framebuffer(FrameBuffer *fb)
   }
 }
 
-int32_t get_framebuffer_median(FrameBuffer *fb, uint32_t size, SensorReading reading)
+double get_framebuffer_median(FrameBuffer *fb, uint32_t size, SensorReading reading)
 {
-  int32_t _data[size]; // Adjusted to the size of the window you want to calculate the median for
+  double _data[size]; // Adjusted to the size of the window you want to calculate the median for
 
   // Determine the start index based on the most recent frames
   uint32_t start_idx = (fb->index + BUFFER_SIZE - size) % BUFFER_SIZE;
@@ -107,11 +107,11 @@ int32_t get_framebuffer_median(FrameBuffer *fb, uint32_t size, SensorReading rea
     switch (reading)
     {
     case MS5611_PRESSURE:
-      _data[i] = fb->frames[idx].barometer.pressure;
+      _data[i] = (double)fb->frames[idx].barometer.pressure;
       break;
 
     case MS5611_TEMP:
-      _data[i] = fb->frames[idx].barometer.temp;
+      _data[i] = (double)fb->frames[idx].barometer.temp;
       break;
 
     case ALTITUDE:
@@ -138,12 +138,12 @@ int cmpfunc(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
   @param size Size of array
   @return True when ready
 */
-uint32_t get_median(int32_t data[], uint32_t size)
+double get_median(int32_t data[], uint32_t size)
 {
   qsort(data, (size_t)size, sizeof(int), cmpfunc);
   if (size % 2 != 0)
     return data[(size / 2) + 1];
-  return (data[size / 2] + data[(size / 2) + 1]) / 2;
+  return (double)(data[size / 2] + data[(size / 2) + 1]) / 2;
 }
 
 bool is_stationary(FrameBuffer *fb) {
