@@ -14,8 +14,6 @@
 #include "frame.h"
 #include "stm32l4r5xx.h"
 
-#include "drivers/sd_card.h"
-
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }
 

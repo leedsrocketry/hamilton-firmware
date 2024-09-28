@@ -138,7 +138,7 @@ int cmpfunc(const void *a, const void *b) { return (*(int *)a - *(int *)b); }
   @param size Size of array
   @return True when ready
 */
-double get_median(int32_t data[], uint32_t size)
+double get_median(double data[], uint32_t size)
 {
   qsort(data, (size_t)size, sizeof(int), cmpfunc);
   if (size % 2 != 0)

@@ -22,8 +22,6 @@
 #define BUFFER_SIZE 60
 #define WINDOW_SIZE BUFFER_SIZE/2  // Number of readings to calculate computations
 
-static float sea_level_pressure = 1013.25;  // Sea level presser in micro bar
-
 // Circular Buffer for data storing
 typedef struct FrameBuffer {
   Frame frames[BUFFER_SIZE];  // Circular buffer
@@ -50,7 +48,7 @@ void write_framebuffer(FrameBuffer* fb);
   @param size - size of the array
   @return median value
 */
-double get_median(int32_t data[], uint32_t size);
+double get_median(double data[], uint32_t size);
 
 /**
   @brief Set the ground reference for the buffer

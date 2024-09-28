@@ -17,7 +17,7 @@ FlightStage flightStage = LAUNCHPAD;
 double previous_ascent_altitude = 4294967294;
 uint32_t apogee_index = 100; //amount of data recorded at apogee
 
-uint32_t apogee = 0;
+double apogee = 0;
 
 FlightStage get_flight_stage() { return flightStage; }
 

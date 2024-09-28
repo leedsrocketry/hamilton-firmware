@@ -50,6 +50,8 @@ extern FlightStage flightStage;
 
 FlightStage get_flight_stage();
 
+void initalise_drivers();
+
 void set_flight_stage(FlightStage fs);
 
 void run_flight();
