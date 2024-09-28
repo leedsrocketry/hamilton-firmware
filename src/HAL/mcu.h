@@ -319,7 +319,7 @@ static inline uint8_t uart_read_byte(USART_TypeDef *uart)
   return (uint8_t)(uart->RDR & 255);
 }
 
-static inline void uart_read_buf(USART_TypeDef *uart, uint8_t *results, uint8_t size)
+static inline void uart_read_buf(USART_TypeDef *uart, char *results, uint8_t size)
 {
   uint8_t size_r = size;
   uint8_t i = 0;
