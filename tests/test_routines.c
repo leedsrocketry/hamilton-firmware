@@ -2,7 +2,7 @@
   Leeds University Rocketry Organisation - LURA
   Author Name: Alexandra Posta
   Created on: 03 March 2024
-  Description: Header Drivers test routines.
+  Description: Header Drivers test routines. Legacy code - Unused.
 */
 
 #include "test_routines.h"
