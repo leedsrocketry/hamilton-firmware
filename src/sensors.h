@@ -4,11 +4,9 @@
 
 #include <stdio.h>
 
-#include "HAL/STM32_init.h"
 #include "HAL/mcu.h"
 #include "frame.h"
 #include "stm32l4r5xx.h"
-// #include "HAL/NAND_flash_driver.h"
 #include "frame_buffer.h"
 #include "drivers/ADXL375_driver.h"
 #include "drivers/BME280_driver.h"

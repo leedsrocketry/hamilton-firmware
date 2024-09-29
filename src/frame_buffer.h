@@ -11,10 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "HAL/mcu.h"
-#include "debug.h"
-#include "drivers/ADXL375_driver.h"
-#include "drivers/MS5611_driver.h"
 #include "frame.h"
 #include "HAL/NAND_flash_driver.h"
 

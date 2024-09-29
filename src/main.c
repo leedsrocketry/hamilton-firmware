@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
+#ifndef TEST
+
 #include "HAL/mcu.h"
 #include "frame_buffer.h"
 #include "debug.h"
@@ -29,7 +31,7 @@ int main(void) {
   STM32_indicate_on();
 
   LOG("============ INITIALISE NAND FLASH ============\r\n");
-  init_flash();
+  //init_flash();
 
   LOG("============= INITIALISE SD CARD =============\r\n");
 
@@ -39,3 +41,5 @@ int main(void) {
   run_flight();
   return 0;
 }
+
+#endif
