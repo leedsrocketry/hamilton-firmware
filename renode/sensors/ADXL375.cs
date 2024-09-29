@@ -17,6 +17,13 @@ using Antmicro.Renode.Utilities.RESD;
 namespace Antmicro.Renode.Peripherals.Sensors
 {
 
+    public enum AccelerationAxis
+    {
+        X,
+        Y,
+        Z
+    }
+
     public class ADXL375 : ISPIPeripheral, IProvidesRegisterCollection<ByteRegisterCollection>, ISensor, IGPIOReceiver
     {
         private RESDStream<AccelerationSample> resdStream;
@@ -33,7 +40,7 @@ namespace Antmicro.Renode.Peripherals.Sensors
             //resdStream = this.CreateRESDStream<AccelerationSample>("renode/output.resd", channel);
         }
 
-        public ulong getSample()
+        public ulong getSample(AccelerationAxis axis)
         {
             var currentTime = machine.ClockSource.CurrentValue;
             ulong timestampInMicroseconds = currentTime.TotalMicroseconds * 10000;
@@ -41,7 +48,16 @@ namespace Antmicro.Renode.Peripherals.Sensors
             
             resdStream.TryGetSample((timestampInMicroseconds), out var sample);
 
-            return (ulong)sample.AccelerationZ;
+            switch(axis)
+            {
+                case AccelerationAxis.X:
+                    return (ulong)sample.AccelerationX;
+                case AccelerationAxis.Y:
+                    return (ulong)sample.AccelerationY;
+                case AccelerationAxis.Z:
+                    return (ulong)sample.AccelerationZ;
+            }
+            return 0;
         }
 
         public void OnGPIO(int number, bool value)
@@ -153,8 +169,34 @@ namespace Antmicro.Renode.Peripherals.Sensors
                 .WithReservedBits(0, 4)
                 .WithValueField(4, 4, FieldMode.Read, name: "MAXPEAK_Z[3:0]", valueProviderCallback: _ => Convert(AccelerationZ, upperByte: false));
 
+
             Registers.DataX0.Define(this)
-                .WithValueField(0, 8, FieldMode.Read, name: "DATAX0", valueProviderCallback: _ => getSample());
+                .WithValueField(0, 8, FieldMode.Read, name: "DATAX0", 
+                    valueProviderCallback: _ => (byte)(getSample(AccelerationAxis.X) & 0xFF));
+
+            Registers.DataX1.Define(this)
+                .WithValueField(0, 8, FieldMode.Read, name: "DATAX1", 
+                    valueProviderCallback: _ => (byte)((getSample(AccelerationAxis.X) >> 8) & 0xFF));
+
+            Registers.DataY0.Define(this)
+                .WithValueField(0, 8, FieldMode.Read, name: "DATAY0", 
+                    valueProviderCallback: _ => (byte)(getSample(AccelerationAxis.Y) & 0xFF));
+
+            Registers.DataY1.Define(this)
+                .WithValueField(0, 8, FieldMode.Read, name: "DATAY1", 
+                    valueProviderCallback: _ => (byte)((getSample(AccelerationAxis.Y) >> 8) & 0xFF));
+
+
+            Registers.DataZ0.Define(this)
+                .WithValueField(0, 8, FieldMode.Read, name: "DATAZ0", 
+                    valueProviderCallback: _ => (byte)(getSample(AccelerationAxis.Z) & 0xFF));
+
+            Registers.DataZ1.Define(this)
+                .WithValueField(0, 8, FieldMode.Read, name: "DATAZ1", 
+                    valueProviderCallback: _ => (byte)((getSample(AccelerationAxis.Z) >> 8) & 0xFF));
+
+            // Registers.DataZ0.Define(this)
+            //     .WithValueField(0, 8, FieldMode.Read, name: "DATAX0", valueProviderCallback: _ => getSample(AccelerationAxis.Z));
         }
 
         private byte Convert(double value, bool upperByte)

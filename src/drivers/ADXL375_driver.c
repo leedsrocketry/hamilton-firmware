@@ -110,7 +110,7 @@ uint8_t ADXL375_get_data(ADXL375_data* data){
     data->y = y;
     data->z = z;
 
-    LOG("%d\r\n", data->x);
+    LOG("%d %d %d\r\n", data->x, data->y, data->z);
 
     return 0;
 };

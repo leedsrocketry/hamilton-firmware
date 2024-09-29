@@ -4,3 +4,5 @@
         -s 0 \
         -f 1 \
     output.resd
+
+mv output.resd ../../renode/output.resd
