@@ -21,25 +21,28 @@ namespace Antmicro.Renode.Peripherals.Sensors
     {
         private RESDStream<AccelerationSample> resdStream;
 
-        public ADXL375()
+        private Machine machine;
+
+        public ADXL375(Machine machine)
         {
+            this.machine = machine;
             RegistersCollection = new ByteRegisterCollection(this);
             DefineRegisters();
 
-            resdStream = new RESDStream<AccelerationSample>("../output.resd", 0);
+            resdStream = new RESDStream<AccelerationSample>("/home/evanm/LURA/hamilton-firmware/renode/output.resd", 0);
             //resdStream = this.CreateRESDStream<AccelerationSample>("renode/output.resd", channel);
         }
 
         public ulong getSample()
         {
-            resdStream.TryGetSample(0, out var sample);
-            return (ulong)sample.AccelerationX;
-        }
+            var currentTime = machine.ClockSource.CurrentValue;
+            ulong timestampInMicroseconds = currentTime.TotalMicroseconds * 10000;
+            // this.Log(LogLevel.Info, "TIME: {0}", timestampInMicroseconds);
+            
+            resdStream.TryGetSample((timestampInMicroseconds), out var sample);
 
-        // public void FeedAccelerationSamplesFromRESD(string path, uint channel = 0, ulong startTime = 0, ulong sampleOffsetTime = 0)
-        // {
-        //     resdStream = this.CreateRESDStream<AccelerationSample>("renode/output.resd", channel);
-        // }
+            return (ulong)sample.AccelerationZ;
+        }
 
         public void OnGPIO(int number, bool value)
         {
