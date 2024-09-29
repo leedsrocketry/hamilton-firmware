@@ -66,5 +66,6 @@ emulate: hfc
 test: CFLAGS += -DTEST
 test: CFLAGS += -DFLIGHT_COMPUTER
 test: SOURCES += tests/unit_test.c
+test: SOURCES += tests/unity/unity.c
 test: build
 test: emulate
