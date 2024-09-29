@@ -36,7 +36,7 @@ int main(void) {
   STM32_indicate_on();
 
   LOG("============ INITIALISE NAND FLASH ============\r\n");
-  init_flash();
+  //init_flash();
 
   LOG("============= INITIALISE SD CARD =============\r\n");
 

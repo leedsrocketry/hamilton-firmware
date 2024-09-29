@@ -12,16 +12,34 @@ using Antmicro.Renode.Logging;
 using Antmicro.Renode.Peripherals.SPI;
 using Antmicro.Renode.Peripherals.Sensor;
 using Antmicro.Renode.Utilities;
+using Antmicro.Renode.Utilities.RESD;
 
 namespace Antmicro.Renode.Peripherals.Sensors
 {
+
     public class ADXL375 : ISPIPeripheral, IProvidesRegisterCollection<ByteRegisterCollection>, ISensor, IGPIOReceiver
     {
+        private RESDStream<AccelerationSample> resdStream;
+
         public ADXL375()
         {
             RegistersCollection = new ByteRegisterCollection(this);
             DefineRegisters();
+
+            resdStream = new RESDStream<AccelerationSample>("../output.resd", 0);
+            //resdStream = this.CreateRESDStream<AccelerationSample>("renode/output.resd", channel);
         }
+
+        public ulong getSample()
+        {
+            resdStream.TryGetSample(0, out var sample);
+            return (ulong)sample.AccelerationX;
+        }
+
+        // public void FeedAccelerationSamplesFromRESD(string path, uint channel = 0, ulong startTime = 0, ulong sampleOffsetTime = 0)
+        // {
+        //     resdStream = this.CreateRESDStream<AccelerationSample>("renode/output.resd", channel);
+        // }
 
         public void OnGPIO(int number, bool value)
         {
@@ -41,6 +59,7 @@ namespace Antmicro.Renode.Peripherals.Sensors
 
         public byte Transmit(byte b)
         {
+            //this.Log(LogLevel.Info, "Current state: {0}", state.ToString()); // Log the current state
             byte result = 0;
             switch(state)
             {
@@ -55,7 +74,7 @@ namespace Antmicro.Renode.Peripherals.Sensors
                     break;
 
                 case State.Writing:
-                    this.NoisyLog("Writing 0x{0:X} to register {1} (0x{1:X})", b, (Registers)address);
+                    this.Log(LogLevel.Info, "Writing 0x{0:X} to register {1} (0x{1:X})", b, (Registers)address);
                     RegistersCollection.Write(address, b);
                     address++;
                     break;
@@ -130,6 +149,9 @@ namespace Antmicro.Renode.Peripherals.Sensors
             Registers.MaxPeakZLow.Define(this)
                 .WithReservedBits(0, 4)
                 .WithValueField(4, 4, FieldMode.Read, name: "MAXPEAK_Z[3:0]", valueProviderCallback: _ => Convert(AccelerationZ, upperByte: false));
+
+            Registers.DataX0.Define(this)
+                .WithValueField(0, 8, FieldMode.Read, name: "DATAX0", valueProviderCallback: _ => getSample());
         }
 
         private byte Convert(double value, bool upperByte)
@@ -184,7 +206,14 @@ namespace Antmicro.Renode.Peripherals.Sensors
             MaxPeakYHigh = 0x17,
             MaxPeakYLow = 0x18,
             MaxPeakZHigh = 0x19,
-            MaxPeakZLow = 0x1A
+            MaxPeakZLow = 0x1A,
+
+            DataX0 = 0x32,
+            DataX1 = 0x33,
+            DataY0 = 0x34,
+            DataY1 = 0x35,
+            DataZ0 = 0x36,
+            DataZ1 = 0x37
         }
     }
 }

@@ -29,10 +29,11 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
     ADXL375_reg_write(ADXL375_POWER_CTL, ADXL375_MEASURE);
 
     // Check the device name
-    spi_enable_cs(ADXL375_SPI, ADXL375_CS);
+    // spi_enable_cs(ADXL375_SPI, ADXL375_CS);
     uint8_t devid;
-    spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 2, 1, &devid);
-    spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+    // spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 1, 1, &devid);
+    // spi_disable_cs(ADXL375_SPI, ADXL375_CS);
+    ADXL375_reg_read(ADXL375_DEVID, &devid, 1);
     
     // Datasheet says DEVID_ID should be 229, it is actually 144 on HFC2
     if (devid != ADXL375_DEVID_ID)
@@ -108,6 +109,8 @@ uint8_t ADXL375_get_data(ADXL375_data* data){
     data->x = x;
     data->y = y;
     data->z = z;
+
+    LOG("%d\r\n", data->x);
 
     return 0;
 };
