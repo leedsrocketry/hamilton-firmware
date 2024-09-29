@@ -62,3 +62,8 @@ check: analyse format
 
 emulate: hfc
 	./renode/run-emulator.sh renode/HFC_v2.resc
+
+erase-NAND: CFLAGS += -DERASE_NAND
+erase-NAND: CFLAGS += -DFLIGHT_COMPUTER
+erase-NAND: build
+erase-NAND: flash

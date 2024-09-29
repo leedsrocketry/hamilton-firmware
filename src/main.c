@@ -25,6 +25,13 @@ int main(void) {
   // STM32 setup
   STM32_init();
 
+  #ifdef ERASE_NAND
+  erase_all();
+  NAND_flash_read();
+  delay_ms(100);
+  return 0;
+  #endif
+
   LOG("================ PROGRAM START ================\r\n");
   STM32_indicate_on();
 
