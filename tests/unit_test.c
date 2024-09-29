@@ -24,12 +24,20 @@ void abort(void) {
 void setUp(){}
 void tearDown(){}
 
-// Framebuffer tests
+// Framebuffer test
 void test_framebuffer(void)
 {
+    // test get_median
     double test_data[] = {1.0, 3.0, 2.0};
     uint32_t test_data_size = 3;
     TEST_ASSERT_EQUAL_FLOAT(get_median(test_data, test_data_size), 2.0);
+
+    // test get_framebuffer_median
+    // Setup FrameBuffer
+    FrameBuffer fb;
+    init_frame_buffer(&fb);
+
+    get_framebuffer_median(&fb, BUFFER_SIZE, MS5611_PRESSURE)
 }
 
 

@@ -1,0 +1,71 @@
+arm-none-eabi-gcc src/main.c src/startup.c src/syscalls.c src/HAL/STM32_init.c src/drivers/MS5611_driver.c src/filters.c src/drivers/ADXL375_driver.c src/frame_buffer.c src/drivers/LSM6DS3_driver.c src/flight_manager.c src/sensors.c src/drivers/HC12_driver.c tests/unit_test.c tests/unity/unity.c -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas -g3 -O0 -ffunction-sections -fdata-sections -Isrc -Isrc/include -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16  -lm  -DTEST -DFLIGHT_COMPUTER -Tbuild/link.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=build/firmware.map -o build/firmware.elf
+arm-none-eabi-objcopy -O binary build/firmware.elf build/firmware.bin
+./renode/run-emulator.sh renode/HFC_v2.resc
+13:46:54.3245 [INFO] Loaded monitor commands from: /opt/renode/scripts/monitor.py
+[0mRenode, version 1.15.1.23066 (bef0c7b3-202406141248)
+
+
+[31;1m(monitor) [0mi $CWD/renode/HFC_v2.resc
+
+13:46:54.6110 [INFO] Including script: /home/evanm/LURA/hamilton-firmware/renode/HFC_v2.resc
+13:46:54.6315 [INFO] System bus created.
+13:46:57.8819 [INFO] Reading cache
+13:46:58.3970 [INFO] sysbus: Loaded SVD: /tmp/renode-42590/2153735e-008e-4e57-bc42-c1f11155ade8.tmp. Name: STM32L4R5. Description: STM32L4R5.
+[;031mCould not find emulation element or backend named: sysbus.spi1.spi_mux.sd
+[0m13:46:59.3111 [INFO] Old file /opt/renode/output.log moved to /opt/renode/output.log.39
+13:46:59.3542 [INFO] HFC_v2: GDB server with all CPUs started on port :3333
+13:46:59.3788 [INFO] sysbus: Loading segment of 15440 bytes length at 0x8000000.
+13:46:59.3922 [INFO] sysbus: Loading segment of 644 bytes length at 0x8003C50.
+Starting emulation...
+
+13:46:59.4277 [INFO] cpu: Guessing VectorTableOffset value to be 0x8000000.
+13:46:59.4318 [INFO] cpu: Setting initial values: PC = 0x80001BD, SP = 0x20030000.
+13:46:59.4330 [INFO] HFC_v2: Machine started.
+13:46:59.4970 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4971 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4971 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4972 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4972 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4973 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4973 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4977 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4979 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4982 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4982 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4983 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4983 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4984 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4984 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4985 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.4985 [WARNING] timer2: Set frequency differs from intended by 20%
+13:46:59.5028 [WARNING] sysbus: Write of value 0x0 to an unimplemented register LPUART1:CR1 (0x40008000) generated from SVD.
+13:46:59.5029 [WARNING] sysbus: Write of value 0x682 to an unimplemented register LPUART1:BRR (0x4000800C) generated from SVD.
+13:46:59.5033 [WARNING] sysbus: Read from an unimplemented register LPUART1:CR1 (0x40008000), returning a value from SVD: 0x0.
+13:46:59.5054 [WARNING] sysbus: Write of value 0xD to an unimplemented register LPUART1:CR1 (0x40008000) generated from SVD.
+13:46:59.5107 [WARNING] usart2: Unhandled write to offset 0x0. Unhandled bits: [29] when writing value 0x20000000. Tags: RESERVED (0x1).
+13:46:59.5108 [WARNING] usart2: Unhandled write to offset 0x8. Unhandled bits: [12] when writing value 0x1000. Tags: OVRDIS (0x1).
+13:46:59.5108 [WARNING] usart2: Unhandled write to offset 0x8. Unhandled bits: [11] when writing value 0x800. Tags: ONEBIT (0x1).
+13:46:59.5112 [WARNING] spi1: Slave mode is not supported
+13:46:59.5112 [WARNING] spi1: Slave mode is not supported
+13:46:59.5113 [WARNING] spi1: Slave mode is not supported
+13:46:59.5113 [WARNING] spi1: Slave mode is not supported
+13:46:59.5113 [WARNING] spi1: Slave mode is not supported
+13:46:59.5113 [WARNING] spi1: Slave mode is not supported
+13:46:59.5114 [WARNING] spi1: Slave mode is not supported
+13:46:59.5114 [WARNING] spi1: Slave mode is not supported
+13:46:59.5114 [WARNING] spi1: Unhandled write to offset 0x4. Unhandled bits: [8-10] when writing value 0x700. Tags: RESERVED (0x7).
+13:46:59.5115 [WARNING] spi1: Unhandled write to offset 0x4. Unhandled bits: [2] when writing value 0x4. Tags: SSOE (0x1).
+13:46:59.5115 [WARNING] spi1: Unhandled write to offset 0x4. Unhandled bits: [12] when writing value 0x1000. Tags: RESERVED (0x10).
+13:46:59.5119 [WARNING] pwr: Unhandled write to offset 0x4. Unhandled bits: [9] when writing value 0x200. Tags: BER (0x1).
+13:46:59.5170 [INFO] usart1: [host: 0.23s (+0.23s)|virt: 0s (+0s)] RUNNING TESTS: 
+13:46:59.5181 [INFO] usart1: [host: 0.23s (+1.16ms)|virt: 0s (+0s)] tests/unit_test.c:41:test_framebuffer:PASS
+13:46:59.5204 [INFO] usart1: [host: 0.23s (+2.35ms)|virt: 0.1ms (+0.1ms)] All tests completed.
+13:46:59.5207 [INFO] usart1: [host:  0.23s (+0.2ms)|virt:    0.1ms (+0s)] 
+13:46:59.5210 [INFO] usart1: [host: 0.23s (+0.28ms)|virt:    0.1ms (+0s)] -----------------------
+13:46:59.5212 [INFO] usart1: [host: 0.24s (+0.33ms)|virt:    0.1ms (+0s)] 1 Tests 0 Failures 0 Ignored 
+13:46:59.5233 [INFO] usart1: [host:  0.24s (+2.1ms)|virt:    0.1ms (+0s)] OK
+[;032mR[0m[;032me[0m[;032mn[0m[;032mo[0m[;032md[0m[;032me[0m[;032m [0m[;032mi[0m[;032ms[0m[;032m [0m[;032mq[0m[;032mu[0m[;032mi[0m[;032mt[0m[;032mt[0m[;032mi[0m[;032mn[0m[;032mg[0m[;032m
+[0m[;032m
+[0m[;032m
+[0m[0m[0m13:46:59.5518 [INFO] HFC_v2: Machine paused.
+13:46:59.6259 [INFO] HFC_v2: Disposed.

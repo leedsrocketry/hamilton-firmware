@@ -31,7 +31,8 @@
         "unordered_map": "c",
         "vector": "c",
         "iterator": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "sensors.h": "c"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "enabled",
