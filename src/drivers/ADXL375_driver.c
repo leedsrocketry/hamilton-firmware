@@ -5,12 +5,16 @@
     Description: Driver file for the Accelerometer module ADXL375 (https://www.mouser.co.uk/ProductDetail/Analog-Devices/ADXL375BCCZ?qs=S4ILP0tmc7Q%2Fd%2FHPWf9YpQ%3D%3D)
 */
 
+#include <stdbool.h>
 #include "ADXL375_driver.h"
-
 
 // Public functions to be called from main flight computer
 #pragma region Public
 SPI_TypeDef* ADXL375_SPI;
+
+double x_offset = -654;
+double y_offset = -192;
+double z_offset = -1086;
 
 /**
   @brief Init ADXL375 Barometer driver
@@ -33,7 +37,7 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
     uint8_t devid;
     spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 2, 1, &devid);
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
-    
+
     // Datasheet says DEVID_ID should be 229, it is actually 144 on HFC2
     if (devid != ADXL375_DEVID_ID)
     {
@@ -49,7 +53,7 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
     // Set the offset to zero
     ADXL375_reg_write(ADXL375_OFSX, 0);
     ADXL375_reg_write(ADXL375_OFSY, 0);
-    ADXL375_reg_write(ADXL375_OFSZ, 0);   
+    ADXL375_reg_write(ADXL375_OFSZ, 0);
 
     // Clear interrupts
 	ADXL375_reg_write(ADXL375_INT_ENABLE, 0);
@@ -60,11 +64,11 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
 			    (0 << ADXL375_POWER_CTL_AUTO_SLEEP) |
 			    (1 << ADXL375_POWER_CTL_MEASURE) |
 			    (0 << ADXL375_POWER_CTL_SLEEP) |
-			    (ADXL375_POWER_CTL_WAKEUP_8 << ADXL375_POWER_CTL_WAKEUP)); 
+			    (ADXL375_POWER_CTL_WAKEUP_8 << ADXL375_POWER_CTL_WAKEUP));
 
 
     // Place in FIFO Stream mode
-    // FIFO buffer holds the last 32 samples. When the buffer is full, 
+    // FIFO buffer holds the last 32 samples. When the buffer is full,
     // the oldest data is overwritten with newer data.
     ADXL375_reg_write(ADXL375_FIFO_CTL, ADXL375_FIFO_CTL_MODE_STREAM);
 
@@ -79,7 +83,7 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
   @note if floating points were available, all data would be multiplied by 0.049
   @return Error code (0)
 */
-uint8_t ADXL375_get_data(ADXL375_data* data){
+uint8_t ADXL375_get_data(ADXL375_data* data, bool calibrated){
 
     // x-axis
     spi_enable_cs(ADXL375_SPI, ADXL375_CS);
@@ -105,9 +109,26 @@ uint8_t ADXL375_get_data(ADXL375_data* data){
     spi_disable_cs(ADXL375_SPI, ADXL375_CS);
     int16_t z = ((uint16_t)z_values[1] << 8) | (uint16_t)z_values[0];
 
-    data->x = x;
-    data->y = y;
-    data->z = z;
+    int16_t calibrated_x;
+    int16_t calibrated_y;
+    int16_t calibrated_z;
+
+    if(calibrated)
+        {
+            calibrated_x = (int16_t)((x*6.1)+x_offset);
+            calibrated_y = (int16_t)((y*6.1)+y_offset);
+            calibrated_z = (int16_t)((z*6.1)+z_offset);
+        }
+        else
+        {
+            calibrated_x = (int16_t)((x*6.1));
+            calibrated_y = (int16_t)((y*6.1));
+            calibrated_z = (int16_t)((z*6.1));
+        }
+
+    data->x = calibrated_x;
+    data->y = calibrated_y;
+    data->z = calibrated_z;
 
     return 0;
 };
