@@ -20,7 +20,7 @@
 
 // Configuration registers
 #define ADXL375_DATA_FORMAT		            0x31
-#define ADXL375_DATA_FORMAT_FIXED		      0x0B	// these bits must be set to 1 
+#define ADXL375_DATA_FORMAT_FIXED		      0x0B	// these bits must be set to 1
 #define ADXL375_DATA_FORMAT_SELF_TEST	    7
 #define ADXL375_DATA_FORMAT_SPI		        6
 #define ADXL375_DATA_FORMAT_SPI_3_WIRE    1
@@ -123,7 +123,7 @@ uint8_t ADXL375_init(SPI_TypeDef* spi);
   @param data ptr to ADXL375_data struct for returning data
   @return Success/Failure
 */
-uint8_t ADXL375_get_data(ADXL375_data* data);
+uint8_t ADXL375_get_data(ADXL375_data* data, bool calibrated);
 
 void ADXL375_reg_write(uint8_t addr, uint8_t value);
 

@@ -34,7 +34,7 @@ void build_frame(Frame* frame, M5611_data _M5611_data,
 void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
                     LSM6DS3_data* _LSM6DS3_data) {
   MS5611_get_data(_M5611_data);
-  ADXL375_get_data(_ADXL375_data);
+  ADXL375_get_data(_ADXL375_data, true);
   LSM6DS3_gyro_read(SPI1, _LSM6DS3_data);
   LSM6DS3_acc_read(SPI1, _LSM6DS3_data);
 
@@ -97,4 +97,31 @@ void test_sensors()
                     TEST_LSM6DS3_data.y_rate,
                     TEST_LSM6DS3_data.z_rate);
         }
+}
+
+void calibrate_ADXL375()
+{
+    ADXL375_data TEST_ADXL375_data;
+
+    int32_t runs = 10000;
+
+    int32_t cum_x = 0;
+    int32_t cum_y = 0;
+    int32_t cum_z = 0;
+
+    for(int32_t i = 0; i < runs; i++)
+        {
+            ADXL375_get_data(&TEST_ADXL375_data, false);
+            cum_x += TEST_ADXL375_data.x;
+            cum_y += TEST_ADXL375_data.y;
+            cum_z += TEST_ADXL375_data.z;
+        }
+
+    int32_t avg_x = cum_x / runs;
+    int32_t avg_y = cum_y / runs;
+    int32_t avg_z = cum_z / runs;
+
+    printf("AVERAGE DATA FOR CALIBRATION: ");
+    printf("%ld, %ld, %ld \r\n", avg_x, avg_y, avg_z);
+    return;
 }

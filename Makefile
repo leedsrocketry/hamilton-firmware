@@ -68,6 +68,12 @@ test-sensors: CFLAGS += -DFLIGHT_COMPUTER
 test-sensors: build
 test-sensors: flash
 
+calibrate: CFLAGS += -DCALIBRATE
+calibrate: CFLAGS += -DFLIGHT_COMPUTER
+calibrate: build
+calibrate: flash
+
+
 erase-NAND: CFLAGS += -DERASE_NAND
 erase-NAND: CFLAGS += -DFLIGHT_COMPUTER
 erase-NAND: build

@@ -48,6 +48,12 @@ int main(void) {
   test_sensors();
   #endif
 
+  #ifdef CALIBRATE
+  printf("Getting calibration data...\r\n");
+  calibrate_ADXL375();
+  return 0;
+  #endif
+
   run_flight();
   return 0;
 }
