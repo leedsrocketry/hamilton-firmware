@@ -49,18 +49,18 @@ void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
 
 void format_sensor_data(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
                         LSM6DS3_data* _LSM6DS3_data, char* buffer, size_t buffer_size) {
-    snprintf(buffer, buffer_size, 
+    snprintf(buffer, buffer_size,
              "Barometer: %ld, Temp: %ld, ADXL Accel: %d, %d, %d, LSM Accel: %d, %d, %d, Gyro: %ld, %ld, %ld\r\n",
-             _M5611_data->pressure, 
+             _M5611_data->pressure,
              _M5611_data->temp,
-             _ADXL375_data->x, 
-             _ADXL375_data->y, 
+             _ADXL375_data->x,
+             _ADXL375_data->y,
              _ADXL375_data->z,
-             _LSM6DS3_data->x_accel, 
-             _LSM6DS3_data->y_accel, 
+             _LSM6DS3_data->x_accel,
+             _LSM6DS3_data->y_accel,
              _LSM6DS3_data->z_accel,
-             _LSM6DS3_data->x_rate, 
-             _LSM6DS3_data->y_rate, 
+             _LSM6DS3_data->x_rate,
+             _LSM6DS3_data->y_rate,
              _LSM6DS3_data->z_rate);
                         }
 
@@ -73,4 +73,25 @@ double barometric_equation(double pressure, double temp)
     h = hb + (Tb / Lb) * (pow(P / Pb, (-R * Lb) / (g * M)) - 1);
 
     return h;
+}
+
+void test_sensors()
+{
+    M5611_data TEST_M5611_data;
+    ADXL375_data TEST_ADXL375_data;
+    LSM6DS3_data TEST_LSM6DS3_data;
+
+    read_sensors(&TEST_M5611_data, &TEST_ADXL375_data, &TEST_LSM6DS3_data);
+    printf( "Barometer: %ld, Temp: %ld, ADXL Accel: %d, %d, %d, LSM Accel: %d, %d, %d, Gyro: %ld, %ld, %ld\r\n",
+             TEST_M5611_data.pressure,
+             TEST_M5611_data.temp,
+             TEST_ADXL375_data.x,
+             TEST_ADXL375_data.y,
+             TEST_ADXL375_data.z,
+             TEST_LSM6DS3_data.x_accel,
+             TEST_LSM6DS3_data.y_accel,
+             TEST_LSM6DS3_data.z_accel,
+             TEST_LSM6DS3_data.x_rate,
+             TEST_LSM6DS3_data.y_rate,
+             TEST_LSM6DS3_data.z_rate);
 }

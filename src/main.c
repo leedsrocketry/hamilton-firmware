@@ -43,6 +43,10 @@ int main(void) {
   LOG("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
 
+  #ifdef TEST_SENSORS
+  test_sensors();
+  #endif
+
   run_flight();
   return 0;
 }
