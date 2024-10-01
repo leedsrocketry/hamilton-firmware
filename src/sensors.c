@@ -81,17 +81,20 @@ void test_sensors()
     ADXL375_data TEST_ADXL375_data;
     LSM6DS3_data TEST_LSM6DS3_data;
 
-    read_sensors(&TEST_M5611_data, &TEST_ADXL375_data, &TEST_LSM6DS3_data);
-    printf( "Barometer: %ld, Temp: %ld, ADXL Accel: %d, %d, %d, LSM Accel: %d, %d, %d, Gyro: %ld, %ld, %ld\r\n",
-             TEST_M5611_data.pressure,
-             TEST_M5611_data.temp,
-             TEST_ADXL375_data.x,
-             TEST_ADXL375_data.y,
-             TEST_ADXL375_data.z,
-             TEST_LSM6DS3_data.x_accel,
-             TEST_LSM6DS3_data.y_accel,
-             TEST_LSM6DS3_data.z_accel,
-             TEST_LSM6DS3_data.x_rate,
-             TEST_LSM6DS3_data.y_rate,
-             TEST_LSM6DS3_data.z_rate);
+    for(;;)
+        {
+            read_sensors(&TEST_M5611_data, &TEST_ADXL375_data, &TEST_LSM6DS3_data);
+            printf( "DEBUG - Barometer: %ld, Temp: %ld, ADXL Accel: %d, %d, %d, LSM Accel: %d, %d, %d, Gyro: %ld, %ld, %ld\r\n",
+                    TEST_M5611_data.pressure,
+                    TEST_M5611_data.temp,
+                    TEST_ADXL375_data.x,
+                    TEST_ADXL375_data.y,
+                    TEST_ADXL375_data.z,
+                    TEST_LSM6DS3_data.x_accel,
+                    TEST_LSM6DS3_data.y_accel,
+                    TEST_LSM6DS3_data.z_accel,
+                    TEST_LSM6DS3_data.x_rate,
+                    TEST_LSM6DS3_data.y_rate,
+                    TEST_LSM6DS3_data.z_rate);
+        }
 }

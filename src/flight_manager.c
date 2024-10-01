@@ -46,11 +46,11 @@ void initalise_drivers() {
   if(MS5611_init(SPI1))
   {
     LOG("ERROR INITIALISING MS5611 BAROMETER\r\n");
-  }               
+  }
   if(ADXL375_init(SPI1))
   {
     LOG("ERROR INITIALISING ADXL375 ACCEL\r\n");
-  }              
+  }
   if(LSM6DS3_init(SPI1, &_LSM6DS3_data))
   {
     LOG("ERROR INITIALISING LSM6DS3 IMU\r\n");
@@ -62,7 +62,7 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   LOG("PAD\r\n");
   // READ
   read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-  
+
   // FORMAT AND SEND DATA TO HC12
   char sensors_data_buffer[150];
   format_sensor_data(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data, sensors_data_buffer, sizeof(sensors_data_buffer)); // Format the data into a string
@@ -77,7 +77,7 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
   // TODO: calculate launch based on pressure+accel+gyro(?)
   frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
-  
+
   // ACT
   bool accel_launch_flag = false;
 
@@ -241,7 +241,7 @@ void run_flight() {
         handle_LAUNCHPAD(&frame, &frame_buffer);
         // if ((dt) > (1000000 / PADREADFREQ)) {
         //   handle_LAUNCHPAD(&frame, &frame_buffer);
-        // } 
+        // }
         oldTime=newTime;
         break;
 

@@ -63,7 +63,7 @@ check: analyse format
 emulate: hfc
 	./renode/run-emulator.sh renode/HFC_v2.resc
 
-test-sensors: CFLAGS += -DTEST_SENSORS
+test-sensors: CFLAGS += -DSENSOR_TEST
 test-sensors: CFLAGS += -DFLIGHT_COMPUTER
 test-sensors: build
 test-sensors: flash

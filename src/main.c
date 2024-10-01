@@ -20,6 +20,7 @@ void SysTick_Handler(void) { s_ticks++; }
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
+
 int main(void) {
 
   // STM32 setup
@@ -43,7 +44,7 @@ int main(void) {
   LOG("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
 
-  #ifdef TEST_SENSORS
+  #ifdef SENSOR_TEST
   test_sensors();
   #endif
 
