@@ -5,6 +5,7 @@ on:
       branches:
         - main
         - CI/CD
+        - build-update
     workflow_dispatch:  # Allows manual triggering from the GitHub GUI
 
 jobs:
