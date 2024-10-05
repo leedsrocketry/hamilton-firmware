@@ -78,3 +78,7 @@ erase-NAND: CFLAGS += -DERASE_NAND
 erase-NAND: CFLAGS += -DFLIGHT_COMPUTER
 erase-NAND: build
 erase-NAND: flash
+
+# Use instead of putty
+serial:
+	screen /dev/ttyUSB0 115200 && killall screen

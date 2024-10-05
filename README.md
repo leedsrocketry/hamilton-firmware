@@ -15,3 +15,19 @@ Features:
   * SI446 - Pad Radio module
 
 Written by Alexandra Posta, Evan Madurai, Ollie Martin, Tyler Green, and Thomas Groom.
+
+## Building and flashing
+We use GNUMake, and we have all the required dependencies in a Dockerfile.
+
+Here is an example of building and flashing using the Docker container on MacOS/Linux
+```console
+> source commands.sh
+> build
+> run
+> make hfc-flash
+```
+
+And to see the serial output, in a different terminal:
+```
+make serial
+```
