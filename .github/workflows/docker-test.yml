@@ -1,12 +1,11 @@
 name: Build with docker
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    pull_request:
+      branches:
+        - main
+        - CI/CD
+    workflow_dispatch:  # Allows manual triggering from the GitHub GUI
 
 jobs:
   build:
