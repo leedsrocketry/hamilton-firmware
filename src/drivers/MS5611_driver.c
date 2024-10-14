@@ -121,7 +121,8 @@ int32_t calculate_pressure(int32_t D1, int32_t D2, M5611_data* data)
     int64_t SENS = ((int64_t)ms5611_prom_data.SENS << 15) + ((int64_t)ms5611_prom_data.TCS * dT >> 8);
 
     // Second order temperature compensation
-    int64_t T2, OFF2, SENS2;
+    int64_t OFF2, SENS2;
+    int32_t T2;
     if (TEMP < 2000) {
         T2 = (dT * dT) >> 31;
         OFF2 = 5 * ((TEMP - 2000)*(TEMP - 2000)) >> 1;
