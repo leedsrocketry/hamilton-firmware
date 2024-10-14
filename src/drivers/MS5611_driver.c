@@ -141,6 +141,7 @@ int32_t calculate_pressure(int32_t D1, int32_t D2, M5611_data* data)
     SENS = SENS - SENS2
 
 
-    int32_t PRESSURE = (int32_t)(((int64_t)D1 * SENS >> 21) - OFF) >> 15;    data->temp = TEMP;
+    int32_t PRESSURE = (int32_t)(((int64_t)D1 * SENS >> 21) - OFF) >> 15;
+    data->temp = TEMP;
     data->pressure = PRESSURE;
 }
