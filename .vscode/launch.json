@@ -1,20 +1,21 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "C: Hardware Debugging",
-        "type": "gdb",
-        "request": "launch",
-        "target": "${workspaceFolder}/build/firmware.elf",
-        "cwd":"${workspaceRoot}",
-        "gdbpath": "/opt/arm-none-eabi/bin/arm-none-eabi-gdb",
-        "valuesFormatting": "parseText",
-        "autorun": [
-            "target extended-remote localhost:3333",
-            "symbol-file ./build/firmware.elf",
-            "break main"
-        ]
-      }
-    ]
-  }
-  
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C: Hardware Debugging",
+      "type": "gdb",
+      "request": "launch",
+      "target": "${workspaceFolder}/build/firmware.elf",
+      "cwd": "${workspaceRoot}",
+      "gdbpath": "/opt/homebrew/bin/arm-none-eabi-gdb",
+      "valuesFormatting": "parseText",
+"autorun": [
+    "target extended-remote localhost:3333",
+    "monitor reset halt",
+    "symbol-file ./build/firmware.elf",
+    "break main"
+]
+
+    }
+  ]
+} 

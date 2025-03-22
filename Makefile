@@ -3,7 +3,7 @@ BUILD_DIR := build
 CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
             -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas \
             -g3 -O0 -ffunction-sections -fdata-sections -Isrc -Isrc/include \
-            -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(EXTRA_CFLAGS) \
+            -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(EXTRA_CFLAGS) -g\
 			-lm
 LDFLAGS ?= -Tbuild/link.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/firmware.map
 SOURCES ?=	src/main.c src/startup.c src/syscalls.c src/HAL/STM32_init.c src/drivers/MS5611_driver.c src/filters.c\
@@ -73,8 +73,23 @@ calibrate: CFLAGS += -DFLIGHT_COMPUTER
 calibrate: build
 calibrate: flash
 
-
 erase-NAND: CFLAGS += -DERASE_NAND
 erase-NAND: CFLAGS += -DFLIGHT_COMPUTER
 erase-NAND: build
 erase-NAND: flash
+
+read-NAND: CFLAGS += -DREAD_NAND
+read-NAND: CFLAGS += -DFLIGHT_COMPUTER
+read-NAND: build
+read-NAND: flash
+
+.PHONY: list
+list:
+	@LC_ALL=C $(MAKE) -pRrq -f $(firstword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/(^|\n)# Files(\n|$$)/,/(^|\n)# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | grep -E -v -e '^[^[:alnum:]]' -e '^$@$$'
+
+.DEFAULT_GOAL := list
+
+
+
+
+

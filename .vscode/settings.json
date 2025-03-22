@@ -16,7 +16,9 @@
         "flight_manager.h": "c",
         "frame.h": "c",
         "stdio.h": "c",
-        "debug.h": "c"
+        "debug.h": "c",
+        "__locale": "c",
+        "bitset": "c"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "enabled"

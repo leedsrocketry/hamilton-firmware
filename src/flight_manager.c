@@ -67,7 +67,7 @@ void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
   char sensors_data_buffer[150];
   format_sensor_data(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data, sensors_data_buffer, sizeof(sensors_data_buffer)); // Format the data into a string
   HC12_transmit(UART1, sensors_data_buffer); // Transmit the formatted string over UART
-
+  // LOG("Transmitted sensor data: %s\r\n", sensors_data_buffer);
   // BUILD
   build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
   update_frame_buffer(frame, fb);

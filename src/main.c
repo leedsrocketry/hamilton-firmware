@@ -21,17 +21,11 @@ void SysTick_Handler(void) { s_ticks++; }
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
 
-int main(void) {
+int main(void)
+{
 
   // STM32 setup
   STM32_init();
-
-  #ifdef ERASE_NAND
-  erase_all();
-  NAND_flash_read();
-  delay_ms(100);
-  return 0;
-  #endif
 
   LOG("================ PROGRAM START ================\r\n");
   STM32_indicate_on();
@@ -39,20 +33,29 @@ int main(void) {
   LOG("============ INITIALISE NAND FLASH ============\r\n");
   init_flash();
 
-  LOG("============= INITIALISE SD CARD =============\r\n");
+#ifdef ERASE_NAND
+  erase_all();
+  NAND_flash_read();
+  delay_ms(100);
+  return 0;
+#endif
+
+#ifdef READ_NAND
+  read_all_csv();
+#endif
 
   LOG("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
 
-  #ifdef SENSOR_TEST
+#ifdef SENSOR_TEST
   test_sensors();
-  #endif
+#endif
 
-  #ifdef CALIBRATE
+#ifdef CALIBRATE
   printf("Getting calibration data...\r\n");
   calibrate_ADXL375();
   return 0;
-  #endif
+#endif
 
   run_flight();
   return 0;
