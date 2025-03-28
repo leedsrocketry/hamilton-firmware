@@ -9,11 +9,11 @@
 
 #include "HAL/mcu.h"
 #include "debug.h"
+#include "drivers/_driver_manager.h"
 #include "flight_manager.h"
 #include "frame.h"
 #include "frame_buffer.h"
 #include "stm32l4r5xx.h"
-#include "drivers/_driver_manager.h"
 
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }
@@ -31,6 +31,7 @@ int main(void) {
 
   LOG("============ INITIALISE NAND FLASH ============\r\n");
   init_flash();
+  print_capacity_info();
 
 #ifdef ERASE_NAND
   erase_all();
@@ -39,9 +40,16 @@ int main(void) {
   return 0;
 #endif
 
+#ifdef READ_NAND
+  delay_ms(1000);
+  print_capacity_info();
+  NAND_flash_read();
+  return 0;
+#endif
+
   LOG("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
- 
+
 #ifdef SENSOR_TEST
   test_sensors();
 #endif
@@ -52,13 +60,9 @@ int main(void) {
   return 0;
 #endif
 
-  // read_all_csv();
-  // return 0;
-
-  uint32_t lastFrameToRead = get_next_available_frame_addr();
-  LOG("Last frame to read: ");
-  LOG("%d\r\n", lastFrameToRead);
-
+  delay_ms(2000);
+  STM32_beep_buzzer(100, 100, 1);
   run_flight();
+
   return 0;
 }

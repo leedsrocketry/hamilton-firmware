@@ -95,18 +95,18 @@ void STM32_init_peripherals()
 
 void STM32_beep_buzzer(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_beeps) {
   for (int i = 0; i < nom_beeps; i++) {
-    gpio_write(BUZZER, !HIGH);
+    gpio_write(BUZZER, !LOW);
     delay_ms(on_duration_ms);
-    gpio_write(BUZZER, !LOW); 
+    gpio_write(BUZZER, !HIGH); 
     delay_ms(off_duration_ms);
   }
 }
 
 void STM32_flash_LED(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_flash) {
   for (int i = 0; i < nom_flash; i++) {
-    gpio_write(BLUE_LED_0, !HIGH);
+    gpio_write(BLUE_LED_0, !LOW);
     delay_ms(on_duration_ms);
-    gpio_write(BLUE_LED_0, !LOW); 
+    gpio_write(BLUE_LED_0, !HIGH); 
     delay_ms(off_duration_ms);
     
   }

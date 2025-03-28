@@ -7,18 +7,11 @@
 
 #include "datastore.h"
 
-void init_datastore()
-{
-    MAX_STORAGE_CAPACITY = NAND_STORAGE_CAPACITY;
-    CURRENT_STORAGE_USED = 0;
+void init_datastore() {
+  MAX_STORAGE_CAPACITY = NAND_STORAGE_CAPACITY;
+  CURRENT_STORAGE_USED = 0;
 }
 
-void read()
-{
-  
-}
+void read() {}
 
-void write(Frame frame)
-{
-    log_frame(frame);
-}
+void write(Frame frame) { log_frame(frame); }

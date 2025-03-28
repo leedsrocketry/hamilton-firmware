@@ -20,7 +20,7 @@
 // void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
 //                   LSM6DS3_data* _LSM6DS3_data);
 
-void read_sensors(Frame *frame);
+void read_sensors(Frame* frame);
 
 void build_frame(Frame* _frameArray, M5611_data _M5611_data,
                  ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,

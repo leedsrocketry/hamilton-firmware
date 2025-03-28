@@ -668,11 +668,6 @@ static inline void read_frame(uint32_t frameAddr, uint8_t *readFrameBytes, uint8
 static inline void write_frame(uint32_t frameAddr, uint8_t *bytes) {
   wait_for_ready_flag();
   send_byte_to_flash(0x80, COMMAND_INPUT);
-  LOG("Writing bytes %d: ", frameAddr);
-  for (int i = 0; i < 128; i++) {
-    LOG("%X ", bytes[i]);
-  }
-  LOG("\r\n");
   send_addr_to_flash(frameAddr, 0);  // Address Input
   delay_microseconds(10);
   set_control_pins(DATA_INPUT);
@@ -703,7 +698,7 @@ static inline void erase_all(){
   LOG("WARNING: ERASING ALL DATA (UNPLUG NAND FLASH TO ABORT)\r\n");
 
   // you have 10 seconds to unplug the nand flash
-  for (int countDown = 10; countDown > 0; countDown--) {
+  for (int countDown = 5; countDown > 0; countDown--) {
     LOG("ERASING DATA IN: ");
     LOG("%i", countDown);
     LOG(" Seconds\r\n");
@@ -861,9 +856,9 @@ static inline void init_flash() {
   gpio_set_mode(RB,  GPIO_MODE_INPUT);
   
   frameAddressPointer = get_next_available_frame_addr();
-  LOG("FRAME ADDRESS POINTER %li.\r\n", frameAddressPointer);
+  // LOG("FRAME ADDRESS POINTER %li.\r\n", frameAddressPointer);
 
-  LOG("%lld\r\n", read_flash_ID());
+  // LOG("%lld\r\n", read_flash_ID());
 
   if (read_flash_ID() != 0){
     LOG("Flash Working Correctly\r\n");
@@ -1006,7 +1001,7 @@ static inline void print_capacity_info() {
 /**
   @brief Writes a single Frame to the next available space on the flash
 */
-static inline int log_frame(Frame _input) {
+static inline int8_t log_frame(Frame _input) {
   // Frame to array of bytes; 8388607 is 8Gb end
   if (frameAddressPointer <= 8388607) {
     uint8_t encoded[128];
