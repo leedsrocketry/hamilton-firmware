@@ -17,7 +17,7 @@ void set_flight_stage(FlightStage fs) { flightStage = fs; }
 
 void handle_LAUNCHPAD(Frame *frame, CircularBuffer *cb) {
 
-  
+
   if (frame->accel.x < ACCEL_LAUNCH_THRESHOLD) {
     LOG("LAUNCHPAD: Acceleration threshold met\r\n");
     flightStage = ASCENT;
@@ -53,9 +53,11 @@ void run_flight() {
     }
 
     cb_enqueue_overwrite(cb, &frame);
-    LOG("%ld\r\n", cb_average_pressure(cb));
+    Frame avg_frame;
+    cb_average(cb, &avg_frame);
+    print_sensor_line(avg_frame);
 
-    LOG("Flight stage: %d\r\n", flightStage);
+    // LOG("Flight stage: %d\r\n", flightStage);
     switch (flightStage) {
       case LAUNCHPAD:
         handle_LAUNCHPAD(&frame, cb);

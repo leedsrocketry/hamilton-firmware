@@ -26,4 +26,6 @@ void cb_clear(CircularBuffer* cb);
 int32_t cb_average_pressure(CircularBuffer* cb);
 int32_t cb_average_temp(CircularBuffer* cb);
 
+int32_t cb_average(CircularBuffer* cb, Frame* frame);
+
 #endif  // CIRCULAR_BUFFER_H

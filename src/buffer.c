@@ -32,58 +32,40 @@ CircularBuffer* cb_create(uint32_t size) {
   return cb;
 }
 
-int32_t cb_average_pressure(CircularBuffer* cb) {
+int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
   // Check if the buffer is empty
   if (cb_is_empty(cb)) {
     return 0;
   }
 
   // Calculate the average of the elements in the buffer
-  int32_t sum = 0;
   int32_t sum_of_weights = 0;
 
   for (uint32_t i = 0; i < cb->current_size; i++) {
     // Get the index of the current element
     uint32_t index = (cb->head + i) % cb->max_size;
-    Frame* frame = cb->buffer[index];
+    Frame* current_frame = cb->buffer[index];
 
     int32_t weight = weights[i];
     sum_of_weights += weight;
     // Apply the weight to the current element
-    sum += weight * frame->barometer.pressure;
-    // sum += frame->barometer.pressure;
+    iframe->barometer.temp += weight * current_frame->barometer.temp;
+    iframe->barometer.pressure += weight * current_frame->barometer.pressure;
+    iframe->accel.x += (int16_t)(weight * current_frame->accel.x);
+    iframe->accel.y += (int16_t)(weight * current_frame->accel.y);
+    iframe->accel.z += (int16_t)(weight * current_frame->accel.z);
   }
 
-  // int32_t average = sum / (int32_t)(cb->current_size);
-  int32_t average = sum / (int32_t)(sum_of_weights);
+  iframe->barometer.temp = iframe->barometer.temp / sum_of_weights;
+  iframe->barometer.pressure = iframe->barometer.pressure / sum_of_weights;
+  iframe->accel.x = (int16_t)(iframe->accel.x / sum_of_weights);
+  iframe->accel.y = (int16_t)(iframe->accel.y / sum_of_weights);
+  iframe->accel.z = (int16_t)(iframe->accel.z / sum_of_weights);
+  
 
   // Store the average in the first element of the buffer
-  return average;
-}
-
-int32_t cb_average_temp(CircularBuffer* cb) {
-  // Check if the buffer is empty
-  if (cb_is_empty(cb)) {
-    return 0;
-  }
-
-  // Calculate the average of the elements in the buffer
-  int32_t sum = 0;
-
-  for (uint32_t i = 0; i < cb->current_size; i++) {
-    // Get the index of the current element
-    uint32_t index = (cb->head + i) % cb->max_size;
-    Frame* frame = cb->buffer[index];
-    int32_t weight = weights[i];
-    // Apply the weight to the current element
-    sum += weight * frame->barometer.temp;
-    // sum += frame->barometer.temp;
-  }
-
-  int32_t average = sum / (int32_t)(cb->current_size);
-
-  // Store the average in the first element of the buffer
-  return average;
+  // frame = &averaged_frame;
+  return 0;
 }
 
 void cb_destroy(CircularBuffer* cb) {
