@@ -55,6 +55,13 @@ void read_sensors(Frame *frame)
   ADXL375_get_data(&_ADXL375_data, true);
   LSM6DS3_gyro_read(SPI1, &_LSM6DS3_data);
   LSM6DS3_acc_read(SPI1, &_LSM6DS3_data);
+  
+  uint32_t time = get_time_us();
+  frame->date.minute = (time/(1000000*60))%60; //minuts
+  frame->date.second = (time/1000000)%60; //seconds
+  frame->date.millisecond = (time/1000)%1000; //milli seconds
+  frame->date.microsecond = time%1000; //Mirco seconds
+  frame->changeFlag = flightStage;
 
   frame->accel = _ADXL375_data;
   frame->imu = _LSM6DS3_data;
