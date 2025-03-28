@@ -26,7 +26,7 @@ void build_frame(Frame *frame, M5611_data _M5611_data,
   frame->GNSS = _GNSS_data;
   frame->bme = _BME280_data;
 
-  frame->time = get_time_us();
+  // frame->time = get_time_us();
 }
 
 // void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
@@ -74,6 +74,13 @@ void format_sensor_data(M5611_data *_M5611_data, ADXL375_data *_ADXL375_data,
            _LSM6DS3_data->x_rate, _LSM6DS3_data->y_rate, _LSM6DS3_data->z_rate);
 }
 
+void print_sensor_line(Frame frame) {
+  printf("[BAR: T=%5" PRId32 " P=%5" PRId32 "] [ACCEL: X=%5" PRId16 " Y=%5" PRId16 " Z=%5" PRId16 "] [IMU: X=%5" PRId32 " Y=%5" PRId32 " Z=%5" PRId32 "]\r\n",
+         frame.barometer.temp, frame.barometer.pressure, 
+         frame.accel.x, frame.accel.y, frame.accel.z, 
+         frame.imu.x_rate, frame.imu.y_rate, frame.imu.z_rate);
+}
+
 double barometric_equation(double pressure, double temp)
 {
   double h;            // height to be calculated
@@ -84,6 +91,7 @@ double barometric_equation(double pressure, double temp)
 
   return h;
 }
+
 
 // void test_sensors()
 // {

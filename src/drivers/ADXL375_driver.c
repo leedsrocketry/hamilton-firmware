@@ -12,6 +12,7 @@
 #pragma region Public
 SPI_TypeDef* ADXL375_SPI;
 
+// Calibration data collected from the ADXL375 on HFC v2 board - 01/10/2025
 double x_offset = -654;
 double y_offset = -192;
 double z_offset = -1086;

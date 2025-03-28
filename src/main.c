@@ -39,13 +39,9 @@ int main(void) {
   return 0;
 #endif
 
-#ifdef READ_NAND
-  read_all_csv();
-#endif
-
   LOG("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
-
+ 
 #ifdef SENSOR_TEST
   test_sensors();
 #endif
@@ -55,6 +51,13 @@ int main(void) {
   calibrate_ADXL375();
   return 0;
 #endif
+
+  // read_all_csv();
+  // return 0;
+
+  uint32_t lastFrameToRead = get_next_available_frame_addr();
+  LOG("Last frame to read: ");
+  LOG("%d\r\n", lastFrameToRead);
 
   run_flight();
   return 0;

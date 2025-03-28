@@ -336,6 +336,7 @@ static inline Frame unzip(uint8_t *zippedData) {
   return _unzippedData;
 }
 
+
 /**
   @brief Prints a byte in binary format
   @param myByte: byte to be printed
@@ -667,6 +668,11 @@ static inline void read_frame(uint32_t frameAddr, uint8_t *readFrameBytes, uint8
 static inline void write_frame(uint32_t frameAddr, uint8_t *bytes) {
   wait_for_ready_flag();
   send_byte_to_flash(0x80, COMMAND_INPUT);
+  LOG("Writing bytes %d: ", frameAddr);
+  for (int i = 0; i < 128; i++) {
+    LOG("%X ", bytes[i]);
+  }
+  LOG("\r\n");
   send_addr_to_flash(frameAddr, 0);  // Address Input
   delay_microseconds(10);
   set_control_pins(DATA_INPUT);

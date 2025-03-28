@@ -33,6 +33,11 @@ void run_flight() {
     Frame frame;
     read_sensors(&frame);
     double altitude = barometric_equation(frame.barometer.pressure, frame.barometer.temp);
+    print_sensor_line(frame);
+    int8_t write_success = log_frame(frame);
+    if (write_success != SUCCESS) {
+      LOG("WRITE FAILED\r\n");
+    }
 
     switch (flightStage) {
       case LAUNCHPAD:

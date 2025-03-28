@@ -32,6 +32,8 @@ void format_sensor_data(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
 
 double barometric_equation(double pressure, double temp);
 
+void print_sensor_line(Frame frame);
+
 void test_sensors();
 void calibrate_ADXL375();
 

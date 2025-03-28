@@ -34,8 +34,7 @@ typedef struct Frame {
   uint8_t hammingCode[8];
   uint16_t CRC_Check;
 
-  uint32_t time;
-  double altitude;  // calculated value
+  // uint32_t time;
 
   int successFlag;  // Not used in zip
 } Frame;
