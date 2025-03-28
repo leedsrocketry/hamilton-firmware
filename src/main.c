@@ -8,11 +8,12 @@
 #include <stdio.h>
 
 #include "HAL/mcu.h"
-#include "frame_buffer.h"
 #include "debug.h"
 #include "flight_manager.h"
 #include "frame.h"
+#include "frame_buffer.h"
 #include "stm32l4r5xx.h"
+#include "drivers/_driver_manager.h"
 
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }
@@ -21,9 +22,7 @@ void SysTick_Handler(void) { s_ticks++; }
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
 
-int main(void)
-{
-
+int main(void) {
   // STM32 setup
   STM32_init();
 

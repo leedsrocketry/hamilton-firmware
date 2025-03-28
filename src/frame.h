@@ -22,6 +22,7 @@ typedef enum SensorReading {
   MS5611_TEMP,
   ALTITUDE
 } SensorReading;
+
 typedef struct Frame {
   DateTime date;         // 56 bits
   uint8_t changeFlag;    // 8 bits
@@ -34,7 +35,7 @@ typedef struct Frame {
   uint16_t CRC_Check;
 
   uint32_t time;
-  double altitude; // calculated value
+  double altitude;  // calculated value
 
   int successFlag;  // Not used in zip
 } Frame;

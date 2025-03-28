@@ -14,6 +14,9 @@
 #include "frame.h"
 #include "debug.h"
 
+// Params
+#define NAND_STORAGE_CAPACITY 8388607 // 8MB
+
 // Defines which are used when returning the status of a write to flash
 #define NONE 0
 #define SUCCESS 1

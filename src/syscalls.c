@@ -77,12 +77,12 @@ int mkdir(const char *path, mode_t mode) {
 int _write(int fd, char *data, int len) {
   (void)fd, (void)data, (void)len;
   if (fd == 1) {
-    #ifdef FLIGHT_COMPUTER
+#ifdef FLIGHT_COMPUTER
     uart_write_buf(USART1, data, (size_t)len);  // EXTERN USART
-    uart_write_buf(USART2, data, (size_t) len); // PAD RADIO
-    #else
+    uart_write_buf(USART2, data, (size_t)len);  // PAD RADIO
+#else
     uart_write_buf(LUART1, data, (size_t)len);
-    #endif
+#endif
   }
   return -1;
 }

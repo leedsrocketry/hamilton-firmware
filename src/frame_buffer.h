@@ -11,25 +11,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "HAL/NAND_flash_driver.h"
 #include "HAL/mcu.h"
 #include "debug.h"
 #include "drivers/ADXL375_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "frame.h"
-#include "HAL/NAND_flash_driver.h"
 
 // Define Constants and Thresholds
 #define BUFFER_SIZE 60
-#define WINDOW_SIZE BUFFER_SIZE/2  // Number of readings to calculate computations
+#define WINDOW_SIZE \
+  BUFFER_SIZE / 2  // Number of readings to calculate computations
 
 // Circular Buffer for data storing
 typedef struct FrameBuffer {
   Frame frames[BUFFER_SIZE];  // Circular buffer
-  Frame *window_0;
-  Frame *window_1;
-  double ground_ref;                  // Set of reference values for launch
-  uint32_t index;                       // End index (value is inserted)
-  uint32_t count;                       // Number of elements currently in buffer
+  Frame* window_0;
+  Frame* window_1;
+  double ground_ref;  // Set of reference values for launch
+  uint32_t index;     // End index (value is inserted)
+  uint32_t count;     // Number of elements currently in buffer
 } FrameBuffer;
 
 /**
@@ -38,7 +39,8 @@ typedef struct FrameBuffer {
 */
 void init_frame_buffer(FrameBuffer* buffer);
 
-double get_framebuffer_median(FrameBuffer* fb, uint32_t size, SensorReading sensor);
+double get_framebuffer_median(FrameBuffer* fb, uint32_t size,
+                              SensorReading sensor);
 
 void write_framebuffer(FrameBuffer* fb);
 
@@ -62,7 +64,7 @@ void update_frame_buffer(Frame* frame, FrameBuffer* buffer);
   @param fb frame
   @param dt Delta-time between each reading
 */
-float get_vertical_velocity(FrameBuffer *fb);
+float get_vertical_velocity(FrameBuffer* fb);
 
 /**
   @brief Check if rocket is stationary using JUST barometer pressure data
@@ -72,6 +74,6 @@ float get_vertical_velocity(FrameBuffer *fb);
   accelerometer was not working for launch 1
 */
 
-bool is_stationary(FrameBuffer *fb);
+bool is_stationary(FrameBuffer* fb);
 
 #endif /* BUFFER_H */
