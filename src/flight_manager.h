@@ -13,7 +13,6 @@
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "frame.h"
-#include "frame_buffer.h"
 #include "sensors.h"
 #include "stm32l4r5xx.h"
 

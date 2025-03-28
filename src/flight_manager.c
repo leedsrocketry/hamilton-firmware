@@ -16,13 +16,10 @@ FlightStage get_flight_stage() { return flightStage; }
 void set_flight_stage(FlightStage fs) { flightStage = fs; }
 
 void handle_LAUNCHPAD(Frame *frame, CircularBuffer *cb) {
-
-
   if (frame->accel.x < ACCEL_LAUNCH_THRESHOLD) {
     LOG("LAUNCHPAD: Acceleration threshold met\r\n");
     flightStage = ASCENT;
   }
-
 
   (void)frame;
   (void)cb;

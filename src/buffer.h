@@ -23,9 +23,6 @@ Frame* cb_dequeue(CircularBuffer* cb);
 Frame* cb_peek(const CircularBuffer* cb);
 uint32_t cb_size(const CircularBuffer* cb);
 void cb_clear(CircularBuffer* cb);
-int32_t cb_average_pressure(CircularBuffer* cb);
-int32_t cb_average_temp(CircularBuffer* cb);
-
 int32_t cb_average(CircularBuffer* cb, Frame* frame);
 
 #endif  // CIRCULAR_BUFFER_H
