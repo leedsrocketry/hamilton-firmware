@@ -861,7 +861,7 @@ static inline void init_flash() {
   // LOG("%lld\r\n", read_flash_ID());
 
   if (read_flash_ID() != 0){
-    LOG("Flash Working Correctly\r\n");
+    LOG("Flash Working Correctly\n");
   }
 }
 

@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "../segger-rtt/RTT/SEGGER_RTT.h"
 #include "HAL/mcu.h"
 
 int _fstat(int fd, struct stat *st) {
@@ -80,6 +81,7 @@ int _write(int fd, char *data, int len) {
 #ifdef FLIGHT_COMPUTER
     uart_write_buf(USART1, data, (size_t)len);  // EXTERN USART
     uart_write_buf(USART2, data, (size_t)len);  // PAD RADIO
+    SEGGER_RTT_Write(0, data, (size_t)len);  // SEGGER RTT
 #else
     uart_write_buf(LUART1, data, (size_t)len);
 #endif

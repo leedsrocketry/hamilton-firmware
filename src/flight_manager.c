@@ -23,8 +23,8 @@ void handle_LAUNCHPAD(Frame *frame)
   double altitude =
       barometric_equation(frame->barometer.pressure, frame->barometer.temp);
   
-  printf_float("altitude", (float)altitude, true);
-  printf("\r\n");
+  // printf_float("altitude", (float)altitude, true);
+  // printf("\r\n");
 
   // if (altitude > (ground_altitude + ALTITUDE_APOGEE_THRESHOLD)) {
   //   LOG("LAUNCHPAD: Altitude threshold met\r\n");
@@ -87,7 +87,7 @@ void run_flight()
     cb_enqueue_overwrite(cb, &frame);
     Frame avg_frame;
     cb_average(cb, &avg_frame);
-    // print_sensor_line(avg_frame);
+    print_sensor_line(avg_frame);
 
     // LOG("Flight stage: %d\r\n", flightStage);
     switch (flightStage)

@@ -13,6 +13,7 @@
 #include "flight_manager.h"
 #include "frame.h"
 #include "stm32l4r5xx.h"
+#include "../segger-rtt/RTT/SEGGER_RTT.h"
 
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }
