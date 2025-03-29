@@ -1001,7 +1001,7 @@ static inline void print_capacity_info() {
 /**
   @brief Writes a single Frame to the next available space on the flash
 */
-static inline int8_t log_frame(Frame _input) {
+static inline int8_t save_frame(Frame _input) {
   // Frame to array of bytes; 8388607 is 8Gb end
   if (frameAddressPointer <= 8388607) {
     uint8_t encoded[128];

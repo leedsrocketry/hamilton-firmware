@@ -16,11 +16,22 @@ FlightStage get_flight_stage() { return flightStage; }
 void set_flight_stage(FlightStage fs) { flightStage = fs; }
 
 double max_altitude = 0;
+double ground_altitude = 0;
 
 void handle_LAUNCHPAD(Frame *frame) {
+  double altitude =
+      barometric_equation(frame->barometer.pressure, frame->barometer.temp);
+
+  if (altitude > (ground_altitude + ALTITUDE_APOGEE_THRESHOLD)) {
+    LOG("LAUNCHPAD: Altitude threshold met\r\n");
+    flightStage = ASCENT;
+    return;
+  }
+
   if (frame->accel.x < ACCEL_LAUNCH_THRESHOLD) {
     LOG("LAUNCHPAD: Acceleration threshold met\r\n");
     flightStage = ASCENT;
+    return;
   }
 }
 
@@ -44,12 +55,18 @@ void handle_LANDING(Frame *frame) { (void)frame; }
 void run_flight() {
   init_flash();
 
+  Frame init_frame;
+  read_sensors(&init_frame);
+
+  ground_altitude = barometric_equation(init_frame.barometer.pressure,
+                                        init_frame.barometer.temp);
+
   CircularBuffer *cb = cb_create(20);
 
   for (;;) {
     Frame frame;
     read_sensors(&frame);
-    int8_t write_success = log_frame(frame);
+    int8_t write_success = save_frame(frame);
     if (write_success != SUCCESS) {
       LOG("WRITE FAILED\r\n");
     }
@@ -65,16 +82,16 @@ void run_flight() {
         handle_LAUNCHPAD(&avg_frame);
         break;
       case ASCENT:
-        handle_ASCENT(&frame);
+        handle_ASCENT(&avg_frame);
         break;
       case APOGEE:
-        handle_APOGEE(&frame);
+        handle_APOGEE(&avg_frame);
         break;
       case DESCENT:
-        handle_DESCENT(&frame);
+        handle_DESCENT(&avg_frame);
         break;
       case LANDING:
-        handle_LANDING(&frame);
+        handle_LANDING(&avg_frame);
         break;
       default:
         break;

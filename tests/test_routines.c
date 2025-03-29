@@ -191,7 +191,7 @@ void NAND_flash_test_routine()
     dataArray[1] = 0;
 
     _input = unzip(dataArray);
-    log_frame(_input);
+    save_frame(_input);
     LOG("======================== DONE ========================\r\n");
   }
   LOG("==================== DONE WRITING ====================\r\n");

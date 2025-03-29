@@ -14,4 +14,4 @@ void init_datastore() {
 
 void read() {}
 
-void write(Frame frame) { log_frame(frame); }
+void write(Frame frame) { save_frame(frame); }
