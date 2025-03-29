@@ -47,6 +47,7 @@ unblock-write-protected:
 nucleo: build
 nucleo-flash: nucleo flash
 
+hfc: clean
 hfc: CFLAGS += -DFLIGHT_COMPUTER
 hfc: build
 
@@ -59,7 +60,7 @@ analyse:
 	cppcheck src/*
 
 format:
-	clang-format --style="Google" -i src/*.c src/*.h
+	find src -type f \( -name "*.c" -o -name "*.h" \) | xargs clang-format -i
 
 check: analyse format
 

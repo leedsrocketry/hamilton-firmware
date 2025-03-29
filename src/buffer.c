@@ -1,3 +1,11 @@
+/*
+  Leeds University Rocketry Organisation - LURA
+  Author Name: Evan Madurai
+  Created on: 29 Mar 2025
+  Description: Buffer is a circular buffer implementation for storing frames of
+  data.
+*/
+
 #include "buffer.h"
 
 #include <stdlib.h>
@@ -6,8 +14,7 @@
 #include "frame.h"
 
 // Weights for WMA calculation of 20 elements
-static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                            2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
+static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
 
 CircularBuffer* cb_create(uint32_t size) {
   // Allocate memory for the circular buffer structure
@@ -78,9 +85,7 @@ void cb_destroy(CircularBuffer* cb) {
   }
 }
 
-uint32_t cb_is_empty(const CircularBuffer* cb) {
-  return (cb->current_size == 0);
-}
+uint32_t cb_is_empty(const CircularBuffer* cb) { return (cb->current_size == 0); }
 
 uint32_t cb_enqueue_overwrite(CircularBuffer* cb, Frame* element) {
   // If buffer is full, overwrite the oldest element
@@ -101,7 +106,7 @@ uint32_t cb_enqueue_overwrite(CircularBuffer* cb, Frame* element) {
     cb->current_size++;
   }
 
-  return 1;
+  return 0;
 }
 
 Frame* cb_dequeue(CircularBuffer* cb) {

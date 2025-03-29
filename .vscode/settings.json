@@ -21,7 +21,8 @@
         "bitset": "c",
         "locale": "c",
         "datastore.h": "c",
-        "_driver_manager.h": "c"
+        "_driver_manager.h": "c",
+        "buffer.h": "c"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "enabled"

@@ -1,3 +1,10 @@
+/*
+  Leeds University Rocketry Organisation - LURA
+  Author Name: Your Name
+  Created on: 29 Mar 2025
+  Description: Description of the file
+*/
+
 #include "sensors.h"
 
 double Lb = -0.0065;   // temperature lapse rate (K/m)
@@ -7,8 +14,7 @@ double g = 9.80665;    // gravitational acceleration
 double M = 0.0289644;  // molar mass of Earth's air
 double Pb = 101325;    // reference pressure at sea level (in Pa)
 
-void build_frame(Frame *frame, M5611_data _M5611_data,
-                 ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
+void build_frame(Frame *frame, M5611_data _M5611_data, ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
                  BME280_data _BME280_data, GNSS_Data _GNSS_data) {
   // Add time stamp
   // uint32_t time = get_time_us();
@@ -68,25 +74,21 @@ void read_sensors(Frame *frame) {
   frame->barometer = _M5611_data;
 }
 
-void format_sensor_data(M5611_data *_M5611_data, ADXL375_data *_ADXL375_data,
-                        LSM6DS3_data *_LSM6DS3_data, char *buffer,
+void format_sensor_data(M5611_data *_M5611_data, ADXL375_data *_ADXL375_data, LSM6DS3_data *_LSM6DS3_data, char *buffer,
                         size_t buffer_size) {
   snprintf(buffer, buffer_size,
            "Barometer: %ld, Temp: %ld, ADXL Accel: %d, %d, %d, LSM Accel: %d, "
            "%d, %d, Gyro: %ld, %ld, %ld\r\n",
-           _M5611_data->pressure, _M5611_data->temp, _ADXL375_data->x,
-           _ADXL375_data->y, _ADXL375_data->z, _LSM6DS3_data->x_accel,
-           _LSM6DS3_data->y_accel, _LSM6DS3_data->z_accel,
-           _LSM6DS3_data->x_rate, _LSM6DS3_data->y_rate, _LSM6DS3_data->z_rate);
+           _M5611_data->pressure, _M5611_data->temp, _ADXL375_data->x, _ADXL375_data->y, _ADXL375_data->z,
+           _LSM6DS3_data->x_accel, _LSM6DS3_data->y_accel, _LSM6DS3_data->z_accel, _LSM6DS3_data->x_rate,
+           _LSM6DS3_data->y_rate, _LSM6DS3_data->z_rate);
 }
 
 void print_sensor_line(Frame frame) {
-  printf("[BAR: T=%5" PRId32 " P=%5" PRId32 "] [ACCEL: X=%5" PRId16
-         " Y=%5" PRId16 " Z=%5" PRId16 "] [IMU: X=%5" PRId32 " Y=%5" PRId32
-         " Z=%5" PRId32 "]\r\n",
-         frame.barometer.temp, frame.barometer.pressure, frame.accel.x,
-         frame.accel.y, frame.accel.z, frame.imu.x_rate, frame.imu.y_rate,
-         frame.imu.z_rate);
+  printf("[BAR: T=%5" PRId32 " P=%5" PRId32 "] [ACCEL: X=%5" PRId16 " Y=%5" PRId16 " Z=%5" PRId16 "] [IMU: X=%5" PRId32
+         " Y=%5" PRId32 " Z=%5" PRId32 "]\r\n",
+         frame.barometer.temp, frame.barometer.pressure, frame.accel.x, frame.accel.y, frame.accel.z, frame.imu.x_rate,
+         frame.imu.y_rate, frame.imu.z_rate);
 }
 
 double barometric_equation(double pressure, double temp) {

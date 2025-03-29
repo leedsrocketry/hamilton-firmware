@@ -17,11 +17,7 @@
 
 // Max 128 bytes
 
-typedef enum SensorReading {
-  MS5611_PRESSURE,
-  MS5611_TEMP,
-  ALTITUDE
-} SensorReading;
+typedef enum SensorReading { MS5611_PRESSURE, MS5611_TEMP, ALTITUDE } SensorReading;
 
 typedef struct Frame {
   DateTime date;         // 56 bits
