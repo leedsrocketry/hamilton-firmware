@@ -7,8 +7,8 @@ CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
 			-lm
 LDFLAGS ?= -Tbuild/link.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/firmware.map
 SOURCES ?=	src/main.c src/startup.c src/syscalls.c src/HAL/STM32_init.c src/drivers/MS5611_driver.c src/filters.c\
-			src/drivers/ADXL375_driver.c src/frame_buffer.c src/drivers/LSM6DS3_driver.c\
-			src/flight_manager.c src/sensors.c src/drivers/HC12_driver.c
+			src/drivers/ADXL375_driver.c src/drivers/LSM6DS3_driver.c\
+			src/flight_manager.c src/sensors.c src/drivers/HC12_driver.c src/drivers/_driver_manager.c src/buffer.c segger-rtt/RTT/SEGGER_RTT.c segger-rtt/RTT/SEGGER_RTT_printf.c\
 
 
 # Ensure make clean is cross platform
@@ -29,6 +29,9 @@ $(BUILD_DIR)/firmware.bin: $(BUILD_DIR)/firmware.elf
 flash: $(BUILD_DIR)/firmware.bin
 	st-flash --reset write $< 0x8000000
 
+flash-rs: $(BUILD_DIR)/firmware.elf
+	probe-rs run --chip STM32L4R5ZITx $<
+
 clean:
 	$(RM) $(BUILD_DIR)/firmware.*
 
@@ -47,7 +50,7 @@ nucleo-flash: nucleo flash
 hfc: CFLAGS += -DFLIGHT_COMPUTER
 hfc: build
 
-hfc-flash: hfc flash
+hfc-flash: hfc flash-rs
 
 warnings:
 	@(make clean && make hfc > $(BUILD_DIR)/make.log 2>&1) && grep "warning:" $(BUILD_DIR)/make.log | wc -l

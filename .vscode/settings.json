@@ -18,7 +18,10 @@
         "stdio.h": "c",
         "debug.h": "c",
         "__locale": "c",
-        "bitset": "c"
+        "bitset": "c",
+        "locale": "c",
+        "datastore.h": "c",
+        "_driver_manager.h": "c"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "enabled"

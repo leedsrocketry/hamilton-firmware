@@ -8,11 +8,12 @@
 #include <stdio.h>
 
 #include "HAL/mcu.h"
-#include "frame_buffer.h"
 #include "debug.h"
+#include "drivers/_driver_manager.h"
 #include "flight_manager.h"
 #include "frame.h"
 #include "stm32l4r5xx.h"
+#include "../segger-rtt/RTT/SEGGER_RTT.h"
 
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }
@@ -21,9 +22,7 @@ void SysTick_Handler(void) { s_ticks++; }
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
 */
 
-int main(void)
-{
-
+int main(void) {
   // STM32 setup
   STM32_init();
 
@@ -32,6 +31,7 @@ int main(void)
 
   LOG("============ INITIALISE NAND FLASH ============\r\n");
   init_flash();
+  print_capacity_info();
 
 #ifdef ERASE_NAND
   erase_all();
@@ -41,7 +41,10 @@ int main(void)
 #endif
 
 #ifdef READ_NAND
-  read_all_csv();
+  delay_ms(1000);
+  print_capacity_info();
+  NAND_flash_read();
+  return 0;
 #endif
 
   LOG("============== INITIALISE DRIVERS =============\r\n");
@@ -57,6 +60,9 @@ int main(void)
   return 0;
 #endif
 
+  delay_ms(2000);
+  STM32_beep_buzzer(100, 100, 1);
   run_flight();
+
   return 0;
 }
