@@ -6,8 +6,8 @@
 #include "frame.h"
 
 // Weights for WMA calculation of 20 elements
-static int32_t weights[] = {0,  2,  4,  6,  8,  10, 12, 14, 16, 18,
-                            20, 22, 24, 26, 28, 30, 32, 34, 36, 38};
+static int32_t weights[] = {1,  1,  1,  1,  1,  1, 1, 1, 1, 1,
+                            2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
 
 CircularBuffer* cb_create(uint32_t size) {
   // Allocate memory for the circular buffer structure

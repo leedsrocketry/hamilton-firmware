@@ -16,11 +16,6 @@
 #include "sensors.h"
 #include "stm32l4r5xx.h"
 
-#define PADREADFREQ 100      // frequency to read data during ascent
-#define ASCENTREADFREQ 1000  // frequency to read data during ascent
-#define APOGEEREADFREQ 1000  // frequency to read data during ascent
-#define DESCENTREADFREQ 100  // frequency to read data during descent
-
 #define ACCEL_LAUNCH_THRESHOLD -500.0  // TBD
 #define BARO_LAUNCH_THRESHOLD 400.0    // TBD
 
