@@ -27,20 +27,17 @@ void handle_LAUNCHPAD(Frame *frame) {
 void handle_ASCENT(Frame *frame) {
   double altitude =
       barometric_equation(frame->barometer.pressure, frame->barometer.temp);
-  
-  if (altitude < (max_altitude-ALTITUDE_APOGEE_THRESHOLD)) {
+
+  if (altitude < (max_altitude - ALTITUDE_APOGEE_THRESHOLD)) {
     LOG("LAUNCHPAD: Acceleration threshold met\r\n");
     flightStage = DESCENT;
   }
-
 }
 
 // Unneeded?
 void handle_APOGEE(Frame *frame) { (void)frame; }
 
-void handle_DESCENT(Frame *frame) {
-  (void)frame;
-}
+void handle_DESCENT(Frame *frame) { (void)frame; }
 
 void handle_LANDING(Frame *frame) { (void)frame; }
 

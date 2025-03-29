@@ -6,7 +6,7 @@
 #include "frame.h"
 
 // Weights for WMA calculation of 20 elements
-static int32_t weights[] = {1,  1,  1,  1,  1,  1, 1, 1, 1, 1,
+static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                             2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
 
 CircularBuffer* cb_create(uint32_t size) {
@@ -55,7 +55,9 @@ int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
     iframe->accel.y += (int16_t)(weight * current_frame->accel.y);
     iframe->accel.z += (int16_t)(weight * current_frame->accel.z);
   }
-
+  if (sum_of_weights == 0) {
+    return 1;
+  }
   iframe->barometer.temp = iframe->barometer.temp / sum_of_weights;
   iframe->barometer.pressure = iframe->barometer.pressure / sum_of_weights;
   iframe->accel.x = (int16_t)(iframe->accel.x / sum_of_weights);
