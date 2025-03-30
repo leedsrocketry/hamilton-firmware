@@ -73,23 +73,27 @@ test-sensors: clean
 test-sensors: build
 test-sensors: flash-rs
 
+# Builds and flashes the routine to calibrate the ADXL375.
 calibrate: CFLAGS += -DCALIBRATE
 calibrate: CFLAGS += -DFLIGHT_COMPUTER
 calibrate: clean
 calibrate: build
 calibrate: flash-rs
 
-erase-NAND: CFLAGS += -DERASE_NAND
-erase-NAND: CFLAGS += -DFLIGHT_COMPUTER
-erase-NAND: clean
-erase-NAND: build
-erase-NAND: flash-rs
+# Builds and flashes the routine to erase the NAND flash memory
+# Warning: This will PERMANENTLY erase the NAND flash memory after a countdown
+erase: CFLAGS += -DERASE_NAND
+erase: CFLAGS += -DFLIGHT_COMPUTER
+erase: clean
+erase: build
+erase: flash-rs
 
-read-NAND: CFLAGS += -DREAD_NAND
-read-NAND: CFLAGS += -DFLIGHT_COMPUTER
-read-NAND: clean
-read-NAND: build
-read-NAND: flash-rs
+# Builds and flashes the routine to read the NAND flash memory
+read: CFLAGS += -DREAD_NAND
+read: CFLAGS += -DFLIGHT_COMPUTER
+read: clean
+read: build
+read: flash-rs
 
 .PHONY: list
 list:
