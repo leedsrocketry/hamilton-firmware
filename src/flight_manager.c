@@ -67,7 +67,7 @@ void run_flight() {
   CircularBuffer *cb = cb_create(20);
 
   uint32_t start_time = get_time_ms();
-  uint32_t last_loop_time = start_time; // Initialize last_loop_time
+  uint32_t last_loop_time = start_time;  // Initialize last_loop_time
   uint32_t current_time;
   uint32_t dt = 0;
   (void)dt;
