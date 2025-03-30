@@ -70,9 +70,7 @@ void run_flight() {
   uint32_t last_loop_time = start_time; // Initialize last_loop_time
   uint32_t current_time;
   uint32_t dt = 0;
-
-  int32_t prev_filter = 0;
-  float angle_z = 0;
+  (void)dt;
 
   for (;;) {
     current_time = get_time_ms();
@@ -92,16 +90,7 @@ void run_flight() {
     Frame avg_frame;
 
     (void)cb_average(cb, &avg_frame);
-    // print_sensor_line(frame);
-    // LOG("imu: %d, %d, %d\r\n", frame.imu.x_rate, frame.imu.y_rate, frame.imu.z_rate);
-
-    prev_filter = LPF1(frame.imu.z_rate, prev_filter, 20);
-    // LOG("LPF: %d %d\r\n", frame.imu.z_rate, prev_filter);
-
-    float angle_z_rate = (float)prev_filter * 0.00875 * 0.033 * 0.1;
-    angle_z += angle_z_rate;
-    printf_float("angle_z", angle_z, true);
-    LOG("\r\n");
+    print_sensor_line(frame);
 
     // LOG("Flight stage: %d\r\n", flightStage);
     switch (flightStage) {
