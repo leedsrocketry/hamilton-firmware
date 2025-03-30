@@ -21,27 +21,22 @@ void STM32_init() {
   // Initialise system
   STM32_init_internals();
   STM32_init_peripherals();
-  
 }
 
 void STM32_init_clock(unsigned long frequency) {
   if (frequency == RCC_CFGR_SW_MSI) {
     // MSI range can only be set if MSI is off, or MSI is on and MSIRDY = 1
-    RCC->CR |= RCC_CR_MSION;  // set to 1 for MSI on
-    while ((RCC->CR & RCC_CR_MSION) &&
-           !(RCC->CR & RCC_CR_MSIRDY));  // wait until off, or on and ready
-    RCC->CR = (RCC->CR & ~RCC_CR_MSIRANGE_Msk) |
-              RCC_CR_MSIRANGE_11;  // set MSI range to 48Hz (0b1011)
-    RCC->CR |= RCC_CR_MSIRGSEL;    // set to 1 to use MSI range from CR register
-    RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) |
-                RCC_CFGR_SW_MSI;  // set system clock to MSI
-    FREQ = 48000000;              // 48MHz
+    RCC->CR |= RCC_CR_MSION;                                          // set to 1 for MSI on
+    while ((RCC->CR & RCC_CR_MSION) && !(RCC->CR & RCC_CR_MSIRDY));   // wait until off, or on and ready
+    RCC->CR = (RCC->CR & ~RCC_CR_MSIRANGE_Msk) | RCC_CR_MSIRANGE_11;  // set MSI range to 48Hz (0b1011)
+    RCC->CR |= RCC_CR_MSIRGSEL;                                       // set to 1 to use MSI range from CR register
+    RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_MSI;     // set system clock to MSI
+    FREQ = 48000000;                                                  // 48MHz
   } else if (frequency == RCC_CFGR_SW_HSI) {
-    RCC->CR |= RCC_CR_HSION;             // set to 1 for HSI on
-    while (!(RCC->CR & RCC_CR_HSIRDY));  // wait until HSI ready
-    RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) |
-                RCC_CFGR_SW_HSI;  // set system clock to HSI
-    FREQ = 16000000;              // 16MHz
+    RCC->CR |= RCC_CR_HSION;                                       // set to 1 for HSI on
+    while (!(RCC->CR & RCC_CR_HSIRDY));                            // wait until HSI ready
+    RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW_Msk) | RCC_CFGR_SW_HSI;  // set system clock to HSI
+    FREQ = 16000000;                                               // 16MHz
   } else {
     FREQ = 4000000;  // default
   }
@@ -69,8 +64,7 @@ void init_delay_timer() {
 
 void STM32_init_internals() {
   // FPU
-  SCB->CPACR |=
-      ((3UL << 10 * 2) | (3UL << 11 * 2));  // set CP10 and CP11 Full Access
+  SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2));  // set CP10 and CP11 Full Access
 
   // UART
   uart_init(LUART1, 9600);    // Initialise Low Power UART;
@@ -96,8 +90,7 @@ void STM32_init_peripherals() {
 #endif
 }
 
-void STM32_beep_buzzer(uint32_t on_duration_ms, uint32_t off_duration_ms,
-                       uint16_t nom_beeps) {
+void STM32_beep_buzzer(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_beeps) {
   for (int i = 0; i < nom_beeps; i++) {
     gpio_write(BUZZER, !LOW);
     delay_ms(on_duration_ms);
@@ -106,8 +99,7 @@ void STM32_beep_buzzer(uint32_t on_duration_ms, uint32_t off_duration_ms,
   }
 }
 
-void STM32_flash_LED(uint32_t on_duration_ms, uint32_t off_duration_ms,
-                     uint16_t nom_flash) {
+void STM32_flash_LED(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_flash) {
   for (int i = 0; i < nom_flash; i++) {
     gpio_write(BLUE_LED_0, !LOW);
     delay_ms(on_duration_ms);

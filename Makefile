@@ -47,6 +47,7 @@ unblock-write-protected:
 nucleo: build
 nucleo-flash: nucleo flash
 
+hfc: clean
 hfc: CFLAGS += -DFLIGHT_COMPUTER
 hfc: build
 
@@ -59,7 +60,7 @@ analyse:
 	cppcheck src/*
 
 format:
-	clang-format --style="Google" -i src/*.c src/*.h
+	find src -type f \( -name "*.c" -o -name "*.h" \) | xargs clang-format -i
 
 check: analyse format
 
@@ -68,23 +69,27 @@ emulate: hfc
 
 test-sensors: CFLAGS += -DSENSOR_TEST
 test-sensors: CFLAGS += -DFLIGHT_COMPUTER
+test-sensors: clean
 test-sensors: build
-test-sensors: flash
+test-sensors: flash-rs
 
 calibrate: CFLAGS += -DCALIBRATE
 calibrate: CFLAGS += -DFLIGHT_COMPUTER
+calibrate: clean
 calibrate: build
-calibrate: flash
+calibrate: flash-rs
 
 erase-NAND: CFLAGS += -DERASE_NAND
 erase-NAND: CFLAGS += -DFLIGHT_COMPUTER
+erase-NAND: clean
 erase-NAND: build
-erase-NAND: flash
+erase-NAND: flash-rs
 
 read-NAND: CFLAGS += -DREAD_NAND
 read-NAND: CFLAGS += -DFLIGHT_COMPUTER
+read-NAND: clean
 read-NAND: build
-read-NAND: flash
+read-NAND: flash-rs
 
 .PHONY: list
 list:

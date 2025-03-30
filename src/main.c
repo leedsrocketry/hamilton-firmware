@@ -1,19 +1,19 @@
 /*
   Leeds University Rocketry Organisation - LURA
-  Author Name: Alexandra Posta
+  Author Name: Alexandra Posta, Evan Madurai
   Created on: 27 Feb 2023
   Description: Entry point for the HFC firmware; suitable for STM32L4R5
 */
 
 #include <stdio.h>
 
+#include "../segger-rtt/RTT/SEGGER_RTT.h"
 #include "HAL/mcu.h"
 #include "debug.h"
 #include "drivers/_driver_manager.h"
 #include "flight_manager.h"
 #include "frame.h"
 #include "stm32l4r5xx.h"
-#include "../segger-rtt/RTT/SEGGER_RTT.h"
 
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }
@@ -59,7 +59,7 @@ int main(void) {
   calibrate_ADXL375();
   return 0;
 #endif
-
+  LOG("============== INITIALISE FLIGHT ==============\r\n");
   delay_ms(2000);
   STM32_beep_buzzer(100, 100, 1);
   run_flight();

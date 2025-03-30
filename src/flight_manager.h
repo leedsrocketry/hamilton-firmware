@@ -1,3 +1,10 @@
+/*
+  Leeds University Rocketry Organisation - LURA
+  Author Name: Evan Madurai
+  Created on: 26 July 2024
+  Description: System for managing flight
+*/
+
 #ifndef FLIGHT_MANAGER_H
 #define FLIGHT_MANAGER_H
 
@@ -20,7 +27,7 @@
 #define BARO_LAUNCH_THRESHOLD 400.0    // TBD
 
 #define BARO_APOGEE_THRESHOLD 0.0
-#define ALTITUDE_APOGEE_THRESHOLD 1000.0 // 10m
+#define ALTITUDE_APOGEE_THRESHOLD 1000.0  // 10m
 
 #define GROUND_THRESHOLD 30
 
@@ -31,13 +38,7 @@
 // Not used as of 04/08/2024, should be moved later
 #define BATTERY_ADC PIN('C', 3)
 
-typedef enum FlightStage {
-  LAUNCHPAD,
-  ASCENT,
-  APOGEE,
-  DESCENT,
-  LANDING
-} FlightStage;
+typedef enum FlightStage { LAUNCHPAD, ASCENT, APOGEE, DESCENT, LANDING } FlightStage;
 
 extern FlightStage flightStage;
 

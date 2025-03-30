@@ -1,3 +1,11 @@
+/*
+  Leeds University Rocketry Organisation - LURA
+  Author Name: Evan Madurai
+  Created on: 29 Mar 2025
+  Description: Buffer is a circular buffer implementation for storing frames of
+  data.
+*/
+
 #include "buffer.h"
 
 #include <stdlib.h>
@@ -6,8 +14,7 @@
 #include "frame.h"
 
 // Weights for WMA calculation of 20 elements
-static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                            2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
+static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
 
 CircularBuffer* cb_create(uint32_t size) {
   // Allocate memory for the circular buffer structure
@@ -54,6 +61,9 @@ int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
     iframe->accel.x += (int16_t)(weight * current_frame->accel.x);
     iframe->accel.y += (int16_t)(weight * current_frame->accel.y);
     iframe->accel.z += (int16_t)(weight * current_frame->accel.z);
+    iframe->imu.x_rate += (int32_t)(weight * current_frame->imu.x_rate);
+    iframe->imu.y_rate += (int32_t)(weight * current_frame->imu.y_rate);
+    iframe->imu.z_rate += (int32_t)(weight * current_frame->imu.z_rate);
   }
   if (sum_of_weights == 0) {
     return 1;
@@ -63,6 +73,9 @@ int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
   iframe->accel.x = (int16_t)(iframe->accel.x / sum_of_weights);
   iframe->accel.y = (int16_t)(iframe->accel.y / sum_of_weights);
   iframe->accel.z = (int16_t)(iframe->accel.z / sum_of_weights);
+  iframe->imu.x_rate = (int32_t)(iframe->imu.x_rate / sum_of_weights);
+  iframe->imu.y_rate = (int32_t)(iframe->imu.y_rate / sum_of_weights);
+  iframe->imu.z_rate = (int32_t)(iframe->imu.z_rate / sum_of_weights);
 
   // Store the average in the first element of the buffer
   // frame = &averaged_frame;
@@ -78,9 +91,7 @@ void cb_destroy(CircularBuffer* cb) {
   }
 }
 
-uint32_t cb_is_empty(const CircularBuffer* cb) {
-  return (cb->current_size == 0);
-}
+uint32_t cb_is_empty(const CircularBuffer* cb) { return (cb->current_size == 0); }
 
 uint32_t cb_enqueue_overwrite(CircularBuffer* cb, Frame* element) {
   // If buffer is full, overwrite the oldest element
@@ -101,7 +112,7 @@ uint32_t cb_enqueue_overwrite(CircularBuffer* cb, Frame* element) {
     cb->current_size++;
   }
 
-  return 1;
+  return 0;
 }
 
 Frame* cb_dequeue(CircularBuffer* cb) {

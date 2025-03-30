@@ -1,3 +1,9 @@
+/*
+  Leeds University Rocketry Organisation - LURA
+  Author Name: Your Name
+  Created on: 29 Mar 2025
+  Description: Description of the file
+*/
 
 #ifndef SENSORS_H
 #define SENSORS_H
@@ -21,12 +27,10 @@
 
 void read_sensors(Frame* frame);
 
-void build_frame(Frame* _frameArray, M5611_data _M5611_data,
-                 ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
+void build_frame(Frame* _frameArray, M5611_data _M5611_data, ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
                  BME280_data _BME280_data, GNSS_Data _GNSS_data);
 
-void format_sensor_data(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
-                        LSM6DS3_data* _LSM6DS3_data, char* buffer,
+void format_sensor_data(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data, LSM6DS3_data* _LSM6DS3_data, char* buffer,
                         size_t buffer_size);
 
 double barometric_equation(double pressure, double temp);
