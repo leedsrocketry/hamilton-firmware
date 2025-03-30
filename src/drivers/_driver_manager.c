@@ -30,11 +30,17 @@ void initalise_drivers() {
 
   if (MS5611_init(SPI1)) {
     LOG("ERROR INITIALISING MS5611 BAROMETER\n");
+  } else {
+    LOG("MS5611 BAROMETER INITIALISED\n");
   }
   if (ADXL375_init(SPI1)) {
     LOG("ERROR INITIALISING ADXL375 ACCEL\n");
+  } else {
+    LOG("ADXL375 ACCEL INITIALISED\n");
   }
   if (LSM6DS3_init(SPI1, &_LSM6DS3_data)) {
     LOG("ERROR INITIALISING LSM6DS3 IMU\n");
+  } else {
+    LOG("LSM6DS3 IMU INITIALISED\n");
   }
 }

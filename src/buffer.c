@@ -61,6 +61,9 @@ int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
     iframe->accel.x += (int16_t)(weight * current_frame->accel.x);
     iframe->accel.y += (int16_t)(weight * current_frame->accel.y);
     iframe->accel.z += (int16_t)(weight * current_frame->accel.z);
+    iframe->imu.x_rate += (int32_t)(weight * current_frame->imu.x_rate);
+    iframe->imu.y_rate += (int32_t)(weight * current_frame->imu.y_rate);
+    iframe->imu.z_rate += (int32_t)(weight * current_frame->imu.z_rate);
   }
   if (sum_of_weights == 0) {
     return 1;
@@ -70,6 +73,9 @@ int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
   iframe->accel.x = (int16_t)(iframe->accel.x / sum_of_weights);
   iframe->accel.y = (int16_t)(iframe->accel.y / sum_of_weights);
   iframe->accel.z = (int16_t)(iframe->accel.z / sum_of_weights);
+  iframe->imu.x_rate = (int32_t)(iframe->imu.x_rate / sum_of_weights);
+  iframe->imu.y_rate = (int32_t)(iframe->imu.y_rate / sum_of_weights);
+  iframe->imu.z_rate = (int32_t)(iframe->imu.z_rate / sum_of_weights);
 
   // Store the average in the first element of the buffer
   // frame = &averaged_frame;

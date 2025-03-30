@@ -30,11 +30,11 @@ void handle_LAUNCHPAD(Frame *frame) {
   //   return;
   // }
 
-  if (frame->accel.x < ACCEL_LAUNCH_THRESHOLD) {
-    LOG("LAUNCHPAD: Acceleration threshold met\r\n");
-    flightStage = ASCENT;
-    return;
-  }
+  // if (frame->accel.x < ACCEL_LAUNCH_THRESHOLD) {
+  //   LOG("LAUNCHPAD: Acceleration threshold met\r\n");
+  //   flightStage = ASCENT;
+  //   return;
+  // }
 }
 
 void handle_ASCENT(Frame *frame) {
@@ -66,7 +66,20 @@ void run_flight() {
 
   CircularBuffer *cb = cb_create(20);
 
+  uint32_t start_time = get_time_ms();
+  uint32_t last_loop_time = start_time; // Initialize last_loop_time
+  uint32_t current_time;
+  uint32_t dt = 0;
+
+  float angle_z = 0;
+
   for (;;) {
+    current_time = get_time_ms();
+    dt = current_time - last_loop_time;
+    last_loop_time = current_time;
+
+    // LOG("Time: %d, dt: %d\r\n", current_time - start_time, dt); //Log time and dt
+
     Frame frame;
     read_sensors(&frame);
     int8_t write_success = save_frame(frame);
@@ -78,7 +91,12 @@ void run_flight() {
     Frame avg_frame;
 
     (void)cb_average(cb, &avg_frame);
-    print_sensor_line(avg_frame);
+    print_sensor_line(frame);
+    LOG("imu: %d, %d, %d\r\n", frame.imu.x_rate, frame.imu.y_rate, frame.imu.z_rate);
+    // float angle_z_rate = (float)frame.imu.z_rate * 0.00875 * 0.033 * 0.1;
+    // angle_z += angle_z_rate;
+    // printf_float("angle_z", angle_z, true);
+    // LOG("\r\n");
 
     // LOG("Flight stage: %d\r\n", flightStage);
     switch (flightStage) {

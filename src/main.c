@@ -59,7 +59,7 @@ int main(void) {
   calibrate_ADXL375();
   return 0;
 #endif
-
+  LOG("============== INITIALISE FLIGHT ==============\r\n");
   delay_ms(2000);
   STM32_beep_buzzer(100, 100, 1);
   run_flight();

@@ -41,11 +41,12 @@ uint8_t ADXL375_init(SPI_TypeDef* spi) {
   spi_transmit_receive(ADXL375_SPI, ADXL375_DEVID, 2, 1, &devid);
   spi_disable_cs(ADXL375_SPI, ADXL375_CS);
 
+  // Commented out because the device ID is not what the datasheet says
   // Datasheet says DEVID_ID should be 229, it is actually 144 on HFC2
-  if (devid != ADXL375_DEVID_ID) {
-    LOG("ADXL375 wrong device ID: %d\r\n", devid);
-    return 1;
-  }
+  // if (devid != ADXL375_DEVID_ID) {
+  //   LOG("ADXL375 wrong device ID: %d\r\n", devid);
+  //   return 1;
+  // }
 
   // Set the data rate
   ADXL375_reg_write(ADXL375_BW_RATE,

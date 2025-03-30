@@ -14,4 +14,15 @@ Features:
   * MS5611 - Barometer 
   * SI446 - Pad Radio module
 
-Written by Alexandra Posta, Evan Madurai, Ollie Martin, Tyler Green, and Thomas Groom.
+Tooling:
+hamilton-firmware is:
+* Compiled with arm-none-eabi-gcc.
+* Debugged with either openocd or probe-rs .
+* Flashed with either st-flash or probe-rs.
+* Formatted with clang-format.
+* Statically analysed with cppcheck (or clang-analyse).
+
+
+More specific documentation is stored on Athena at https://athena.leedsrocketry.co.uk/doku.php?id=g2:avionics:home
+
+Written by Evan Madurai, Alexandra Posta, Ollie Martin, Tyler Green, and Thomas Groom.

@@ -614,12 +614,8 @@ static inline uint64_t read_flash_ID() {
   send_byte_to_flash(0x00, ADDRESS_INPUT);
 
   for (int i = 0; i < 5; i++) {
-    LOG("ID ");
-    LOG("%i", i);
-    LOG(": ");
     uint8_t byte = receive_byte_from_flash();
     id |= byte << (4 - i);
-    print_byte(byte);
   }
   return id;
 }
