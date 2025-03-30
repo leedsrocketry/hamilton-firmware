@@ -61,6 +61,9 @@ void read_sensors(Frame *frame) {
   ADXL375_get_data(&_ADXL375_data, true);
   LSM6DS3_gyro_read(SPI1, &_LSM6DS3_data);
   LSM6DS3_acc_read(SPI1, &_LSM6DS3_data);
+  _LSM6DS3_data.x_rate += _LSM6DS3_data.x_offset;
+  _LSM6DS3_data.y_rate += _LSM6DS3_data.y_offset;
+  _LSM6DS3_data.z_rate += _LSM6DS3_data.z_offset;
 
   // uint32_t time = get_time_us();
   // frame->date.minute = (time / (1000000 * 60)) % 60;  // minuts

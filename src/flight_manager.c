@@ -91,12 +91,12 @@ void run_flight() {
     Frame avg_frame;
 
     (void)cb_average(cb, &avg_frame);
-    print_sensor_line(frame);
-    LOG("imu: %d, %d, %d\r\n", frame.imu.x_rate, frame.imu.y_rate, frame.imu.z_rate);
-    // float angle_z_rate = (float)frame.imu.z_rate * 0.00875 * 0.033 * 0.1;
-    // angle_z += angle_z_rate;
-    // printf_float("angle_z", angle_z, true);
-    // LOG("\r\n");
+    // print_sensor_line(frame);
+    // LOG("imu: %d, %d, %d\r\n", frame.imu.x_rate, frame.imu.y_rate, frame.imu.z_rate);
+    float angle_z_rate = (float)frame.imu.z_rate * 0.00875 * 0.033 * 0.1;
+    angle_z += angle_z_rate;
+    printf_float("angle_z", angle_z, true);
+    LOG("\r\n");
 
     // LOG("Flight stage: %d\r\n", flightStage);
     switch (flightStage) {
