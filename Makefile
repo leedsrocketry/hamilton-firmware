@@ -53,6 +53,9 @@ hfc: build
 
 hfc-flash: hfc flash-rs
 
+hfc-flash-prod: CFLAGS += -DPROD
+hfc-flash-prod: hfc-flash
+
 warnings:
 	@(make clean && make hfc > $(BUILD_DIR)/make.log 2>&1) && grep "warning:" $(BUILD_DIR)/make.log | wc -l
 

@@ -79,9 +79,11 @@ int _write(int fd, char *data, int len) {
   (void)fd, (void)data, (void)len;
   if (fd == 1) {
 #ifdef FLIGHT_COMPUTER
-    uart_write_buf(USART1, data, (size_t)len);  // EXTERN USART
     uart_write_buf(USART2, data, (size_t)len);  // PAD RADIO
+#ifndef PROD
     SEGGER_RTT_Write(0, data, (size_t)len);     // SEGGER RTT
+    uart_write_buf(USART1, data, (size_t)len);  // EXTERN USART
+#endif
 #else
     uart_write_buf(LUART1, data, (size_t)len);
 #endif

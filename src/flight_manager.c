@@ -60,7 +60,7 @@ void run_flight() {
   init_flash();
 
   Frame init_frame;
-  read_sensors(&init_frame);
+  read_sensors(&init_frame, 33);
 
   ground_altitude = barometric_equation(init_frame.barometer.pressure, init_frame.barometer.temp);
 
@@ -77,10 +77,8 @@ void run_flight() {
     dt = current_time - last_loop_time;
     last_loop_time = current_time;
 
-    // LOG("Time: %d, dt: %d\r\n", current_time - start_time, dt); //Log time and dt
-
     Frame frame;
-    read_sensors(&frame);
+    read_sensors(&frame, dt);
     int8_t write_success = save_frame(frame);
     if (write_success != SUCCESS) {
       LOG("WRITE FAILED\r\n");
@@ -92,7 +90,6 @@ void run_flight() {
     (void)cb_average(cb, &avg_frame);
     print_sensor_line(frame);
 
-    // LOG("Flight stage: %d\r\n", flightStage);
     switch (flightStage) {
       case LAUNCHPAD:
         handle_LAUNCHPAD(&avg_frame);

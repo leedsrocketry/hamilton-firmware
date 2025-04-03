@@ -52,7 +52,7 @@ void build_frame(Frame *frame, M5611_data _M5611_data, ADXL375_data _ADXL375_dat
 //   _LSM6DS3_data->z_rate);
 // }
 
-void read_sensors(Frame *frame) {
+void read_sensors(Frame *frame, uint32_t dt) {
   M5611_data _M5611_data;
   ADXL375_data _ADXL375_data;
   LSM6DS3_data _LSM6DS3_data;
@@ -65,9 +65,9 @@ void read_sensors(Frame *frame) {
   _LSM6DS3_data.y_rate += _LSM6DS3_data.y_offset;
   _LSM6DS3_data.z_rate += _LSM6DS3_data.z_offset;
 
-  _LSM6DS3_data.x_rate = (int32_t)(_LSM6DS3_data.x_rate * 0.00875 * 0.033 * 10);
-  _LSM6DS3_data.y_rate = (int32_t)(_LSM6DS3_data.y_rate * 0.00875 * 0.033 * 10);
-  _LSM6DS3_data.z_rate = (int32_t)(_LSM6DS3_data.z_rate * 0.00875 * 0.033 * 10);
+  _LSM6DS3_data.x_rate = (int32_t)(_LSM6DS3_data.x_rate * 0.00875 * (dt / 1000) * 10);
+  _LSM6DS3_data.y_rate = (int32_t)(_LSM6DS3_data.y_rate * 0.00875 * (dt / 1000) * 10);
+  _LSM6DS3_data.z_rate = (int32_t)(_LSM6DS3_data.z_rate * 0.00875 * (dt / 1000) * 10);
 
   // uint32_t time = get_time_us();
   // frame->date.minute = (time / (1000000 * 60)) % 60;  // minuts
