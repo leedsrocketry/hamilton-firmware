@@ -41,6 +41,7 @@ void handle_LAUNCHPAD(Frame *frame) {
 }
 
 void handle_ASCENT(Frame *frame) {
+  (void)frame;
   if (state.altitude > max_altitude) {
     max_altitude = state.altitude;
   }
