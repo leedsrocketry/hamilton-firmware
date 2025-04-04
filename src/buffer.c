@@ -119,7 +119,7 @@ uint32_t cb_pressure_range(const CircularBuffer* cb) {
     }
   }
 
-  return max - min;
+  return (uint32_t)abs(max - min);
 }
 
 uint32_t cb_enqueue_overwrite(CircularBuffer* cb, Frame* element) {
