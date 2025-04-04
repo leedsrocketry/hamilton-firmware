@@ -20,6 +20,7 @@ void set_flight_stage(FlightStage fs) { flightStage = fs; }
 
 double max_altitude = 0;
 double ground_altitude = 0;
+uint32_t apogee_time = 0;
 
 typedef struct {
   float velocity_z;
@@ -29,7 +30,6 @@ typedef struct {
 State state;
 
 void handle_LAUNCHPAD(Frame *frame) {
-  printf_float("alt", state.altitude, true); LOG("\r\n");
   if (state.altitude > ALTITUDE_APOGEE_THRESHOLD) {
     LOG("LAUNCHPAD: Altitude threshold met\r\n");
     flightStage = ASCENT;
@@ -37,7 +37,7 @@ void handle_LAUNCHPAD(Frame *frame) {
     return;
   }
 
-  if (frame->accel.x < ACCEL_LAUNCH_THRESHOLD) {
+  if (frame->accel.y < ACCEL_LAUNCH_THRESHOLD) {
     LOG("LAUNCHPAD: Acceleration threshold met\r\n");
     flightStage = ASCENT;
     STM32_super_beep();
@@ -110,7 +110,7 @@ void run_flight() {
   state.velocity_z = 0;
 
   (void)cb_average(cb, &avg_frame);
-  print_sensor_line(avg_frame);
+  // print_sensor_line(avg_frame);
 
   for (;;) {
     current_time = get_time_ms();
