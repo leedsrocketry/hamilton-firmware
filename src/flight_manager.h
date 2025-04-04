@@ -23,7 +23,7 @@
 #include "sensors.h"
 #include "stm32l4r5xx.h"
 
-#define ACCEL_LAUNCH_THRESHOLD -3000.0  // TBD
+#define ACCEL_LAUNCH_THRESHOLD -4000.0  // TBD
 #define BARO_LAUNCH_THRESHOLD 400.0     // TBD
 
 #define BARO_APOGEE_THRESHOLD 0.0
