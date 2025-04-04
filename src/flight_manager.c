@@ -33,14 +33,12 @@ void handle_LAUNCHPAD(Frame *frame) {
   if (state.altitude > ALTITUDE_APOGEE_THRESHOLD) {
     LOG("LAUNCHPAD: Altitude threshold met\r\n");
     flightStage = ASCENT;
-    STM32_super_beep();
     return;
   }
 
   if (frame->accel.y < ACCEL_LAUNCH_THRESHOLD) {
     LOG("LAUNCHPAD: Acceleration threshold met\r\n");
     flightStage = ASCENT;
-    STM32_super_beep();
     return;
   }
 }
@@ -59,19 +57,19 @@ void handle_ASCENT(Frame *frame) {
 
 // Unneeded?
 void handle_APOGEE(Frame *frame) {
-  STM32_super_beep();
   flightStage = DESCENT;
+  apogee_time = get_time_ms();
   (void)frame;
 }
 
 void handle_DESCENT(Frame *frame, CircularBuffer *cb) {
   (void)frame;
 
-  uint32_t range = cb_pressure_range(cb);
-  if (range < GROUND_THRESHOLD) {
-    LOG("DESCENT: Pressure threshold met\r\n");
-    flightStage = LANDING;
-  }
+  // uint32_t range = cb_pressure_range(cb);
+  // if (range < GROUND_THRESHOLD) {
+  //   LOG("DESCENT: Pressure threshold met\r\n");
+  //   flightStage = LANDING;
+  // }
 }
 
 void handle_LANDING(Frame *frame) {
@@ -110,17 +108,24 @@ void run_flight() {
   state.velocity_z = 0;
 
   (void)cb_average(cb, &avg_frame);
-  // print_sensor_line(avg_frame);
 
   for (;;) {
     current_time = get_time_ms();
     dt = current_time - last_loop_time;
     last_loop_time = current_time;
+    LOG("apogee-time: %d\r\n", current_time-apogee_time);
+
+    if(apogee_time != 0 && (current_time-apogee_time) > 600000) {
+      LOG("APOGEE TIMEOUT\r\n");
+      flightStage = LANDING;
+    }
 
     read_sensors(&frame, dt);
-    int8_t write_success = save_frame(frame);
-    if (write_success != SUCCESS) {
-      LOG("WRITE FAILED\r\n");
+    if(flightStage != LAUNCHPAD && flightStage != LANDING) {
+      int8_t write_success = save_frame(frame);
+      if (write_success != SUCCESS) {
+        LOG("WRITE FAILED\r\n");
+      }
     }
 
     (void)cb_enqueue_overwrite(cb, &frame);
@@ -129,7 +134,6 @@ void run_flight() {
     print_sensor_line(avg_frame);
 
     state.altitude = (barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp)-ground_altitude);
-    // printf_float("alt", state.altitude, true); LOG("\r\n");
 
     switch (flightStage) {
       case LAUNCHPAD:
