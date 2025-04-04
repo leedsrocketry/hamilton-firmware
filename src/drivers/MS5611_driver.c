@@ -95,7 +95,8 @@ uint32_t MS5611_get_data(M5611_data* data) {
   spi_disable_cs(MS5611_SPI, MS5611_CS);
 
   int32_t dT = ((int32_t)D2) - ((int32_t)ms5611_prom_data.T_REF << 8);
-  int32_t TEMP = 2000 + dT * ms5611_prom_data.TEMPSENS / (2 << 23);
+  // int32_t TEMP = 2000 + dT * ms5611_prom_data.TEMPSENS / (2 << 23);
+  int32_t TEMP = 2000 + (int32_t)(((int64_t)dT * ms5611_prom_data.TEMPSENS) / (2LL << 23)); 
 
   spi_enable_cs(MS5611_SPI, MS5611_CS);
   cmd = MS5611_CMD_CONVERT_D1;

@@ -8,6 +8,7 @@
 #include "flight_manager.h"
 
 #include "buffer.h"
+#include "HAL/STM32_init.h"
 
 FlightStage flightStage = LAUNCHPAD;
 
@@ -18,43 +19,59 @@ void set_flight_stage(FlightStage fs) { flightStage = fs; }
 double max_altitude = 0;
 double ground_altitude = 0;
 
+typedef struct {
+  float velocity_z;
+  double altitude;
+} State;
+
+State state;
+
 void handle_LAUNCHPAD(Frame *frame) {
-  double altitude = barometric_equation(frame->barometer.pressure, frame->barometer.temp);
-  (void)altitude;
-  // printf_float("altitude", (float)altitude, true);
-  // printf("\r\n");
+  if (state.altitude > (ground_altitude + ALTITUDE_APOGEE_THRESHOLD)) {
+    LOG("LAUNCHPAD: Altitude threshold met\r\n");
+    flightStage = ASCENT;
+    return;
+  }
 
-  // if (altitude > (ground_altitude + ALTITUDE_APOGEE_THRESHOLD)) {
-  //   LOG("LAUNCHPAD: Altitude threshold met\r\n");
-  //   flightStage = ASCENT;
-  //   return;
-  // }
-
-  // if (frame->accel.x < ACCEL_LAUNCH_THRESHOLD) {
-  //   LOG("LAUNCHPAD: Acceleration threshold met\r\n");
-  //   flightStage = ASCENT;
-  //   return;
-  // }
+  if (frame->accel.x < ACCEL_LAUNCH_THRESHOLD) {
+    LOG("LAUNCHPAD: Acceleration threshold met\r\n");
+    flightStage = ASCENT;
+    return;
+  }
 }
 
 void handle_ASCENT(Frame *frame) {
-  double altitude = barometric_equation(frame->barometer.pressure, frame->barometer.temp);
+  if (state.altitude > max_altitude) {
+    max_altitude = state.altitude;
+  }
 
-  printf_float("altitude", (float)altitude, true);
-  printf("\r\n");
-
-  if (altitude < (max_altitude - ALTITUDE_APOGEE_THRESHOLD)) {
+  if (state.altitude < (max_altitude - ALTITUDE_APOGEE_THRESHOLD)) {
     LOG("ASCENT: Altitude threshold met\r\n");
-    flightStage = DESCENT;
+    flightStage = APOGEE;
   }
 }
 
 // Unneeded?
-void handle_APOGEE(Frame *frame) { (void)frame; }
+void handle_APOGEE(Frame *frame) {
+  STM32_blink_flash();
+  flightStage = DESCENT;
+  (void)frame;
+}
 
-void handle_DESCENT(Frame *frame) { (void)frame; }
+void handle_DESCENT(Frame *frame, CircularBuffer *cb) {
+  (void)frame;
 
-void handle_LANDING(Frame *frame) { (void)frame; }
+  uint32_t range = cb_pressure_range(cb);
+  if (range < GROUND_THRESHOLD) {
+    LOG("DESCENT: Pressure threshold met\r\n");
+    flightStage = LANDING;
+  }
+}
+
+void handle_LANDING(Frame *frame) {
+  STM32_blink_flash();
+  (void)frame;
+}
 
 void run_flight() {
   init_flash();
@@ -66,18 +83,34 @@ void run_flight() {
 
   CircularBuffer *cb = cb_create(20);
 
+  // for(int i = 0; i < 40; i++) {
+  //   Frame frame;
+  //   read_sensors(&frame, 33);
+  //   (void)cb_enqueue_overwrite(cb, &frame);
+  // }
+
   uint32_t start_time = get_time_ms();
   uint32_t last_loop_time = start_time;  // Initialize last_loop_time
   uint32_t current_time;
   uint32_t dt = 0;
-  (void)dt;
+
+  // State state;
+  state.altitude = ground_altitude;
+  state.velocity_z = 0;
+
+  Frame frame;
+  Frame avg_frame;
+
+  for(uint32_t i = 0; i < 25; i++) {
+    read_sensors(&frame, 33);
+    (void)cb_enqueue_overwrite(cb, &frame);
+  }
 
   for (;;) {
     current_time = get_time_ms();
     dt = current_time - last_loop_time;
     last_loop_time = current_time;
 
-    Frame frame;
     read_sensors(&frame, dt);
     int8_t write_success = save_frame(frame);
     if (write_success != SUCCESS) {
@@ -85,10 +118,13 @@ void run_flight() {
     }
 
     (void)cb_enqueue_overwrite(cb, &frame);
-    Frame avg_frame;
 
     (void)cb_average(cb, &avg_frame);
-    print_sensor_line(frame);
+ 
+    state.altitude = ((ground_altitude) - barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp) / 10);
+
+    // printf_float("alt", (float)barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp), true);
+    // LOG("\r\n");
 
     switch (flightStage) {
       case LAUNCHPAD:

@@ -14,7 +14,9 @@
 #include "frame.h"
 
 // Weights for WMA calculation of 20 elements
-static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
+// static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
+static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
 
 CircularBuffer* cb_create(uint32_t size) {
   // Allocate memory for the circular buffer structure
@@ -56,8 +58,8 @@ int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
     int32_t weight = weights[i];
     sum_of_weights += weight;
     // Apply the weight to the current element
-    iframe->barometer.temp += weight * current_frame->barometer.temp;
-    iframe->barometer.pressure += weight * current_frame->barometer.pressure;
+    iframe->barometer.temp += (int32_t)(weight * current_frame->barometer.temp);
+    iframe->barometer.pressure += (int32_t)(weight * current_frame->barometer.pressure);
     iframe->accel.x += (int16_t)(weight * current_frame->accel.x);
     iframe->accel.y += (int16_t)(weight * current_frame->accel.y);
     iframe->accel.z += (int16_t)(weight * current_frame->accel.z);
@@ -68,8 +70,8 @@ int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
   if (sum_of_weights == 0) {
     return 1;
   }
-  iframe->barometer.temp = iframe->barometer.temp / sum_of_weights;
-  iframe->barometer.pressure = iframe->barometer.pressure / sum_of_weights;
+  iframe->barometer.temp = (int32_t)(iframe->barometer.temp / sum_of_weights);
+  iframe->barometer.pressure = (int32_t)(iframe->barometer.pressure / sum_of_weights);
   iframe->accel.x = (int16_t)(iframe->accel.x / sum_of_weights);
   iframe->accel.y = (int16_t)(iframe->accel.y / sum_of_weights);
   iframe->accel.z = (int16_t)(iframe->accel.z / sum_of_weights);
@@ -92,6 +94,33 @@ void cb_destroy(CircularBuffer* cb) {
 }
 
 uint32_t cb_is_empty(const CircularBuffer* cb) { return (cb->current_size == 0); }
+
+
+// Calculates range from lowest to highest value in cb
+// returns a 
+uint32_t cb_pressure_range(const CircularBuffer* cb) {
+  if (cb_is_empty(cb)) {
+    return 0;
+  }
+
+  int32_t min = INT32_MAX;
+  int32_t max = INT32_MIN;
+
+  for (uint32_t i = 0; i < cb->current_size; i++) {
+    // Get the index of the current element
+    uint32_t index = (cb->head + i) % cb->max_size;
+    Frame* current_frame = cb->buffer[index];
+
+    if (current_frame->barometer.pressure < min) {
+      min = current_frame->barometer.pressure;
+    }
+    if (current_frame->barometer.pressure > max) {
+      max = current_frame->barometer.pressure;
+    }
+  }
+
+  return max - min;
+}
 
 uint32_t cb_enqueue_overwrite(CircularBuffer* cb, Frame* element) {
   // If buffer is full, overwrite the oldest element

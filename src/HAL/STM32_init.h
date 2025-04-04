@@ -69,4 +69,6 @@ void STM32_beep_buzzer(uint32_t onDurationMs, uint32_t offDurationMs, uint16_t n
 
 void STM32_indicate_on();
 
+void STM32_blink_flash();
+
 #endif /* STM32_INIT_H */
