@@ -106,7 +106,7 @@ double barometric_equation(double pressure, double temp) {
 
   h = hb + (Tb / Lb) * (pow(P / Pb, (-R * Lb) / (g * M)) - 1);
 
-  return h;
+  return h/10;
 }
 
 // void test_sensors()
