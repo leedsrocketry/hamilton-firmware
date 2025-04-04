@@ -61,7 +61,7 @@ int main(void) {
 #endif
   LOG("============== INITIALISE FLIGHT ==============\r\n");
   delay_ms(2000);
-  STM32_beep_buzzer(100, 100, 1);
+  STM32_super_beep();
   run_flight();
 
   return 0;

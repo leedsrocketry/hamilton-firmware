@@ -90,6 +90,8 @@ void STM32_init_peripherals() {
 #endif
 }
 
+void STM32_super_beep() { STM32_beep_buzzer(40, 40, 5); }
+
 void STM32_beep_buzzer(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_beeps) {
   for (int i = 0; i < nom_beeps; i++) {
     gpio_write(BUZZER, !LOW);

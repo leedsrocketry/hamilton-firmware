@@ -122,12 +122,12 @@ int32_t calculate_pressure(uint32_t D1, uint32_t D2, M5611_data* data) {
   int64_t OFF2, SENS2;
   int32_t T2;
   if (TEMP < 2000) {
-    T2 = (dT * dT) >> 31;
-    OFF2 = 5 * ((TEMP - 2000) * (TEMP - 2000)) >> 1;
-    SENS2 = 5 * ((TEMP - 2000) * (TEMP - 2000)) >> 2;
+    T2 = (int64_t)(dT * dT) >> 31;
+    OFF2 = (int64_t)(5 * (((int64_t)TEMP - 2000) * ((int64_t)TEMP - 2000)) >> 1);
+    SENS2 = (int64_t)(5 * (int64_t)(((int64_t)TEMP - 2000) * ((int64_t)TEMP - 2000)) >> 2);
     if (TEMP < -1500) {
-      OFF2 = OFF2 + (7 * ((TEMP + 1500) * (TEMP + 1500)));
-      SENS2 = SENS2 + (11 * ((TEMP + 1500) * (TEMP + 1500)) >> 1);
+      OFF2 = OFF2 + (int64_t)(7 * ((TEMP + 1500) * (TEMP + 1500)));
+      SENS2 = SENS2 + (int64_t)(11 * ((TEMP + 1500) * (TEMP + 1500)) >> 1);
     }
   } else {
     T2 = 0;
@@ -139,7 +139,8 @@ int32_t calculate_pressure(uint32_t D1, uint32_t D2, M5611_data* data) {
   OFF = OFF - OFF2;
   SENS = SENS - SENS2;
 
-  int32_t PRESSURE = (int32_t)(((int64_t)D1 * SENS >> 21) - OFF) >> 15;
+  int32_t PRESSURE = (int32_t)((((int64_t)D1 * SENS >> 21) - OFF) >> 15);
+
   data->temp = TEMP;
   data->pressure = PRESSURE;
   return 0;

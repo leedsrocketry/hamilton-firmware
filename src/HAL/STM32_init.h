@@ -71,4 +71,6 @@ void STM32_indicate_on();
 
 void STM32_blink_flash();
 
+void STM32_super_beep();
+
 #endif /* STM32_INIT_H */
