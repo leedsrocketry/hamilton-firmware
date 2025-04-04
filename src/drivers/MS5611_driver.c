@@ -1,11 +1,13 @@
 /*
-	Leeds University Rocketry Organisation - LURA
+        Leeds University Rocketry Organisation - LURA
     Author Name: Evan Madurai
     Created on: 15 December 2023
-    Description: Driver file for the Barometer module MS561101BA03 (https://www.te.com/usa-en/product-MS560702BA03-50.html)
+    Description: Driver file for the Barometer module MS561101BA03
+   (https://www.te.com/usa-en/product-MS560702BA03-50.html)
 */
 
 #include "MS5611_driver.h"
+
 #include "stdint.h"
 
 // min OSR by default
@@ -24,25 +26,24 @@ SPI_TypeDef* MS5611_SPI;
   @warning Return code not implemented
   @return Error code
 */
-uint8_t MS5611_init(SPI_TypeDef* spi)
-{
-    MS5611_SPI = spi;
-    spi_enable_cs(MS5611_SPI, MS5611_CS);
-    uint8_t cmd = MS5611_CMD_RESET;
-    uint8_t code = spi_transmit(MS5611_SPI, cmd);
-    spi_disable_cs(MS5611_SPI, MS5611_CS);
-    if(code != 254)
-    {
-      return 1;
-    }
-    MS5611_read_PROM(MS5611_SPI);
-    //M5611_data data;
-    // MS5611_get_data(&data);
-    // LOG("%d\r\n", data.temp);
-	return 0;
+uint8_t MS5611_init(SPI_TypeDef* spi) {
+  MS5611_SPI = spi;
+  spi_enable_cs(MS5611_SPI, MS5611_CS);
+  uint8_t cmd = MS5611_CMD_RESET;
+  uint8_t code = spi_transmit(MS5611_SPI, cmd);
+  spi_disable_cs(MS5611_SPI, MS5611_CS);
+  if (code != 254) {
+    return 1;
+  }
+  MS5611_read_PROM(MS5611_SPI);
+  // M5611_data data;
+  //  MS5611_get_data(&data);
+  //  LOG("%d\r\n", data.temp);
+  return 0;
 }
 
-/* ---------------------------------- Private Functions ---------------------------------- */
+/* ---------------------------------- Private Functions
+ * ---------------------------------- */
 
 uint16_t PROM_values[8];
 
@@ -51,28 +52,27 @@ uint16_t PROM_values[8];
   @warning Error code not implemented
   @return Error code
 */
-uint8_t MS5611_read_PROM()
-{
-    // Take ptr to the PROM data struct
-    int16_t *prom_ptr = (int16_t *)&ms5611_prom_data;
-    for(int i = 0; i < 8; i++)
-    {
-        uint16_t result;
-        spi_enable_cs(MS5611_SPI, MS5611_CS);
-        uint8_t cmd = MS5611_CMD_READ_PROM(i);
-        spi_transmit_receive(MS5611_SPI, &cmd, 1, 2, (uint32_t*)&result);
-        spi_disable_cs(MS5611_SPI, MS5611_CS);
-        
-        // Fill struct using ptr arithmatic
-        *(prom_ptr + i) = (int16_t)result;
-        //LOG("PROM: %d\r\n", result);
-        delay_ms(10);
-    }
-    return 0;
+uint8_t MS5611_read_PROM() {
+  // Take ptr to the PROM data struct
+  int16_t* prom_ptr = (int16_t*)&ms5611_prom_data;
+  for (int i = 0; i < 8; i++) {
+    uint16_t result;
+    spi_enable_cs(MS5611_SPI, MS5611_CS);
+    uint8_t cmd = MS5611_CMD_READ_PROM(i);
+    spi_transmit_receive(MS5611_SPI, &cmd, 1, 2, (uint32_t*)&result);
+    spi_disable_cs(MS5611_SPI, MS5611_CS);
+
+    // Fill struct using ptr arithmatic
+    *(prom_ptr + i) = (int16_t)result;
+    // LOG("PROM: %d\r\n", result);
+    delay_ms(10);
+  }
+  return 0;
 }
 
 /**
-  @brief Get pressure and temperature data off MS5611 sensor and place into MS5611_data struct
+  @brief Get pressure and temperature data off MS5611 sensor and place into
+  MS5611_data struct
   @param data Structure for Barometer data to be placed in
   @warning Error code not implemented
   @return Error code
@@ -115,7 +115,7 @@ uint32_t MS5611_get_data(M5611_data* data)
 int32_t calculate_pressure(int32_t D1, int32_t D2, M5611_data* data)
 {
     int32_t dT = ((int32_t)D2) - ((int32_t)ms5611_prom_data.T_REF << 8);
-    int32_t TEMP = 2000 + dT * ms5611_prom_data.TEMPSENS / (2<<23);
+    int32_t TEMP = 2000 + (int32_t)(((int64_t)dT * ms5611_prom_data.TEMPSENS) / (2LL << 23)); 
 
     int64_t OFF = ((int64_t)ms5611_prom_data.OFF << 16) + ((int64_t)ms5611_prom_data.TCO * dT >> 7);
     int64_t SENS = ((int64_t)ms5611_prom_data.SENS << 15) + ((int64_t)ms5611_prom_data.TCS * dT >> 8);
