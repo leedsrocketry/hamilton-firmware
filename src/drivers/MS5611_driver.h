@@ -129,4 +129,10 @@ void MS5611_calculate();
 
 uint8_t MS5611_read_PROM();
 
+int32_t calculate_pressure(uint32_t D1, uint32_t D2, M5611_data* data);
+/**
+ @brief Calculates the pressure using the data fetched from the sensor and stores it in the global
+    struct
+ */
+
 #endif /* MS5611_DRIVER_H */

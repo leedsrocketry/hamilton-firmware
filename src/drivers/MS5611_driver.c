@@ -79,8 +79,7 @@ uint8_t MS5611_read_PROM() {
 */
 uint32_t MS5611_get_data(M5611_data* data) {
   uint8_t cmd;
-  // check if the device has a register that checks if the conversion is
-  // complete?
+  // check if the device has a register that checks if the conversion is complete?
   spi_enable_cs(MS5611_SPI, MS5611_CS);
   cmd = MS5611_CMD_CONVERT_D2;
   spi_transmit_receive(MS5611_SPI, &cmd, 1, 0, NULL);
@@ -93,10 +92,6 @@ uint32_t MS5611_get_data(M5611_data* data) {
   cmd = MS5611_CMD_READ_ADC;
   spi_transmit_receive(MS5611_SPI, &cmd, 1, 3, &D2);
   spi_disable_cs(MS5611_SPI, MS5611_CS);
-
-  int32_t dT = ((int32_t)D2) - ((int32_t)ms5611_prom_data.T_REF << 8);
-  // int32_t TEMP = 2000 + dT * ms5611_prom_data.TEMPSENS / (2 << 23);
-  int32_t TEMP = 2000 + (int32_t)(((int64_t)dT * ms5611_prom_data.TEMPSENS) / (2LL << 23)); 
 
   spi_enable_cs(MS5611_SPI, MS5611_CS);
   cmd = MS5611_CMD_CONVERT_D1;
@@ -111,12 +106,41 @@ uint32_t MS5611_get_data(M5611_data* data) {
   spi_transmit_receive(MS5611_SPI, &cmd, 1, 3, &D1);
   spi_disable_cs(MS5611_SPI, MS5611_CS);
 
+  (void)calculate_pressure(D1, D2, data);
+
+  return 0;
+}
+
+int32_t calculate_pressure(uint32_t D1, uint32_t D2, M5611_data* data) {
+  int32_t dT = ((int32_t)D2) - ((int32_t)ms5611_prom_data.T_REF << 8);
+  int32_t TEMP = 2000 + (int32_t)(((int64_t)dT * ms5611_prom_data.TEMPSENS) / (2LL << 23));
+
   int64_t OFF = ((int64_t)ms5611_prom_data.OFF << 16) + ((int64_t)ms5611_prom_data.TCO * dT >> 7);
   int64_t SENS = ((int64_t)ms5611_prom_data.SENS << 15) + ((int64_t)ms5611_prom_data.TCS * dT >> 8);
-  int32_t PRESSURE = (int32_t)((((int64_t)D1 * SENS >> 21) - OFF) >> 15);
 
+  // Second order temperature compensation
+  int64_t OFF2, SENS2;
+  int32_t T2;
+  if (TEMP < 2000) {
+    T2 = (dT * dT) >> 31;
+    OFF2 = 5 * ((TEMP - 2000) * (TEMP - 2000)) >> 1;
+    SENS2 = 5 * ((TEMP - 2000) * (TEMP - 2000)) >> 2;
+    if (TEMP < -1500) {
+      OFF2 = OFF2 + (7 * ((TEMP + 1500) * (TEMP + 1500)));
+      SENS2 = SENS2 + (11 * ((TEMP + 1500) * (TEMP + 1500)) >> 1);
+    }
+  } else {
+    T2 = 0;
+    OFF2 = 0;
+    SENS2 = 0;
+  }
+
+  TEMP = TEMP - T2;
+  OFF = OFF - OFF2;
+  SENS = SENS - SENS2;
+
+  int32_t PRESSURE = (int32_t)(((int64_t)D1 * SENS >> 21) - OFF) >> 15;
   data->temp = TEMP;
   data->pressure = PRESSURE;
-
   return 0;
 }

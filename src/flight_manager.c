@@ -7,8 +7,8 @@
 
 #include "flight_manager.h"
 
-#include "buffer.h"
 #include "HAL/STM32_init.h"
+#include "buffer.h"
 
 FlightStage flightStage = LAUNCHPAD;
 
@@ -101,8 +101,8 @@ void run_flight() {
   Frame frame;
   Frame avg_frame;
 
-  for(uint32_t i = 0; i < 25; i++) {
-    read_sensors(&frame, 33);
+  for (uint32_t i = 0; i < 25; i++) {
+    read_sensors(&frame, 33);  // this DT should probably be calculated. But doesn't REALLY matter.
     (void)cb_enqueue_overwrite(cb, &frame);
   }
 
@@ -120,11 +120,14 @@ void run_flight() {
     (void)cb_enqueue_overwrite(cb, &frame);
 
     (void)cb_average(cb, &avg_frame);
- 
-    state.altitude = ((ground_altitude) - barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp) / 10);
+    print_sensor_line(avg_frame);
 
-    // printf_float("alt", (float)barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp), true);
-    // LOG("\r\n");
+    state.altitude =
+        ((ground_altitude)-barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp) /
+         10);
+
+    // printf_float("alt", (float)barometric_equation((double)avg_frame.barometer.pressure,
+    // (double)avg_frame.barometer.temp), true); LOG("\r\n");
 
     switch (flightStage) {
       case LAUNCHPAD:
@@ -137,7 +140,7 @@ void run_flight() {
         handle_APOGEE(&avg_frame);
         break;
       case DESCENT:
-        handle_DESCENT(&avg_frame);
+        handle_DESCENT(&avg_frame, cb);
         break;
       case LANDING:
         handle_LANDING(&avg_frame);

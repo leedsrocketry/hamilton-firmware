@@ -17,7 +17,6 @@
 // static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4};
 static int32_t weights[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
-
 CircularBuffer* cb_create(uint32_t size) {
   // Allocate memory for the circular buffer structure
   CircularBuffer* cb = malloc(sizeof(CircularBuffer));
@@ -95,9 +94,8 @@ void cb_destroy(CircularBuffer* cb) {
 
 uint32_t cb_is_empty(const CircularBuffer* cb) { return (cb->current_size == 0); }
 
-
 // Calculates range from lowest to highest value in cb
-// returns a 
+// returns a
 uint32_t cb_pressure_range(const CircularBuffer* cb) {
   if (cb_is_empty(cb)) {
     return 0;
@@ -119,7 +117,7 @@ uint32_t cb_pressure_range(const CircularBuffer* cb) {
     }
   }
 
-  return max - min;
+  return (uint32_t)abs(max - min);
 }
 
 uint32_t cb_enqueue_overwrite(CircularBuffer* cb, Frame* element) {
