@@ -102,7 +102,7 @@ void run_flight() {
   }
   (void)cb_average(cb, &avg_frame);
   print_sensor_line(avg_frame);
-  ground_altitude =  (barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp));
+  ground_altitude = (barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp));
   // printf_float("GROUND alt", ground_altitude, true); LOG("\r\n");
 
   // State state;
@@ -116,13 +116,13 @@ void run_flight() {
     dt = current_time - last_loop_time;
     last_loop_time = current_time;
 
-    if(apogee_time != 0 && (current_time-apogee_time) > 600000) {
+    if (apogee_time != 0 && (current_time - apogee_time) > 600000) {
       LOG("APOGEE TIMEOUT\r\n");
       flightStage = LANDING;
     }
 
     read_sensors(&frame, dt);
-    if(flightStage != LAUNCHPAD && flightStage != LANDING) {
+    if (flightStage != LAUNCHPAD && flightStage != LANDING) {
       int8_t write_success = save_frame(frame);
       if (write_success != SUCCESS) {
         LOG("WRITE FAILED\r\n");
@@ -134,7 +134,8 @@ void run_flight() {
     (void)cb_average(cb, &avg_frame);
     print_sensor_line(avg_frame);
 
-    state.altitude = (barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp)-ground_altitude);
+    state.altitude =
+        (barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp) - ground_altitude);
 
     switch (flightStage) {
       case LAUNCHPAD:
