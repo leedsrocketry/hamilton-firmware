@@ -29,14 +29,15 @@ typedef struct {
 
 State state;
 
-void handle_LAUNCHPAD(Frame *frame) {
+void handle_LAUNCHPAD(Frame *avg_frame, Frame *cur_frame) {
+  (void)avg_frame;
   if (state.altitude > ALTITUDE_APOGEE_THRESHOLD) {
     LOG("LAUNCHPAD: Altitude threshold met\r\n");
     flightStage = ASCENT;
     return;
   }
 
-  if (frame->accel.y < ACCEL_LAUNCH_THRESHOLD) {
+  if (cur_frame->accel.y < ACCEL_LAUNCH_THRESHOLD) {
     LOG("LAUNCHPAD: Acceleration threshold met\r\n");
     flightStage = ASCENT;
     return;
@@ -64,6 +65,7 @@ void handle_APOGEE(Frame *frame) {
 
 void handle_DESCENT(Frame *frame, CircularBuffer *cb) {
   (void)frame;
+  (void)cb;
 
   // uint32_t range = cb_pressure_range(cb);
   // if (range < GROUND_THRESHOLD) {
@@ -101,7 +103,7 @@ void run_flight() {
   (void)cb_average(cb, &avg_frame);
   print_sensor_line(avg_frame);
   ground_altitude =  (barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp));
-  printf_float("GROUND alt", ground_altitude, true); LOG("\r\n");
+  // printf_float("GROUND alt", ground_altitude, true); LOG("\r\n");
 
   // State state;
   state.altitude = ground_altitude;
@@ -113,7 +115,6 @@ void run_flight() {
     current_time = get_time_ms();
     dt = current_time - last_loop_time;
     last_loop_time = current_time;
-    LOG("apogee-time: %d\r\n", current_time-apogee_time);
 
     if(apogee_time != 0 && (current_time-apogee_time) > 600000) {
       LOG("APOGEE TIMEOUT\r\n");
@@ -140,7 +141,7 @@ void run_flight() {
         if (loop_count % 10 == 0) {
           STM32_beep_buzzer(25, 25, 1);
         }
-        handle_LAUNCHPAD(&avg_frame);
+        handle_LAUNCHPAD(&avg_frame, &frame);
         break;
       case ASCENT:
         handle_ASCENT(&avg_frame);

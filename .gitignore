@@ -1,7 +1,6 @@
 # Ignore binary files
+
+.DS_Store
 *.elf
 *.bin
 *.map
-
-# Ignore logs
-*.log
