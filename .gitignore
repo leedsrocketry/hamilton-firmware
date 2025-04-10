@@ -4,3 +4,4 @@
 *.elf
 *.bin
 *.map
+build/make.log
