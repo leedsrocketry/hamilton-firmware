@@ -2,14 +2,13 @@ BUILD_DIR := build
 
 CFLAGS  ?=  -W -Wall -Wextra -Wundef -Wshadow -Wdouble-promotion \
             -Wformat-truncation -fno-common -Wconversion -Wno-unknown-pragmas \
-            -g3 -O0 -ffunction-sections -fdata-sections -Isrc -Isrc/include \
+            -g3 -O0 -ffunction-sections -fdata-sections -Isrc -Isrc/include -Isegger-rtt/Config \
             -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 $(EXTRA_CFLAGS) -g\
-			-lm
+            -lm
 LDFLAGS ?= -Tbuild/link.ld -nostartfiles -nostdlib --specs nano.specs -lc -lgcc -Wl,--gc-sections -Wl,-Map=$(BUILD_DIR)/firmware.map
-SOURCES ?=	src/main.c src/startup.c src/syscalls.c src/HAL/STM32_init.c src/drivers/MS5611_driver.c src/filters.c\
-			src/drivers/ADXL375_driver.c src/drivers/LSM6DS3_driver.c\
-			src/flight_manager.c src/sensors.c src/drivers/HC12_driver.c src/drivers/_driver_manager.c src/buffer.c segger-rtt/RTT/SEGGER_RTT.c segger-rtt/RTT/SEGGER_RTT_printf.c\
-
+SOURCES ?=  src/main.c src/startup.c src/syscalls.c src/HAL/STM32_init.c src/drivers/MS5611_driver.c src/filters.c\
+            src/drivers/ADXL375_driver.c src/drivers/LSM6DS3_driver.c\
+            src/flight_manager.c src/sensors.c src/drivers/HC12_driver.c src/drivers/_driver_manager.c src/buffer.c segger-rtt/RTT/SEGGER_RTT.c segger-rtt/RTT/SEGGER_RTT_printf.c\
 
 # Ensure make clean is cross platform
 ifeq ($(OS), Windows_NT)
