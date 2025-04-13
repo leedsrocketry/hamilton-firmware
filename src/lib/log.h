@@ -7,7 +7,33 @@
 #ifndef LOG_H
 #define LOG_H
 
-enum { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL };
+enum { LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR };
+
+#define _logl(level, fmt, ...) _log(level, fmt "\n", ##__VA_ARGS__)
+
+#ifdef LOGWARN
+#define logw(...) _logl(LOG_WARN, __VA_ARGS__)
+#else
+#define logw(...)
+#endif
+
+#ifdef LOGERROR
+#define loge(...) _logl(LOG_ERROR, __VA_ARGS__)
+#else
+#define loge(...)
+#endif
+
+#ifdef LOGDEBUG
+#define logd(...) _logl(LOG_DEBUG, __VA_ARGS__)
+#else
+#define logd(...)
+#endif
+
+#ifdef LOGINFO
+#define logi(...) _logl(LOG_INFO, __VA_ARGS__)
+#else
+#define logi(...)
+#endif
 
 void _log(int level, const char *fmt, ...);
 

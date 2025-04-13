@@ -27,7 +27,11 @@ int main(void) {
   // STM32 setup
   STM32_init();
 
-  _log(LOG_INFO, "hello world\n");
+  int t = 24;
+  logw("test %d", t);
+  loge("test %d", t);
+  logd("test %d", t);
+  logi("test %d", t);
 
   LOG("================ PROGRAM START ================\r\n");
   STM32_indicate_on();

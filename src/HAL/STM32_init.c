@@ -7,6 +7,15 @@
 
 #include "HAL/STM32_init.h"
 
+#ifndef QUIET
+#define buzzer_on() gpio_write(BUZZER,  !LOW);
+#define buzzer_off() gpio_write(BUZZER, !HIGH);
+#else
+#define buzzer_on()  /* Do nothing */
+#define buzzer_off() /* Do nothing */
+#endif
+
+
 uint32_t FREQ = (uint32_t)4000000;
 
 void STM32_init() {
@@ -94,9 +103,9 @@ void STM32_super_beep() { STM32_beep_buzzer(40, 40, 5); }
 
 void STM32_beep_buzzer(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t nom_beeps) {
   for (int i = 0; i < nom_beeps; i++) {
-    gpio_write(BUZZER, !LOW);
+    buzzer_on();
     delay_ms(on_duration_ms);
-    gpio_write(BUZZER, !HIGH);
+    buzzer_off();
     delay_ms(off_duration_ms);
   }
 }
@@ -112,10 +121,10 @@ void STM32_flash_LED(uint32_t on_duration_ms, uint32_t off_duration_ms, uint16_t
 
 void STM32_blink_flash() {
   gpio_write(BLUE_LED_0, !LOW);
-  gpio_write(BUZZER, !LOW);
+  buzzer_on();
   delay_ms(50);
   gpio_write(BLUE_LED_0, !HIGH);
-  gpio_write(BUZZER, !HIGH);
+  buzzer_off();
   delay_ms(50);
 }
 

@@ -18,17 +18,22 @@ void _log(int level, const char *fmt, ...) {
 
   switch (level) {
     case LOG_DEBUG:
-      printf("[DEBUG] ");
+      printf("\x1b[34m[DEBUG]    \x1b[0m");
       vprintf(fmt, va);
+      break;
+    case LOG_INFO:
+      printf("\x1b[32m[INFO]     \x1b[0m");
+      vprintf(fmt, va);
+      break;
+    case LOG_WARN:
+      printf("\x1b[33m[WARNING]  \x1b[0m");
+      vprintf(fmt, va);
+      break;
+    case LOG_ERROR:
+      printf("\x1b[31m[ERROR]    \x1b[0m");
+      vprintf(fmt, va);
+      break;
     break;
   }
-
   va_end(va);
 }
-
-
-
-// Print just the variable provided in format 'VAR_NAME: VALUE"
-//void _logvar(va_list ap) {
-//  printf("%s", va_arg(ap, char *));
-//}
