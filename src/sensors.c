@@ -99,7 +99,7 @@ void print_sensor_line(Frame frame) {
        " Y=%5" PRId32 " Z=%5" PRId32 "]\r\n",
        frame.barometer.temp, frame.barometer.pressure, frame.accel.x, frame.accel.y, frame.accel.z, frame.imu.x_rate,
        frame.imu.y_rate, frame.imu.z_rate);
-  (void)frame; // Surpress unused variable when building with logging off.
+  (void)frame;  // Surpress unused variable when building with logging off.
 }
 
 double barometric_equation(double pressure, double temp) {
