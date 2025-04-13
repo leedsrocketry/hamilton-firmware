@@ -16,7 +16,13 @@
         "flight_manager.h": "c",
         "frame.h": "c",
         "stdio.h": "c",
-        "debug.h": "c"
+        "debug.h": "c",
+        "__locale": "c",
+        "bitset": "c",
+        "locale": "c",
+        "datastore.h": "c",
+        "_driver_manager.h": "c",
+        "buffer.h": "c"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.errorSquiggles": "enabled"

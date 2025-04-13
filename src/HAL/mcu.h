@@ -7,11 +7,12 @@
 #pragma once
 
 #include <inttypes.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-#include <math.h>
+
 #include "debug.h"
 
 // https://github.com/STMicroelectronics/cmsis_device_l4/blob/master/Include/system_stm32l4xx.h
@@ -40,7 +41,7 @@ typedef struct DateTime {
   uint16_t microsecond;  // 0 - 999
 } DateTime;
 
-typedef struct GNSS_Data{
+typedef struct GNSS_Data {
   uint16_t latitude;
   uint16_t longitude;
   uint16_t altitude;
@@ -55,17 +56,16 @@ typedef struct GNSS_Data{
   @param print_text Print text or not
   @note marked as unused because it may not be used in any given runtime
 */
-static void printf_float(char* name, float value, bool print_text) __attribute__((unused));
-static void printf_float(char* name, float value, bool print_text)
-{
+static void printf_float(char *name, float value, bool print_text) __attribute__((unused));
+static void printf_float(char *name, float value, bool print_text) {
   char str[30];
 
   char *tmpSign = (value < 0) ? "-" : "";
   float tmpVal = (value < 0) ? -value : value;
 
-  uint32_t tmpInt1 = (uint32_t) tmpVal;  // Get the integer (678).
-  float tmpFrac = (tmpVal - (float)tmpInt1);    // Get fraction (0.0123).
-  int32_t tmpInt2 = (int32_t)trunc(tmpFrac * 1000);   // Turn into integer (123).
+  uint32_t tmpInt1 = (uint32_t)tmpVal;               // Get the integer (678).
+  float tmpFrac = (tmpVal - (float)tmpInt1);         // Get fraction (0.0123).
+  int32_t tmpInt2 = (int32_t)trunc(tmpFrac * 1000);  // Turn into integer (123).
 
   // Print as parts, note that you need 0-padding for fractional bit.
   // Prints in format "123.456" or "value: 123.456"
@@ -82,28 +82,19 @@ static void printf_float(char* name, float value, bool print_text)
 /**
   @brief The low level delay
 */
-static inline void spin(volatile uint32_t count)
-{
-  while (count--)
-    asm("nop");
+static inline void spin(volatile uint32_t count) {
+  while (count--) asm("nop");
 }
 
-static inline uint32_t get_time_us(){
-  return TIM2->CNT;
-}
+static inline uint32_t get_time_us() { return TIM2->CNT; }
 
-static inline uint32_t get_time_ms(){
-  return s_ticks;
-}
+static inline uint32_t get_time_ms() { return s_ticks; }
 
 /**
   @brief Delay in nanoseconds
   @param time Time in nanoseconds
 */
-static inline void delay_nanoseconds(uint32_t time) {
-  spin(time);
-}
-
+static inline void delay_nanoseconds(uint32_t time) { spin(time); }
 
 /**
   @brief Delay in microseconds
@@ -120,12 +111,12 @@ static inline void delay_microseconds(uint32_t time) {
 */
 static inline void delay_ms(uint32_t time) {
   uint32_t initial_ticks = s_ticks;
-  while (s_ticks - initial_ticks < time); //hold until that many ticks have passed
+  while (s_ticks - initial_ticks < time);  // hold until that many ticks have passed
 }
 
-static inline void delay(uint32_t time){
+static inline void delay(uint32_t time) {
   uint32_t startTime = get_time_us();
-  uint32_t delayPeriod = time*1000;
+  uint32_t delayPeriod = time * 1000;
   while ((get_time_us() - startTime) < delayPeriod);
 }
 
@@ -134,38 +125,32 @@ static inline void delay(uint32_t time){
   @param ticks Required frequency
 */
 static inline void systick_init(uint32_t ticks) {
-  if ((ticks - 1) > 0xffffff) return;         // Systick timer is 24 bit
+  if ((ticks - 1) > 0xffffff) return;  // Systick timer is 24 bit
   SysTick->LOAD = ticks - 1;
   SysTick->VAL = 0;
-  SysTick->CTRL |= BIT(0) | BIT(1) | BIT(2);   // Enable systick, enable call back, set clk source to AHB
+  SysTick->CTRL |= BIT(0) | BIT(1) | BIT(2);  // Enable systick, enable call back, set clk source to AHB
   s_ticks = 0;
-  RCC->APB2ENR |= BIT(0);                     // Enable SYSCFG
+  RCC->APB2ENR |= BIT(0);  // Enable SYSCFG
 }
 
 #pragma endregion System Clk
 
 #pragma region GPIO
 #define GPIO(bank) ((GPIO_TypeDef *)(0x48000000 + 0x400 * (bank)))
-enum
-{
-  GPIO_MODE_INPUT,
-  GPIO_MODE_OUTPUT,
-  GPIO_MODE_AF,
-  GPIO_MODE_ANALOG
-};
+enum { GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG };
 
 /**
   @brief Set the GPIO mode to input, output, alternate function or analog
   @param pin Selected pin
-  @param mode Selected mode: GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF, GPIO_MODE_ANALOG
+  @param mode Selected mode: GPIO_MODE_INPUT, GPIO_MODE_OUTPUT, GPIO_MODE_AF,
+  GPIO_MODE_ANALOG
 */
-static inline void gpio_set_mode(uint16_t pin, uint8_t mode)
-{
-  GPIO_TypeDef *gpio = GPIO(PINBANK(pin)); // GPIO bank
-  int n = PINNO(pin);                      // Pin number
-  RCC->AHB2ENR |= BIT(PINBANK(pin));       // Enable GPIO clock
-  gpio->MODER &= ~(3U << (n * 2));         // Clear existing setting
-  gpio->MODER |= (mode & 3U) << (n * 2);   // Set new mode
+static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
+  GPIO_TypeDef *gpio = GPIO(PINBANK(pin));  // GPIO bank
+  int n = PINNO(pin);                       // Pin number
+  RCC->AHB2ENR |= BIT(PINBANK(pin));        // Enable GPIO clock
+  gpio->MODER &= ~(3U << (n * 2));          // Clear existing setting
+  gpio->MODER |= (mode & 3U) << (n * 2);    // Set new mode
 }
 
 /**
@@ -173,10 +158,9 @@ static inline void gpio_set_mode(uint16_t pin, uint8_t mode)
   @param pin Selected pin
   @param af_num Selected alternative mode
 */
-static inline void gpio_set_af(uint16_t pin, uint8_t af_num)
-{
-  GPIO_TypeDef *gpio = GPIO(PINBANK(pin)); // GPIO bank
-  int n = PINNO(pin);                      // Pin number
+static inline void gpio_set_af(uint16_t pin, uint8_t af_num) {
+  GPIO_TypeDef *gpio = GPIO(PINBANK(pin));  // GPIO bank
+  int n = PINNO(pin);                       // Pin number
   gpio->AFR[n >> 3] &= ~(15UL << ((n & 7) * 4));
   gpio->AFR[n >> 3] |= ((uint32_t)af_num) << ((n & 7) * 4);
 }
@@ -186,8 +170,7 @@ static inline void gpio_set_af(uint16_t pin, uint8_t af_num)
   @param pin Selected pin
   @param val Value to be written: True/False
 */
-static inline void gpio_write(uint16_t pin, bool val)
-{
+static inline void gpio_write(uint16_t pin, bool val) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
   gpio->BSRR |= (1U << PINNO(pin)) << (val ? 0 : 16);
 }
@@ -197,8 +180,7 @@ static inline void gpio_write(uint16_t pin, bool val)
   @param pin Selected pin
   @return Value of the GPIO
 */
-static inline bool gpio_read(uint16_t pin)
-{
+static inline bool gpio_read(uint16_t pin) {
   GPIO_TypeDef *gpio = GPIO(PINBANK(pin));
   bool value;
   value = gpio->IDR & (1U << PINNO(pin));
@@ -217,42 +199,39 @@ static inline bool gpio_read(uint16_t pin)
   @param uart Selected UART (1, 2, 3 or low power)
   @param baud Baud rate
 */
-static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
-{
-  uint8_t af = 8;          // Alternate function
-  uint16_t rx = 0, tx = 0; // pins
+static inline void uart_init(USART_TypeDef *uart, uint32_t baud) {
+  uint8_t af = 8;           // Alternate function
+  uint16_t rx = 0, tx = 0;  // pins
 
-  if (uart == UART1)  RCC->APB2ENR  |= BIT(14);   
-  if (uart == UART2)  RCC->APB1ENR1 |= BIT(17);   
-  if (uart == UART3)  RCC->APB1ENR1 |= BIT(18);   
+  if (uart == UART1) RCC->APB2ENR |= BIT(14);
+  if (uart == UART2) RCC->APB1ENR1 |= BIT(17);
+  if (uart == UART3) RCC->APB1ENR1 |= BIT(18);
   if (uart == LUART1) RCC->APB1ENR2 |= BIT(0);
 
-  #ifdef FLIGHT_COMPUTER
+#ifdef FLIGHT_COMPUTER
   // Flight Computer pins
-    if (uart == UART1)  af = 7, tx = PIN('A', 9),  rx = PIN('A', 10); // EXTERN USART
-    if (uart == UART2)  af = 7, tx = PIN('D', 5),  rx = PIN('D', 6);
-    if (uart == UART3)  af = 7, tx = PIN('C', 10),  rx = PIN('C', 11);  // GNSS RX/TX
-    if (uart == UART4)  af = 7, tx = PIN('D', 8),  rx = PIN('D', 9);  // GNSS RX/TX
-  #else
+  if (uart == UART1) af = 7, tx = PIN('A', 9), rx = PIN('A', 10);  // EXTERN USART
+  if (uart == UART2) af = 7, tx = PIN('D', 5), rx = PIN('D', 6);
+  if (uart == UART3) af = 7, tx = PIN('C', 10), rx = PIN('C', 11);  // GNSS RX/TX
+  if (uart == UART4) af = 7, tx = PIN('D', 8), rx = PIN('D', 9);    // GNSS RX/TX
+#else
   // Nucleo pins
-    if (uart == UART1)  af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
-    if (uart == UART2)  af = 7, tx = PIN('A', 2), rx = PIN('A', 3);
-    if (uart == UART3)  af = 7, tx = PIN('D', 8), rx = PIN('D', 9);
-    if (uart == LUART1) af = 8, tx = PIN('G', 7), rx = PIN('G', 8);
-  #endif
+  if (uart == UART1) af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
+  if (uart == UART2) af = 7, tx = PIN('A', 2), rx = PIN('A', 3);
+  if (uart == UART3) af = 7, tx = PIN('D', 8), rx = PIN('D', 9);
+  if (uart == LUART1) af = 8, tx = PIN('G', 7), rx = PIN('G', 8);
+#endif
 
   gpio_set_mode(tx, GPIO_MODE_AF);
   gpio_set_af(tx, af);
   gpio_set_mode(rx, GPIO_MODE_AF);
   gpio_set_af(rx, af);
-  uart->CR1 = 0;                              // Disable this UART                              
+  uart->CR1 = 0;  // Disable this UART
 
-
-  if(uart == LUART1 || uart == USART1)
-  {
-    uart->BRR = FREQ / baud;                // FREQ is a CPU frequency*256 when LPUART is used
-  } else if (uart == USART2){
-    //uart->BRR = baud;
+  if (uart == LUART1 || uart == USART1) {
+    uart->BRR = FREQ / baud;  // FREQ is a CPU frequency*256 when LPUART is used
+  } else if (uart == USART2) {
+    // uart->BRR = baud;
 
     uart->BRR = 0x682;
 
@@ -268,7 +247,7 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
     // NVIC_EnableIRQ(USART3_IRQn);
   }
 
-  uart->CR1 |= BIT(0) | BIT(2) | BIT(3);      // Set UE, RE, TE Datasheet 50.8.1 
+  uart->CR1 |= BIT(0) | BIT(2) | BIT(3);  // Set UE, RE, TE Datasheet 50.8.1
 }
 
 /**
@@ -276,11 +255,9 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud)
   @param uart Selected UART (1, 2, 3 or low power)
   @param byte Byte to be written
 */
-static inline void uart_write_byte(USART_TypeDef *uart, uint8_t byte)
-{
+static inline void uart_write_byte(USART_TypeDef *uart, uint8_t byte) {
   uart->TDR = byte;
-  while ((uart->ISR & BIT(7)) == 0)
-    spin(1); // Ref manual STM32L4 50.8.10 USART status register (USART_ISR)
+  while ((uart->ISR & BIT(7)) == 0) spin(1);  // Ref manual STM32L4 50.8.10 USART status register (USART_ISR)
 }
 
 /**
@@ -289,10 +266,8 @@ static inline void uart_write_byte(USART_TypeDef *uart, uint8_t byte)
   @param buf Buffer
   @param len Length of the buffer
 */
-static inline void uart_write_buf(USART_TypeDef *uart, char *buf, size_t len)
-{
-  while (len-- > 0)
-    uart_write_byte(uart, *(uint8_t *)buf++);
+static inline void uart_write_buf(USART_TypeDef *uart, char *buf, size_t len) {
+  while (len-- > 0) uart_write_byte(uart, *(uint8_t *)buf++);
 }
 
 /**
@@ -300,9 +275,8 @@ static inline void uart_write_buf(USART_TypeDef *uart, char *buf, size_t len)
   @param uart Selected UART (1, 2, 3 or low power)
   @return True when ready
 */
-static inline int uart_read_ready(USART_TypeDef *uart)
-{
-  return uart->ISR & BIT(5); // If RXNE bit is set, data is ready Ref manual 50.8.10
+static inline int uart_read_ready(USART_TypeDef *uart) {
+  return uart->ISR & BIT(5);  // If RXNE bit is set, data is ready Ref manual 50.8.10
 }
 
 /**
@@ -310,23 +284,18 @@ static inline int uart_read_ready(USART_TypeDef *uart)
   @param uart Selected UART (1, 2, 3 or low power)
   @return Byte from UART
 */
-static inline uint8_t uart_read_byte(USART_TypeDef *uart)
-{
-  while (!uart_read_ready(uart))
-  {
-    spin(1); // Ref manual STM32L4 50.8.10 USART status register (USART_ISR)
+static inline uint8_t uart_read_byte(USART_TypeDef *uart) {
+  while (!uart_read_ready(uart)) {
+    spin(1);  // Ref manual STM32L4 50.8.10 USART status register (USART_ISR)
   }
   return (uint8_t)(uart->RDR & 255);
 }
 
-static inline void uart_read_buf(USART_TypeDef *uart, char *results, uint8_t size)
-{
+static inline void uart_read_buf(USART_TypeDef *uart, char *results, uint8_t size) {
   uint8_t size_r = size;
   uint8_t i = 0;
-  while(size_r > 0)
-  {
-    if(uart_read_ready(uart))
-    {
+  while (size_r > 0) {
+    if (uart_read_ready(uart)) {
       results[i] = (uint8_t)(uart->RDR & 255);
       size_r--;
       i++;
@@ -343,29 +312,27 @@ static inline void uart_read_buf(USART_TypeDef *uart, char *results, uint8_t siz
 #define A3 PIN('D', 4)
 
 // Map cs pins to sensors
-#define CS0 0 // Accelerometer
-#define CS1 1 // IMU
-#define CS2 2 // Magnetometer
-#define CS3 3 // Barometer
-#define CS4 4 // Humidity
-#define CS5 5 // SD_CARD
+#define CS0 0  // Accelerometer
+#define CS1 1  // IMU
+#define CS2 2  // Magnetometer
+#define CS3 3  // Barometer
+#define CS4 4  // Humidity
+#define CS5 5  // SD_CARD
 
 // Generate all switch cases for the multiplexer
-static inline int set_cs(int16_t cs)
-{
-    if (cs > 15) {
-        return 1;
-    } else {
-        gpio_write(A0, (cs & 0x1));
-        gpio_write(A1, (cs & 0x2) >> 1);
-        gpio_write(A2, (cs & 0x4) >> 2);
-        gpio_write(A3, (cs & 0x8) >> 3);
-        return 0;
-    }
+static inline int set_cs(int16_t cs) {
+  if (cs > 15) {
+    return 1;
+  } else {
+    gpio_write(A0, (cs & 0x1));
+    gpio_write(A1, (cs & 0x2) >> 1);
+    gpio_write(A2, (cs & 0x4) >> 2);
+    gpio_write(A3, (cs & 0x8) >> 3);
+    return 0;
+  }
 }
 
-static inline void unset_cs()
-{
+static inline void unset_cs() {
   // get the 14 cs line low so that no sensors are active
   gpio_write(A0, LOW);
   gpio_write(A1, HIGH);
@@ -373,8 +340,7 @@ static inline void unset_cs()
   gpio_write(A3, HIGH);
 }
 
-static inline void multiplexer_init()
-{
+static inline void multiplexer_init() {
   gpio_set_mode(A0, GPIO_MODE_OUTPUT);
   gpio_set_mode(A1, GPIO_MODE_OUTPUT);
   gpio_set_mode(A2, GPIO_MODE_OUTPUT);
@@ -394,12 +360,13 @@ static inline void spi_init(SPI_TypeDef *spi) {
   //  - RM0351,  pg 1459: Configuration of SPI
   //  - RM0351,  pg 1484: SPI register map
   //  - RM0351,  pg 1476: SPI registers
-  //  STM32L4R5 alternative functions map: https://www.st.com/resource/en/datasheet/stm32l4r5vi.pdf
+  //  STM32L4R5 alternative functions map:
+  //  https://www.st.com/resource/en/datasheet/stm32l4r5vi.pdf
 
   uint8_t af;
   uint16_t ss, sclk, miso, mosi;
 
-  #ifdef FLIGHT_COMPUTER
+#ifdef FLIGHT_COMPUTER
   // Flight Computer pins maybe A4 or B0 or E12 or G5 or A15
   // Note: SS not needed?
   if (spi == SPI1)
@@ -407,7 +374,7 @@ static inline void spi_init(SPI_TypeDef *spi) {
   if (spi == SPI2)
     RCC->APB1ENR1 |= BIT(14), af = 5, ss = PIN('B', 12), sclk = PIN('B', 13), miso = PIN('B', 14), mosi = PIN('B', 15);
 
-  #else
+#else
   // Nucleo pins
   if (spi == SPI1)
     RCC->APB2ENR |= BIT(12), af = 5, ss = PIN('A', 4), sclk = PIN('A', 5), miso = PIN('A', 6), mosi = PIN('A', 7);
@@ -416,10 +383,10 @@ static inline void spi_init(SPI_TypeDef *spi) {
   if (spi == SPI3)
     RCC->APB1ENR1 |= BIT(15), af = 6, ss = PIN('A', 15), sclk = PIN('C', 10), miso = PIN('C', 11), mosi = PIN('C', 12);
 
-  #endif
+#endif
 
-  // ss was originally set to GPIO_MODE_AF, which seems correct but needs to be set to output to actually work?
-  // investigate !!!
+  // ss was originally set to GPIO_MODE_AF, which seems correct but needs to be
+  // set to output to actually work? investigate !!!
   gpio_set_mode(ss, GPIO_MODE_OUTPUT);
   gpio_set_mode(sclk, GPIO_MODE_AF);
   gpio_set_mode(miso, GPIO_MODE_AF);
@@ -431,26 +398,27 @@ static inline void spi_init(SPI_TypeDef *spi) {
   gpio_set_af(mosi, af);
 
   // MCU clock speed (FREQ) is 16 MHz and max MCU SPI speed is FREQ / 2.
-  spi->CR1 &= ~(7U << 3);   // Clears BR (bits 5:3) to 000 which is = system clock/2
+  spi->CR1 &= ~(7U << 3);  // Clears BR (bits 5:3) to 000 which is = system clock/2
   // TODO: seems like clk is running two times faster? DEBUG
-  spi->CR1 |= (3U << 3);    // Sets BR to 011, systemclk/16, so 1MHz.. but actually 2Mhz
+  spi->CR1 |= (3U << 3);  // Sets BR to 011, systemclk/16, so 1MHz.. but actually 2Mhz
 
-  // CPOL (clk polarity) and CPHA (clk phase) defaults  to produce the desired clock/data relationship
-  // CPOL controls the idle state value of the clock when no data is being transferred.
-  spi->CR1 |= BIT(0);    // Clock polarity CPOL = 1
-  spi->CR1 |= BIT(1);    // Clock phase CPHA = 1 
+  // CPOL (clk polarity) and CPHA (clk phase) defaults  to produce the desired
+  // clock/data relationship CPOL controls the idle state value of the clock
+  // when no data is being transferred.
+  spi->CR1 |= BIT(0);  // Clock polarity CPOL = 1
+  spi->CR1 |= BIT(1);  // Clock phase CPHA = 1
 
   // MCU datasheet "Select simplex or half-duplex mode by configuring
   // RXONLY or BIDIMODE and BIDIOE (RXONLY and BIDIMODE cannot be set
   // at the same time)"
-  spi->CR1 &= ~BIT(10); // full duplex
-  spi->CR1 &= ~BIT(15); // 2 line unidirectional data mode
+  spi->CR1 &= ~BIT(10);  // full duplex
+  spi->CR1 &= ~BIT(15);  // 2 line unidirectional data mode
 
   // Datasheet: "The MSB of a byte is transmitted first"
   spi->CR1 &= ~BIT(7);
 
   // Software slave management seems required
-  spi->CR1 |= BIT(9); // Manually do ss
+  spi->CR1 |= BIT(9);  // Manually do ss
 
   // Configuring the mcu as SPI master
   spi->CR1 |= BIT(2);
@@ -479,14 +447,14 @@ static inline void spi_init(SPI_TypeDef *spi) {
   @return True when ready
 */
 static inline int spi_ready_read(SPI_TypeDef *spi) {
-  while (!(spi->SR & BIT(1))); // Wait until transmit buffer is empty
-  while (!(spi->SR & BIT(0))); // Wait until receive buffer is not empty (RxNE, 52.4.9)
-  return 1; // data is ready
+  while (!(spi->SR & BIT(1)));  // Wait until transmit buffer is empty
+  while (!(spi->SR & BIT(0)));  // Wait until receive buffer is not empty (RxNE, 52.4.9)
+  return 1;                     // data is ready
 }
 
 static inline int spi_ready_write(SPI_TypeDef *spi) {
-  while ((spi->SR & BIT(7))); // Wait until SPI is not busy
-  return 1; // data is ready
+  while ((spi->SR & BIT(7)));  // Wait until SPI is not busy
+  return 1;                    // data is ready
 }
 
 /**
@@ -495,12 +463,11 @@ static inline int spi_ready_write(SPI_TypeDef *spi) {
   @note currently ONLY works for spi for testing
 */
 static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
-  #ifdef FLIGHT_COMPUTER
-    set_cs(cs); 
-  #else // Nucleo
-  if (spi == SPI1)
-    gpio_write(PIN('A', 4), LOW);
-  #endif
+#ifdef FLIGHT_COMPUTER
+  set_cs(cs);
+#else  // Nucleo
+  if (spi == SPI1) gpio_write(PIN('A', 4), LOW);
+#endif
   // Explicitely use CS and SPI to avoid warnings, this is intended behaviour
   (void)cs;
   (void)spi;
@@ -511,14 +478,12 @@ static inline void spi_enable_cs(SPI_TypeDef *spi, uint8_t cs) {
   @param spi Selected SPI (1, 2 or 3)
   @note currently ONLY works for spi for testing
 */
-static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
-{
-  #ifdef FLIGHT_COMPUTER
-    unset_cs(cs);
-  #else // Nucleo
-  if (spi == SPI1)
-    gpio_write(PIN('A', 4), HIGH);
-  #endif
+static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs) {
+#ifdef FLIGHT_COMPUTER
+  unset_cs(cs);
+#else  // Nucleo
+  if (spi == SPI1) gpio_write(PIN('A', 4), HIGH);
+#endif
   // Explicitely use CS and SPI to avoid warnings, this is intended behaviour
   (void)cs;
   (void)spi;
@@ -530,12 +495,11 @@ static inline void spi_disable_cs(SPI_TypeDef *spi, uint8_t cs)
   @param send_byte Byte to be sent via SPI
   @return Byte from SPI
 */
-static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
-{
+static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte) {
   uint8_t recieve_byte = 123;
   spi_ready_write(spi);
   *(volatile uint8_t *)&spi->DR = send_byte;
-  
+
   // Since SPI is asyncronous communication, we recieve a bit as well
   spi_ready_read(spi);
   recieve_byte = *((volatile uint8_t *)&(spi->DR));
@@ -543,7 +507,8 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
 }
 
 /**
-  @brief Transmit multiples bytes to and recieve multiple bytes from SPI peripheral
+  @brief Transmit multiples bytes to and recieve multiple bytes from SPI
+  peripheral
   @param spi Selected SPI (1, 2 or 3)
   @param send_byte Byte to be sent via SPI
   @param transmit_size Number of bytes being sent over SPI
@@ -551,12 +516,8 @@ static inline uint8_t spi_transmit(SPI_TypeDef *spi, uint8_t send_byte)
   @param result_ptr ptr to store the result
   @return not used
 */
-static inline void spi_transmit_receive(SPI_TypeDef *spi,
-                                        uint8_t *send_byte,
-                                        uint8_t transmit_size,
-                                        uint8_t receive_size,
-                                        void *result_ptr)
-{
+static inline void spi_transmit_receive(SPI_TypeDef *spi, uint8_t *send_byte, uint8_t transmit_size,
+                                        uint8_t receive_size, void *result_ptr) {
   spi_ready_write(spi);
 
   // Transmit data
@@ -587,8 +548,7 @@ static inline void spi_transmit_receive(SPI_TypeDef *spi,
   @param spi Selected SPI (1, 2 or 3)
   @return Byte from SPI
 */
-static inline uint8_t spi_read_byte(SPI_TypeDef *spi)
-{
+static inline uint8_t spi_read_byte(SPI_TypeDef *spi) {
   uint8_t recieve_byte = 99;
   recieve_byte = spi_transmit(spi, 0x00);
   return recieve_byte;
@@ -601,9 +561,8 @@ static inline uint8_t spi_read_byte(SPI_TypeDef *spi)
   @param transmit_size Number of bytes to be sent (Not currently implemented)
   @return error checking
 */
-static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8_t transmit_size)
-{
-  for(int i = 0; i < transmit_size; i++) {
+static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8_t transmit_size) {
+  for (int i = 0; i < transmit_size; i++) {
     spi_transmit(spi, send_bytes[i]);
   }
   return 0;
@@ -617,16 +576,15 @@ static inline uint8_t spi_write_buf(SPI_TypeDef *spi, uint8_t *send_bytes, uint8
   @note TO BE DEPRECATED
   @return value read
 */
-static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uint8_t receive_size){
+static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uint8_t receive_size) {
   uint8_t retval = 0;
   uint8_t i = 0;
-  while (i < receive_size)
-  {
-    *(recieve_bytes + i) = spi_read_byte(spi); // dereference to get element
+  while (i < receive_size) {
+    *(recieve_bytes + i) = spi_read_byte(spi);  // dereference to get element
     i++;
     // LOG("Received Value: %u  %u  %u \r\n", received, receive_size, result);
   }
-  return retval; // TODO error checking
+  return retval;  // TODO error checking
 }
 #pragma endregion SPI
 
@@ -638,67 +596,69 @@ static inline uint8_t spi_read_buf(SPI_TypeDef *spi, uint8_t *recieve_bytes, uin
   @param now Current time
   @return True when timer is done
 */
-static inline bool timer_expired(uint32_t *t, uint32_t prd, uint32_t now)
-{
-  if (now + prd < *t)
-    *t = 0; // Time wrapped? Reset timer
-  if (*t == 0)
-    *t = now + prd; // First poll? Set expiration
-  if (*t > now)
-    return false;                               // Not expired yet, return
-  *t = (now - *t) > prd ? now + prd : *t + prd; // Next expiration time
-  return true;                                  // Expired, return true
+static inline bool timer_expired(uint32_t *t, uint32_t prd, uint32_t now) {
+  if (now + prd < *t) *t = 0;                    // Time wrapped? Reset timer
+  if (*t == 0) *t = now + prd;                   // First poll? Set expiration
+  if (*t > now) return false;                    // Not expired yet, return
+  *t = (now - *t) > prd ? now + prd : *t + prd;  // Next expiration time
+  return true;                                   // Expired, return true
 }
 
 /**
-  @brief Initialise the secondary power control register (Vdd2) which is needed for the GPIO G
+  @brief Initialise the secondary power control register (Vdd2) which is needed
+  for the GPIO G
 */
-static inline void pwr_vdd2_init()
-{
-  RCC->APB1ENR1 |= BIT(28); // page 291
-  PWR->CR2 |= BIT(9);       // set the IOSV bit in the PWR_CR2 page 186, 219
+static inline void pwr_vdd2_init() {
+  RCC->APB1ENR1 |= BIT(28);  // page 291
+  PWR->CR2 |= BIT(9);        // set the IOSV bit in the PWR_CR2 page 186, 219
 }
 
-//information about watchdogs cann be found here:
-//https://www.st.com/resource/en/product_training/STM32WB-WDG_TIMERS-Independent-Watchdog-IWDG.pdf 
+// information about watchdogs cann be found here:
+// https://www.st.com/resource/en/product_training/STM32WB-WDG_TIMERS-Independent-Watchdog-IWDG.pdf
 
 /**
   @brief Starts the watchdog timer
 */
-static inline void watchdog_init(){
-  //Set the IWDG_SW option bit, This is to hardware enable the watchdog instead of enabling it each time like below
-  //pretty sure the option register is write protected, there are steps to unlock. In reference manual: 3.4.2 pg141
-  //FLASH->OPTR &= ~FLASH_OPTR_IWDG_SW;       //turn the hardware IWDG on by setting bit to off
-  //FLASH->OPTR |= FLASH_OPTR_IWDG_STDBY;     //run IWDG (1 turns off stand by)
-  //FLASH->OPTR |= FLASH_OPTR_IWDG_STOP;     //run IWDG (1 turns off stop)
+static inline void watchdog_init() {
+  // Set the IWDG_SW option bit, This is to hardware enable the watchdog instead
+  // of enabling it each time like below pretty sure the option register is
+  // write protected, there are steps to unlock. In reference manual: 3.4.2
+  // pg141 FLASH->OPTR &= ~FLASH_OPTR_IWDG_SW;       //turn the hardware IWDG on
+  // by setting bit to off FLASH->OPTR |= FLASH_OPTR_IWDG_STDBY;     //run IWDG
+  // (1 turns off stand by) FLASH->OPTR |= FLASH_OPTR_IWDG_STOP;     //run IWDG
+  // (1 turns off stop)
 
-  /*The first step is to write the Key register with value 0x0000 CCCC which starts the watchdog.
-    Then remove the independent watchdog register protection by writing 0x0000 5555 to unlock the key.
-    Set the independent watchdog prescaler in the IWDG_PR register by selecting the prescaler divider feeding the counter clock.
-    Write the reload register (IWDG_RLR) to define the value to be loaded in the watchdog counter.
+  /*The first step is to write the Key register with value 0x0000 CCCC which
+    starts the watchdog. Then remove the independent watchdog register
+    protection by writing 0x0000 5555 to unlock the key. Set the independent
+    watchdog prescaler in the IWDG_PR register by selecting the prescaler
+    divider feeding the counter clock. Write the reload register (IWDG_RLR) to
+    define the value to be loaded in the watchdog counter.
   */
   IWDG->KR = 0xCCCC;
   IWDG->KR = 0x5555;
-  while(IWDG->SR & ~IWDG_SR_PVU_Msk){}; //prescalar can only be set when PVU bit is reset, so hold until = 0
-  //IWDG->PR = 0x0001;  //Prescalar is 3 bits, 000 = /4, 001 = /8, 010 = /16, 011 = /32... Divides the 32kHz clock signal
+  while (IWDG->SR & ~IWDG_SR_PVU_Msk) {
+  };  // prescalar can only be set when PVU bit is reset, so hold until = 0
+  // IWDG->PR = 0x0001;  //Prescalar is 3 bits, 000 = /4, 001 = /8, 010 = /16,
+  // 011 = /32... Divides the 32kHz clock signal
   IWDG->PR = 0x0004;
   /*
-  To calculate the counter reload value to achieve the desired reset time limit the following formula is used:
-  RL = (Desired_Time_ms * 32,000)/(4 * 2^PR * 1000) -1
-  RL has a limit of 4095, so choose a PR to get a value less than this
+  To calculate the counter reload value to achieve the desired reset time limit
+  the following formula is used: RL = (Desired_Time_ms * 32,000)/(4 * 2^PR *
+  1000) -1 RL has a limit of 4095, so choose a PR to get a value less than this
   So for a 0.5s time:
   RL = (500 * 32,000)/(4 * 2^(1) * 1000) - 1 = 1999
   */
-  while(IWDG->SR & ~IWDG_SR_RVU_Msk){};  //reload value can only be set when RVU bit is reset, so hold until = 0
-  IWDG->RLR = 0x7CF;  //1999, value to be reloaded into the counter on reset
+  while (IWDG->SR & ~IWDG_SR_RVU_Msk) {
+  };  // reload value can only be set when RVU bit is reset, so hold until = 0
+  IWDG->RLR = 0x7CF;  // 1999, value to be reloaded into the counter on reset
 }
 
 /**
   @brief Reset the watchdog timer to prevent a system reset
 */
-static inline void watchdog_pat(){
-  //IWDG_KR register must be written with 0x0000AAAA
+static inline void watchdog_pat() {
+  // IWDG_KR register must be written with 0x0000AAAA
   IWDG->KR = 0xAAAA;
-
 }
 #pragma endregion Watchdog

@@ -7,266 +7,159 @@
 
 #include "flight_manager.h"
 
-M5611_data _M5611_data;
-ADXL375_data _ADXL375_data;
-LSM6DS3_data _LSM6DS3_data;
-BME280_data _BME280_data;
-GNSS_Data _GNSS_data;
+#include "HAL/STM32_init.h"
+#include "buffer.h"
+
+uint64_t loop_count = 0;
 
 FlightStage flightStage = LAUNCHPAD;
-double previous_ascent_altitude = 4294967294;
-uint32_t apogee_index = 100; //amount of data recorded at apogee
-
-double apogee = 0;
 
 FlightStage get_flight_stage() { return flightStage; }
 
 void set_flight_stage(FlightStage fs) { flightStage = fs; }
 
-// void setup_flight_computer()
-// {
-//     STM32_init();
-//     STM32_indicate_on();
-//     init_flash();
-//     initalise_drivers();
-// }
+double max_altitude = 0;
+double ground_altitude = 0;
+uint32_t apogee_time = 0;
 
-void initalise_drivers() {
+typedef struct {
+  float velocity_z;
+  double altitude;
+} State;
 
-  _BME280_data.temperature = 0;
-  _BME280_data.pressure = 0;
-  _BME280_data.humidity = 0;
-  _GNSS_data.latitude = 0;
-  _GNSS_data.longitude = 0;
-  _GNSS_data.altitude = 0;
-  _GNSS_data.velocity = 0;
+State state;
 
-  // Sensor initialisation
+void handle_LAUNCHPAD(Frame *avg_frame, Frame *cur_frame) {
+  (void)avg_frame;
+  if (state.altitude > ALTITUDE_APOGEE_THRESHOLD) {
+    LOG("LAUNCHPAD: Altitude threshold met\r\n");
+    flightStage = ASCENT;
+    return;
+  }
 
-  if(MS5611_init(SPI1))
-  {
-    LOG("ERROR INITIALISING MS5611 BAROMETER\r\n");
-  }               
-  if(ADXL375_init(SPI1))
-  {
-    LOG("ERROR INITIALISING ADXL375 ACCEL\r\n");
-  }              
-  if(LSM6DS3_init(SPI1, &_LSM6DS3_data))
-  {
-    LOG("ERROR INITIALISING LSM6DS3 IMU\r\n");
+  if (cur_frame->accel.y < ACCEL_LAUNCH_THRESHOLD) {
+    LOG("LAUNCHPAD: Acceleration threshold met\r\n");
+    flightStage = ASCENT;
+    return;
   }
 }
 
-void handle_LAUNCHPAD(Frame* frame, FrameBuffer* fb)
-{
-  LOG("PAD\r\n");
-  // READ
-  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-  
-  // FORMAT AND SEND DATA TO HC12
-  char sensors_data_buffer[150];
-  format_sensor_data(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data, sensors_data_buffer, sizeof(sensors_data_buffer)); // Format the data into a string
-  HC12_transmit(UART1, sensors_data_buffer); // Transmit the formatted string over UART
-
-  // BUILD
-  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
-  update_frame_buffer(frame, fb);
-
-  // ANALYSE
-  double current_pressure = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
-  double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
-  // TODO: calculate launch based on pressure+accel+gyro(?)
-  frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
-  
-  // ACT
-  bool accel_launch_flag = false;
-
-  // Unused for now, will be later
-  //bool baro_launch_flag = false;
-  //bool gyro_launch_flag = false;
-
-  if(_ADXL375_data.y < ACCEL_LAUNCH_THRESHOLD)
-  {
-    accel_launch_flag = true;
+void handle_ASCENT(Frame *frame) {
+  (void)frame;
+  if (state.altitude > max_altitude) {
+    max_altitude = state.altitude;
   }
 
-  // if(velo > BARO_LAUNCH_THRESHOLD)
-  // {
-  //   baro_launch_flag = true;
+  if (state.altitude < (max_altitude - ALTITUDE_APOGEE_THRESHOLD)) {
+    LOG("ASCENT: Altitude threshold met\r\n");
+    flightStage = APOGEE;
+  }
+}
+
+// Unneeded?
+void handle_APOGEE(Frame *frame) {
+  flightStage = DESCENT;
+  apogee_time = get_time_ms();
+  (void)frame;
+}
+
+void handle_DESCENT(Frame *frame, CircularBuffer *cb) {
+  (void)frame;
+  (void)cb;
+
+  // uint32_t range = cb_pressure_range(cb);
+  // if (range < GROUND_THRESHOLD) {
+  //   LOG("DESCENT: Pressure threshold met\r\n");
+  //   flightStage = LANDING;
   // }
-
-  if(accel_launch_flag == true) // Test variations in emu
-  {
-    set_flight_stage(ASCENT);
-  }
-
-  // STORE
-  log_frame(*frame);
-  //write_framebuffer(fb);
 }
 
-void handle_ASCENT(Frame* frame, FrameBuffer* fb)
-{
-  LOG("ASCENT\r\n");
-  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-
-  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
-  update_frame_buffer(frame, fb);
-
-  double current_pressure = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
-  double current_temperature = (double)get_framebuffer_median(fb, BUFFER_SIZE, MS5611_TEMP) / 100;
-  frame->altitude = barometric_equation(current_pressure, 273.15+current_temperature); // Need to convert to kelvin temp
-
-  if(frame->altitude > apogee)
-  {
-    apogee = frame->altitude;
-  }
-
-  bool altitude_apogee_flag = false;
-
-  if((apogee-frame->altitude) > ALTITUDE_APOGEE_THRESHOLD)
-  {
-    altitude_apogee_flag = true;
-  }
-
-  // ACT
-  if(altitude_apogee_flag == true)
-  {
-    set_flight_stage(APOGEE);
-  }
-
-  previous_ascent_altitude = frame->altitude;
-
-  // STORE
-  log_frame(*frame);
-}
-
-void handle_APOGEE(Frame* frame, FrameBuffer* fb)
-{
-  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-
-  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
-  update_frame_buffer(frame, fb);
-
-  // TODO: calculate apogee based on sensor data
-  // Gather lots of additional data at this phase, determining apogee is important
-
-  // ACT
-  apogee_index--;
-  if(apogee_index == 0)
-  {
-    set_flight_stage(DESCENT);
-  }
-
-  // STORE
-  log_frame(*frame);
-}
-
-void handle_DESCENT(Frame* frame, FrameBuffer* fb)
-{
-  LOG("DESCENT\r\n");
-  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-
-  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
-  update_frame_buffer(frame, fb);
-  //int32_t current_pressure = get_framebuffer_median(fb, BUFFER_SIZE, MS5611_PRESSURE);
-  // ACT
-  bool gyro_landed_flag = false;
-
-  if(is_stationary(fb))
-  {
-    gyro_landed_flag = true;
-  }
-
-  if(gyro_landed_flag == true)
-  {
-    set_flight_stage(LANDING);
-  }
-
-  // STORE
-  log_frame(*frame);
-}
-
-void handle_LANDING(Frame* frame, FrameBuffer* fb)
-{
-  LOG("LAND\r\n");
-  read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-
-  build_frame(frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
-  update_frame_buffer(frame, fb);
-  // ACT
-  // Beep? Signal? radio? idk
-  STM32_indicate_on();
-
-  // STORE
-  log_frame(*frame);
+void handle_LANDING(Frame *frame) {
+  STM32_blink_flash();
+  (void)frame;
 }
 
 void run_flight() {
+  init_flash();
 
-  // Setup FrameBuffer (contains last 50 frames of data)
-  Frame frame;        // initialise the Frame that keeps updating
-  uint8_t dataArray[128];  // dummy array to store the frame data
-  _memset(dataArray, 0,
-          sizeof(dataArray));  // set the necessary memory and set values to 0
-  frame = unzip(dataArray);   // convert from normal array into Frame
-  FrameBuffer frame_buffer;     // contains FrameArrays
-  init_frame_buffer(&frame_buffer);  // initialise the buffer
+  Frame init_frame;
+  read_sensors(&init_frame, 33);
 
-  // Additional variables
+  CircularBuffer *cb = cb_create(20);
 
-  LOG("============= GATHER INITIAL DATA ============\r\n");
-  for(uint32_t i = 0; i < 100; i++)
-  {
-    read_sensors(&_M5611_data, &_ADXL375_data, &_LSM6DS3_data);
-    build_frame(&frame, _M5611_data, _ADXL375_data, _LSM6DS3_data, _BME280_data, _GNSS_data);
-    update_frame_buffer(&frame, &frame_buffer);
-  }
-
-  LOG("============= ENTER MAIN PROCEDURE ============\r\n");
-  uint32_t newTime = get_time_us();
-  uint32_t oldTime = get_time_us();
+  uint32_t start_time = get_time_ms();
+  uint32_t last_loop_time = start_time;  // Initialize last_loop_time
+  uint32_t current_time;
   uint32_t dt = 0;
-  delay_microseconds(
-      1000 * 1000);  // One second delay before launch for sensors to stabilise
+
+  Frame frame;
+  Frame avg_frame;
+
+  for (uint32_t i = 0; i < 25; i++) {
+    read_sensors(&frame, 33);  // this DT should probably be calculated. But doesn't REALLY matter.
+    (void)cb_enqueue_overwrite(cb, &frame);
+    (void)cb_average(cb, &avg_frame);
+  }
+  (void)cb_average(cb, &avg_frame);
+  print_sensor_line(avg_frame);
+  ground_altitude = (barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp));
+  // printf_float("GROUND alt", ground_altitude, true); LOG("\r\n");
+
+  // State state;
+  state.altitude = ground_altitude;
+  state.velocity_z = 0;
+
+  (void)cb_average(cb, &avg_frame);
 
   for (;;) {
-    flightStage = get_flight_stage();
+    current_time = get_time_ms();
+    dt = current_time - last_loop_time;
+    last_loop_time = current_time;
 
-    newTime = get_time_us();
-    dt = newTime-oldTime;
-    //LOG("dt: %d\r\n", dt);
+    if (apogee_time != 0 && (current_time - apogee_time) > 600000) {
+      LOG("APOGEE TIMEOUT\r\n");
+      flightStage = LANDING;
+    }
+
+    read_sensors(&frame, dt);
+    if (flightStage != LAUNCHPAD && flightStage != LANDING) {
+      int8_t write_success = save_frame(frame);
+      if (write_success != SUCCESS) {
+        LOG("WRITE FAILED\r\n");
+      }
+    }
+
+    (void)cb_enqueue_overwrite(cb, &frame);
+
+    (void)cb_average(cb, &avg_frame);
+    print_sensor_line(avg_frame);
+
+    state.altitude =
+        (barometric_equation((double)avg_frame.barometer.pressure, (double)avg_frame.barometer.temp) - ground_altitude);
+
     switch (flightStage) {
       case LAUNCHPAD:
-        handle_LAUNCHPAD(&frame, &frame_buffer);
-        // if ((dt) > (1000000 / PADREADFREQ)) {
-        //   handle_LAUNCHPAD(&frame, &frame_buffer);
-        // } 
-        oldTime=newTime;
+        if (loop_count % 10 == 0) {
+          STM32_beep_buzzer(25, 25, 1);
+        }
+        handle_LAUNCHPAD(&avg_frame, &frame);
         break;
-
       case ASCENT:
-        if ((dt) > (1000000 / ASCENTREADFREQ)) {
-          handle_ASCENT(&frame, &frame_buffer);
-        }
+        handle_ASCENT(&avg_frame);
         break;
-
       case APOGEE:
-        if ((dt) > (1000000 / APOGEEREADFREQ)) {
-          handle_APOGEE(&frame, &frame_buffer);
-        }
+        handle_APOGEE(&avg_frame);
         break;
-
       case DESCENT:
-        if ((dt) > (1000000 / DESCENTREADFREQ)) {
-          handle_DESCENT(&frame, &frame_buffer);
-        }
+        handle_DESCENT(&avg_frame, cb);
         break;
-
       case LANDING:
-        handle_LANDING(&frame, &frame_buffer);
-        //STM32_beep_buzzer(200, 200, 1);
+        handle_LANDING(&avg_frame);
+        break;
+      default:
         break;
     }
+
+    loop_count++;
   }
 }
