@@ -17,6 +17,7 @@ else
 	RM = rm -rf
 endif
 
+build: clean
 build: $(BUILD_DIR)/firmware.bin
 
 $(BUILD_DIR)/firmware.elf: $(SOURCES) | $(BUILD_DIR)
@@ -42,18 +43,16 @@ unblock-write-protected:
           -f "debug/OpenOCD/openocd/scripts/target/stm32l4x.cfg" \
           -c "init; reset halt; stm32l4x unlock 0; stm32l4x mass_erase 0; program $(BUILD_DIR)/firmware.bin 0x08000000 verify reset; exit"
 
-# Different targets for HFC/Nucleo
-nucleo: build
-nucleo-flash: nucleo flash
-
-hfc: clean
-hfc: CFLAGS += -DFLIGHT_COMPUTER
-hfc: build
-
-hfc-flash: hfc flash-rs
-
-hfc-flash-prod: CFLAGS += -DPROD
-hfc-flash-prod: hfc-flash
+#nucleo: build
+#nucleo-flash: nucleo flash
+#
+#hfc: clean
+#hfc: CFLAGS += -DFLIGHT_COMPUTER
+#hfc: build
+#
+#hfc-flash: hfc flash-rs
+#
+#prod: CFLAGS += -DPROD
 
 warnings:
 	@(make clean && make hfc > $(BUILD_DIR)/make.log 2>&1) && grep "warning:" $(BUILD_DIR)/make.log | wc -l
@@ -103,7 +102,16 @@ list:
 
 .DEFAULT_GOAL := list
 
+hfc: CFLAGS += -DFLIGHT_COMPUTER
+hfc: build
 
+flight: CFLAGS += -DPROD
+flight: hfc
 
-
-
+dev: CFLAGS += -DFLIGHT_COMPUTER
+dev: CFLAGS += -DLOGERROR
+dev: CFLAGS += -DLOGWARN
+dev: CFLAGS += -DLOGINFO
+dev: CFLAGS += -DLOGDEBUG
+dev: CFLAGS += -DQUIET
+dev: hfc
