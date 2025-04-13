@@ -13,6 +13,7 @@
 #include "debug.h"
 #include "frame.h"
 #include "mcu.h"
+#include "lib/log.h"
 
 // Params
 #define NAND_STORAGE_CAPACITY 8388607  // 8MB
@@ -844,7 +845,7 @@ static inline void init_flash() {
   // LOG("%lld\r\n", read_flash_ID());
 
   if (read_flash_ID() != 0) {
-    LOG("Flash Working Correctly\n");
+    logi("Flash Working Correctly\n");
   }
 }
 

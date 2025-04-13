@@ -27,16 +27,10 @@ int main(void) {
   // STM32 setup
   STM32_init();
 
-  int t = 24;
-  logw("test %d", t);
-  loge("test %d", t);
-  logd("test %d", t);
-  logi("test %d", t);
-
-  LOG("================ PROGRAM START ================\r\n");
+  logi("================ PROGRAM START ================\r\n");
   STM32_indicate_on();
 
-  LOG("============ INITIALISE NAND FLASH ============\r\n");
+  logi("============ INITIALISE NAND FLASH ============\r\n");
   init_flash();
   print_capacity_info();
 
@@ -54,7 +48,7 @@ int main(void) {
   return 0;
 #endif
 
-  LOG("============== INITIALISE DRIVERS =============\r\n");
+  logi("============== INITIALISE DRIVERS =============\r\n");
   initalise_drivers();
 
 #ifdef SENSOR_TEST
@@ -62,11 +56,11 @@ int main(void) {
 #endif
 
 #ifdef CALIBRATE
-  printf("Getting calibration data...\r\n");
+  logi("Getting calibration data...\r\n");
   calibrate_ADXL375();
   return 0;
 #endif
-  LOG("============== INITIALISE FLIGHT ==============\r\n");
+  logi("============== INITIALISE FLIGHT ==============\r\n");
   delay_ms(2000);
   STM32_super_beep();
   run_flight();
