@@ -9,9 +9,7 @@
 
 enum { LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR };
 
-#define _logl(level, file, line, fmt, ...) \
-_log(level, file, line, fmt "\n", ##__VA_ARGS__)
-
+#define _logl(level, file, line, fmt, ...) _log(level, file, line, fmt "\n", ##__VA_ARGS__)
 
 #ifdef LOGWARN
 #define logw(...) _logl(LOG_WARN, __FILE__, __LINE__, __VA_ARGS__)
@@ -39,4 +37,4 @@ _log(level, file, line, fmt "\n", ##__VA_ARGS__)
 
 void _log(int level, const char *file, int line, const char *fmt, ...);
 
-#endif //LOG_H
+#endif  // LOG_H

@@ -8,13 +8,12 @@
 #include "HAL/STM32_init.h"
 
 #ifndef QUIET
-#define buzzer_on() gpio_write(BUZZER,  !LOW);
+#define buzzer_on() gpio_write(BUZZER, !LOW);
 #define buzzer_off() gpio_write(BUZZER, !HIGH);
 #else
 #define buzzer_on()  /* Do nothing */
 #define buzzer_off() /* Do nothing */
 #endif
-
 
 uint32_t FREQ = (uint32_t)4000000;
 

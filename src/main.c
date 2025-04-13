@@ -13,8 +13,8 @@
 #include "drivers/_driver_manager.h"
 #include "flight_manager.h"
 #include "frame.h"
-#include "stm32l4r5xx.h"
 #include "lib/log.h"
+#include "stm32l4r5xx.h"
 
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }

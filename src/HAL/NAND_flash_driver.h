@@ -12,8 +12,8 @@
 
 #include "debug.h"
 #include "frame.h"
-#include "mcu.h"
 #include "lib/log.h"
+#include "mcu.h"
 
 // Params
 #define NAND_STORAGE_CAPACITY 8388607  // 8MB

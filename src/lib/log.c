@@ -5,12 +5,14 @@ Leeds University Rocketry Organisation - LURA
   Description:
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include "debug.h"
 #include "log.h"
+
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "debug.h"
 
 void _log(int level, const char *file, int line, const char *fmt, ...) {
   va_list va;
@@ -37,7 +39,7 @@ void _log(int level, const char *file, int line, const char *fmt, ...) {
       printf("\x1b[90m%s:%d \x1b[0m", file, line);
       vprintf(fmt, va);
       break;
-    break;
+      break;
   }
   va_end(va);
 }

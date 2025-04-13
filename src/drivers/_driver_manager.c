@@ -5,12 +5,12 @@
   Description: Overall driver manager
 */
 
-#include "lib/log.h"
 #include "HAL/mcu.h"
 #include "drivers/ADXL375_driver.h"
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
+#include "lib/log.h"
 
 M5611_data _M5611_data;
 ADXL375_data _ADXL375_data;
