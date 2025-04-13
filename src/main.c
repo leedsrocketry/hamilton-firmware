@@ -14,6 +14,7 @@
 #include "flight_manager.h"
 #include "frame.h"
 #include "stm32l4r5xx.h"
+#include "lib/log.h"
 
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }
@@ -25,6 +26,8 @@ void SysTick_Handler(void) { s_ticks++; }
 int main(void) {
   // STM32 setup
   STM32_init();
+
+  _log(LOG_INFO, "hello world\n");
 
   LOG("================ PROGRAM START ================\r\n");
   STM32_indicate_on();
