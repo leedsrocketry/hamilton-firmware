@@ -26,11 +26,13 @@ $(BUILD_DIR)/firmware.elf: $(SOURCES) | $(BUILD_DIR)
 $(BUILD_DIR)/firmware.bin: $(BUILD_DIR)/firmware.elf
 	arm-none-eabi-objcopy -O binary $< $@
 
-flash: $(BUILD_DIR)/firmware.bin
+flash-st: $(BUILD_DIR)/firmware.bin
 	st-flash --reset write $< 0x8000000
 
 flash-rs: $(BUILD_DIR)/firmware.elf
 	probe-rs run --chip STM32L4R5ZITx $<
+
+flash: flash-rs
 
 clean:
 	$(RM) $(BUILD_DIR)/firmware.*
