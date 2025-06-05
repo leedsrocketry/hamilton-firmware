@@ -10,6 +10,8 @@
 #ifndef NAND_DRIVER_H
 #define NAND_DRIVER_H
 
+
+#include "lib/log.h"
 #include "mcu.h"
 #include "frame.h"
 #include "debug.h"
@@ -260,7 +262,33 @@ uint32_t get_next_available_frame_addr();
 /**
   @brief Initialisation function to set pin modes and get the next free frame on the flash (saving this in frameAddressPointer)
 */
-void init_flash();
+void init_flash() {
+  gpio_set_mode(DATA0, GPIO_MODE_OUTPUT);
+  gpio_set_mode(DATA1, GPIO_MODE_OUTPUT);
+  gpio_set_mode(DATA2, GPIO_MODE_OUTPUT);
+  gpio_set_mode(DATA3, GPIO_MODE_OUTPUT);
+  gpio_set_mode(DATA4, GPIO_MODE_OUTPUT);
+  gpio_set_mode(DATA5, GPIO_MODE_OUTPUT);
+  gpio_set_mode(DATA6, GPIO_MODE_OUTPUT);
+  gpio_set_mode(DATA7, GPIO_MODE_OUTPUT);
+
+  gpio_set_mode(ALE, GPIO_MODE_OUTPUT);
+  gpio_set_mode(CLE, GPIO_MODE_OUTPUT);
+  gpio_set_mode(CE,  GPIO_MODE_OUTPUT);
+  gpio_set_mode(RE,  GPIO_MODE_OUTPUT);
+  gpio_set_mode(WE,  GPIO_MODE_OUTPUT);
+  gpio_set_mode(WP,  GPIO_MODE_OUTPUT);
+
+  gpio_set_mode(RB,  GPIO_MODE_INPUT);
+  
+  frameAddressPointer = get_next_available_frame_addr();
+
+  if (read_flash_ID() != 0){
+    logi("Flash Working Correctly\r\n");
+  }
+}
+
+// --------------- ERROR CORRECTION CODE BELOW -----------------
 
 /**
   @brief Calculates CRC16-CCITT Checksum
