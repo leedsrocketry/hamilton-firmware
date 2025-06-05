@@ -80,6 +80,8 @@ void read_sensors(Frame *frame, uint32_t dt) {
   frame->accel = _ADXL375_data;
   frame->imu = _LSM6DS3_data;
   frame->barometer = _M5611_data;
+
+  frame->timestamp = get_time_ms();
 }
 
 void format_sensor_data(M5611_data *_M5611_data, ADXL375_data *_ADXL375_data, LSM6DS3_data *_LSM6DS3_data, char *buffer,
@@ -93,9 +95,9 @@ void format_sensor_data(M5611_data *_M5611_data, ADXL375_data *_ADXL375_data, LS
 }
 
 void print_sensor_line(Frame frame) {
-  printf("[BAR: T=%5" PRId32 " P=%5" PRId32 "] [ACCEL: X=%5" PRId16 " Y=%5" PRId16 " Z=%5" PRId16 "] [IMU: X=%5" PRId32
+  printf("[TIME: %10" PRIu32 "] [BAR: T=%5" PRId32 " P=%5" PRId32 "] [ACCEL: X=%5" PRId16 " Y=%5" PRId16 " Z=%5" PRId16 "] [IMU: X=%5" PRId32
          " Y=%5" PRId32 " Z=%5" PRId32 "]\r\n",
-         frame.barometer.temp, frame.barometer.pressure, frame.accel.x, frame.accel.y, frame.accel.z, frame.imu.x_rate,
+         frame.timestamp, frame.barometer.temp, frame.barometer.pressure, frame.accel.x, frame.accel.y, frame.accel.z, frame.imu.x_rate,
          frame.imu.y_rate, frame.imu.z_rate);
 }
 

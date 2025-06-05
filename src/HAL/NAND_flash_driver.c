@@ -168,8 +168,7 @@ uint64_t read_flash_ID() {
 }
 
 void print_csv_header() {
-  LOG("Date,");
-  LOG("Time,");
+  LOG("Timestamp,");
   LOG("ChangeFlag,");
   LOG("ACC X,ACC Y,ACC Z,");
   LOG("IMU X_RATE,IMU Y_RATE,IMU Z_RATE,\
@@ -184,11 +183,13 @@ void print_csv_header() {
   @param frameFormat
 */
 static inline void print_frame_csv(Frame frameFormat) {
-  LOG("%i,", frameFormat.date.year); 
-  LOG("%i:%i:%i:%i,", frameFormat.date.minute,
-                         frameFormat.date.second,
-                         frameFormat.date.millisecond,
-                         frameFormat.date.microsecond);
+  // LOG("%i,", frameFormat.date.year); 
+  // LOG("%i:%i:%i:%i,", frameFormat.date.minute,
+  //                        frameFormat.date.second,
+  //                        frameFormat.date.millisecond,
+  //                        frameFormat.date.microsecond);
+
+  LOG("%lu,", frameFormat.timestamp);
 
   LOG("%i,", frameFormat.changeFlag);
 
@@ -212,9 +213,11 @@ static inline void print_frame_csv(Frame frameFormat) {
 
 
 void print_frame_array(Frame frameFormat) {
-  LOG("Date: %i, %i:%i:%i:%i:\r\n", frameFormat.date.year, frameFormat.date.minute,
-                                               frameFormat.date.second, frameFormat.date.millisecond, 
-                                               frameFormat.date.microsecond );
+  // LOG("Date: %i, %i:%i:%i:%i:\r\n", frameFormat.date.year, frameFormat.date.minute,
+  //                                              frameFormat.date.second, frameFormat.date.millisecond, 
+  //                                              frameFormat.date.microsecond );
+
+  LOG("Timestamp: %lu\r\n", frameFormat.timestamp);
 
   LOG("ChangeFlag: %u\r\n", frameFormat.changeFlag);
 
@@ -246,14 +249,20 @@ void print_frame_array(Frame frameFormat) {
 void zip(Frame unzippedData, uint8_t *zippedData) {
   int i = -1;
 
-  // Date and time
-  zippedData[i++] = unzippedData.date.year;
-  zippedData[i++] = unzippedData.date.minute;
-  zippedData[i++] = unzippedData.date.second;
-  zippedData[i++] = (uint8_t)((unzippedData.date.millisecond >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.date.millisecond & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.date.microsecond >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.date.microsecond & 0xFF);
+  // // Date and time
+  // zippedData[i++] = unzippedData.date.year;
+  // zippedData[i++] = unzippedData.date.minute;
+  // zippedData[i++] = unzippedData.date.second;
+  // zippedData[i++] = (uint8_t)((unzippedData.date.millisecond >> 8) & 0xFF);
+  // zippedData[i++] = (uint8_t)(unzippedData.date.millisecond & 0xFF);
+  // zippedData[i++] = (uint8_t)((unzippedData.date.microsecond >> 8) & 0xFF);
+  // zippedData[i++] = (uint8_t)(unzippedData.date.microsecond & 0xFF);
+
+  // Timestamp
+  zippedData[++i] = (uint8_t)((unzippedData.timestamp >> 24) & 0xFF);
+  zippedData[++i] = (uint8_t)((unzippedData.timestamp >> 16) & 0xFF);
+  zippedData[++i] = (uint8_t)((unzippedData.timestamp >> 8) & 0xFF);
+  zippedData[++i] = (uint8_t)(unzippedData.timestamp & 0xFF);
 
   // Change flag for frame optimisation
   zippedData[i++] = (uint8_t)(unzippedData.changeFlag & 0xFF);
@@ -362,13 +371,19 @@ Frame unzip(uint8_t *zippedData) {
   _unzippedData.bme.temperature = 0;
 
   // Date and time
-  _unzippedData.date.year = zippedData[i++];
-  _unzippedData.date.minute = zippedData[i++];
-  _unzippedData.date.second = zippedData[i++];
-  _unzippedData.date.millisecond = (zippedData[i++] << 8) & (0xFF << 8);
-  _unzippedData.date.millisecond |= zippedData[i++];
-  _unzippedData.date.microsecond = (zippedData[i++] << 8) & (0xFF << 8);
-  _unzippedData.date.microsecond |= zippedData[i++];
+  // _unzippedData.date.year = zippedData[i++];
+  // _unzippedData.date.minute = zippedData[i++];
+  // _unzippedData.date.second = zippedData[i++];
+  // _unzippedData.date.millisecond = (zippedData[i++] << 8) & (0xFF << 8);
+  // _unzippedData.date.millisecond |= zippedData[i++];
+  // _unzippedData.date.microsecond = (zippedData[i++] << 8) & (0xFF << 8);
+  // _unzippedData.date.microsecond |= zippedData[i++];
+
+  // Timestamp
+  _unzippedData.timestamp = (zippedData[++i] << 24) & (0xFF << 24);
+  _unzippedData.timestamp |= (zippedData[++i] << 16) & (0xFF << 16);
+  _unzippedData.timestamp |= (zippedData[++i] << 8) & (0xFF << 8);
+  _unzippedData.timestamp |= zippedData[++i];
 
   // Change flag for frame optimisation
   _unzippedData.changeFlag |= zippedData[i++];

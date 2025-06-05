@@ -80,6 +80,7 @@ int32_t cb_average(CircularBuffer* cb, Frame* iframe) {
 
   // Store the average in the first element of the buffer
   // frame = &averaged_frame;
+  iframe->timestamp = cb->buffer[cb->head]->timestamp; // Use the timestamp of the first element
   return 0;
 }
 
