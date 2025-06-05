@@ -5,3 +5,5 @@
 *.bin
 *.map
 build/make.log
+
+.idea

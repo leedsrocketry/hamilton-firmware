@@ -12,6 +12,7 @@
 
 #include "debug.h"
 #include "frame.h"
+#include "lib/log.h"
 #include "mcu.h"
 
 // Params
@@ -844,7 +845,7 @@ static inline void init_flash() {
   // LOG("%lld\r\n", read_flash_ID());
 
   if (read_flash_ID() != 0) {
-    LOG("Flash Working Correctly\n");
+    logi("Flash Working Correctly\n");
   }
 }
 

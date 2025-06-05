@@ -10,6 +10,7 @@
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
+#include "lib/log.h"
 
 M5611_data _M5611_data;
 ADXL375_data _ADXL375_data;
@@ -29,18 +30,18 @@ void initalise_drivers() {
   // Sensor initialisation
 
   if (MS5611_init(SPI1)) {
-    LOG("ERROR INITIALISING MS5611 BAROMETER\n");
+    loge("ERROR INITIALISING MS5611 BAROMETER\n");
   } else {
-    LOG("MS5611 BAROMETER INITIALISED\n");
+    logi("MS5611 BAROMETER INITIALISED\n");
   }
   if (ADXL375_init(SPI1)) {
-    LOG("ERROR INITIALISING ADXL375 ACCEL\n");
+    loge("ERROR INITIALISING ADXL375 ACCEL\n");
   } else {
-    LOG("ADXL375 ACCEL INITIALISED\n");
+    logi("ADXL375 ACCEL INITIALISED\n");
   }
   if (LSM6DS3_init(SPI1, &_LSM6DS3_data)) {
-    LOG("ERROR INITIALISING LSM6DS3 IMU\n");
+    loge("ERROR INITIALISING LSM6DS3 IMU\n");
   } else {
-    LOG("LSM6DS3 IMU INITIALISED\n");
+    logi("LSM6DS3 IMU INITIALISED\n");
   }
 }

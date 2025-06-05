@@ -32,13 +32,13 @@ State state;
 void handle_LAUNCHPAD(Frame *avg_frame, Frame *cur_frame) {
   (void)avg_frame;
   if (state.altitude > ALTITUDE_APOGEE_THRESHOLD) {
-    LOG("LAUNCHPAD: Altitude threshold met\r\n");
+    logi("LAUNCHPAD: Altitude threshold met\r\n");
     flightStage = ASCENT;
     return;
   }
 
   if (cur_frame->accel.y < ACCEL_LAUNCH_THRESHOLD) {
-    LOG("LAUNCHPAD: Acceleration threshold met\r\n");
+    logi("LAUNCHPAD: Acceleration threshold met\r\n");
     flightStage = ASCENT;
     return;
   }
@@ -51,7 +51,7 @@ void handle_ASCENT(Frame *frame) {
   }
 
   if (state.altitude < (max_altitude - ALTITUDE_APOGEE_THRESHOLD)) {
-    LOG("ASCENT: Altitude threshold met\r\n");
+    logi("ASCENT: Altitude threshold met\r\n");
     flightStage = APOGEE;
   }
 }
@@ -117,7 +117,7 @@ void run_flight() {
     last_loop_time = current_time;
 
     if (apogee_time != 0 && (current_time - apogee_time) > 600000) {
-      LOG("APOGEE TIMEOUT\r\n");
+      logw("APOGEE TIMEOUT\r\n");
       flightStage = LANDING;
     }
 
@@ -125,7 +125,7 @@ void run_flight() {
     if (flightStage != LAUNCHPAD && flightStage != LANDING) {
       int8_t write_success = save_frame(frame);
       if (write_success != SUCCESS) {
-        LOG("WRITE FAILED\r\n");
+        loge("WRITE FAILED\r\n");
       }
     }
 

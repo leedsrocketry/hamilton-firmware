@@ -7,6 +7,8 @@
 
 #include "sensors.h"
 
+#include "lib/log.h"
+
 double Lb = -0.0065;   // temperature lapse rate (K/m)
 double hb = 0;         // reference height (sea level)
 double R = 8.3144598;  // universal gas constant
@@ -93,10 +95,11 @@ void format_sensor_data(M5611_data *_M5611_data, ADXL375_data *_ADXL375_data, LS
 }
 
 void print_sensor_line(Frame frame) {
-  printf("[BAR: T=%5" PRId32 " P=%5" PRId32 "] [ACCEL: X=%5" PRId16 " Y=%5" PRId16 " Z=%5" PRId16 "] [IMU: X=%5" PRId32
-         " Y=%5" PRId32 " Z=%5" PRId32 "]\r\n",
-         frame.barometer.temp, frame.barometer.pressure, frame.accel.x, frame.accel.y, frame.accel.z, frame.imu.x_rate,
-         frame.imu.y_rate, frame.imu.z_rate);
+  logi("[BAR: T=%5" PRId32 " P=%5" PRId32 "] [ACCEL: X=%5" PRId16 " Y=%5" PRId16 " Z=%5" PRId16 "] [IMU: X=%5" PRId32
+       " Y=%5" PRId32 " Z=%5" PRId32 "]\r\n",
+       frame.barometer.temp, frame.barometer.pressure, frame.accel.x, frame.accel.y, frame.accel.z, frame.imu.x_rate,
+       frame.imu.y_rate, frame.imu.z_rate);
+  (void)frame;  // Surpress unused variable when building with logging off.
 }
 
 double barometric_equation(double pressure, double temp) {
