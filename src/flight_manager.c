@@ -123,7 +123,7 @@ void run_flight() {
 
     read_sensors(&frame, dt);
     if (flightStage != LAUNCHPAD && flightStage != LANDING) {
-      int8_t write_success = save_frame(frame);
+      int8_t write_success = log_frame(frame);
       if (write_success != SUCCESS) {
         loge("WRITE FAILED\r\n");
       }
