@@ -15,9 +15,42 @@
 #include "frame.h"
 #include "lib/log.h"
 #include "stm32l4r5xx.h"
+#include "drivers/MAXM10S_driver.h"
 
 volatile uint32_t s_ticks;
 void SysTick_Handler(void) { s_ticks++; }
+
+#define BUFFER_SIZE 100
+
+static uint8_t usart3_buffer[BUFFER_SIZE];
+static uint8_t usart3_buf_idx = 0;
+
+void USART3_IRQHandler(void) __attribute__((used));
+void USART3_IRQHandler(void) {
+  // Check if RXNE flag is set
+  if (USART3->ISR & BIT(5)) {
+    // Read the received byte from the data register
+    uint8_t b = uart_read_byte(USART3);
+    usart3_buffer[usart3_buf_idx++] = b;
+
+    if (usart3_buf_idx >= BUFFER_SIZE) {
+      // Copy the actual hex (raw bytes) to hex_str
+      uint8_t hex_str[BUFFER_SIZE];
+      for (uint8_t i = 0; i < BUFFER_SIZE; i++) {
+        hex_str[i] = usart3_buffer[i];
+      }
+      // Pass the raw bytes to PARSE_NAV_PVT
+      PARSE_NAV_PVT(hex_str);
+      usart3_buf_idx = 0;
+    }
+  }
+  // Check for overrun error
+  if (USART3->ISR & USART_ISR_ORE) {
+    // Clear the overrun error flag by reading the data register again
+    volatile uint8_t temp = USART3->RDR;
+  }
+}
+
 
 /**
   @brief Main entry point for the Hamilton Flight Computer (HFC) firmware
@@ -60,6 +93,7 @@ int main(void) {
   calibrate_ADXL375();
   return 0;
 #endif
+
   logi("============== INITIALISE FLIGHT ==============\r\n");
   delay_ms(2000);
   STM32_super_beep();

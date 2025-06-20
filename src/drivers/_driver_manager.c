@@ -10,6 +10,7 @@
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
+#include "drivers/MAXM10S_driver.h"
 #include "lib/log.h"
 
 M5611_data _M5611_data;
@@ -44,4 +45,13 @@ void initalise_drivers() {
   } else {
     logi("LSM6DS3 IMU INITIALISED\n");
   }
+
+  // MAXM10S_init(USART3);
+  MAXM10S_G2(USART3);
+  // MAXM10S_commands(USART3);
+
+  // for(;;)
+  // {
+  //   MAXM10S_init(USART3);
+  // }
 }
