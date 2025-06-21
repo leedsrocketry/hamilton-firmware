@@ -17,7 +17,7 @@ double M = 0.0289644;  // molar mass of Earth's air
 double Pb = 101325;    // reference pressure at sea level (in Pa)
 
 void build_frame(Frame *frame, M5611_data _M5611_data, ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
-                 BME280_data _BME280_data, GNSS_Data _GNSS_data) {
+                 BME280_data _BME280_data, MAX10M10S_data _GNSS_data) {
   // Add time stamp
   // uint32_t time = get_time_us();
   // frame->date.minute = (uint8_t)(time / (1000000 * 60)) % 60;  // minutes
@@ -71,6 +71,8 @@ void read_sensors(Frame *frame, uint32_t dt) {
   _LSM6DS3_data.x_rate = (int32_t)(_LSM6DS3_data.x_rate);
   _LSM6DS3_data.y_rate = (int32_t)(_LSM6DS3_data.y_rate);
   _LSM6DS3_data.z_rate = (int32_t)(_LSM6DS3_data.z_rate);
+
+  MAX10M10S_data _MAX10M10S_data = *MAXM10S_get_latest_data();
 
   // uint32_t time = get_time_us();
   // frame->date.minute = (time / (1000000 * 60)) % 60;  // minuts

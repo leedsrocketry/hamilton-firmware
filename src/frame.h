@@ -14,6 +14,7 @@
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
+#include "drivers/MAXM10S_driver.h"
 
 // Max 128 bytes
 
@@ -29,7 +30,7 @@ typedef struct Frame {
   ADXL375_data accel;    // 48 bits
   LSM6DS3_data imu;      // 240 bits
   M5611_data barometer;  // 64 bits
-  GNSS_Data GNSS;        // 64 bits
+  MAX10M10S_data GNSS;  // 176 bits
   BME280_data bme;       // 80 bits
   uint8_t hammingCode[8];
   uint16_t CRC_Check;

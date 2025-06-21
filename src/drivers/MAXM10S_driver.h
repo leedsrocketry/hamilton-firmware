@@ -8,7 +8,7 @@
 #define MAXM10S_DRIVER_H
 
 #include <stdint.h>
-
+#include <time.h>
 
 #include "include/stm32l4r5xx.h"
 #include "debug.h"
@@ -102,9 +102,21 @@
 // };
 // #endif
 
+typedef struct MAX10M10S_data {
+  int32_t lat;           // 32 bits
+  int32_t lon;           // 32 bits
+  int32_t height_MSL;    // 32 bits
+  uint8_t fixType;       // 8 bits
+  uint8_t numSV;         // 8 bits
+  time_t UNIX_time;      // typically 64 bits on most systems, but can be 32 bits (implementation-defined)
+  uint32_t nanoseconds;  // 32 bits
+} MAX10M10S_data;
+
+MAX10M10S_data *MAXM10S_get_latest_data();
+
 uint8_t MAXM10S_init(USART_TypeDef *uart);
 uint8_t MAXM10S_G2(USART_TypeDef *uart);
-uint8_t PARSE_NAV_PVT(uint8_t *buf);
+uint8_t PARSE_NAV_PVT(uint8_t *buf, MAX10M10S_data *data);
 // uint8_t MAXM10S_commands(USART_TypeDef *uart);
 
 #endif /* MAXM10S_DRIVER_H */

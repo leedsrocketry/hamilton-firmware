@@ -302,7 +302,7 @@ void print_capacity_info();
 /**
   @brief Writes a single Frame to the next available space on the flash
 */
-int log_frame(Frame _input);
+int8_t log_frame(Frame _input);
 
 /**
   @brief Outputs the frame array at the address frameAddr

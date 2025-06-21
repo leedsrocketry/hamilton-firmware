@@ -20,6 +20,7 @@
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
+#include "drivers/MAXM10S_driver.h"
 #include "flight_manager.h"
 
 // void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
@@ -28,7 +29,7 @@
 void read_sensors(Frame* frame, uint32_t dt);
 
 void build_frame(Frame* _frameArray, M5611_data _M5611_data, ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
-                 BME280_data _BME280_data, GNSS_Data _GNSS_data);
+                 BME280_data _BME280_data, MAX10M10S_data _GNSS_data);
 
 void format_sensor_data(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data, LSM6DS3_data* _LSM6DS3_data, char* buffer,
                         size_t buffer_size);

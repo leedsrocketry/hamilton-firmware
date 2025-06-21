@@ -17,16 +17,19 @@ M5611_data _M5611_data;
 ADXL375_data _ADXL375_data;
 LSM6DS3_data _LSM6DS3_data;
 BME280_data _BME280_data;
-GNSS_Data _GNSS_data;
+MAX10M10S_data _GNSS_data;
 
 void initalise_drivers() {
   _BME280_data.temperature = 0;
   _BME280_data.pressure = 0;
   _BME280_data.humidity = 0;
-  _GNSS_data.latitude = 0;
-  _GNSS_data.longitude = 0;
-  _GNSS_data.altitude = 0;
-  _GNSS_data.velocity = 0;
+  _GNSS_data.lat = 0;
+  _GNSS_data.lon = 0;
+  _GNSS_data.height_MSL = 0;
+  _GNSS_data.fixType = 0;
+  _GNSS_data.numSV = 0;
+  _GNSS_data.UNIX_time = 0;
+  _GNSS_data.nanoseconds = 0;
 
   // Sensor initialisation
 
