@@ -29,7 +29,7 @@ MAX10M10S_data *MAXM10S_get_latest_data() {
 
 uint8_t MAXM10S_init(USART_TypeDef *uart) {
   // char* command = "<UBX(CFG-MSG, msgClass=NAV, msgID=NAV-STATUS, rateDDC=0, rateUART1=1, rateUART2=0, rateUSB=0, rateSPI=0, reserved=0)>";
-  uint8_t command[] = {0x0A, 0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x21, 0x30, 0x10, 0x27, 0x24, 0x38};
+  char command[] = {0x0A, 0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x21, 0x30, 0x10, 0x27, 0x24, 0x38};
 
   uart_write_buf(uart, command, sizeof(command));
   return 0;
@@ -37,7 +37,7 @@ uint8_t MAXM10S_init(USART_TypeDef *uart) {
 
 uint8_t MAXM10S_preset_tracker(USART_TypeDef *uart) {
   // List of UBX commands to send
-  const uint8_t cmds[][20] = {
+  char cmds[][20] = {
     {0xB5,0x62,0x06,0x8A,0x09,0x00,0x00,0x01,0x00,0x00,0x20,0x00,0x31,0x10,0x00,0xFB,0x84},
     {0xB5,0x62,0x06,0x8A,0x09,0x00,0x00,0x02,0x00,0x00,0x20,0x00,0x31,0x10,0x00,0xFC,0x8C},
     {0xB5,0x62,0x06,0x8A,0x09,0x00,0x00,0x01,0x00,0x00,0x21,0x00,0x11,0x20,0x03,0xEF,0x4C},
@@ -57,7 +57,7 @@ uint8_t MAXM10S_preset_tracker(USART_TypeDef *uart) {
     {0xB5,0x62,0x06,0x8A,0x09,0x00,0x00,0x01,0x00,0x00,0x01,0x00,0xD0,0x20,0x02,0x8D,0xE8},
     {0xB5,0x62,0x06,0x8A,0x09,0x00,0x00,0x02,0x00,0x00,0x01,0x00,0xD0,0x20,0x02,0x8E,0xF0}
   };
-  const size_t cmd_lens[] = {
+  size_t cmd_lens[] = {
     17,17,17,17,17,17,18,18,17,17,17,17,17,17,20,20,17,17
   };
   for (size_t i = 0; i < sizeof(cmds)/sizeof(cmds[0]); ++i) {
@@ -97,7 +97,7 @@ uint8_t MAXM10S_preset_tracker(USART_TypeDef *uart) {
 // }
 
 uint8_t MAXM10S_G2(USART_TypeDef *uart) {
-  const uint8_t cmds[][17] = {
+  char cmds[][17] = {
     {0xB5, 0x62, 0x06, 0x8A, 0x09, 0x00, 0x00, 0x01, 0x00, 0x00, 0xAC, 0x00, 0x91, 0x20, 0x00, 0xF7, 0x80},
     {0xB5, 0x62, 0x06, 0x8A, 0x09, 0x00, 0x00, 0x01, 0x00, 0x00, 0xAD, 0x00, 0x91, 0x20, 0x00, 0xF8, 0x85},
     {0xB5, 0x62, 0x06, 0x8A, 0x09, 0x00, 0x00, 0x01, 0x00, 0x00, 0xC0, 0x00, 0x91, 0x20, 0x00, 0x0B, 0xE4},
@@ -136,6 +136,10 @@ uint8_t PARSE_NAV_PVT(uint8_t *buf, MAX10M10S_data *data) {
   char ID[1];
   ID[0] = buf[3];
 
+  (void)header;
+  (void)class;
+  (void)ID;
+
   // Interpret length as integer (little-endian)
   uint16_t length = buf[4] | (buf[5] << 8);
 
@@ -150,6 +154,7 @@ uint8_t PARSE_NAV_PVT(uint8_t *buf, MAX10M10S_data *data) {
   // logi("Header: %s, Class: %s, ID: %s, Length: %d\n", header, class, ID, length);
 
   uint32_t iTOW = payload[0] | (payload[1] << 8) | (payload[2] << 16) | (payload[3] << 24);
+  (void)iTOW;
   uint16_t year = payload[4] | (payload[5] << 8);
   uint8_t month = payload[6];
   uint8_t day = payload[7];
@@ -158,30 +163,44 @@ uint8_t PARSE_NAV_PVT(uint8_t *buf, MAX10M10S_data *data) {
   uint8_t sec = payload[10];
 
   uint8_t valid = payload[11];
+  (void)valid;
   uint32_t tAcc = payload[12] | (payload[13] << 8) | (payload[14] << 16) | (payload[15] << 24);
+  (void)tAcc;
   int32_t nano = payload[16] | (payload[17] << 8) | (payload[18] << 16) | (payload[19] <<24);
   uint8_t fixType = payload[20];
   uint8_t flags = payload[21];
+  (void)flags;
   uint8_t flags2 = payload[22];
+  (void)flags2;
   uint8_t numSV = payload[23];
   int32_t lon = payload[24] | (payload[25] << 8) | (payload[26] << 16) | (payload[27] << 24);
   int32_t lat = payload[28] | (payload[29] << 8) | (payload[30] << 16) | (payload[31] << 24);
   int32_t height = payload[32] | (payload[33] << 8) | (payload[34] << 16) | (payload[35] << 24);
+  (void)height; // Bad height, not needed.
   int32_t hMSL = payload[36] | (payload[37] << 8) | (payload[38] << 16) | (payload[39] << 24);
   uint32_t hAcc = payload[40] | (payload[41] << 8) | (payload[42] << 16) | (payload[43] << 24);
+  (void)hAcc;
   uint32_t vAcc = payload[44] | (payload[45] << 8) | (payload[46] << 16) | (payload[47] << 24);
+  (void)vAcc;
   int32_t velN = payload[48] | (payload[49] << 8) | (payload[50] << 16) | (payload[51] << 24);
+  (void)velN;
   int32_t velE = payload[52] | (payload[53] << 8) | (payload[54] << 16) | (payload[55] << 24);
+  (void)velE;
   int32_t velD = payload[56] | (payload[57] << 8) | (payload[58] << 16) | (payload[59] << 24);
+  (void)velD;
   uint32_t gSpeed = payload[60] | (payload[61] << 8) | (payload[62] << 16) | (payload[63] << 24);
+  (void)gSpeed;
   int32_t headMot = payload[64] | (payload[65] << 8) | (payload[66] << 16) | (payload[67] << 24);
+  (void)headMot;
   uint32_t sAcc = payload[68] | (payload[69] << 8) | (payload[70] << 16) | (payload[71] << 24);
+  (void)sAcc;
   uint32_t headAcc = payload[72] | (payload[73] << 8) | (payload[74] << 16) | (payload[75] << 24);
+  (void)headAcc;
   
   // log timestamp
   // logi("Timestamp: %04d-%02d-%02d %02d:%02d:%02d.%09d\r\n", year, month, day, hour, min, sec, nano);
   // logi("Fix: %d\r\n", fixType);
-  // logi("Position: lat=%d, lon=%d, height=%d, hMSL=%d\r\n", lat, lon, height, hMSL);
+  logi("Position: lat=%d, lon=%d, height=%d, hMSL=%d\r\n", lat, lon, height, hMSL);
 
   struct tm timeinfo;
   timeinfo.tm_year = year - 1900; // tm_year is years since 1900
@@ -198,6 +217,7 @@ uint8_t PARSE_NAV_PVT(uint8_t *buf, MAX10M10S_data *data) {
   data->fixType = fixType;
   data->numSV = numSV;
   data->nanoseconds = nano;
+  data->UNIX_time = timestamp;
   latest_data = *data;
   return 0;
 }

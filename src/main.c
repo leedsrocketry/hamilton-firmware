@@ -83,13 +83,13 @@ void USART3_IRQHandler(void) {
                 PARSE_NAV_PVT(hex_str, &data);
 
                 // Log each byte as a two-digit hex string
-                #ifdef DEBUG
-                char log_buf[BUFFER_SIZE * 3 + 1] = {0};
-                for (uint8_t i = 0; i < BUFFER_SIZE; i++) {
-                    sprintf(&log_buf[i * 3], "%02X ", hex_str[i]);
-                }
-                logi("%s\r\n", log_buf);
-                #endif
+                // #ifdef DEBUG
+                // char log_buf[BUFFER_SIZE * 3 + 1] = {0};
+                // for (uint8_t i = 0; i < BUFFER_SIZE; i++) {
+                //     sprintf(&log_buf[i * 3], "%02X ", hex_str[i]);
+                // }
+                // logi("%s\r\n", log_buf);
+                // #endif
 
                 // Reset for the next message
                 usart3_buf_idx = 0;

@@ -109,7 +109,7 @@ typedef struct MAX10M10S_data {
   uint8_t fixType;       // 8 bits
   uint8_t numSV;         // 8 bits
   time_t UNIX_time;      // typically 64 bits on most systems, but can be 32 bits (implementation-defined)
-  uint32_t nanoseconds;  // 32 bits
+  int32_t nanoseconds;  // 32 bits
 } MAX10M10S_data;
 
 MAX10M10S_data *MAXM10S_get_latest_data();

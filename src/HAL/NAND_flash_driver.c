@@ -206,7 +206,7 @@ static inline void print_frame_csv(Frame frameFormat) {
                                         frameFormat.imu.z_accel);
 
   LOG("%li,%li,", frameFormat.barometer.temp, frameFormat.barometer.pressure);
-  LOG("%i,%i,%i,%i,", frameFormat.GNSS.lat, frameFormat.GNSS.lon, frameFormat.GNSS.height_MSL, frameFormat.GNSS.numSV);
+  LOG("%li,%li,%li,%i,", frameFormat.GNSS.lat, frameFormat.GNSS.lon, frameFormat.GNSS.height_MSL, frameFormat.GNSS.numSV);
   LOG("%li,%i,%li,", frameFormat.bme.pressure, frameFormat.bme.temperature, frameFormat.bme.humidity);
   LOG("\r\n");
 }
@@ -235,7 +235,7 @@ void print_frame_array(Frame frameFormat) {
                                                                         frameFormat.imu.z_accel);
 
   LOG("Barometer: \ttemp: %ld, \tpressure: %ld\r\n", frameFormat.barometer.temp, frameFormat.barometer.pressure);
-  LOG("GNSS: \tLat: %d,\tLong: %d,\tAlt: %d,\tVel: %d\r\n", frameFormat.GNSS.lat, 
+  LOG("GNSS: \tLat: %li,\tLong: %li,\tAlt: %li,\tVel: %d\r\n", frameFormat.GNSS.lat, 
                                                                frameFormat.GNSS.lon, 
                                                                frameFormat.GNSS.height_MSL, 
                                                                frameFormat.GNSS.fixType);
@@ -496,10 +496,8 @@ Frame unzip(uint8_t *zippedData) {
   _unzippedData.GNSS.height_MSL |= (zippedData[i++] << 16) & (0xFF << 16);
   _unzippedData.GNSS.height_MSL |= (zippedData[i++] << 8) & (0xFF << 8);
   _unzippedData.GNSS.height_MSL |= zippedData[i++];
-  _unzippedData.GNSS.fixType = (zippedData[i++] << 8) & (0xFF << 8);
-  _unzippedData.GNSS.fixType |= zippedData[i++];
-  _unzippedData.GNSS.numSV = (zippedData[i++] << 8) & (0xFF << 8);
-  _unzippedData.GNSS.numSV |= zippedData[i++];
+  _unzippedData.GNSS.fixType = ((uint16_t)zippedData[i++] << 8) | zippedData[i++];
+  _unzippedData.GNSS.numSV = ((uint16_t)zippedData[i++] << 8) | zippedData[i++];
   _unzippedData.GNSS.UNIX_time = (zippedData[i++] << 24) & (0xFF << 24);
   _unzippedData.GNSS.UNIX_time |= (zippedData[i++] << 16) & (0xFF << 16);
   _unzippedData.GNSS.UNIX_time |= (zippedData[i++] << 8) & (0xFF << 8);

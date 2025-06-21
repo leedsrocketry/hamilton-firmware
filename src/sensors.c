@@ -80,7 +80,7 @@ void read_sensors(Frame *frame, uint32_t dt) {
   // frame->date.millisecond = (time / 1000) % 1000;     // milli seconds
   // frame->date.microsecond = time % 1000;              // Mirco seconds
   // frame->changeFlag = flightStage;
-
+  frame->GNSS = _MAX10M10S_data;
   frame->accel = _ADXL375_data;
   frame->imu = _LSM6DS3_data;
   frame->barometer = _M5611_data;

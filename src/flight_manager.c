@@ -129,6 +129,8 @@ void run_flight() {
       }
     }
 
+    (void)log_frame(frame);
+
     (void)cb_enqueue_overwrite(cb, &frame);
 
     (void)cb_average(cb, &avg_frame);
