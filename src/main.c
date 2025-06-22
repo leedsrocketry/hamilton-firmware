@@ -24,8 +24,8 @@ void SysTick_Handler(void) { s_ticks++; }
 #define SYNC_BYTE_1 0xB5
 #define SYNC_BYTE_2 0x62
 
-volatile uint8_t usart3_buffer[BUFFER_SIZE];
-volatile uint8_t usart3_buf_idx = 0;
+volatile uint8_t uart4_buffer[BUFFER_SIZE];
+volatile uint8_t uart4_buf_idx = 0;
 
 typedef enum {
     STATE_WAIT_FOR_SYNC1,
@@ -33,48 +33,48 @@ typedef enum {
     STATE_RECEIVING_PAYLOAD
 } UsartReceiveState_t;
 
-volatile UsartReceiveState_t usart3_rx_state = STATE_WAIT_FOR_SYNC1;
+volatile UsartReceiveState_t uart4_rx_state = STATE_WAIT_FOR_SYNC1;
 
-void USART3_IRQHandler(void) __attribute__((used));
-void USART3_IRQHandler(void) {
+void UART4_IRQHandler(void) __attribute__((used));
+void UART4_IRQHandler(void) {
   // Check if RXNE flag is set
-  if (USART3->ISR & BIT(5)) {
-    uint8_t b = uart_read_byte(USART3);
+  if (UART4->ISR & BIT(5)) {
+    uint8_t b = uart_read_byte(UART4);
 
-    switch (usart3_rx_state) {
+    switch (uart4_rx_state) {
         case STATE_WAIT_FOR_SYNC1:
             if (b == SYNC_BYTE_1) {
-                usart3_buffer[0] = b; // Store the first sync byte
-                usart3_buf_idx = 1;
-                usart3_rx_state = STATE_WAIT_FOR_SYNC2;
+                uart4_buffer[0] = b; // Store the first sync byte
+                uart4_buf_idx = 1;
+                uart4_rx_state = STATE_WAIT_FOR_SYNC2;
             } else {
                 // If not SYNC_BYTE_1, discard and stay in this state
-                usart3_buf_idx = 0; // Ensure index is reset
+                uart4_buf_idx = 0; // Ensure index is reset
             }
             break;
 
         case STATE_WAIT_FOR_SYNC2:
             if (b == SYNC_BYTE_2) {
-                usart3_buffer[1] = b; // Store the second sync byte
-                usart3_buf_idx = 2;
-                usart3_rx_state = STATE_RECEIVING_PAYLOAD;
+                uart4_buffer[1] = b; // Store the second sync byte
+                uart4_buf_idx = 2;
+                uart4_rx_state = STATE_RECEIVING_PAYLOAD;
             } else {
                 // If not SYNC_BYTE_2, reset state and look for SYNC_BYTE_1 again
-                usart3_rx_state = STATE_WAIT_FOR_SYNC1;
-                usart3_buf_idx = 0;
+                uart4_rx_state = STATE_WAIT_FOR_SYNC1;
+                uart4_buf_idx = 0;
             }
             break;
 
         case STATE_RECEIVING_PAYLOAD:
-            if (usart3_buf_idx < BUFFER_SIZE) {
-                usart3_buffer[usart3_buf_idx++] = b;
+            if (uart4_buf_idx < BUFFER_SIZE) {
+                uart4_buffer[uart4_buf_idx++] = b;
             }
 
-            if (usart3_buf_idx >= BUFFER_SIZE) {
+            if (uart4_buf_idx >= BUFFER_SIZE) {
                 // Copy the actual hex (raw bytes) to hex_str
                 uint8_t hex_str[BUFFER_SIZE];
                 for (uint8_t i = 0; i < BUFFER_SIZE; i++) {
-                    hex_str[i] = usart3_buffer[i];
+                    hex_str[i] = uart4_buffer[i];
                 }
                 // Pass the raw bytes to PARSE_NAV_PVT
                 // PARSE_NAV_PVT(hex_str); // Uncomment when ready
@@ -92,17 +92,17 @@ void USART3_IRQHandler(void) {
                 // #endif
 
                 // Reset for the next message
-                usart3_buf_idx = 0;
-                usart3_rx_state = STATE_WAIT_FOR_SYNC1;
+                uart4_buf_idx = 0;
+                uart4_rx_state = STATE_WAIT_FOR_SYNC1;
             }
             break;
     }
   }
 
   // Check for overrun error
-  if (USART3->ISR & USART_ISR_ORE) {
+  if (UART4->ISR & USART_ISR_ORE) {
     // Clear the overrun error flag by reading the data register again
-    volatile uint16_t _temp = USART3->RDR;
+    volatile uint16_t _temp = UART4->RDR;
     (void)_temp;
   }
 }
@@ -153,7 +153,33 @@ int main(void) {
   logi("============== INITIALISE FLIGHT ==============\r\n");
   delay_ms(2000);
   STM32_super_beep();
-  run_flight();
+
+  logi("=============== INITIALISE UART ===============\r\n");
+  uart_write_buf(USART3, "AT\r", 3);
+  delay_ms(2000);
+  char b = uart_read_byte(USART3);
+  logi("USART3 received byte: %c\r\n", b);
+  b = uart_read_byte(USART3);
+  logi("USART3 received byte: %c\r\n", b);
+
+  // for(;;)
+  // {
+  //   uart_write_buf(USART3, "AT\r", 3);
+  //   if (uart_read_ready(USART3)) {
+  //     char b = uart_read_byte(USART3);
+  //     logi("USART3 received byte: %c\r\n", b);
+  //   } else {
+  //     logi("Waiting for USART3...\r\n");
+  //     delay_ms(1000);
+  //   }
+  // }
+
+  // char output_buf[2];
+  // output_buf[0] = uart_read_byte(UART4);
+  // // output_buf[1] = uart_read_byte(UART4);
+  // logi("UART4 output: %s\r\n", output_buf);
+
+  // run_flight();
 
   return 0;
 }

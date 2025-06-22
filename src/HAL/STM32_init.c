@@ -81,6 +81,8 @@ void STM32_init_internals() {
   // uart_init(USART3, 115200);  // Initialise UART3;
   uart_init(USART3, 9600); // Initialise UART3 (GNSS);
 
+  uart_init(UART4, 19200); // Initialise UART4 (ROCKBLOCk);
+
   // SPI
   spi_init(SPI1);
 

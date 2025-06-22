@@ -200,14 +200,15 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud) {
   if (uart == UART1) RCC->APB2ENR |= BIT(14);
   if (uart == UART2) RCC->APB1ENR1 |= BIT(17);
   if (uart == UART3) RCC->APB1ENR1 |= BIT(18);
+  if (uart == UART4) RCC->APB1ENR1 |= BIT(19);
   if (uart == LUART1) RCC->APB1ENR2 |= BIT(0);
 
 #ifdef FLIGHT_COMPUTER
   // Flight Computer pins
   if (uart == UART1) af = 7, tx = PIN('A', 9), rx = PIN('A', 10);  // EXTERN USART
   if (uart == UART2) af = 7, tx = PIN('D', 5), rx = PIN('D', 6);
-  if (uart == UART3) af = 7, tx = PIN('C', 10), rx = PIN('C', 11);  // GNSS RX/TX
-  if (uart == UART4) af = 7, tx = PIN('D', 8), rx = PIN('D', 9);    // GNSS RX/TX
+  if (uart == UART3) af = 7, tx = PIN('D', 8), rx = PIN('D', 9);   // ROCKBLOCK
+  if (uart == UART4) af = 8, tx = PIN('C', 10), rx = PIN('C', 11); // GNSS
 #else
   // Nucleo pins
   if (uart == UART1) af = 7, tx = PIN('A', 9), rx = PIN('A', 10);
@@ -224,7 +225,7 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud) {
 
   if (uart == LUART1 || uart == USART1) {
     uart->BRR = FREQ / baud;  // FREQ is a CPU frequency*256 when LPUART is used
-  } else if (uart == USART2 || uart == USART3) {
+  } else if (uart == USART2 || uart == UART4) {
     // uart->BRR = baud;
 
     uart->BRR = 0x682;
@@ -241,9 +242,20 @@ static inline void uart_init(USART_TypeDef *uart, uint32_t baud) {
     // NVIC_EnableIRQ(USART3_IRQn);
   }
 
-  if (uart == USART3) {
+  // now GNSS 
+  if (uart == UART4) {
     uart->CR1 |= USART_CR1_RXNEIE_RXFNEIE;
-    NVIC_EnableIRQ(USART3_IRQn);  // Enable RXNE interrupt for USART3
+    NVIC_EnableIRQ(UART4_IRQn);  // Enable RXNE interrupt for USART3
+  }
+
+  // NOW RB
+  if (uart == USART3) {
+    uart->BRR = 0x341;
+    uart->CR2 = 0;
+    uart->CR3 = 0;
+
+    uart->CR3 |= USART_CR3_OVRDIS;
+    uart->CR3 |= USART_CR3_ONEBIT;
   }
 
   uart->CR1 |= BIT(0) | BIT(2) | BIT(3);  // Set UE, RE, TE Datasheet 50.8.1

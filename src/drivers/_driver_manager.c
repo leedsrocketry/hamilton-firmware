@@ -50,7 +50,7 @@ void initalise_drivers() {
   }
 
   // MAXM10S_init(USART3);
-  MAXM10S_G2(USART3);
+  MAXM10S_G2(UART4);
   // MAXM10S_commands(USART3);
 
   // for(;;)
