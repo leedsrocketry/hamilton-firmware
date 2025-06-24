@@ -152,7 +152,7 @@ int main(void) {
 
   logi("============== INITIALISE FLIGHT ==============\r\n");
   delay_ms(2000);
-  STM32_super_beep();
+  // STM32_super_beep();
   run_flight();
 
   return 0;
