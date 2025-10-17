@@ -2,44 +2,49 @@
     Leeds University Rocketry Organisation - LURA
     Author Name: Jack Kendall
     Created on: 01 August 2024
-    Description: Driver file for the HC-12 transceiver https://www.allaboutcircuits.com/projects/understanding-and-implementing-the-hc-12-wireless-transceiver-module/
+    Description: Driver file for the HC-12 transceiver
+   https://www.allaboutcircuits.com/projects/understanding-and-implementing-the-hc-12-wireless-transceiver-module/
 
     ---------------------------------------
 */
 
 #include "HC12_driver.h"
-#include "../HAL/mcu.h"
+
 #include <string.h>
 
+#include "../HAL/mcu.h"
+
 void HC12_init(USART_TypeDef *uart) {
-    LOG("Initialising Pad Radio...\r\n");
-    uart_read_ready(uart); // Ready to receive
+  LOG("Initialising Pad Radio...\r\n");
+  uart_read_ready(uart);  // Ready to receive
 
-    gpio_set_mode(SET_PIN, GPIO_MODE_OUTPUT);
-    gpio_write(SET_PIN, LOW); // Set pin low to enter command mode
+  gpio_set_mode(SET_PIN, GPIO_MODE_OUTPUT);
+  gpio_write(SET_PIN, LOW);  // Set pin low to enter command mode
 
-    delay_ms(500);
+  delay_ms(500);
 
-    uart_write_buf(uart, RETURN_ALL_PARAM, sizeof(RETURN_ALL_PARAM)); // Send command to return parameters
-    char params[40];
-    uart_read_buf(uart, params, sizeof(params)); // Read result and save to var
+  uart_write_buf(uart, RETURN_ALL_PARAM,
+                 sizeof(RETURN_ALL_PARAM));  // Send command to return parameters
+  char params[40];
+  uart_read_buf(uart, params, sizeof(params));  // Read result and save to var
 
-    delay_ms(500);
+  delay_ms(500);
 
-    gpio_write(SET_PIN, HIGH); // Set pin high to exit command mode
+  gpio_write(SET_PIN, HIGH);  // Set pin high to exit command mode
 
-    delay_ms(500);
+  delay_ms(500);
 
-    LOG("===== PAD RADIO SETTINGS =====\r\n");
-    LOG("%s\r\n", params); // Send params to log
+  LOG("===== PAD RADIO SETTINGS =====\r\n");
+  LOG("%s\r\n", params);  // Send params to log
 
-    char txt[] = "\r\nPad Radio Settings: \r\n";
-    uart_write_buf(uart, txt, sizeof(txt)); // Send text to ground
-    uart_write_buf(uart, params, sizeof(params)); // Send params to ground
+  char txt[] = "\r\nPad Radio Settings: \r\n";
+  uart_write_buf(uart, txt, sizeof(txt));        // Send text to ground
+  uart_write_buf(uart, params, sizeof(params));  // Send params to ground
 }
 
 void HC12_transmit(USART_TypeDef *uart, char *data) {
-    uart_write_buf(uart, data, strlen(data)); // Send the actual length of the string
+  uart_write_buf(uart, data,
+                 strlen(data));  // Send the actual length of the string
 }
 
 // Write function for receiving from Ground Station Here

@@ -1,3 +1,9 @@
+/*
+  Leeds University Rocketry Organisation - LURA
+  Author Name: Your Name
+  Created on: 29 Mar 2025
+  Description: Description of the file
+*/
 
 #ifndef SENSORS_H
 #define SENSORS_H
@@ -9,25 +15,29 @@
 #include "frame.h"
 #include "stm32l4r5xx.h"
 // #include "HAL/NAND_flash_driver.h"
-#include "frame_buffer.h"
+#include "debug.h"
 #include "drivers/ADXL375_driver.h"
 #include "drivers/BME280_driver.h"
 #include "drivers/LSM6DS3_driver.h"
 #include "drivers/MS5611_driver.h"
 #include "flight_manager.h"
-#include "debug.h"
 
-void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
-                    LSM6DS3_data* _LSM6DS3_data);
+// void read_sensors(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
+//                   LSM6DS3_data* _LSM6DS3_data);
 
-void build_frame(Frame* _frameArray, M5611_data _M5611_data,
-                     ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
-                     BME280_data _BME280_data, GNSS_Data _GNSS_data);
+void read_sensors(Frame* frame, uint32_t dt);
 
-void format_sensor_data(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data,
-                        LSM6DS3_data* _LSM6DS3_data, char* buffer, size_t buffer_size);
+void build_frame(Frame* _frameArray, M5611_data _M5611_data, ADXL375_data _ADXL375_data, LSM6DS3_data _LSM6DS3_data,
+                 BME280_data _BME280_data, GNSS_Data _GNSS_data);
+
+void format_sensor_data(M5611_data* _M5611_data, ADXL375_data* _ADXL375_data, LSM6DS3_data* _LSM6DS3_data, char* buffer,
+                        size_t buffer_size);
 
 double barometric_equation(double pressure, double temp);
 
+void print_sensor_line(Frame frame);
+
+void test_sensors();
+void calibrate_ADXL375();
 
 #endif /* SENSORS_H */

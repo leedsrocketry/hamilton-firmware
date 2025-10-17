@@ -1,0 +1,3 @@
+[submodule "segger-rtt"]
+	path = segger-rtt
+	url = git@github.com:adfernandes/segger-rtt.git
