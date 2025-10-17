@@ -129,6 +129,8 @@ void run_flight() {
       }
     }
 
+    (void)log_frame(frame);
+
     (void)cb_enqueue_overwrite(cb, &frame);
 
     (void)cb_average(cb, &avg_frame);
@@ -139,9 +141,9 @@ void run_flight() {
 
     switch (flightStage) {
       case LAUNCHPAD:
-        if (loop_count % 10 == 0) {
-          STM32_beep_buzzer(25, 25, 1);
-        }
+        // if (loop_count % 10 == 0) {
+        //   STM32_beep_buzzer(25, 25, 1);
+        // }
         handle_LAUNCHPAD(&avg_frame, &frame);
         break;
       case ASCENT:

@@ -206,7 +206,7 @@ static inline void print_frame_csv(Frame frameFormat) {
                                         frameFormat.imu.z_accel);
 
   LOG("%li,%li,", frameFormat.barometer.temp, frameFormat.barometer.pressure);
-  LOG("%i,%i,%i,%i,", frameFormat.GNSS.latitude, frameFormat.GNSS.longitude, frameFormat.GNSS.altitude, frameFormat.GNSS.velocity);
+  LOG("%li,%li,%li,%i,", frameFormat.GNSS.lat, frameFormat.GNSS.lon, frameFormat.GNSS.height_MSL, frameFormat.GNSS.numSV);
   LOG("%li,%i,%li,", frameFormat.bme.pressure, frameFormat.bme.temperature, frameFormat.bme.humidity);
   LOG("\r\n");
 }
@@ -235,10 +235,10 @@ void print_frame_array(Frame frameFormat) {
                                                                         frameFormat.imu.z_accel);
 
   LOG("Barometer: \ttemp: %ld, \tpressure: %ld\r\n", frameFormat.barometer.temp, frameFormat.barometer.pressure);
-  LOG("GNSS: \tLat: %d,\tLong: %d,\tAlt: %d,\tVel: %d\r\n", frameFormat.GNSS.latitude, 
-                                                               frameFormat.GNSS.longitude, 
-                                                               frameFormat.GNSS.altitude, 
-                                                               frameFormat.GNSS.velocity);
+  LOG("GNSS: \tLat: %li,\tLong: %li,\tAlt: %li,\tVel: %d\r\n", frameFormat.GNSS.lat, 
+                                                               frameFormat.GNSS.lon, 
+                                                               frameFormat.GNSS.height_MSL, 
+                                                               frameFormat.GNSS.fixType);
                                                                
   LOG("BME280: \tPressure: %ld,\tTemperature: %d,\tHumidity: %ld\r\n", frameFormat.bme.pressure, 
                                                                       frameFormat.bme.temperature, 
@@ -326,14 +326,36 @@ void zip(Frame unzippedData, uint8_t *zippedData) {
   zippedData[i++] = (uint8_t)(unzippedData.barometer.pressure & 0xFF);
 
   // GNSS
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.latitude >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.latitude & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.longitude >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.longitude & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.altitude >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.altitude & 0xFF);
-  zippedData[i++] = (uint8_t)((unzippedData.GNSS.velocity >> 8) & 0xFF);
-  zippedData[i++] = (uint8_t)(unzippedData.GNSS.velocity & 0xFF);
+  // zippedData[i++] = (uint8_t)((unzippedData.GNSS.latitude >> 8) & 0xFF);
+  // zippedData[i++] = (uint8_t)(unzippedData.GNSS.latitude & 0xFF);
+  // zippedData[i++] = (uint8_t)((unzippedData.GNSS.longitude >> 8) & 0xFF);
+  // zippedData[i++] = (uint8_t)(unzippedData.GNSS.longitude & 0xFF);
+  // zippedData[i++] = (uint8_t)((unzippedData.GNSS.altitude >> 8) & 0xFF);
+  // zippedData[i++] = (uint8_t)(unzippedData.GNSS.altitude & 0xFF);
+  // zippedData[i++] = (uint8_t)((unzippedData.GNSS.velocity >> 8) & 0xFF);
+  // zippedData[i++] = (uint8_t)(unzippedData.GNSS.velocity & 0xFF);
+
+  // MAX10M10S
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.lat >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.lat >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.lat >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.lat & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.lon >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.lon >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.lon >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.lon & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.height_MSL >> 24) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.height_MSL >> 16) & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.height_MSL >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.height_MSL & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.fixType >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.fixType & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.numSV >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.numSV & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.UNIX_time >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.UNIX_time & 0xFF);
+  zippedData[i++] = (uint8_t)((unzippedData.GNSS.nanoseconds >> 8) & 0xFF);
+  zippedData[i++] = (uint8_t)(unzippedData.GNSS.nanoseconds & 0xFF);
 
   // BME280
   zippedData[i++] = (uint8_t)((unzippedData.bme.pressure >> 24) & 0xFF);
@@ -366,8 +388,13 @@ Frame unzip(uint8_t *zippedData) {
   int i = -1;
 
   // Resolve errors to do with uninitialised data, but this is obviously not correct.
-  _unzippedData.GNSS.altitude = 0;
-  _unzippedData.GNSS.velocity = 0;
+  _unzippedData.GNSS.height_MSL = 0;
+  _unzippedData.GNSS.lat = 0;
+  _unzippedData.GNSS.lon = 0;
+  _unzippedData.GNSS.fixType = 0;
+  _unzippedData.GNSS.numSV = 0;
+  _unzippedData.GNSS.UNIX_time = 0;
+  _unzippedData.GNSS.nanoseconds = 0;
   _unzippedData.bme.temperature = 0;
 
   // Date and time
@@ -447,14 +474,38 @@ Frame unzip(uint8_t *zippedData) {
   _unzippedData.barometer.pressure |= zippedData[i++];
 
   // GNSS
-  _unzippedData.GNSS.latitude = (zippedData[i++] << 8) & (0xFF << 8);
-  _unzippedData.GNSS.latitude |= zippedData[i++];
-  _unzippedData.GNSS.longitude = (zippedData[i++] << 8) & (0xFF << 8);
-  _unzippedData.GNSS.longitude |= zippedData[i++];
-  _unzippedData.GNSS.altitude |= (zippedData[i++] << 8) & (0xFF << 8);
-  _unzippedData.GNSS.altitude |= zippedData[i++];
-  _unzippedData.GNSS.velocity |= (zippedData[i++] << 8) & (0xFF << 8);
-  _unzippedData.GNSS.velocity |= zippedData[i++];
+  // _unzippedData.GNSS.latitude = (zippedData[i++] << 8) & (0xFF << 8);
+  // _unzippedData.GNSS.latitude |= zippedData[i++];
+  // _unzippedData.GNSS.longitude = (zippedData[i++] << 8) & (0xFF << 8);
+  // _unzippedData.GNSS.longitude |= zippedData[i++];
+  // _unzippedData.GNSS.altitude |= (zippedData[i++] << 8) & (0xFF << 8);
+  // _unzippedData.GNSS.altitude |= zippedData[i++];
+  // _unzippedData.GNSS.velocity |= (zippedData[i++] << 8) & (0xFF << 8);
+  // _unzippedData.GNSS.velocity |= zippedData[i++];
+
+  // MAXM10S
+  _unzippedData.GNSS.lat = (zippedData[i++] << 24) & (0xFF << 24);
+  _unzippedData.GNSS.lat |= (zippedData[i++] << 16) & (0xFF << 16);
+  _unzippedData.GNSS.lat |= (zippedData[i++] << 8) & (0xFF << 8);
+  _unzippedData.GNSS.lat |= zippedData[i++];
+  _unzippedData.GNSS.lon = (zippedData[i++] << 24) & (0xFF << 24);
+  _unzippedData.GNSS.lon |= (zippedData[i++] << 16) & (0xFF << 16);
+  _unzippedData.GNSS.lon |= (zippedData[i++] << 8) & (0xFF << 8);
+  _unzippedData.GNSS.lon |= zippedData[i++];
+  _unzippedData.GNSS.height_MSL = (zippedData[i++] << 24) & (0xFF << 24);
+  _unzippedData.GNSS.height_MSL |= (zippedData[i++] << 16) & (0xFF << 16);
+  _unzippedData.GNSS.height_MSL |= (zippedData[i++] << 8) & (0xFF << 8);
+  _unzippedData.GNSS.height_MSL |= zippedData[i++];
+  _unzippedData.GNSS.fixType = ((uint16_t)zippedData[i++] << 8) | zippedData[i++];
+  _unzippedData.GNSS.numSV = ((uint16_t)zippedData[i++] << 8) | zippedData[i++];
+  _unzippedData.GNSS.UNIX_time = (zippedData[i++] << 24) & (0xFF << 24);
+  _unzippedData.GNSS.UNIX_time |= (zippedData[i++] << 16) & (0xFF << 16);
+  _unzippedData.GNSS.UNIX_time |= (zippedData[i++] << 8) & (0xFF << 8);
+  _unzippedData.GNSS.UNIX_time |= zippedData[i++];
+  _unzippedData.GNSS.nanoseconds = (zippedData[i++] << 24) & (0xFF << 24);
+  _unzippedData.GNSS.nanoseconds |= (zippedData[i++] << 16) & (0xFF << 16);
+  _unzippedData.GNSS.nanoseconds |= (zippedData[i++] << 8) & (0xFF << 8);
+  _unzippedData.GNSS.nanoseconds |= zippedData[i++];
 
   // BME280
   _unzippedData.bme.pressure = (zippedData[i++] << 24) & (0xFF << 24);
@@ -731,7 +782,7 @@ void print_capacity_info() {
   LOG("\r\n");
 }
 
-int log_frame(Frame _input) {
+int8_t log_frame(Frame _input) {
   // Frame to array of bytes; 8388607 is 8Gb end
   if (frameAddressPointer <= 8388607) {
     uint8_t encoded[128];
